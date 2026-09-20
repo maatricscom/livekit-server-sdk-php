@@ -14,8 +14,9 @@ fix and the published advisory all stay attached to one another.
 If you cannot use that, email **security@maatrics.com**.
 
 Please include enough to reproduce it: the package version, the PHP version, the
-protobuf runtime (the pure-PHP one or `ext-protobuf`), and the smallest snippet
-that shows the problem. If you have a patch, attach it to the advisory rather
+protobuf runtime (the pure-PHP one or `ext-protobuf`), the `livekit/protocol` tag
+the package was generated against — `LiveKit\ProtocolVersion::TAG` reports it —
+and the smallest snippet that shows the problem. If you have a patch, attach it to the advisory rather
 than opening a pull request, for the same reason as above.
 
 You will get an acknowledgement within a few working days. We will tell you what
@@ -34,13 +35,22 @@ get subtly wrong:
   `canUpdateOwnMetadata`, `canSubscribeMetrics`, `canManageAgentSession`) where an
   explicit `false` fails to reach the wire and the server applies its permissive
   default instead.
+- A token `TokenVerifier` accepts that it should refuse: one signed with a
+  different secret, one outside its own `nbf`/`exp` window beyond the configured
+  clock tolerance, one issued for a different API key, or one that gets a
+  different algorithm honoured. HS256 is pinned rather than read from the token's
+  own header, so `alg: none` and a same-secret HS384 or HS512 are both refused —
+  anything that gets past that is in scope.
 - A webhook this package accepts that LiveKit did not sign, or one whose body was
   altered after signing.
 - A signature, hash or token comparison that is not constant-time.
 - An API secret, access token or storage credential that escapes into an
   exception message, a log line, or a token payload. `AccessToken::toJwt()`
-  refusing to sign a `RoomConfiguration` that carries storage credentials is
-  defensive code of exactly this kind; a way around it is a vulnerability.
+  refuses by default to sign a `RoomConfiguration` carrying storage credentials,
+  since a JWT is readable by whoever holds it. Getting such a token signed
+  *without* calling `AccessToken::allowSensitiveCredentials()` is a vulnerability.
+  Calling it is not: it is a documented opt-out for a token that stays
+  server-side, and is working as intended.
 - A host or region a request can be redirected to that is not the one configured.
   Failover is restricted to `*.livekit.cloud` precisely because a replay sends
   the caller's token to an origin learned at runtime.
@@ -60,6 +70,6 @@ get subtly wrong:
 
 ## Supported versions
 
-Until 1.0, fixes go onto the latest released minor. The version of
-`livekit/protocol` the package is generated against is stated in `README.md` and
-in `LiveKit\ProtocolVersion`.
+Until 1.0, fixes go onto the latest released minor only. There is no backport to
+earlier ones, so upgrading is how you get a fix; the versioning is semantic, and
+before a stable major that permits a breaking change in a minor.
