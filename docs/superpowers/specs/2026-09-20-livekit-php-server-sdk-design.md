@@ -1,7 +1,7 @@
 # LiveKit PHP Server SDK — Design
 
 **Date:** 2026-09-20
-**Package:** `maatrics/livekit-server-sdk`
+**Package:** `maatrics/livekit-server-sdk-php`
 **Namespace root:** `LiveKit\`
 **Status:** Approved design, ready for implementation planning
 

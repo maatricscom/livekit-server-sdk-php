@@ -1,5 +1,5 @@
 {
-    "name": "maatrics/livekit-server-sdk",
+    "name": "maatrics/livekit-server-sdk-php",
     "description": "LiveKit server SDK for PHP — room management, egress, ingress, SIP, agent dispatch, access tokens and webhooks",
     "keywords": ["livekit", "webrtc", "sdk", "video", "sip", "egress"],
     "type": "library",

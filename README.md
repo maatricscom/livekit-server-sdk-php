@@ -1,8 +1,8 @@
 # LiveKit Server SDK for PHP
 
 [![CI](https://github.com/maatrics/livekit-server-sdk-php/actions/workflows/ci.yml/badge.svg)](https://github.com/maatrics/livekit-server-sdk-php/actions/workflows/ci.yml)
-[![Packagist Version](https://img.shields.io/packagist/v/maatrics/livekit-server-sdk.svg)](https://packagist.org/packages/maatrics/livekit-server-sdk)
-[![PHP Version](https://img.shields.io/packagist/php-v/maatrics/livekit-server-sdk.svg)](https://packagist.org/packages/maatrics/livekit-server-sdk)
+[![Packagist Version](https://img.shields.io/packagist/v/maatrics/livekit-server-sdk-php.svg)](https://packagist.org/packages/maatrics/livekit-server-sdk-php)
+[![PHP Version](https://img.shields.io/packagist/php-v/maatrics/livekit-server-sdk-php.svg)](https://packagist.org/packages/maatrics/livekit-server-sdk-php)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 A [LiveKit](https://livekit.io) server SDK for PHP, written from scratch and mirroring the structure and
@@ -33,11 +33,11 @@ No official PHP SDK exists upstream; LiveKit's own ecosystem page points to a co
 Pick one when installing:
 
 ```bash
-composer require maatrics/livekit-server-sdk guzzlehttp/guzzle
+composer require maatrics/livekit-server-sdk-php guzzlehttp/guzzle
 ```
 
 ```bash
-composer require maatrics/livekit-server-sdk symfony/http-client nyholm/psr7
+composer require maatrics/livekit-server-sdk-php symfony/http-client nyholm/psr7
 ```
 
 If your application is already built on Laravel or Symfony, you can stop there and skip the second
@@ -219,7 +219,7 @@ Configuration mistakes (a missing host, a missing or too-short API secret) throw
 If you're moving from the existing community SDK, the biggest difference is namespacing — everything else
 maps over fairly directly.
 
-| | `agence104/livekit-server-sdk` | `maatrics/livekit-server-sdk` (this package) |
+| | `agence104/livekit-server-sdk` | `maatrics/livekit-server-sdk-php` (this package) |
 |---|---|---|
 | Generated protobuf classes | Global `Livekit\` namespace | `LiveKit\Proto\` |
 | Service clients | `Agence104\LiveKit\RoomServiceClient`, etc. | `LiveKit\Services\RoomServiceClient`, etc. |
