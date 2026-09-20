@@ -56,6 +56,12 @@ rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 
 echo "==> Cloning livekit/protocol ${PROTOCOL_VERSION}"
+# Expect git to print `refs/tags/vX <sha> is not a commit!` here, and ignore it.
+# LiveKit's release tags are annotated, so the ref names a tag object rather than
+# a commit, and a --depth 1 pack does not carry enough history for git to follow
+# it while it is writing the ref. The checkout is still the right commit --
+# PROTOCOL_COMMIT below is read from the working tree, not from the ref -- and it
+# is reproducible: two runs of this script produce the same COMMIT constant.
 git clone --quiet --depth 1 --branch "$PROTOCOL_VERSION" \
     https://github.com/livekit/protocol.git "${BUILD_DIR}/protocol"
 
