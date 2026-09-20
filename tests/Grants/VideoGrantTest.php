@@ -54,29 +54,34 @@ final class VideoGrantTest extends TestCase
     }
 
     /**
-     * @return array<string, array{string}>
+     * @return array<string, array{string, \Closure(?bool): VideoGrant}>
      */
     public static function triStateFieldProvider(): array
     {
         return [
-            'canPublish' => ['canPublish'],
-            'canSubscribe' => ['canSubscribe'],
-            'canPublishData' => ['canPublishData'],
-            'canUpdateOwnMetadata' => ['canUpdateOwnMetadata'],
-            'canSubscribeMetrics' => ['canSubscribeMetrics'],
-            'canManageAgentSession' => ['canManageAgentSession'],
+            'canPublish' => ['canPublish', static fn (?bool $v): VideoGrant => new VideoGrant(canPublish: $v)],
+            'canSubscribe' => ['canSubscribe', static fn (?bool $v): VideoGrant => new VideoGrant(canSubscribe: $v)],
+            'canPublishData' => ['canPublishData', static fn (?bool $v): VideoGrant => new VideoGrant(canPublishData: $v)],
+            'canUpdateOwnMetadata' => ['canUpdateOwnMetadata', static fn (?bool $v): VideoGrant => new VideoGrant(canUpdateOwnMetadata: $v)],
+            'canSubscribeMetrics' => ['canSubscribeMetrics', static fn (?bool $v): VideoGrant => new VideoGrant(canSubscribeMetrics: $v)],
+            'canManageAgentSession' => ['canManageAgentSession', static fn (?bool $v): VideoGrant => new VideoGrant(canManageAgentSession: $v)],
         ];
     }
 
+    /**
+     * @param \Closure(?bool): VideoGrant $make
+     */
     #[\PHPUnit\Framework\Attributes\DataProvider('triStateFieldProvider')]
-    public function test_every_tri_state_field_distinguishes_null_from_false(string $field): void
+    public function test_every_tri_state_field_distinguishes_null_from_false(string $field, \Closure $make): void
     {
-        $unset = (new VideoGrant(...[$field => null]))->toArray();
-        $denied = (new VideoGrant(...[$field => false]))->toArray();
+        $unset = $make(null)->toArray();
+        $denied = $make(false)->toArray();
+        $allowed = $make(true)->toArray();
 
         self::assertArrayNotHasKey($field, $unset, sprintf('%s: null must omit the key', $field));
         self::assertArrayHasKey($field, $denied, sprintf('%s: false must emit the key', $field));
         self::assertFalse($denied[$field], sprintf('%s: false must emit false', $field));
+        self::assertTrue($allowed[$field], sprintf('%s: true must emit true', $field));
     }
 
     public function test_can_publish_sources_serializes_as_lowercase_strings(): void
