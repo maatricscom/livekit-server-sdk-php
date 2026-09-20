@@ -22,6 +22,8 @@ use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
 use LiveKit\Proto\UpdateParticipantRequest;
+use LiveKit\Proto\UpdateSubscriptionsRequest;
+use LiveKit\Proto\UpdateSubscriptionsResponse;
 
 final class RoomServiceClient extends ServiceBase
 {
@@ -273,6 +275,34 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof ParticipantInfo);
+
+        return $response;
+    }
+
+    /**
+     * @param list<string> $trackSids
+     */
+    public function updateSubscriptions(
+        string $room,
+        string $identity,
+        array $trackSids,
+        bool $subscribe,
+    ): UpdateSubscriptionsResponse {
+        $request = new UpdateSubscriptionsRequest();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+        $request->setTrackSids($trackSids);
+        $request->setSubscribe($subscribe);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateSubscriptions',
+            $request,
+            UpdateSubscriptionsResponse::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof UpdateSubscriptionsResponse);
 
         return $response;
     }

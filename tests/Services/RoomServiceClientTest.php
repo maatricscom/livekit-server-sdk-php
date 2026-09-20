@@ -25,6 +25,8 @@ use LiveKit\Proto\RoomParticipantIdentity;
 use LiveKit\Proto\TrackInfo;
 use LiveKit\Proto\TrackSource;
 use LiveKit\Proto\UpdateParticipantRequest;
+use LiveKit\Proto\UpdateSubscriptionsRequest;
+use LiveKit\Proto\UpdateSubscriptionsResponse;
 use LiveKit\Services\RoomServiceClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -341,6 +343,42 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertSame('', $sent->getName());
         self::assertNull($sent->getPermission());
         self::assertCount(0, $sent->getAttributes());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testUpdateSubscriptionsSendsTrackSidsAndSubscribeFlag(): void
+    {
+        $client = $this->client(new UpdateSubscriptionsResponse());
+
+        $client->updateSubscriptions('my-room', 'alice', ['TR_1', 'TR_2'], true);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'UpdateSubscriptions');
+
+        $sent = $this->decodeRequest(UpdateSubscriptionsRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame(['TR_1', 'TR_2'], iterator_to_array($sent->getTrackSids()));
+        self::assertTrue($sent->getSubscribe());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testUpdateSubscriptionsCanUnsubscribe(): void
+    {
+        $client = $this->client(new UpdateSubscriptionsResponse());
+
+        $client->updateSubscriptions('my-room', 'alice', ['TR_1'], false);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'UpdateSubscriptions');
+
+        $sent = $this->decodeRequest(UpdateSubscriptionsRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertFalse($sent->getSubscribe());
+        self::assertSame(['TR_1'], iterator_to_array($sent->getTrackSids()));
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }
