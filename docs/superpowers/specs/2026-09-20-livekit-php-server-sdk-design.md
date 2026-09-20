@@ -148,7 +148,11 @@ import closure programmatically by parsing `import` statements — it does not m
 
 Proto set: `livekit_room`, `livekit_models`, `livekit_metrics`, `livekit_egress`, `livekit_ingress`,
 `livekit_sip`, `livekit_agent`, `livekit_agent_dispatch`, `livekit_agent_worker`, `livekit_webhook`,
-`livekit_token_source`, `logger/options`, `agent/*`, plus whatever the closure adds.
+`livekit_token_source`, `logger/options`, plus whatever the closure adds.
+
+`protobufs/agent/*.proto` (package `livekit.agent`) is deliberately absent: nothing in the v1 scope imports
+it — it is reached only from the out-of-scope `livekit_agent_simulation.proto` — so including it would
+generate a whole namespace no SDK method ever returns.
 
 ### Flags
 
