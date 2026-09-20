@@ -15,6 +15,8 @@ use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
+use LiveKit\Proto\GetSIPOutboundTrunkRequest;
+use LiveKit\Proto\GetSIPOutboundTrunkResponse;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -360,6 +362,23 @@ final class SipClient extends ServiceBase
             'GetSIPInboundTrunk',
             $request,
             GetSIPInboundTrunkResponse::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response->getTrunk();
+    }
+
+    /** Fetches one SIP outbound trunk, or null when the server returns no trunk. */
+    public function getSipOutboundTrunk(string $sipTrunkId): ?SIPOutboundTrunkInfo
+    {
+        $request = new GetSIPOutboundTrunkRequest();
+        $request->setSipTrunkId($sipTrunkId);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'GetSIPOutboundTrunk',
+            $request,
+            GetSIPOutboundTrunkResponse::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
         );
 

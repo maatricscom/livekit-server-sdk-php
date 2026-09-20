@@ -12,6 +12,8 @@ use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
+use LiveKit\Proto\GetSIPOutboundTrunkRequest;
+use LiveKit\Proto\GetSIPOutboundTrunkResponse;
 use LiveKit\Proto\ListUpdate;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
@@ -422,6 +424,46 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(
             'ST_missing',
             $this->decodeRequest(GetSIPInboundTrunkRequest::class)->getSipTrunkId(),
+        );
+    }
+
+    public function testGetSipOutboundTrunkUnwrapsTheResponse(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new GetSIPOutboundTrunkResponse())->setTrunk(
+                (new SIPOutboundTrunkInfo())
+                    ->setSipTrunkId('ST_outbound')
+                    ->setAddress('sip.carrier.example'),
+            ),
+        ));
+
+        $trunk = $this->client->getSipOutboundTrunk('ST_outbound');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'GetSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(GetSIPOutboundTrunkRequest::class);
+        self::assertSame('ST_outbound', $sent->getSipTrunkId());
+
+        self::assertInstanceOf(SIPOutboundTrunkInfo::class, $trunk);
+        self::assertSame('sip.carrier.example', $trunk->getAddress());
+    }
+
+    public function testGetSipOutboundTrunkReturnsNullWhenTheTrunkIsAbsent(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new GetSIPOutboundTrunkResponse()));
+
+        self::assertNull($this->client->getSipOutboundTrunk('ST_missing'));
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'GetSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+        self::assertSame(
+            'ST_missing',
+            $this->decodeRequest(GetSIPOutboundTrunkRequest::class)->getSipTrunkId(),
         );
     }
 }
