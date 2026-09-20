@@ -1,3 +1,9 @@
+# Normalise line endings in the repository. Every tracked file is LF today, so this
+# changes nothing now -- it stops a CRLF file from being committed later.
+* text=auto
+
+# Keep the distributed package to what a consumer runs: no test suite, no CI
+# definition, no tooling configuration. examples/ is deliberately not here.
 /tests            export-ignore
 /.github          export-ignore
 /bin              export-ignore

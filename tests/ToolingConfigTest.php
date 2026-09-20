@@ -47,6 +47,24 @@ final class ToolingConfigTest extends TestCase
     }
 
     /**
+     * ZzEnvLeakProbeTest asserts that no test leaked an environment variable, which
+     * it can only do from last place. PHPUnit's default order is alphabetical and the
+     * Zz prefix is what puts it there; any explicit executionOrder takes that away
+     * and leaves the probe green while checking nothing. Its own docblock warns
+     * against renaming the class. Nothing warned against the config.
+     */
+    public function test_phpunit_execution_order_is_left_at_its_default(): void
+    {
+        $xml = (string) file_get_contents(dirname(__DIR__) . '/phpunit.xml.dist');
+
+        self::assertDoesNotMatchRegularExpression(
+            '/\bexecutionOrder(Type)?\s*=/',
+            $xml,
+            'ZzEnvLeakProbeTest has to run last, which only the default alphabetical order guarantees.'
+        );
+    }
+
+    /**
      * @return array{min: int, max: int}
      */
     private static function phpstanPhpVersion(): array

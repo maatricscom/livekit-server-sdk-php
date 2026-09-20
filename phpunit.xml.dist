@@ -5,10 +5,36 @@
          colors="true"
          failOnWarning="true"
          failOnRisky="true"
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnPhpunitDeprecation="true"
+         failOnEmptyTestSuite="true"
          beStrictAboutOutputDuringTests="true"
          cacheDirectory=".phpunit.cache"
          defaultTestSuite="unit">
     <!--
+        Two attributes are deliberately absent.
+
+        executionOrder: ZzEnvLeakProbeTest checks that no test leaked an environment
+        variable, and it can only do that by running after every other test. PHPUnit's
+        default order is alphabetical, which is what the Zz prefix buys. Setting this
+        to random or defects would leave the probe passing while testing nothing.
+        ToolingConfigTest fails if it appears here.
+
+        failOnSkipped: the integration and mock-server suites skip themselves when
+        their server is not configured, which is the intended behaviour, not a
+        failure. CI passes that flag to the mock-server job alone, where a skip does
+        mean the environment was lost.
+
+        failOnDeprecation and failOnNotice matter more here than in an application:
+        this package supports 8.4 and 8.5, and a deprecation raised on the newer one
+        is how a future PHP breaks it. Note that failOnDeprecation fails on any
+        deprecation, including one raised inside a dependency where nothing in this
+        repo can fix it. That is the intended trade for the signal, and the suite
+        drives almost no vendor code; if a dependency ever does start raising one,
+        narrow to failOnDirectDeprecation and failOnSelfDeprecation rather than
+        turning the check off.
+
         defaultTestSuite keeps a bare `vendor/bin/phpunit` on the unit suite, which
         is the only one that runs with no external dependency. Both others need a
         server and skip themselves without one, so run them explicitly:

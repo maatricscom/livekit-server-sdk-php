@@ -107,6 +107,13 @@ starting out now has no reason to carry a version that only receives security fi
 - A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
   unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
   under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
+- PHPUnit fails on deprecations, notices, its own deprecated API, and an empty test suite. The last of
+  those catches a `--filter` that matches nothing, which otherwise reports success having run no test.
+  `executionOrder` is deliberately left at its default and `ToolingConfigTest` fails if it is ever set:
+  `ZzEnvLeakProbeTest` can only check for leaked environment variables from last place, and the default
+  alphabetical order is the only thing putting it there.
+- PHPStan caches in `.phpstan.cache` rather than the shared system temp directory. `.gitignore` already
+  named that path; nothing had ever created it.
 - `examples/` is analysed by PHPStan and covered by Rector, not only formatted by Pint. It was the one
   hand-written directory no tool checked, and PHPStan found a real defect there the moment it looked:
   `examples/webhook.php` passed `$_SERVER['HTTP_AUTHORIZATION']`, which is `mixed`, straight into a

@@ -15,3 +15,7 @@ parameters:
         analyse:
             - src/Proto
     treatPhpDocTypesAsCertain: false
+    # .gitignore already names this path. Left unset, PHPStan caches in the system
+    # temp directory instead, shared with every other project and not clearable by
+    # deleting anything in the repo -- and the ignore entry describes nothing.
+    tmpDir: .phpstan.cache
