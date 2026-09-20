@@ -6,15 +6,20 @@ namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\EncodedOutputs;
 use LiveKit\Options\RoomCompositeOptions;
+use LiveKit\Options\WebOptions;
 use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EgressStatus;
 use LiveKit\Proto\EncodedFileOutput;
 use LiveKit\Proto\EncodedFileType;
+use LiveKit\Proto\EncodingOptions;
 use LiveKit\Proto\EncodingOptionsPreset;
 use LiveKit\Proto\ImageOutput;
 use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StreamOutput;
+use LiveKit\Proto\StreamProtocol;
+use LiveKit\Proto\WebEgressRequest;
+use LiveKit\Proto\WebhookConfig;
 use LiveKit\Services\EgressClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -118,6 +123,103 @@ final class EgressClientTest extends TwirpTestCase
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }
 
+    public function testStartWebEgressWithEncodedOutputsSetsOnlyPluralArrays(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_web')));
+        $client = $this->egressClient();
+
+        $stream = new StreamOutput();
+        $stream->setProtocol(StreamProtocol::RTMP);
+        $stream->setUrls(['rtmp://one.example/live', 'rtmp://two.example/live']);
+
+        $advanced = new EncodingOptions();
+        $advanced->setWidth(1280);
+        $advanced->setHeight(720);
+        $advanced->setFramerate(30);
+
+        $webhook = new WebhookConfig();
+        $webhook->setUrl('https://hooks.example/egress');
+
+        $info = $client->startWebEgress(
+            'https://example.com/scene',
+            new EncodedOutputs(stream: $stream),
+            new WebOptions(
+                encodingOptions: $advanced,
+                videoOnly: true,
+                awaitStartSignal: true,
+                webhooks: [$webhook],
+            ),
+        );
+
+        self::assertSame('EG_web', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartWebEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartWebEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(WebEgressRequest::class);
+
+        self::assertSame('https://example.com/scene', $request->getUrl());
+        self::assertFalse($request->getAudioOnly());
+        self::assertTrue($request->getVideoOnly());
+        self::assertTrue($request->getAwaitStartSignal());
+
+        self::assertSame('', $request->getOutput());
+
+        $streamOutputs = $this->messagesIn($request->getStreamOutputs(), StreamOutput::class);
+        self::assertCount(1, $streamOutputs);
+        self::assertSame(StreamProtocol::RTMP, $streamOutputs[0]->getProtocol());
+        self::assertSame(
+            ['rtmp://one.example/live', 'rtmp://two.example/live'],
+            $this->stringsIn($streamOutputs[0]->getUrls()),
+        );
+
+        self::assertSame('advanced', $request->getOptions());
+        self::assertSame(1280, $this->messageOf($request->getAdvanced(), EncodingOptions::class)->getWidth());
+
+        $webhooks = $this->messagesIn($request->getWebhooks(), WebhookConfig::class);
+        self::assertCount(1, $webhooks);
+        self::assertSame('https://hooks.example/egress', $webhooks[0]->getUrl());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartWebEgressWithBareSegmentsOutputAlsoSetsLegacyOneof(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_web_legacy')));
+        $client = $this->egressClient();
+
+        $segments = new SegmentedFileOutput();
+        $segments->setFilenamePrefix('hls/segment');
+        $segments->setPlaylistName('hls/index.m3u8');
+        $segments->setSegmentDuration(6);
+
+        $info = $client->startWebEgress('https://example.com/scene', $segments);
+
+        self::assertSame('EG_web_legacy', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartWebEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartWebEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(WebEgressRequest::class);
+
+        self::assertSame('segments', $request->getOutput());
+        self::assertSame(
+            'hls/index.m3u8',
+            $this->messageOf($request->getSegments(), SegmentedFileOutput::class)->getPlaylistName(),
+        );
+
+        $segmentOutputs = $this->messagesIn($request->getSegmentOutputs(), SegmentedFileOutput::class);
+        self::assertCount(1, $segmentOutputs);
+        self::assertSame('hls/segment', $segmentOutputs[0]->getFilenamePrefix());
+
+        self::assertSame('', $request->getOptions());
+        self::assertCount(0, $this->messagesIn($request->getWebhooks(), WebhookConfig::class));
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
     private function egressClient(): EgressClient
     {
         return new EgressClient(self::HOST, self::API_KEY, self::API_SECRET, httpClient: $this->http);
@@ -157,6 +259,23 @@ final class EgressClientTest extends TwirpTestCase
 
         foreach ($repeated as $item) {
             self::assertInstanceOf($class, $item);
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function stringsIn(mixed $repeated): array
+    {
+        self::assertIsIterable($repeated);
+        /** @var iterable<mixed> $repeated */
+        $items = [];
+
+        foreach ($repeated as $item) {
+            self::assertIsString($item);
             $items[] = $item;
         }
 

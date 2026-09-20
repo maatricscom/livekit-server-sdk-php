@@ -9,6 +9,7 @@ use LiveKit\Contracts\EgressClientInterface;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\EncodedOutputs;
 use LiveKit\Options\RoomCompositeOptions;
+use LiveKit\Options\WebOptions;
 use LiveKit\Proto\AudioMixing;
 use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EncodedFileOutput;
@@ -51,6 +52,27 @@ final class EgressClient extends ServiceBase
         $this->applyEncoding($request, $options?->encodingOptions);
 
         return $this->egressInfoRpc('StartRoomCompositeEgress', $request);
+    }
+
+    public function startWebEgress(
+        string $url,
+        EncodedOutputs|EncodedFileOutput|StreamOutput|SegmentedFileOutput $output,
+        ?WebOptions $options = null,
+    ): EgressInfo {
+        $resolved = $this->resolveOutputs($output);
+
+        $request = new WebEgressRequest();
+        $request->setUrl($url);
+        $request->setAudioOnly($options->audioOnly ?? false);
+        $request->setVideoOnly($options->videoOnly ?? false);
+        $request->setAwaitStartSignal($options->awaitStartSignal ?? false);
+        $request->setWebhooks($options->webhooks ?? []);
+
+        $this->applyOutputArrays($request, $resolved);
+        $this->applyLegacyOutput($request, $resolved);
+        $this->applyEncoding($request, $options?->encodingOptions);
+
+        return $this->egressInfoRpc('StartWebEgress', $request);
     }
 
     /**
