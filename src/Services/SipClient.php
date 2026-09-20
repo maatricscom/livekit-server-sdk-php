@@ -95,58 +95,58 @@ final class SipClient extends ServiceBase implements SipClientInterface
     public function createSipInboundTrunk(
         string $name,
         array $numbers,
-        ?CreateSipInboundTrunkOptions $opts = null,
+        ?CreateSipInboundTrunkOptions $options = null,
     ): SIPInboundTrunkInfo {
-        $opts ??= new CreateSipInboundTrunkOptions();
+        $options ??= new CreateSipInboundTrunkOptions();
 
         $trunk = new SIPInboundTrunkInfo();
         $trunk->setName($name);
         $trunk->setNumbers($numbers);
 
-        if ($opts->metadata !== null) {
-            $trunk->setMetadata($opts->metadata);
+        if ($options->metadata !== null) {
+            $trunk->setMetadata($options->metadata);
         }
-        if ($opts->allowedAddresses !== null) {
-            $trunk->setAllowedAddresses($opts->allowedAddresses);
+        if ($options->allowedAddresses !== null) {
+            $trunk->setAllowedAddresses($options->allowedAddresses);
         }
-        if ($opts->allowedNumbers !== null) {
-            $trunk->setAllowedNumbers($opts->allowedNumbers);
+        if ($options->allowedNumbers !== null) {
+            $trunk->setAllowedNumbers($options->allowedNumbers);
         }
-        if ($opts->authUsername !== null) {
-            $trunk->setAuthUsername($opts->authUsername);
+        if ($options->authUsername !== null) {
+            $trunk->setAuthUsername($options->authUsername);
         }
-        if ($opts->authPassword !== null) {
-            $trunk->setAuthPassword($opts->authPassword);
+        if ($options->authPassword !== null) {
+            $trunk->setAuthPassword($options->authPassword);
         }
-        if ($opts->authRealm !== null) {
-            $trunk->setAuthRealm($opts->authRealm);
+        if ($options->authRealm !== null) {
+            $trunk->setAuthRealm($options->authRealm);
         }
-        if ($opts->headers !== null) {
-            $trunk->setHeaders($opts->headers);
+        if ($options->headers !== null) {
+            $trunk->setHeaders($options->headers);
         }
-        if ($opts->headersToAttributes !== null) {
-            $trunk->setHeadersToAttributes($opts->headersToAttributes);
+        if ($options->headersToAttributes !== null) {
+            $trunk->setHeadersToAttributes($options->headersToAttributes);
         }
-        if ($opts->attributesToHeaders !== null) {
-            $trunk->setAttributesToHeaders($opts->attributesToHeaders);
+        if ($options->attributesToHeaders !== null) {
+            $trunk->setAttributesToHeaders($options->attributesToHeaders);
         }
-        if ($opts->includeHeaders !== null) {
-            $trunk->setIncludeHeaders($opts->includeHeaders);
+        if ($options->includeHeaders !== null) {
+            $trunk->setIncludeHeaders($options->includeHeaders);
         }
-        if ($opts->krispEnabled !== null) {
-            $trunk->setKrispEnabled($opts->krispEnabled);
+        if ($options->krispEnabled !== null) {
+            $trunk->setKrispEnabled($options->krispEnabled);
         }
-        if ($opts->mediaEncryption !== null) {
-            $trunk->setMediaEncryption($opts->mediaEncryption);
+        if ($options->mediaEncryption !== null) {
+            $trunk->setMediaEncryption($options->mediaEncryption);
         }
-        if ($opts->media !== null) {
-            $trunk->setMedia($opts->media);
+        if ($options->media !== null) {
+            $trunk->setMedia($options->media);
         }
-        if ($opts->ringingTimeout !== null) {
-            $trunk->setRingingTimeout((new Duration())->setSeconds($opts->ringingTimeout));
+        if ($options->ringingTimeout !== null) {
+            $trunk->setRingingTimeout((new Duration())->setSeconds($options->ringingTimeout));
         }
-        if ($opts->maxCallDuration !== null) {
-            $trunk->setMaxCallDuration((new Duration())->setSeconds($opts->maxCallDuration));
+        if ($options->maxCallDuration !== null) {
+            $trunk->setMaxCallDuration((new Duration())->setSeconds($options->maxCallDuration));
         }
 
         $request = new CreateSIPInboundTrunkRequest();
@@ -173,48 +173,48 @@ final class SipClient extends ServiceBase implements SipClientInterface
         string $name,
         string $address,
         array $numbers,
-        ?CreateSipOutboundTrunkOptions $opts = null,
+        ?CreateSipOutboundTrunkOptions $options = null,
     ): SIPOutboundTrunkInfo {
-        $opts ??= new CreateSipOutboundTrunkOptions();
+        $options ??= new CreateSipOutboundTrunkOptions();
 
         $trunk = new SIPOutboundTrunkInfo();
         $trunk->setName($name);
         $trunk->setAddress($address);
         $trunk->setNumbers($numbers);
-        $trunk->setTransport($opts->transport);
+        $trunk->setTransport($options->transport);
 
-        if ($opts->metadata !== null) {
-            $trunk->setMetadata($opts->metadata);
+        if ($options->metadata !== null) {
+            $trunk->setMetadata($options->metadata);
         }
-        if ($opts->destinationCountry !== null) {
-            $trunk->setDestinationCountry($opts->destinationCountry);
+        if ($options->destinationCountry !== null) {
+            $trunk->setDestinationCountry($options->destinationCountry);
         }
-        if ($opts->authUsername !== null) {
-            $trunk->setAuthUsername($opts->authUsername);
+        if ($options->authUsername !== null) {
+            $trunk->setAuthUsername($options->authUsername);
         }
-        if ($opts->authPassword !== null) {
-            $trunk->setAuthPassword($opts->authPassword);
+        if ($options->authPassword !== null) {
+            $trunk->setAuthPassword($options->authPassword);
         }
-        if ($opts->headers !== null) {
-            $trunk->setHeaders($opts->headers);
+        if ($options->headers !== null) {
+            $trunk->setHeaders($options->headers);
         }
-        if ($opts->headersToAttributes !== null) {
-            $trunk->setHeadersToAttributes($opts->headersToAttributes);
+        if ($options->headersToAttributes !== null) {
+            $trunk->setHeadersToAttributes($options->headersToAttributes);
         }
-        if ($opts->attributesToHeaders !== null) {
-            $trunk->setAttributesToHeaders($opts->attributesToHeaders);
+        if ($options->attributesToHeaders !== null) {
+            $trunk->setAttributesToHeaders($options->attributesToHeaders);
         }
-        if ($opts->includeHeaders !== null) {
-            $trunk->setIncludeHeaders($opts->includeHeaders);
+        if ($options->includeHeaders !== null) {
+            $trunk->setIncludeHeaders($options->includeHeaders);
         }
-        if ($opts->mediaEncryption !== null) {
-            $trunk->setMediaEncryption($opts->mediaEncryption);
+        if ($options->mediaEncryption !== null) {
+            $trunk->setMediaEncryption($options->mediaEncryption);
         }
-        if ($opts->media !== null) {
-            $trunk->setMedia($opts->media);
+        if ($options->media !== null) {
+            $trunk->setMedia($options->media);
         }
-        if ($opts->fromHost !== null) {
-            $trunk->setFromHost($opts->fromHost);
+        if ($options->fromHost !== null) {
+            $trunk->setFromHost($options->fromHost);
         }
 
         $request = new CreateSIPOutboundTrunkRequest();
@@ -427,19 +427,19 @@ final class SipClient extends ServiceBase implements SipClientInterface
      *
      * @return list<SIPInboundTrunkInfo>
      */
-    public function listSipInboundTrunk(?ListSipTrunkOptions $opts = null): array
+    public function listSipInboundTrunk(?ListSipTrunkOptions $options = null): array
     {
         $request = new ListSIPInboundTrunkRequest();
 
-        if ($opts !== null) {
-            if ($opts->page !== null) {
-                $request->setPage($opts->page);
+        if ($options !== null) {
+            if ($options->page !== null) {
+                $request->setPage($options->page);
             }
-            if ($opts->trunkIds !== null) {
-                $request->setTrunkIds($opts->trunkIds);
+            if ($options->trunkIds !== null) {
+                $request->setTrunkIds($options->trunkIds);
             }
-            if ($opts->numbers !== null) {
-                $request->setNumbers($opts->numbers);
+            if ($options->numbers !== null) {
+                $request->setNumbers($options->numbers);
             }
         }
 
@@ -467,19 +467,19 @@ final class SipClient extends ServiceBase implements SipClientInterface
      *
      * @return list<SIPOutboundTrunkInfo>
      */
-    public function listSipOutboundTrunk(?ListSipTrunkOptions $opts = null): array
+    public function listSipOutboundTrunk(?ListSipTrunkOptions $options = null): array
     {
         $request = new ListSIPOutboundTrunkRequest();
 
-        if ($opts !== null) {
-            if ($opts->page !== null) {
-                $request->setPage($opts->page);
+        if ($options !== null) {
+            if ($options->page !== null) {
+                $request->setPage($options->page);
             }
-            if ($opts->trunkIds !== null) {
-                $request->setTrunkIds($opts->trunkIds);
+            if ($options->trunkIds !== null) {
+                $request->setTrunkIds($options->trunkIds);
             }
-            if ($opts->numbers !== null) {
-                $request->setNumbers($opts->numbers);
+            if ($options->numbers !== null) {
+                $request->setNumbers($options->numbers);
             }
         }
 
@@ -567,35 +567,35 @@ final class SipClient extends ServiceBase implements SipClientInterface
      */
     public function createSipDispatchRule(
         SIPDispatchRule $rule,
-        ?CreateSipDispatchRuleOptions $opts = null,
+        ?CreateSipDispatchRuleOptions $options = null,
     ): SIPDispatchRuleInfo {
         $request = new CreateSIPDispatchRuleRequest();
         $request->setRule($rule);
 
-        if ($opts !== null) {
-            if ($opts->trunkIds !== null) {
-                $request->setTrunkIds($opts->trunkIds);
+        if ($options !== null) {
+            if ($options->trunkIds !== null) {
+                $request->setTrunkIds($options->trunkIds);
             }
-            if ($opts->hidePhoneNumber !== null) {
-                $request->setHidePhoneNumber($opts->hidePhoneNumber);
+            if ($options->hidePhoneNumber !== null) {
+                $request->setHidePhoneNumber($options->hidePhoneNumber);
             }
-            if ($opts->inboundNumbers !== null) {
-                $request->setInboundNumbers($opts->inboundNumbers);
+            if ($options->inboundNumbers !== null) {
+                $request->setInboundNumbers($options->inboundNumbers);
             }
-            if ($opts->name !== null) {
-                $request->setName($opts->name);
+            if ($options->name !== null) {
+                $request->setName($options->name);
             }
-            if ($opts->metadata !== null) {
-                $request->setMetadata($opts->metadata);
+            if ($options->metadata !== null) {
+                $request->setMetadata($options->metadata);
             }
-            if ($opts->attributes !== null) {
-                $request->setAttributes($opts->attributes);
+            if ($options->attributes !== null) {
+                $request->setAttributes($options->attributes);
             }
-            if ($opts->roomPreset !== null) {
-                $request->setRoomPreset($opts->roomPreset);
+            if ($options->roomPreset !== null) {
+                $request->setRoomPreset($options->roomPreset);
             }
-            if ($opts->roomConfig !== null) {
-                $request->setRoomConfig($opts->roomConfig);
+            if ($options->roomConfig !== null) {
+                $request->setRoomConfig($options->roomConfig);
             }
         }
 
@@ -685,19 +685,19 @@ final class SipClient extends ServiceBase implements SipClientInterface
      *
      * @return list<SIPDispatchRuleInfo>
      */
-    public function listSipDispatchRule(?ListSipDispatchRuleOptions $opts = null): array
+    public function listSipDispatchRule(?ListSipDispatchRuleOptions $options = null): array
     {
         $request = new ListSIPDispatchRuleRequest();
 
-        if ($opts !== null) {
-            if ($opts->page !== null) {
-                $request->setPage($opts->page);
+        if ($options !== null) {
+            if ($options->page !== null) {
+                $request->setPage($options->page);
             }
-            if ($opts->dispatchRuleIds !== null) {
-                $request->setDispatchRuleIds($opts->dispatchRuleIds);
+            if ($options->dispatchRuleIds !== null) {
+                $request->setDispatchRuleIds($options->dispatchRuleIds);
             }
-            if ($opts->trunkIds !== null) {
-                $request->setTrunkIds($opts->trunkIds);
+            if ($options->trunkIds !== null) {
+                $request->setTrunkIds($options->trunkIds);
             }
         }
 
@@ -765,85 +765,85 @@ final class SipClient extends ServiceBase implements SipClientInterface
         string $sipTrunkId,
         string $number,
         string $roomName,
-        ?CreateSipParticipantOptions $opts = null,
+        ?CreateSipParticipantOptions $options = null,
         ?SIPOutboundConfig $outboundTrunkConfig = null,
     ): SIPParticipantInfo {
-        $opts ??= new CreateSipParticipantOptions();
+        $options ??= new CreateSipParticipantOptions();
 
         // Waiting for an answer means the HTTP request has to outlast the ring window.
         // Pin the window explicitly so the timeout does not depend on the server default.
-        $ringingTimeout = $opts->ringingTimeout;
-        $requestTimeout = $opts->timeout;
+        $ringingTimeout = $options->ringingTimeout;
+        $requestTimeout = $options->timeout;
 
-        if ($opts->waitUntilAnswered === true) {
+        if ($options->waitUntilAnswered === true) {
             $ringingTimeout ??= self::DEFAULT_RINGING_TIMEOUT_SECONDS;
-            $requestTimeout = self::dialRequestTimeout($opts->timeout, $ringingTimeout);
+            $requestTimeout = self::dialRequestTimeout($options->timeout, $ringingTimeout);
         }
 
         $request = new CreateSIPParticipantRequest();
         $request->setSipTrunkId($sipTrunkId);
         $request->setSipCallTo($number);
         $request->setRoomName($roomName);
-        $request->setParticipantIdentity($opts->participantIdentity ?? 'sip-participant');
+        $request->setParticipantIdentity($options->participantIdentity ?? 'sip-participant');
 
         if ($outboundTrunkConfig !== null) {
             $request->setTrunk($outboundTrunkConfig);
         }
-        if ($opts->fromNumber !== null) {
-            $request->setSipNumber($opts->fromNumber);
+        if ($options->fromNumber !== null) {
+            $request->setSipNumber($options->fromNumber);
         }
-        if ($opts->participantName !== null) {
-            $request->setParticipantName($opts->participantName);
+        if ($options->participantName !== null) {
+            $request->setParticipantName($options->participantName);
         }
-        if ($opts->displayName !== null) {
-            $request->setDisplayName($opts->displayName);
+        if ($options->displayName !== null) {
+            $request->setDisplayName($options->displayName);
         }
-        if ($opts->participantMetadata !== null) {
-            $request->setParticipantMetadata($opts->participantMetadata);
+        if ($options->participantMetadata !== null) {
+            $request->setParticipantMetadata($options->participantMetadata);
         }
-        if ($opts->participantAttributes !== null) {
-            $request->setParticipantAttributes($opts->participantAttributes);
+        if ($options->participantAttributes !== null) {
+            $request->setParticipantAttributes($options->participantAttributes);
         }
-        if ($opts->toUserOverride !== null) {
-            $request->setToUserOverride($opts->toUserOverride);
+        if ($options->toUserOverride !== null) {
+            $request->setToUserOverride($options->toUserOverride);
         }
-        if ($opts->dtmf !== null) {
-            $request->setDtmf($opts->dtmf);
+        if ($options->dtmf !== null) {
+            $request->setDtmf($options->dtmf);
         }
 
         // play_ringtone is deprecated upstream in favour of play_dialtone, and has the same
         // effect, so the deprecated option is folded into the current field.
-        $playDialtone = $opts->playDialtone ?? $opts->playRingtone;
+        $playDialtone = $options->playDialtone ?? $options->playRingtone;
         if ($playDialtone !== null) {
             $request->setPlayDialtone($playDialtone);
         }
 
-        if ($opts->headers !== null) {
-            $request->setHeaders($opts->headers);
+        if ($options->headers !== null) {
+            $request->setHeaders($options->headers);
         }
-        if ($opts->includeHeaders !== null) {
-            $request->setIncludeHeaders($opts->includeHeaders);
+        if ($options->includeHeaders !== null) {
+            $request->setIncludeHeaders($options->includeHeaders);
         }
-        if ($opts->hidePhoneNumber !== null) {
-            $request->setHidePhoneNumber($opts->hidePhoneNumber);
+        if ($options->hidePhoneNumber !== null) {
+            $request->setHidePhoneNumber($options->hidePhoneNumber);
         }
         if ($ringingTimeout !== null) {
             $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
         }
-        if ($opts->maxCallDuration !== null) {
-            $request->setMaxCallDuration((new Duration())->setSeconds($opts->maxCallDuration));
+        if ($options->maxCallDuration !== null) {
+            $request->setMaxCallDuration((new Duration())->setSeconds($options->maxCallDuration));
         }
-        if ($opts->krispEnabled !== null) {
-            $request->setKrispEnabled($opts->krispEnabled);
+        if ($options->krispEnabled !== null) {
+            $request->setKrispEnabled($options->krispEnabled);
         }
-        if ($opts->waitUntilAnswered !== null) {
-            $request->setWaitUntilAnswered($opts->waitUntilAnswered);
+        if ($options->waitUntilAnswered !== null) {
+            $request->setWaitUntilAnswered($options->waitUntilAnswered);
         }
-        if ($opts->mediaEncryption !== null) {
-            $request->setMediaEncryption($opts->mediaEncryption);
+        if ($options->mediaEncryption !== null) {
+            $request->setMediaEncryption($options->mediaEncryption);
         }
-        if ($opts->media !== null) {
-            $request->setMedia($opts->media);
+        if ($options->media !== null) {
+            $request->setMedia($options->media);
         }
 
         $response = $this->rpc(
@@ -874,14 +874,14 @@ final class SipClient extends ServiceBase implements SipClientInterface
         string $roomName,
         string $participantIdentity,
         string $transferTo,
-        ?TransferSipParticipantOptions $opts = null,
+        ?TransferSipParticipantOptions $options = null,
     ): TransferSIPParticipantResponse {
-        $opts ??= new TransferSipParticipantOptions();
+        $options ??= new TransferSipParticipantOptions();
 
         // A transfer always dials and waits, so the ring window is always pinned and the
         // request timeout always derived from it.
-        $ringingTimeout = $opts->ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS;
-        $requestTimeout = self::dialRequestTimeout($opts->timeout, $ringingTimeout);
+        $ringingTimeout = $options->ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS;
+        $requestTimeout = self::dialRequestTimeout($options->timeout, $ringingTimeout);
 
         $request = new TransferSIPParticipantRequest();
         $request->setRoomName($roomName);
@@ -889,11 +889,11 @@ final class SipClient extends ServiceBase implements SipClientInterface
         $request->setTransferTo($transferTo);
         $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
 
-        if ($opts->playDialtone !== null) {
-            $request->setPlayDialtone($opts->playDialtone);
+        if ($options->playDialtone !== null) {
+            $request->setPlayDialtone($options->playDialtone);
         }
-        if ($opts->headers !== null) {
-            $request->setHeaders($opts->headers);
+        if ($options->headers !== null) {
+            $request->setHeaders($options->headers);
         }
 
         $response = $this->rpc(

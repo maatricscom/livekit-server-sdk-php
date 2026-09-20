@@ -40,7 +40,7 @@ interface SipClientInterface
     public function createSipInboundTrunk(
         string $name,
         array $numbers,
-        ?CreateSipInboundTrunkOptions $opts = null,
+        ?CreateSipInboundTrunkOptions $options = null,
     ): SIPInboundTrunkInfo;
 
     /**
@@ -53,7 +53,7 @@ interface SipClientInterface
         string $name,
         string $address,
         array $numbers,
-        ?CreateSipOutboundTrunkOptions $opts = null,
+        ?CreateSipOutboundTrunkOptions $options = null,
     ): SIPOutboundTrunkInfo;
 
     /**
@@ -97,14 +97,14 @@ interface SipClientInterface
      *
      * @return list<SIPInboundTrunkInfo>
      */
-    public function listSipInboundTrunk(?ListSipTrunkOptions $opts = null): array;
+    public function listSipInboundTrunk(?ListSipTrunkOptions $options = null): array;
 
     /**
      * Lists SIP outbound trunks. With no filters, all trunks are listed.
      *
      * @return list<SIPOutboundTrunkInfo>
      */
-    public function listSipOutboundTrunk(?ListSipTrunkOptions $opts = null): array;
+    public function listSipOutboundTrunk(?ListSipTrunkOptions $options = null): array;
 
     /**
      * Lists legacy SIP trunks.
@@ -132,7 +132,7 @@ interface SipClientInterface
      */
     public function createSipDispatchRule(
         SIPDispatchRule $rule,
-        ?CreateSipDispatchRuleOptions $opts = null,
+        ?CreateSipDispatchRuleOptions $options = null,
     ): SIPDispatchRuleInfo;
 
     /**
@@ -158,7 +158,7 @@ interface SipClientInterface
      *
      * @return list<SIPDispatchRuleInfo>
      */
-    public function listSipDispatchRule(?ListSipDispatchRuleOptions $opts = null): array;
+    public function listSipDispatchRule(?ListSipDispatchRuleOptions $options = null): array;
 
     /** Deletes a SIP dispatch rule and returns the rule as it was. */
     public function deleteSipDispatchRule(string $sipDispatchRuleId): SIPDispatchRuleInfo;
@@ -176,7 +176,7 @@ interface SipClientInterface
         string $sipTrunkId,
         string $number,
         string $roomName,
-        ?CreateSipParticipantOptions $opts = null,
+        ?CreateSipParticipantOptions $options = null,
         ?SIPOutboundConfig $outboundTrunkConfig = null,
     ): SIPParticipantInfo;
 
@@ -192,6 +192,6 @@ interface SipClientInterface
         string $roomName,
         string $participantIdentity,
         string $transferTo,
-        ?TransferSipParticipantOptions $opts = null,
+        ?TransferSipParticipantOptions $options = null,
     ): TransferSIPParticipantResponse;
 }

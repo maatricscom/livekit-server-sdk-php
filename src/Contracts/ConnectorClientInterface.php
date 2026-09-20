@@ -27,7 +27,7 @@ interface ConnectorClientInterface
         string $whatsappToPhoneNumber,
         string $whatsappApiKey,
         string $whatsappCloudApiVersion,
-        ?DialWhatsAppCallOptions $opts = null,
+        ?DialWhatsAppCallOptions $options = null,
     ): DialWhatsAppCallResponse;
 
     public function acceptWhatsAppCall(
@@ -36,13 +36,13 @@ interface ConnectorClientInterface
         string $whatsappCloudApiVersion,
         string $whatsappCallId,
         SessionDescription $sdp,
-        ?AcceptWhatsAppCallOptions $opts = null,
+        ?AcceptWhatsAppCallOptions $options = null,
     ): AcceptWhatsAppCallResponse;
 
     public function connectWhatsAppCall(
         string $whatsappCallId,
         SessionDescription $sdp,
-        ?ConnectWhatsAppCallOptions $opts = null,
+        ?ConnectWhatsAppCallOptions $options = null,
     ): ConnectWhatsAppCallResponse;
 
     public function disconnectWhatsAppCall(
@@ -54,6 +54,6 @@ interface ConnectorClientInterface
     public function connectTwilioCall(
         int $twilioCallDirection,
         string $roomName,
-        ?ConnectTwilioCallOptions $opts = null,
+        ?ConnectTwilioCallOptions $options = null,
     ): ConnectTwilioCallResponse;
 }

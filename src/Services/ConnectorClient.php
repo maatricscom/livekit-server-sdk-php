@@ -58,7 +58,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
         string $whatsappToPhoneNumber,
         string $whatsappApiKey,
         string $whatsappCloudApiVersion,
-        ?DialWhatsAppCallOptions $opts = null,
+        ?DialWhatsAppCallOptions $options = null,
     ): DialWhatsAppCallResponse {
         $request = new DialWhatsAppCallRequest();
         $request->setWhatsappPhoneNumberId($whatsappPhoneNumberId);
@@ -66,33 +66,33 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
         $request->setWhatsappApiKey($whatsappApiKey);
         $request->setWhatsappCloudApiVersion($whatsappCloudApiVersion);
 
-        if ($opts !== null) {
-            if ($opts->bizOpaqueCallbackData !== null) {
-                $request->setWhatsappBizOpaqueCallbackData($opts->bizOpaqueCallbackData);
+        if ($options !== null) {
+            if ($options->bizOpaqueCallbackData !== null) {
+                $request->setWhatsappBizOpaqueCallbackData($options->bizOpaqueCallbackData);
             }
-            if ($opts->roomName !== null) {
-                $request->setRoomName($opts->roomName);
+            if ($options->roomName !== null) {
+                $request->setRoomName($options->roomName);
             }
-            if ($opts->agents !== []) {
-                $request->setAgents($opts->agents);
+            if ($options->agents !== []) {
+                $request->setAgents($options->agents);
             }
-            if ($opts->participantIdentity !== null) {
-                $request->setParticipantIdentity($opts->participantIdentity);
+            if ($options->participantIdentity !== null) {
+                $request->setParticipantIdentity($options->participantIdentity);
             }
-            if ($opts->participantName !== null) {
-                $request->setParticipantName($opts->participantName);
+            if ($options->participantName !== null) {
+                $request->setParticipantName($options->participantName);
             }
-            if ($opts->participantMetadata !== null) {
-                $request->setParticipantMetadata($opts->participantMetadata);
+            if ($options->participantMetadata !== null) {
+                $request->setParticipantMetadata($options->participantMetadata);
             }
-            if ($opts->participantAttributes !== null) {
-                $request->setParticipantAttributes($opts->participantAttributes);
+            if ($options->participantAttributes !== null) {
+                $request->setParticipantAttributes($options->participantAttributes);
             }
-            if ($opts->destinationCountry !== null) {
-                $request->setDestinationCountry($opts->destinationCountry);
+            if ($options->destinationCountry !== null) {
+                $request->setDestinationCountry($options->destinationCountry);
             }
-            if ($opts->ringingTimeout !== null) {
-                $request->setRingingTimeout((new Duration())->setSeconds($opts->ringingTimeout));
+            if ($options->ringingTimeout !== null) {
+                $request->setRingingTimeout((new Duration())->setSeconds($options->ringingTimeout));
             }
         }
 
@@ -117,7 +117,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
         string $whatsappCloudApiVersion,
         string $whatsappCallId,
         SessionDescription $sdp,
-        ?AcceptWhatsAppCallOptions $opts = null,
+        ?AcceptWhatsAppCallOptions $options = null,
     ): AcceptWhatsAppCallResponse {
         $request = new AcceptWhatsAppCallRequest();
         $request->setWhatsappPhoneNumberId($whatsappPhoneNumberId);
@@ -126,39 +126,39 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
         $request->setWhatsappCallId($whatsappCallId);
         $request->setSdp($sdp);
 
-        $ringingTimeout = $opts?->ringingTimeout;
-        $requestTimeout = $opts?->timeout;
+        $ringingTimeout = $options?->ringingTimeout;
+        $requestTimeout = $options?->timeout;
 
-        if ($opts !== null) {
-            if ($opts->bizOpaqueCallbackData !== null) {
-                $request->setWhatsappBizOpaqueCallbackData($opts->bizOpaqueCallbackData);
+        if ($options !== null) {
+            if ($options->bizOpaqueCallbackData !== null) {
+                $request->setWhatsappBizOpaqueCallbackData($options->bizOpaqueCallbackData);
             }
-            if ($opts->roomName !== null) {
-                $request->setRoomName($opts->roomName);
+            if ($options->roomName !== null) {
+                $request->setRoomName($options->roomName);
             }
-            if ($opts->agents !== []) {
-                $request->setAgents($opts->agents);
+            if ($options->agents !== []) {
+                $request->setAgents($options->agents);
             }
-            if ($opts->participantIdentity !== null) {
-                $request->setParticipantIdentity($opts->participantIdentity);
+            if ($options->participantIdentity !== null) {
+                $request->setParticipantIdentity($options->participantIdentity);
             }
-            if ($opts->participantName !== null) {
-                $request->setParticipantName($opts->participantName);
+            if ($options->participantName !== null) {
+                $request->setParticipantName($options->participantName);
             }
-            if ($opts->participantMetadata !== null) {
-                $request->setParticipantMetadata($opts->participantMetadata);
+            if ($options->participantMetadata !== null) {
+                $request->setParticipantMetadata($options->participantMetadata);
             }
-            if ($opts->participantAttributes !== null) {
-                $request->setParticipantAttributes($opts->participantAttributes);
+            if ($options->participantAttributes !== null) {
+                $request->setParticipantAttributes($options->participantAttributes);
             }
-            if ($opts->destinationCountry !== null) {
-                $request->setDestinationCountry($opts->destinationCountry);
+            if ($options->destinationCountry !== null) {
+                $request->setDestinationCountry($options->destinationCountry);
             }
-            if ($opts->waitUntilAnswered !== null) {
-                $request->setWaitUntilAnswered($opts->waitUntilAnswered);
+            if ($options->waitUntilAnswered !== null) {
+                $request->setWaitUntilAnswered($options->waitUntilAnswered);
             }
 
-            if ($opts->waitUntilAnswered === true) {
+            if ($options->waitUntilAnswered === true) {
                 // The request now blocks while the call rings, so pin the window
                 // explicitly and derive the request timeout from it rather than
                 // letting the server default decide how long we are willing to wait.
@@ -168,7 +168,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
                 // ring window can abort at the moment the call is answered, so this
                 // uses the same floor as everything else that rings.
                 $ringingTimeout ??= DialTimeout::DEFAULT_RINGING_TIMEOUT_SECONDS;
-                $requestTimeout = DialTimeout::requestTimeout($opts->timeout, $ringingTimeout);
+                $requestTimeout = DialTimeout::requestTimeout($options->timeout, $ringingTimeout);
             }
 
             if ($ringingTimeout !== null) {
@@ -195,21 +195,21 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
     public function connectWhatsAppCall(
         string $whatsappCallId,
         SessionDescription $sdp,
-        ?ConnectWhatsAppCallOptions $opts = null,
+        ?ConnectWhatsAppCallOptions $options = null,
     ): ConnectWhatsAppCallResponse {
         $request = new ConnectWhatsAppCallRequest();
         $request->setWhatsappCallId($whatsappCallId);
         $request->setSdp($sdp);
 
-        $requestTimeout = $opts?->timeout;
+        $requestTimeout = $options?->timeout;
 
-        if ($opts?->waitUntilAnswered !== null) {
-            $request->setWaitUntilAnswered($opts->waitUntilAnswered);
+        if ($options?->waitUntilAnswered !== null) {
+            $request->setWaitUntilAnswered($options->waitUntilAnswered);
 
-            if ($opts->waitUntilAnswered) {
+            if ($options->waitUntilAnswered) {
                 // No ringing_timeout field on this request, so the ring window is
                 // whatever the server uses; the floor assumes the documented default.
-                $requestTimeout = DialTimeout::requestTimeout($opts->timeout, null);
+                $requestTimeout = DialTimeout::requestTimeout($options->timeout, null);
             }
         }
 
@@ -262,30 +262,30 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
     public function connectTwilioCall(
         int $twilioCallDirection,
         string $roomName,
-        ?ConnectTwilioCallOptions $opts = null,
+        ?ConnectTwilioCallOptions $options = null,
     ): ConnectTwilioCallResponse {
         $request = new ConnectTwilioCallRequest();
         $request->setTwilioCallDirection($twilioCallDirection);
         $request->setRoomName($roomName);
 
-        if ($opts !== null) {
-            if ($opts->agents !== []) {
-                $request->setAgents($opts->agents);
+        if ($options !== null) {
+            if ($options->agents !== []) {
+                $request->setAgents($options->agents);
             }
-            if ($opts->participantIdentity !== null) {
-                $request->setParticipantIdentity($opts->participantIdentity);
+            if ($options->participantIdentity !== null) {
+                $request->setParticipantIdentity($options->participantIdentity);
             }
-            if ($opts->participantName !== null) {
-                $request->setParticipantName($opts->participantName);
+            if ($options->participantName !== null) {
+                $request->setParticipantName($options->participantName);
             }
-            if ($opts->participantMetadata !== null) {
-                $request->setParticipantMetadata($opts->participantMetadata);
+            if ($options->participantMetadata !== null) {
+                $request->setParticipantMetadata($options->participantMetadata);
             }
-            if ($opts->participantAttributes !== null) {
-                $request->setParticipantAttributes($opts->participantAttributes);
+            if ($options->participantAttributes !== null) {
+                $request->setParticipantAttributes($options->participantAttributes);
             }
-            if ($opts->destinationCountry !== null) {
-                $request->setDestinationCountry($opts->destinationCountry);
+            if ($options->destinationCountry !== null) {
+                $request->setDestinationCountry($options->destinationCountry);
             }
         }
 

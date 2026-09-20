@@ -224,7 +224,7 @@ $call = $livekit->connector->dialWhatsAppCall(
     whatsappToPhoneNumber: '+15551234567',
     whatsappApiKey: 'META_API_KEY',
     whatsappCloudApiVersion: '23.0',
-    opts: new DialWhatsAppCallOptions(roomName: 'support-call', ringingTimeout: 45),
+    options: new DialWhatsAppCallOptions(roomName: 'support-call', ringingTimeout: 45),
 );
 
 echo $call->getWhatsappCallId(), ' in ', $call->getRoomName(), PHP_EOL;
@@ -241,7 +241,7 @@ $accepted = $livekit->connector->acceptWhatsAppCall(
     whatsappCloudApiVersion: '23.0',
     whatsappCallId: $event['call_id'],
     sdp: $sdpFromWebhook,
-    opts: new AcceptWhatsAppCallOptions(roomName: 'support-call', waitUntilAnswered: true),
+    options: new AcceptWhatsAppCallOptions(roomName: 'support-call', waitUntilAnswered: true),
 );
 ```
 

@@ -63,6 +63,9 @@ Initial release.
   by `failover: false`, since a pinned project has no other region that would answer. No official LiveKit
   SDK implements this yet; it follows the specification in LiveKit's own SDK test server.
 - Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**.
+- One naming rule across every client: the per-call option object is always `$options`, a room is `$room`
+  or `$roomName` following the proto field, and `$output` / `$fields` keep their own meanings. Named
+  arguments make a parameter name part of the API, so a name that changes between clients is a trap.
 - `tests/MockServer/`, run in CI against `livekit/test-server` — the programmable mock of the LiveKit HTTP
   API that every official server SDK tests against. It covers every RPC in both wire formats, proving
   the grants this SDK mints satisfy the server's own permission table and that the server can decode what
