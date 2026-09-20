@@ -1,6 +1,6 @@
 # LiveKit Server SDK for PHP
 
-[![CI](https://github.com/maatrics/livekit-server-sdk-php/actions/workflows/ci.yml/badge.svg)](https://github.com/maatrics/livekit-server-sdk-php/actions/workflows/ci.yml)
+[![CI](https://github.com/maatricscom/livekit-server-sdk-php/actions/workflows/ci.yml/badge.svg)](https://github.com/maatricscom/livekit-server-sdk-php/actions/workflows/ci.yml)
 [![Packagist Version](https://img.shields.io/packagist/v/maatrics/livekit-server-sdk-php.svg)](https://packagist.org/packages/maatrics/livekit-server-sdk-php)
 [![PHP Version](https://img.shields.io/packagist/php-v/maatrics/livekit-server-sdk-php.svg)](https://packagist.org/packages/maatrics/livekit-server-sdk-php)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)

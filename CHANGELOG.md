@@ -149,4 +149,4 @@ Why the package is built and checked the way it is — the generated trees, the 
 is not repeated here. `CONTRIBUTING.md` covers how to work on it and `docs/design.md` records the
 reasoning behind the design.
 
-[0.1.0]: https://github.com/maatrics/livekit-server-sdk-php/releases/tag/v0.1.0
+[0.1.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.0
