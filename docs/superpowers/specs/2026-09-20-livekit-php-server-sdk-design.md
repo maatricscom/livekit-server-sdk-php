@@ -1,5 +1,10 @@
 # LiveKit PHP Server SDK — Design
 
+> **This document is a record of how the SDK was built, not a description of what it is now.**
+> It is left as it was written. Names, scope and decisions have moved on since — `README.md` and
+> `CHANGELOG.md` are the current truth, and this file is kept for the reasoning behind the choices,
+> not for the code it shows.
+
 **Date:** 2026-09-20
 **Package:** `maatrics/livekit-server-sdk-php`
 **Namespace root:** `LiveKit\`

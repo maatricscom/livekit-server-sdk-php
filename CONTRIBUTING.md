@@ -99,7 +99,14 @@ only a green integration run says a real deployment does.
 composer analyse             # phpstan, level max, no baseline, no suppressions
 vendor/bin/pint --test       # PSR-12 plus this project's rules in pint.json
 composer validate --strict   # composer.json sanity
+composer refactor            # rector, dry run: what a newer PHP idiom would change
 ```
+
+`composer refactor` exits 2 when it has suggestions and 0 when it has none — that is Rector's contract
+for `--dry-run`, not a failure. It is advisory and not a CI gate. Rector reports what it *could* rewrite, which is not
+the same as what should be rewritten — it currently suggests turning classes with readonly properties
+into readonly classes, including two that have no properties at all, and one whose subclass would be
+dragged along with it. Read the diff before taking any of it.
 
 Run PHPStan through the composer script rather than `vendor/bin/phpstan` directly: it carries
 `--memory-limit=512M`, and PHP's 128M default is not enough for PHPStan's parallel workers on this tree.

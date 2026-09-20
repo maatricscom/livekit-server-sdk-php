@@ -57,6 +57,7 @@
         "test": "phpunit",
         "analyse": "phpstan analyse --memory-limit=512M",
         "lint": "pint --test",
+        "refactor": "rector process --dry-run",
         "fix": "pint",
         "generate-protos": "bin/generate-protos.sh",
         "check-protocol": "bin/check-protocol-version.sh"
