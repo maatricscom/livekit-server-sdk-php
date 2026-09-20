@@ -885,3 +885,9 @@ test suite, regenerate the protobuf classes, and what the release checklist look
 ## License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
+
+The generated classes under `src/Proto/` and the descriptors under `metadata/` are derived from
+[`livekit/protocol`](https://github.com/livekit/protocol), which is Apache-2.0 as well, and the
+descriptors embed its `.proto` definitions verbatim. That project's attribution notice is reproduced in
+[NOTICE](NOTICE), which ships inside the package: section 4(d) of the license asks anyone redistributing
+this code to carry it along. This project is not affiliated with or endorsed by LiveKit, Inc.
