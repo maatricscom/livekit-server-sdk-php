@@ -7,11 +7,13 @@ namespace LiveKit\Services;
 use Google\Protobuf\Duration;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
+use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\DeleteSIPTrunkRequest;
@@ -25,6 +27,8 @@ use LiveKit\Proto\ListSIPOutboundTrunkRequest;
 use LiveKit\Proto\ListSIPOutboundTrunkResponse;
 use LiveKit\Proto\ListSIPTrunkRequest;
 use LiveKit\Proto\ListSIPTrunkResponse;
+use LiveKit\Proto\SIPDispatchRule;
+use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -519,6 +523,63 @@ final class SipClient extends ServiceBase
             'DeleteSIPTrunk',
             $request,
             SIPTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Creates a SIP dispatch rule.
+     *
+     * livekit.CreateSIPDispatchRuleRequest carries the rule twice: the newer nested
+     * `dispatch_rule` (field 10, a full SIPDispatchRuleInfo) and the older flat fields
+     * 1-9, which are marked `deprecated` in the proto but are still what the server reads
+     * and still what the Node SDK v2.19.0 sends. We send the flat fields so the PHP and
+     * Node clients produce byte-identical requests.
+     *
+     * @param SIPDispatchRule $rule one of dispatch_rule_direct, dispatch_rule_individual
+     *                              or dispatch_rule_callee
+     */
+    public function createSipDispatchRule(
+        SIPDispatchRule $rule,
+        ?CreateSipDispatchRuleOptions $opts = null,
+    ): SIPDispatchRuleInfo {
+        $request = new CreateSIPDispatchRuleRequest();
+        $request->setRule($rule);
+
+        if ($opts !== null) {
+            if ($opts->trunkIds !== null) {
+                $request->setTrunkIds($opts->trunkIds);
+            }
+            if ($opts->hidePhoneNumber !== null) {
+                $request->setHidePhoneNumber($opts->hidePhoneNumber);
+            }
+            if ($opts->inboundNumbers !== null) {
+                $request->setInboundNumbers($opts->inboundNumbers);
+            }
+            if ($opts->name !== null) {
+                $request->setName($opts->name);
+            }
+            if ($opts->metadata !== null) {
+                $request->setMetadata($opts->metadata);
+            }
+            if ($opts->attributes !== null) {
+                $request->setAttributes($opts->attributes);
+            }
+            if ($opts->roomPreset !== null) {
+                $request->setRoomPreset($opts->roomPreset);
+            }
+            if ($opts->roomConfig !== null) {
+                $request->setRoomConfig($opts->roomConfig);
+            }
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'CreateSIPDispatchRule',
+            $request,
+            SIPDispatchRuleInfo::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
         );
 

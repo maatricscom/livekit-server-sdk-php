@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Services;
 
+use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
+use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\DeleteSIPTrunkRequest;
@@ -24,6 +26,11 @@ use LiveKit\Proto\ListSIPTrunkRequest;
 use LiveKit\Proto\ListSIPTrunkResponse;
 use LiveKit\Proto\ListUpdate;
 use LiveKit\Proto\Pagination;
+use LiveKit\Proto\RoomConfiguration;
+use LiveKit\Proto\SIPDispatchRule;
+use LiveKit\Proto\SIPDispatchRuleDirect;
+use LiveKit\Proto\SIPDispatchRuleIndividual;
+use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -605,5 +612,74 @@ final class SipClientTest extends TwirpTestCase
 
         // DeleteSIPTrunk returns the legacy SIPTrunkInfo shape for both trunk kinds.
         self::assertSame('ST_inbound', $deleted->getSipTrunkId());
+    }
+
+    public function testCreateSipDispatchRuleDirect(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct'),
+        ));
+
+        $rule = (new SIPDispatchRule())->setDispatchRuleDirect(
+            (new SIPDispatchRuleDirect())->setRoomName('support')->setPin('1234'),
+        );
+
+        $info = $this->client->createSipDispatchRule(
+            $rule,
+            new CreateSipDispatchRuleOptions(
+                name: 'support-line',
+                metadata: 'rule-metadata',
+                trunkIds: ['ST_inbound'],
+                hidePhoneNumber: true,
+                inboundNumbers: ['+15105550100'],
+                attributes: ['tier' => 'gold'],
+                roomPreset: 'preset-a',
+                roomConfig: (new RoomConfiguration())->setName('support'),
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPDispatchRuleRequest::class);
+        self::assertSame('dispatch_rule_direct', $sent->getRule()?->getRule());
+        $directRule = $sent->getRule()?->getDispatchRuleDirect();
+        self::assertInstanceOf(SIPDispatchRuleDirect::class, $directRule);
+        self::assertSame('support', $directRule->getRoomName());
+        self::assertSame('1234', $directRule->getPin());
+        self::assertSame(['ST_inbound'], iterator_to_array($sent->getTrunkIds(), false));
+        self::assertTrue($sent->getHidePhoneNumber());
+        self::assertSame(['+15105550100'], iterator_to_array($sent->getInboundNumbers(), false));
+        self::assertSame('support-line', $sent->getName());
+        self::assertSame('rule-metadata', $sent->getMetadata());
+        self::assertSame(['tier' => 'gold'], iterator_to_array($sent->getAttributes()));
+        self::assertSame('preset-a', $sent->getRoomPreset());
+        self::assertSame('support', $sent->getRoomConfig()?->getName());
+
+        self::assertSame('SDR_direct', $info->getSipDispatchRuleId());
+    }
+
+    public function testCreateSipDispatchRuleIndividualWithoutOptions(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPDispatchRuleInfo()));
+
+        $rule = (new SIPDispatchRule())->setDispatchRuleIndividual(
+            (new SIPDispatchRuleIndividual())->setRoomPrefix('call-'),
+        );
+
+        $this->client->createSipDispatchRule($rule);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPDispatchRuleRequest::class);
+        self::assertSame('dispatch_rule_individual', $sent->getRule()?->getRule());
+        self::assertSame('call-', $sent->getRule()?->getDispatchRuleIndividual()?->getRoomPrefix());
+        self::assertSame('', $sent->getName());
+        self::assertCount(0, $sent->getTrunkIds());
     }
 }

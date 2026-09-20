@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace LiveKit\Contracts;
 
+use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
+use LiveKit\Proto\SIPDispatchRule;
+use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPTrunkInfo;
@@ -113,4 +116,15 @@ interface SipClientInterface
      * message is deprecated upstream but is still this rpc's response type.
      */
     public function deleteSipTrunk(string $sipTrunkId): SIPTrunkInfo;
+
+    /**
+     * Creates a SIP dispatch rule.
+     *
+     * @param SIPDispatchRule $rule one of dispatch_rule_direct, dispatch_rule_individual
+     *                              or dispatch_rule_callee
+     */
+    public function createSipDispatchRule(
+        SIPDispatchRule $rule,
+        ?CreateSipDispatchRuleOptions $opts = null,
+    ): SIPDispatchRuleInfo;
 }
