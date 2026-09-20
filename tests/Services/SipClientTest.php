@@ -12,6 +12,7 @@ use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPTransport;
+use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Services\SipClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -169,5 +170,37 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(['+15105550100'], iterator_to_array($sent->getNumbers(), false));
         self::assertSame(SIPTransport::SIP_TRANSPORT_AUTO, $sent->getTransport());
         self::assertSame('', $sent->getMetadata());
+    }
+
+    public function testUpdateSipInboundTrunkSendsTheReplaceArm(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPInboundTrunkInfo())->setSipTrunkId('ST_inbound')->setName('renamed'),
+        ));
+
+        $replacement = (new SIPInboundTrunkInfo())
+            ->setName('renamed')
+            ->setNumbers(['+15105550100'])
+            ->setKrispEnabled(true);
+
+        $trunk = $this->client->updateSipInboundTrunk('ST_inbound', $replacement);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPInboundTrunkRequest::class);
+        self::assertSame('ST_inbound', $sent->getSipTrunkId());
+        self::assertSame('replace', $sent->getAction());
+        self::assertNull($sent->getUpdate());
+
+        $sentTrunk = $sent->getReplace();
+        self::assertInstanceOf(SIPInboundTrunkInfo::class, $sentTrunk);
+        self::assertSame('renamed', $sentTrunk->getName());
+        self::assertSame(['+15105550100'], iterator_to_array($sentTrunk->getNumbers(), false));
+        self::assertTrue($sentTrunk->getKrispEnabled());
+
+        self::assertSame('renamed', $trunk->getName());
     }
 }

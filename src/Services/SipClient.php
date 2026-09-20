@@ -13,6 +13,7 @@ use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
+use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 
 /**
  * Client for the LiveKit SIP API.
@@ -178,6 +179,27 @@ final class SipClient extends ServiceBase
             'CreateSIPOutboundTrunk',
             $request,
             SIPOutboundTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Replaces a SIP inbound trunk wholesale. Fields left unset on $trunk are cleared.
+     * Use updateSipInboundTrunkFields() to change only some fields.
+     */
+    public function updateSipInboundTrunk(string $sipTrunkId, SIPInboundTrunkInfo $trunk): SIPInboundTrunkInfo
+    {
+        $request = new UpdateSIPInboundTrunkRequest();
+        $request->setSipTrunkId($sipTrunkId);
+        $request->setReplace($trunk);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateSIPInboundTrunk',
+            $request,
+            SIPInboundTrunkInfo::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
         );
 
