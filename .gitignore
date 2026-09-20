@@ -5,3 +5,8 @@
 .DS_Store
 /build
 /.superpowers
+# The implementation plan is a build-time working document, not part of the
+# package. Tracking it put 19 copies of a 470 KB file into history for 45% of
+# the repository's objects. The design spec beside it stays tracked -- it is
+# 28 KB and holds the reasoning. Plans generated later land here too.
+/docs/superpowers/plans/
