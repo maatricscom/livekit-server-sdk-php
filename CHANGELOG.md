@@ -34,18 +34,25 @@ Initial release.
 - A Twirp transport (`TwirpClient`) speaking binary protobuf by default (`ClientOptions::$wireFormat` can
   switch to JSON), with `ClientOptions::$requestTimeout` driving the server-side `X-Twirp-Timeout-Ms`
   deadline.
+- Automatic region failover on LiveKit Cloud (`ClientOptions::$failover`, on by default). A transport
+  error or an HTTP 5xx is replayed against another region discovered from `/settings/regions`, up to three
+  attempts with exponential backoff, every attempt keeping the same `X-Livekit-Request-Id` so the server
+  can deduplicate. It engages only for `*.livekit.cloud` hosts, because a replay sends the caller's token
+  to an origin learned at runtime. A 4xx is never replayed, and neither is a `SipCallError` — SIP status
+  metadata means the callee answered, so retrying elsewhere would only dial the number again.
 - Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**.
+- `tests/MockServer/`, run in CI against `livekit/test-server` — the programmable mock of the LiveKit HTTP
+  API that every official server SDK tests against. It covers all 47 RPCs in both wire formats, proving
+  the grants this SDK mints satisfy the server's own permission table and that the server can decode what
+  the SDK encodes.
 - `tests/Integration/`, an opt-in test suite that runs against a real LiveKit deployment when
-  `LIVEKIT_URL`, `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set, to serve as a release gate for the
-  binary-protobuf wire format.
+  `LIVEKIT_URL`, `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set, to serve as a release gate.
 
 ### Not included in this release
 
 - `ConnectorClient` (LiveKit Cloud's connector management API) is not implemented.
-- Region failover against `*.livekit.cloud` is not implemented; this SDK always talks to the single host
-  it is given.
 
-Both are deferred to a later release and do not affect the five service clients, access tokens or webhooks
+It is deferred to a later release and does not affect the service clients, access tokens or webhooks
 listed above.
 
 [0.1.0]: https://github.com/maatrics/livekit-server-sdk-php/releases/tag/v0.1.0

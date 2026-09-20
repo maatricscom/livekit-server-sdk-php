@@ -23,7 +23,14 @@ final class DirectiveHttpClient implements ClientInterface
     /** @var list<RequestInterface> */
     private array $requests = [];
 
-    /** @var list<ResponseInterface> */
+    /**
+     * Index-aligned with $requests: an attempt that threw records null rather than
+     * nothing, so requests()[n] and the response at n always describe the same
+     * attempt. Dropping the entry instead would silently shift every index after a
+     * transport failure -- exactly the case a failover test is about.
+     *
+     * @var list<ResponseInterface|null>
+     */
     private array $responses = [];
 
     /** @param array<string, mixed> $directives sent as X-Lk-Mock; omitted entirely when empty */
@@ -41,7 +48,13 @@ final class DirectiveHttpClient implements ClientInterface
 
         $this->requests[] = $request;
 
-        $response = $this->inner->sendRequest($request);
+        try {
+            $response = $this->inner->sendRequest($request);
+        } catch (\Throwable $e) {
+            $this->responses[] = null;
+
+            throw $e;
+        }
 
         $this->responses[] = $response;
 
@@ -70,16 +83,18 @@ final class DirectiveHttpClient implements ClientInterface
     }
 
     /**
-     * The X-Lk-Mock-Region value of each response, in order. The mock sets it to
-     * the index of the listener that served the request, and leaves it blank on a
-     * region it made fail -- so this is how a test proves which region answered.
+     * The X-Lk-Mock-Region value of each attempt, in order and index-aligned with
+     * requests(). The mock sets it to the index of the listener that served the
+     * request and leaves it blank on a region it made fail, so this is how a test
+     * proves which region answered. An attempt that never got a response -- a
+     * dropped connection -- reads as an empty string.
      *
      * @return list<string>
      */
     public function servingRegions(): array
     {
         return array_map(
-            static fn (ResponseInterface $r): string => $r->getHeaderLine('X-Lk-Mock-Region'),
+            static fn (?ResponseInterface $r): string => $r?->getHeaderLine('X-Lk-Mock-Region') ?? '',
             $this->responses
         );
     }

@@ -176,6 +176,54 @@ need a bounded worst case.
 > shorter than that aborts the request while the phone is still ringing, before LiveKit's own deadline
 > ever has a chance to fire.
 
+## Region failover
+
+On LiveKit Cloud, a request that fails for a reason another region might not share is automatically
+retried against one. The client asks your project's host for its region list, then replays the request
+against the next region it has not tried yet, up to three attempts with exponential backoff between them.
+It is on by default:
+
+```php
+$livekit = new LiveKit\LiveKitAPI(
+    host: 'https://my-project.livekit.cloud',
+    apiKey: 'API_KEY',
+    apiSecret: 'API_SECRET',
+    options: new LiveKit\ClientOptions(failover: false), // opt out
+);
+```
+
+What counts as retryable is deliberately narrow:
+
+| Outcome | Retried? | Why |
+| --- | --- | --- |
+| Transport error (connection refused, reset, timeout) | yes | the region may be unreachable |
+| HTTP 5xx | yes | the region may be unhealthy |
+| HTTP 4xx | no | the request is what is wrong; another region answers the same |
+| `SipCallError` | **no** | see below |
+
+A `SipCallError` arrives as an HTTP 500, so nothing but its metadata distinguishes it from a server fault.
+But SIP status metadata means the call reached the far end and the far end answered — busy, declined, no
+answer. Another region cannot produce a better answer; it would just dial the number a second time, ring a
+real phone again, and bill for it. This SDK therefore treats a `SipCallError` as final. (The Node SDK does
+retry it; this is a deliberate difference.)
+
+Two limits are worth knowing about:
+
+- **Failover only ever engages for `*.livekit.cloud` hosts.** A replay sends your bearer token to an origin
+  the SDK learned at runtime, from a server response, so the set of hosts that can receive it stays pinned
+  to a domain LiveKit controls. Self-hosted deployments get a single attempt. The check is on the dotted
+  suffix, so a lookalike domain such as `evil-livekit.cloud` is not eligible.
+- **A request timeout below 5 seconds disables it.** A retry that short is unlikely to complete, and many
+  clients retrying in lockstep across regions is worse than one failing fast.
+
+Every attempt carries the same `X-Livekit-Request-Id`, so LiveKit can recognise a replay as the same
+request rather than a new one.
+
+The region list is cached for as long as its `Cache-Control: max-age` allows, and shared by the five
+clients behind one `LiveKitAPI`. Under PHP-FPM each request is a fresh process, so that cache starts cold
+every time and a failover costs one extra request to discover regions — on the failure path only. In a
+long-running process (a queue worker, Swoole, RoadRunner) it is reused for its full lifetime.
+
 ## Error handling
 
 Every exception this SDK throws implements `LiveKit\Exceptions\LiveKitException`, so catching that alone

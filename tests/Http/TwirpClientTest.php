@@ -9,6 +9,7 @@ use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
+use LiveKit\Http\RegionCache;
 use LiveKit\Http\TwirpClient;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\ProtocolVersion;
@@ -21,11 +22,25 @@ use Psr\Http\Client\ClientExceptionInterface;
 
 final class TwirpClientTest extends TestCase
 {
-    private function transport(MockHttpClient $http, ?ClientOptions $options = null, string $host = 'https://example.livekit.cloud'): TwirpClient
-    {
+    private function transport(
+        MockHttpClient $http,
+        ?ClientOptions $options = null,
+        string $host = 'https://example.livekit.cloud',
+        ?RegionCache $regionCache = null,
+    ): TwirpClient {
         $factory = new Psr17Factory();
 
-        return new TwirpClient($host, $options ?? new ClientOptions(), $http, $factory, $factory);
+        // A cache of its own per transport unless the test says otherwise: the
+        // shared one is process-wide, and a region list left behind by one test
+        // would change what the next one discovers.
+        return new TwirpClient(
+            $host,
+            $options ?? new ClientOptions(),
+            $http,
+            $factory,
+            $factory,
+            $regionCache ?? new RegionCache(),
+        );
     }
 
     private function roomResponse(string $name): Response
@@ -346,6 +361,269 @@ final class TwirpClientTest extends TestCase
             self::assertStringContainsString('connection refused', $e->getMessage());
             self::assertInstanceOf(ClientExceptionInterface::class, $e->getPrevious());
         }
+    }
+
+    // ---------------------------------------------------------------------
+    // Region failover
+    //
+    // Failover replays a request against another LiveKit Cloud region. Two
+    // properties matter more than the retrying itself: that the replay only ever
+    // reaches a host under a domain LiveKit controls, since it carries the
+    // caller's bearer token, and that it never happens for a request whose answer
+    // would not change -- above all a SIP dial, where a retry rings a real phone.
+    // ---------------------------------------------------------------------
+
+    private function regionsResponse(string ...$urls): Response
+    {
+        $regions = [];
+
+        foreach ($urls as $i => $url) {
+            $regions[] = ['region' => 'region-' . $i, 'url' => $url];
+        }
+
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json', 'Cache-Control' => 'max-age=60'],
+            json_encode(['regions' => $regions], JSON_THROW_ON_ERROR)
+        );
+    }
+
+    private function twirpErrorResponse(int $status, string $code, string $message = 'boom'): Response
+    {
+        return new Response(
+            $status,
+            ['Content-Type' => 'application/json'],
+            json_encode(['code' => $code, 'msg' => $message], JSON_THROW_ON_ERROR)
+        );
+    }
+
+    private function noBackoff(): ClientOptions
+    {
+        return new ClientOptions(failoverBackoffMs: 0);
+    }
+
+    public function test_a_5xx_on_a_cloud_host_is_replayed_against_the_next_region(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->regionsResponse('https://example.livekit.cloud', 'https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $room = $this->transport($http, $this->noBackoff())
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        self::assertSame('my-room', $room->getName());
+
+        $uris = array_map(static fn ($r): string => (string) $r->getUri(), $http->requests());
+
+        self::assertSame([
+            'https://example.livekit.cloud/twirp/livekit.RoomService/CreateRoom',
+            'https://example.livekit.cloud/settings/regions',
+            'https://fallback.livekit.cloud/twirp/livekit.RoomService/CreateRoom',
+        ], $uris, 'The primary is skipped in the region list and the next one is used.');
+    }
+
+    public function test_a_replay_reuses_the_request_id_so_the_server_can_deduplicate(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->regionsResponse('https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $this->transport($http, $this->noBackoff())
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        $requests = $http->requests();
+        $first = $requests[0]->getHeaderLine(TwirpClient::REQUEST_ID_HEADER);
+        $replay = $requests[2]->getHeaderLine(TwirpClient::REQUEST_ID_HEADER);
+
+        self::assertNotSame('', $first);
+        self::assertSame($first, $replay, 'A retry is the same request, so it keeps its id.');
+    }
+
+    public function test_the_replayed_request_carries_the_same_body_and_credentials(): void
+    {
+        $request = new CreateRoomRequest();
+        $request->setName('my-room');
+
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->regionsResponse('https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $this->transport($http, $this->noBackoff())
+            ->request('RoomService', 'CreateRoom', $request, Room::class, 'jwt');
+
+        $requests = $http->requests();
+
+        self::assertSame((string) $requests[0]->getBody(), (string) $requests[2]->getBody());
+        self::assertSame('Bearer jwt', $requests[2]->getHeaderLine('Authorization'));
+    }
+
+    public function test_a_4xx_is_not_replayed(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(404, 'not_found'));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertSame('not_found', $e->getTwirpCode());
+        }
+
+        self::assertSame(1, $http->requestCount(), 'A 4xx is the request\'s fault; another region says the same.');
+    }
+
+    public function test_a_sip_call_error_is_not_replayed_even_though_it_arrives_as_a_5xx(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(500, ['Content-Type' => 'application/json'], json_encode([
+            'code' => 'internal',
+            'msg' => 'sip: call failed',
+            'meta' => ['sip_status_code' => '486', 'sip_status' => 'Busy Here'],
+        ], JSON_THROW_ON_ERROR)));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('SIP', 'CreateSIPParticipant', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a SipCallError');
+        } catch (SipCallError $e) {
+            self::assertSame(486, $e->getSipStatusCode());
+        }
+
+        self::assertSame(
+            1,
+            $http->requestCount(),
+            'A busy callee is a definitive answer. Replaying it would dial the number again.'
+        );
+    }
+
+    public function test_failover_does_not_engage_for_a_host_outside_livekit_cloud(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+
+        try {
+            $this->transport($http, $this->noBackoff(), 'https://livekit.example.com')
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException) {
+        }
+
+        self::assertSame(1, $http->requestCount(), 'Self-hosted deployments have no region list to discover.');
+    }
+
+    public function test_a_lookalike_domain_is_not_treated_as_livekit_cloud(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+
+        try {
+            // Ends with the string "livekit.cloud" but is a different registrable
+            // domain. Matching it would hand the caller's token to its owner.
+            $this->transport($http, $this->noBackoff(), 'https://evil-livekit.cloud')
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException) {
+        }
+
+        self::assertSame(1, $http->requestCount());
+    }
+
+    public function test_failover_can_be_turned_off(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+
+        try {
+            $this->transport($http, new ClientOptions(failover: false, failoverBackoffMs: 0))
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException) {
+        }
+
+        self::assertSame(1, $http->requestCount());
+    }
+
+    public function test_a_short_request_timeout_disables_failover(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+
+        try {
+            // Under Failover::MIN_TIMEOUT_SECONDS a retry is unlikely to finish, and
+            // every client would retry in lockstep across regions.
+            $this->transport($http, new ClientOptions(requestTimeout: 2, failoverBackoffMs: 0))
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException) {
+        }
+
+        self::assertSame(1, $http->requestCount());
+    }
+
+    public function test_the_original_error_survives_when_no_region_is_left_to_try(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable', 'primary is down'));
+        // Only the primary is advertised, so there is nowhere to fail over to.
+        $http->pushResponse($this->regionsResponse('https://example.livekit.cloud'));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertSame('unavailable', $e->getTwirpCode());
+            self::assertStringContainsString('primary is down', $e->getMessage());
+        }
+
+        self::assertSame(2, $http->requestCount());
+    }
+
+    public function test_a_failed_region_discovery_surfaces_the_original_error(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable', 'primary is down'));
+        $http->pushResponse(new Response(500, [], 'discovery exploded'));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertStringContainsString(
+                'primary is down',
+                $e->getMessage(),
+                'A failure while recovering must not replace the failure being recovered from.'
+            );
+        }
+    }
+
+    public function test_the_region_list_is_discovered_once_and_then_cached(): void
+    {
+        $cache = new RegionCache();
+
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->regionsResponse('https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('first'));
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->roomResponse('second'));
+
+        $transport = $this->transport($http, $this->noBackoff(), 'https://example.livekit.cloud', $cache);
+
+        $transport->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+        $transport->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        $discoveries = array_filter(
+            $http->requests(),
+            static fn ($r): bool => str_ends_with((string) $r->getUri(), '/settings/regions')
+        );
+
+        self::assertCount(1, $discoveries, 'Cache-Control allowed 60s; the second failover reused the list.');
     }
 
     public function test_an_empty_host_throws_a_configuration_exception(): void

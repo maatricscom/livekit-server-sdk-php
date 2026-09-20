@@ -6,6 +6,7 @@ namespace LiveKit\Tests\MockServer\Support;
 
 use LiveKit\ClientOptions;
 use LiveKit\Http\HttpClientResolver;
+use LiveKit\Http\RegionCache;
 use LiveKit\LiveKitAPI;
 use PHPUnit\Framework\TestCase;
 
@@ -44,6 +45,10 @@ abstract class MockServerTestCase extends TestCase
                 ));
             }
         }
+
+        // TwirpClient defaults to the process-wide cache, so a region list left
+        // behind by one test would decide what the next one discovers.
+        RegionCache::shared()->clear();
     }
 
     /**
