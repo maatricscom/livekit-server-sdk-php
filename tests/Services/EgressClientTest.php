@@ -30,6 +30,7 @@ use LiveKit\Proto\StreamProtocol;
 use LiveKit\Proto\TemplateSource;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
+use LiveKit\Proto\UpdateLayoutRequest;
 use LiveKit\Proto\WebEgressRequest;
 use LiveKit\Proto\WebhookConfig;
 use LiveKit\Services\EgressClient;
@@ -505,6 +506,27 @@ final class EgressClientTest extends TwirpTestCase
 
         $decodedStorage = $this->messageOf($decoded->getStorage(), StorageConfig::class);
         self::assertSame('unified-bucket', $this->messageOf($decodedStorage->getS3(), S3Upload::class)->getBucket());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testUpdateLayout(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_layout')));
+        $client = $this->egressClient();
+
+        $info = $client->updateLayout('EG_layout', 'grid-dark');
+
+        self::assertSame('EG_layout', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'UpdateLayout');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/UpdateLayout', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(UpdateLayoutRequest::class);
+
+        self::assertSame('EG_layout', $request->getEgressId());
+        self::assertSame('grid-dark', $request->getLayout());
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }

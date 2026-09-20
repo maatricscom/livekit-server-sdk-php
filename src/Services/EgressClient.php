@@ -25,6 +25,7 @@ use LiveKit\Proto\StartEgressRequest;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
+use LiveKit\Proto\UpdateLayoutRequest;
 use LiveKit\Proto\WebEgressRequest;
 use LiveKit\Proto\WebhookConfig;
 
@@ -148,6 +149,15 @@ final class EgressClient extends ServiceBase
     public function startEgress(StartEgressRequest $request): EgressInfo
     {
         return $this->egressInfoRpc('StartEgress', $request);
+    }
+
+    public function updateLayout(string $egressId, string $layout): EgressInfo
+    {
+        $request = new UpdateLayoutRequest();
+        $request->setEgressId($egressId);
+        $request->setLayout($layout);
+
+        return $this->egressInfoRpc('UpdateLayout', $request);
     }
 
     /**
