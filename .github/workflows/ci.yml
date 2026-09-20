@@ -82,7 +82,7 @@ jobs:
       # Prose in a plan does not prevent one; this does.
       - name: Reject the non-autoloadable RepeatedField alias
         run: |
-          if grep -rn 'Internal\\\\RepeatedField' src --exclude-dir=Proto; then
+          if grep -rn 'Internal\\RepeatedField' src --exclude-dir=Proto; then
             echo "::error::Use \\Google\\Protobuf\\RepeatedField - the Internal alias is not autoloadable"
             exit 1
           fi
@@ -105,4 +105,15 @@ jobs:
       - run: composer install --prefer-dist --no-interaction --no-progress
       - run: bin/generate-protos.sh
       - name: Fail if generated code drifted
-        run: git diff --exit-code -- src/Proto
+        run: |
+          # `git diff` alone misses added files: generate-protos.sh does
+          # `rm -rf src/Proto` and regenerates, so a new upstream message type
+          # shows up as an UNTRACKED file, which `git diff` never reports.
+          # `git status --porcelain --untracked-files=all` sees added, modified
+          # and deleted paths alike.
+          drift="$(git status --porcelain --untracked-files=all -- src/Proto)"
+          if [ -n "$drift" ]; then
+            echo "::error::Generated src/Proto is out of date. Run bin/generate-protos.sh and commit the diff."
+            echo "$drift"
+            exit 1
+          fi
