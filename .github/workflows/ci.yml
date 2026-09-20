@@ -72,6 +72,16 @@ jobs:
           coverage: none
       - run: composer validate --strict
 
+  protocol-version:
+    name: Pinned protocol version is consistent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # The version is written by hand in the README, NOTICE, CHANGELOG and
+      # CONTRIBUTING, and generated into src/Proto. Remembering to edit all of
+      # them does not survive a real upgrade, so check it rather than trust it.
+      - run: bin/check-protocol-version.sh
+
   forbidden-symbols:
     name: No Internal RepeatedField in hand-written code
     runs-on: ubuntu-latest

@@ -102,11 +102,20 @@ commit it together with the tag bump.
 ### Bumping the pinned `livekit/protocol` version
 
 1. Edit `PROTOCOL_VERSION` near the top of `bin/generate-protos.sh` to the new tag (currently `v1.52.0`).
-2. Run `bin/generate-protos.sh` and review the resulting diff under `src/Proto/`.
-3. Run the full verification sweep (unit suite, phpstan, pint, and ideally the integration suite against a
+2. Run `composer generate-protos` and review the resulting diff under `src/Proto/`. The script also
+   rewrites `src/Proto/ProtocolVersion.php`, which records the tag and the exact upstream commit.
+3. Update the version everywhere it is stated in prose: `README.md`, `NOTICE` and `CHANGELOG.md`, plus the
+   "(currently ...)" note in step 1 above.
+4. Run `composer check-protocol`. It fails if any of those files still names the old version, or if
+   `src/Proto` was not regenerated. CI runs the same check, so a missed file will not reach `main`.
+5. Run the full verification sweep (unit suite, phpstan, pint, and ideally the integration suite against a
    real project) to confirm the new generated code still behaves correctly.
-4. Commit the diff together with the `PROTOCOL_VERSION` edit in one commit.
-5. Add an entry to `CHANGELOG.md` noting the new pinned protocol version.
+6. Commit the diff together with the `PROTOCOL_VERSION` edit in one commit.
+
+Do **not** rewrite the `v1.52.0` references in `src/Services/SipClient.php`,
+`src/Contracts/SipClientInterface.php` or `tests/Services/SipClientTest.php`. Those state a historical
+fact — `CreateSIPTrunk` was removed in that release — and stay true after a bump. `check-protocol` leaves
+them alone for the same reason.
 
 ## Forbidden symbols
 

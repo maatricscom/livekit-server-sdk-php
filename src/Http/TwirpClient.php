@@ -10,6 +10,7 @@ use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
+use LiveKit\Proto\ProtocolVersion;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -29,6 +30,17 @@ final class TwirpClient
     public const REQUEST_ID_HEADER = 'X-Livekit-Request-Id';
 
     public const USER_AGENT_PREFIX = 'livekit-server-sdk-php/';
+
+    /**
+     * Identifies both the SDK and the protocol revision its generated classes came
+     * from. The protocol part is what tells you whether a missing field is a bug or
+     * simply newer than the tree this package was built against — it shows up in
+     * LiveKit's server logs and in any bug report that pastes the request.
+     */
+    public static function userAgent(): string
+    {
+        return sprintf('%s%s (protocol %s)', self::USER_AGENT_PREFIX, self::VERSION, ProtocolVersion::TAG);
+    }
 
     private readonly string $host;
 
@@ -77,7 +89,7 @@ final class TwirpClient
             ->withHeader('Content-Type', $this->options->wireFormat->contentType())
             ->withHeader('Accept', $this->options->wireFormat->contentType())
             ->withHeader('Authorization', 'Bearer ' . $jwt)
-            ->withHeader('User-Agent', self::USER_AGENT_PREFIX . self::VERSION)
+            ->withHeader('User-Agent', self::userAgent())
             // A fresh id per call. v1 has no retry path, so there is nothing to keep it
             // stable across yet; when phase 2 adds region failover, the retry must REUSE
             // this id rather than generate a new one, or server-side deduplication breaks.

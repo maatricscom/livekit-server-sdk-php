@@ -58,7 +58,8 @@
         "analyse": "phpstan analyse",
         "lint": "pint --test",
         "fix": "pint",
-        "generate-protos": "bin/generate-protos.sh"
+        "generate-protos": "bin/generate-protos.sh",
+        "check-protocol": "bin/check-protocol-version.sh"
     },
     "minimum-stability": "stable",
     "prefer-stable": true

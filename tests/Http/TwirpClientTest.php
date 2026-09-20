@@ -11,6 +11,7 @@ use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Http\TwirpClient;
 use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\ProtocolVersion;
 use LiveKit\Proto\Room;
 use LiveKit\Tests\Support\MockHttpClient;
 use LiveKit\Tests\Support\TestCase;
@@ -168,6 +169,31 @@ final class TwirpClientTest extends TestCase
         self::assertMatchesRegularExpression(
             '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
             $sent->getHeaderLine('X-Livekit-Request-Id')
+        );
+    }
+
+    /**
+     * The protocol revision matters as much as the SDK version: it is what says
+     * whether a field a caller expects is missing because of a bug or because the
+     * server is newer than the tree this package was generated from.
+     */
+    public function test_user_agent_carries_both_the_sdk_and_protocol_versions(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $this->transport($http)->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        self::assertSame(
+            sprintf('livekit-server-sdk-php/%s (protocol %s)', TwirpClient::VERSION, ProtocolVersion::TAG),
+            $http->lastRequest()->getHeaderLine('User-Agent')
+        );
+
+        // Pin the shape rather than only the values, so a future edit cannot quietly
+        // drop the protocol segment while still matching the prefix assertion above.
+        self::assertMatchesRegularExpression(
+            '/^livekit-server-sdk-php\/\S+ \(protocol v\d+\.\d+\.\d+\)$/',
+            $http->lastRequest()->getHeaderLine('User-Agent')
         );
     }
 
