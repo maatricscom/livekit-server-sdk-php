@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 # A push that supersedes another on the same ref makes the earlier run's result
-# irrelevant, and this workflow is nine jobs wide. main is excluded: its runs are
+# irrelevant, and this workflow is eleven jobs wide. main is excluded: its runs are
 # what the badge and the release history refer to, so they finish.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -182,6 +182,73 @@ jobs:
           php-version: '8.4'
           coverage: none
       - run: composer validate --strict
+
+  shellcheck:
+    name: Shell scripts pass ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Pinned rather than taken from the runner image, which ships 0.9.0 today.
+      # ShellCheck gains diagnostics between releases, so an unpinned one can turn
+      # this job red without anything in the repository having moved -- and an
+      # --enable name that a older build does not know is a hard error, not a
+      # skipped check. Upgrading is then a deliberate commit.
+      - name: Install ShellCheck
+        env:
+          SHELLCHECK_VERSION: v0.11.0
+        run: |
+          curl -sSLo /tmp/shellcheck.tar.xz \
+            "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz"
+          tar -xJf /tmp/shellcheck.tar.xz -C /tmp
+          sudo install "/tmp/shellcheck-${SHELLCHECK_VERSION}/shellcheck" /usr/local/bin/
+          shellcheck --version
+
+      # Default severity, plus the four optional checks that find bugs rather than
+      # state a preference: an unassigned uppercase variable is usually a typo, a
+      # function called where set -e is suppressed does not abort, a nullary [ $x ]
+      # tests the wrong thing, and `which` is not reliably present.
+      #
+      # The rest of --list-optional is style: braces around every variable and
+      # [[ ]] over [ ], which between them would rewrite most lines of both
+      # scripts and catch nothing. Both scripts are clean at this setting today.
+      - name: Lint bin/*.sh
+        run: |
+          shellcheck \
+            --enable=check-unassigned-uppercase,check-set-e-suppressed,avoid-nullary-conditions,deprecate-which \
+            bin/*.sh
+
+  gofmt:
+    name: Go fixture generators are formatted
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Deliberately not pinned. gofmt has one canonical output and following it
+      # is the whole point: if a Go release reformats something, the right answer
+      # is to run gofmt -w and commit, not to hold the tree at an older idea of
+      # formatted. That is the opposite of the ShellCheck job above, where an
+      # upgrade brings new opinions rather than a new normal form.
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+
+      # gofmt -l exits 0 whether or not it listed a file, so its exit code reports
+      # nothing and only its output does. A step written as `gofmt -l bin/` would
+      # pass forever while printing the failures it was added to catch.
+      #
+      # Formatting is all this checks. Both generators carry //go:build ignore and
+      # import livekit/protocol, so `go vet` would first have to resolve that
+      # module and its dependency tree -- a large download to analyse two files
+      # that CI never runs and that ship in no release.
+      - name: Check formatting
+        run: |
+          unformatted="$(gofmt -l bin/)"
+          if [ -n "$unformatted" ]; then
+            echo "::error::Not gofmt-clean. Run: gofmt -w bin/"
+            echo "$unformatted"
+            gofmt -d bin/
+            exit 1
+          fi
+          echo "bin/*.go is gofmt-clean"
 
   protocol-version:
     name: Pinned protocol version is consistent
