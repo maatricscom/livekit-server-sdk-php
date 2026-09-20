@@ -13,14 +13,24 @@ abstract class TestCase extends BaseTestCase
     /** Must be at least 32 bytes: firebase/php-jwt v7 rejects shorter HMAC keys. */
     protected const API_SECRET = 'secret-that-is-long-enough-for-hs256';
 
-    /** Captured at bootstrap to verify environment survives the test suite. */
-    public static string|false $originalLivekitUrl;
-    public static string|false $originalLivekitApiKey;
-    public static string|false $originalLivekitApiSecret;
+    /** Captured once per process before any test runs, to verify environment survives the test suite. */
+    public static string|false $originalLivekitUrl = '';
+    public static string|false $originalLivekitApiKey = '';
+    public static string|false $originalLivekitApiSecret = '';
 
-    public static function setUpBeforeClass(): void
+    /**
+     * Captures the baseline environment variables before any tests run.
+     * Must be called from the bootstrap file, not setUpBeforeClass(), so the
+     * baseline reflects the actual process start state rather than the state
+     * after earlier test classes have run.
+     */
+    public static function captureEnvironmentBaseline(): void
     {
-        parent::setUpBeforeClass();
+        // Only capture once per process. On subsequent calls, preserve the original baseline.
+        if (self::$originalLivekitUrl !== '') {
+            return;
+        }
+
         self::$originalLivekitUrl = getenv('LIVEKIT_URL');
         self::$originalLivekitApiKey = getenv('LIVEKIT_API_KEY');
         self::$originalLivekitApiSecret = getenv('LIVEKIT_API_SECRET');
