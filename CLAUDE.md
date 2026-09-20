@@ -76,8 +76,9 @@ it is counter-intuitive (`deleteRoom` needs `roomCreate`, not `roomAdmin`; the S
 why `RpcSweepTest` exists.
 
 **Options in, generated messages out.** `LiveKit\Options\*` are `final readonly` DTOs built with named
-arguments; returns are the generated `LiveKit\Proto\*` messages, except list RPCs, which are unwrapped to
-plain PHP arrays.
+arguments — the one exception is `EgressBaseOptions`, an `abstract readonly` base the four egress request
+shapes extend. Returns are the generated `LiveKit\Proto\*` messages, except list RPCs, which are unwrapped
+to plain PHP arrays.
 
 Generated code is **committed, not built at install time** — Composer has no build step and users must not
 need `protoc`.
@@ -104,8 +105,9 @@ elsewhere:
 - **`ReadmeExamplesTest`** — runs the README's dependency-injection example and checks the interface table.
 - **`ToolingConfigTest`** — ties `phpstan.neon.dist`'s `phpVersion.min` to composer's `php` constraint,
   asserts `executionOrder` is never set, and guards the mock suite's skip paths.
-- **`ZzEnvLeakProbeTest`** — must sort last; it can only detect leaked environment variables from last
-  place, and only PHPUnit's default alphabetical order puts it there.
+- **`ZzEnvLeakProbeTest`** — must sort last: it can only detect leaked environment variables from last
+  place, and only PHPUnit's default alphabetical order puts it there. `ToolingConfigTest` is what fails if
+  a file is added under a path that sorts after it, or if `executionOrder` is ever set.
 
 ## Skills
 
@@ -130,8 +132,9 @@ only the service protos yields code that compiles and then dies at runtime — i
 run has succeeded.
 
 Bumping the tag means editing the script and running it, then `composer check-protocol`, which fails
-unless all eight places naming the tag agree (README, NOTICE, CHANGELOG, CONTRIBUTING, the design spec,
-both `bin/*.go` fixture generators, and the generated `src/ProtocolVersion.php`).
+unless every file naming the tag agrees and names the ones that do not. Do not keep a copy of that list
+here or anywhere else: it is spread across prose, two Go fixture generators and generated code, and every
+copy of it written down so far has gone stale. The `livekit-protocol-bump` skill has the procedure.
 
 ## Deliberate divergences from the Node SDK
 
