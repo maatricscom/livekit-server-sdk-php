@@ -331,12 +331,20 @@ $event = $receiver->receive($rawBody, $request->getHeaderLine('Authorization'));
 - The body must be the **raw request bytes**. The README documents how to obtain the raw body in plain PHP,
   Laravel and Symfony.
 
-  The reason is narrower than "Go's output cannot be reproduced", which turned out to be false for simple
-  payloads — a plain-ASCII `WebhookEvent` re-encodes byte-identically in PHP. What diverges is content
-  PHP's encoder treats specially: non-ASCII becomes `\uXXXX`, `/` becomes `\/`, and a float loses a
-  trailing `.0`. Real webhooks carry room names and participant metadata, so such content is ordinary.
-  Hashing the raw bytes is correct regardless; the point is that a round-trip happening to work on one
-  payload proves nothing about the next.
+  Two independent reasons, both established by generating real protojson output rather than assuming:
+
+  1. **Go's protojson is deliberately not byte-stable.** `protobuf-go` perturbs its output through an
+     internal `detrand` package — the observable effect is a space after `,` and `:` that varies — and
+     its own encoder tests call `detrand.Disable()` precisely so they can compare bytes. So the same
+     message serialized twice need not produce identical bytes, and nothing on the receiving side may
+     assume otherwise.
+  2. **PHP's encoder escapes content Go emits raw:** non-ASCII becomes `\uXXXX`, `/` becomes `\/`, and a
+     float loses a trailing `.0`. Real webhooks carry room names and participant metadata, so such
+     content is ordinary rather than exotic.
+
+  Note what is *not* true: a plain-ASCII payload can re-encode byte-identically in PHP, which is why a
+  round-trip happening to work on one payload proves nothing about the next. The rule is to hash the
+  bytes as received, always.
 - Content type is `application/webhook+json`, not `application/json`. Most frameworks will not auto-parse it,
   which is desirable — it keeps the body intact.
 - Parsing uses `WebhookEvent::mergeFromJsonString($rawBody, true)`; `$ignore_unknown = true` is mandatory.
