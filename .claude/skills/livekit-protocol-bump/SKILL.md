@@ -5,10 +5,10 @@ description: Use when raising the pinned livekit/protocol tag, regenerating src/
 
 # Bumping the pinned livekit/protocol tag
 
-The tag is named in eight places and `bin/check-protocol-version.sh` fails unless all
-of them agree. That script is the authority on which files those are — run it rather
-than working from a list, because a list in a skill file goes stale exactly the way
-the numbers it would contain do.
+The tag is named in several files and `bin/check-protocol-version.sh` fails unless
+they all agree. That script is the authority on which they are — run it rather than
+working from a list, because such a list goes stale exactly the way a count of it
+would. (This paragraph used to give the count. It was wrong within a day.)
 
 `bin/generate-protos.sh` is the source of truth for the version itself. Everything
 else either quotes it or is generated from it.

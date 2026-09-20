@@ -37,6 +37,12 @@ configuration or empty objects: nothing dials, nothing records, nothing is bille
 until media or a call actually arrives. Drive the full lifecycle and assert the
 results.
 
+`connectTwilioCall()` is the one with a side effect worth knowing about: it
+provisions a transient room of its own, named `wactr_...`, which `listRooms()`
+does not report for at least twenty seconds afterwards. It is empty, carries its
+own timeout and closes itself, so leave it — see the note below before treating
+it as a leak.
+
 **Must be aimed so the server refuses.** Every egress start, `createSipParticipant()`,
 `transferSipParticipant()`, and the WhatsApp connector calls. Aim them at an object
 that does not exist — a room, a trunk id, a participant — so the server fails the
@@ -76,7 +82,9 @@ One documented exception exists, in `ConnectorIntegrationTest`. Do not add anoth
 without writing down why: cleanup code that looks thorough and does nothing is worse
 than an honest note saying it cannot be done.
 
-After any real run, confirm the project is empty. Do not assume the suite did it:
+After any real run, confirm the project is empty. Do not assume the suite did it.
+A `wactr_` room in the count is the Twilio artefact above closing itself out, not
+a leak; anything else is:
 
 ```bash
 php -r 'require "vendor/autoload.php"; $a = new LiveKit\LiveKitAPI();

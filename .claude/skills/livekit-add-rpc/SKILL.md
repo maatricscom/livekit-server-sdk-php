@@ -43,6 +43,10 @@ missed. They are not obstacles; each one exists because something was once forgo
    there is parsed by `ReadmeCodeBlocksTest`, which checks that every class, named
    argument, constant and resolvable method call exists — so a snippet cannot
    silently describe an API that does not.
+6. **`CHANGELOG.md`**, once there is a release to add it to. A new method on a shipped
+   client is a notable change; nothing enforces this, which is exactly why it is on the
+   list. Keep it to what a consumer can act on — the entry describes the method, not the
+   work of adding it.
 
 ## Partial updates
 
