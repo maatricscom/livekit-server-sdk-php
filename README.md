@@ -241,6 +241,23 @@ If you let `php-http/discovery` find a client for you (the default when you don'
 uses that client's own defaults, which may have no timeout either — pass an explicit client whenever you
 need a bounded worst case.
 
+> [!IMPORTANT]
+> **Whatever bound you set is per attempt, not per call.** On a LiveKit Cloud host `failover` is on by
+> default, so a retryable failure is replayed against other regions up to three times and each attempt
+> starts your timeout again. The same failing call, measured against a live Cloud project:
+>
+> | | wall clock |
+> |---|---|
+> | `failover: false`, `requestTimeout: 10` | **7.8 s** |
+> | default failover, `requestTimeout: 10` | **177 s** |
+> | default failover, `requestTimeout: 30` | **182 s** |
+>
+> Note which knob did nothing. Tripling `requestTimeout` moved the total by three percent, because it is
+> only the server-side hint described above — the time is spent in the retries, against regions slower to
+> give up than the one first asked. If bounded latency matters more to you than surviving a bad region, as
+> it does on a request serving a web page, set `new ClientOptions(failover: false)` and handle the failure
+> yourself.
+
 A `requestTimeout` of zero or less sends no header at all, leaving the server to apply its own default:
 `0` would otherwise tell it that it has no time, and a negative number is not a deadline.
 
@@ -296,6 +313,14 @@ $livekit->room->updateRoomMetadata('my-room', '{"stage":"q-and-a"}');
 
 `performRpc()` calls a method a *client* SDK registered, from your backend, and returns its reply —
 the inverse of the rest of this package, where your server calls LiveKit.
+
+> [!WARNING]
+> `PerformRpcResponse` carries a payload and nothing else — the proto has no error field — and a call
+> aimed at an identity that is not in the room comes back **successful with an empty payload** rather
+> than raising. Measured against a live Cloud deployment, it returns in about 0.13 s and ignores the
+> `responseTimeoutMs` you passed. So an empty payload does not tell you the client replied with nothing:
+> it may equally mean there was no client. If that distinction matters, confirm the participant with
+> `getParticipant()` first, or have the client answer with something that is never empty.
 
 > [!NOTE]
 > `forwardParticipant()` and `moveParticipant()` are LiveKit Cloud only; an open-source server answers
