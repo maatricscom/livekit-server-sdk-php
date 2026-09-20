@@ -105,4 +105,12 @@ interface SipClientInterface
      * @return list<SIPTrunkInfo>
      */
     public function listSipTrunk(): array;
+
+    /**
+     * Deletes a SIP trunk, inbound or outbound.
+     *
+     * The rpc returns the legacy livekit.SIPTrunkInfo shape for both trunk kinds; that
+     * message is deprecated upstream but is still this rpc's response type.
+     */
+    public function deleteSipTrunk(string $sipTrunkId): SIPTrunkInfo;
 }

@@ -11,6 +11,7 @@ use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\DeleteSIPTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\GetSIPOutboundTrunkRequest;
@@ -584,5 +585,25 @@ final class SipClientTest extends TwirpTestCase
 
         self::assertCount(1, $trunks);
         self::assertSame('ST_legacy', $trunks[0]->getSipTrunkId());
+    }
+
+    public function testDeleteSipTrunk(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPTrunkInfo())->setSipTrunkId('ST_inbound'),
+        ));
+
+        $deleted = $this->client->deleteSipTrunk('ST_inbound');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'DeleteSIPTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(DeleteSIPTrunkRequest::class);
+        self::assertSame('ST_inbound', $sent->getSipTrunkId());
+
+        // DeleteSIPTrunk returns the legacy SIPTrunkInfo shape for both trunk kinds.
+        self::assertSame('ST_inbound', $deleted->getSipTrunkId());
     }
 }

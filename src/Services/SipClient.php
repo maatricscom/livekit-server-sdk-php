@@ -14,6 +14,7 @@ use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\DeleteSIPTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\GetSIPOutboundTrunkRequest;
@@ -500,5 +501,27 @@ final class SipClient extends ServiceBase
         }
 
         return $items;
+    }
+
+    /**
+     * Deletes a SIP trunk, inbound or outbound.
+     *
+     * The rpc returns the legacy livekit.SIPTrunkInfo shape for both trunk kinds; that
+     * message is deprecated upstream but is still this rpc's response type.
+     */
+    public function deleteSipTrunk(string $sipTrunkId): SIPTrunkInfo
+    {
+        $request = new DeleteSIPTrunkRequest();
+        $request->setSipTrunkId($sipTrunkId);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'DeleteSIPTrunk',
+            $request,
+            SIPTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
     }
 }
