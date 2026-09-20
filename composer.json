@@ -4,6 +4,11 @@
     "keywords": ["livekit", "webrtc", "sdk", "video", "sip", "egress"],
     "type": "library",
     "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Yasin Durmuş"
+        }
+    ],
     "homepage": "https://github.com/maatrics/livekit-server-sdk-php",
     "support": {
         "issues": "https://github.com/maatrics/livekit-server-sdk-php/issues",
