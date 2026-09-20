@@ -11,6 +11,10 @@ parameters:
         - src
         - tests
         - examples
+        # A root file in this list looks odd, but CONTRIBUTING promises that
+        # everything hand-written is analysed with no exceptions carved out,
+        # and this was the one PHP file Pint formatted while nothing checked it.
+        - rector.php
     excludePaths:
         analyse:
             - src/Proto

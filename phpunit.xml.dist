@@ -10,6 +10,7 @@
          failOnPhpunitDeprecation="true"
          failOnPhpunitNotice="true"
          failOnEmptyTestSuite="true"
+         failOnIncomplete="true"
          displayDetailsOnAllIssues="true"
          beStrictAboutOutputDuringTests="true"
          cacheDirectory=".phpunit.cache"
