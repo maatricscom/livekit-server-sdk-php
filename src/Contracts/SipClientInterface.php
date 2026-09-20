@@ -7,6 +7,7 @@ namespace LiveKit\Contracts;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\ListSipDispatchRuleOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
@@ -146,4 +147,11 @@ interface SipClientInterface
         string $sipDispatchRuleId,
         SipDispatchRuleUpdateOptions $fields,
     ): SIPDispatchRuleInfo;
+
+    /**
+     * Lists SIP dispatch rules. With no filters, all rules are listed.
+     *
+     * @return list<SIPDispatchRuleInfo>
+     */
+    public function listSipDispatchRule(?ListSipDispatchRuleOptions $opts = null): array;
 }

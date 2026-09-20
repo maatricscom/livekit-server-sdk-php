@@ -7,6 +7,7 @@ namespace LiveKit\Tests\Services;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\ListSipDispatchRuleOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
@@ -19,6 +20,8 @@ use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\GetSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPOutboundTrunkResponse;
+use LiveKit\Proto\ListSIPDispatchRuleRequest;
+use LiveKit\Proto\ListSIPDispatchRuleResponse;
 use LiveKit\Proto\ListSIPInboundTrunkRequest;
 use LiveKit\Proto\ListSIPInboundTrunkResponse;
 use LiveKit\Proto\ListSIPOutboundTrunkRequest;
@@ -784,5 +787,56 @@ final class SipClientTest extends TwirpTestCase
         self::assertNull($update->getTrunkIds());
         self::assertNull($update->getRule());
         self::assertCount(0, $update->getAttributes());
+    }
+
+    public function testListSipDispatchRuleUnwrapsToAnArray(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new ListSIPDispatchRuleResponse())->setItems([
+                (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_a'),
+                (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_b'),
+            ]),
+        ));
+
+        $rules = $this->client->listSipDispatchRule(
+            new ListSipDispatchRuleOptions(
+                page: (new Pagination())->setLimit(10),
+                dispatchRuleIds: ['SDR_a', 'SDR_b'],
+                trunkIds: ['ST_inbound'],
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'ListSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(ListSIPDispatchRuleRequest::class);
+        self::assertSame(['SDR_a', 'SDR_b'], iterator_to_array($sent->getDispatchRuleIds(), false));
+        self::assertSame(['ST_inbound'], iterator_to_array($sent->getTrunkIds(), false));
+        self::assertSame(10, $sent->getPage()?->getLimit());
+
+        self::assertCount(2, $rules);
+        self::assertSame('SDR_a', $rules[0]->getSipDispatchRuleId());
+        self::assertSame('SDR_b', $rules[1]->getSipDispatchRuleId());
+    }
+
+    public function testListSipDispatchRuleWithNoFiltersSendsAnEmptyRequest(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new ListSIPDispatchRuleResponse()));
+
+        self::assertSame([], $this->client->listSipDispatchRule());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'ListSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        self::assertSame('', $this->http->lastBody());
+
+        $sent = $this->decodeRequest(ListSIPDispatchRuleRequest::class);
+        self::assertNull($sent->getPage());
+        self::assertCount(0, $sent->getDispatchRuleIds());
+        self::assertCount(0, $sent->getTrunkIds());
     }
 }

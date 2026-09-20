@@ -10,6 +10,7 @@ use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\ListSipDispatchRuleOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
@@ -22,6 +23,8 @@ use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\GetSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPOutboundTrunkResponse;
+use LiveKit\Proto\ListSIPDispatchRuleRequest;
+use LiveKit\Proto\ListSIPDispatchRuleResponse;
 use LiveKit\Proto\ListSIPInboundTrunkRequest;
 use LiveKit\Proto\ListSIPInboundTrunkResponse;
 use LiveKit\Proto\ListSIPOutboundTrunkRequest;
@@ -657,5 +660,45 @@ final class SipClient extends ServiceBase
         );
 
         return $response;
+    }
+
+    /**
+     * Lists SIP dispatch rules. With no filters, all rules are listed.
+     *
+     * @return list<SIPDispatchRuleInfo>
+     */
+    public function listSipDispatchRule(?ListSipDispatchRuleOptions $opts = null): array
+    {
+        $request = new ListSIPDispatchRuleRequest();
+
+        if ($opts !== null) {
+            if ($opts->page !== null) {
+                $request->setPage($opts->page);
+            }
+            if ($opts->dispatchRuleIds !== null) {
+                $request->setDispatchRuleIds($opts->dispatchRuleIds);
+            }
+            if ($opts->trunkIds !== null) {
+                $request->setTrunkIds($opts->trunkIds);
+            }
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListSIPDispatchRule',
+            $request,
+            ListSIPDispatchRuleResponse::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        $items = [];
+        foreach ($response->getItems() as $item) {
+            // RepeatedField's iterator carries no generic value type, so this
+            // yields mixed — unlike the rpc() return, which the analyser infers.
+            assert($item instanceof SIPDispatchRuleInfo);
+            $items[] = $item;
+        }
+
+        return $items;
     }
 }
