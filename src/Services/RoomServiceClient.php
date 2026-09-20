@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Services;
 
 use LiveKit\Contracts\RoomServiceClientInterface;
+use LiveKit\Enums\ProtoEnum;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
@@ -323,7 +324,7 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request = new SendDataRequest();
         $request->setRoom($room);
         $request->setData($data);
-        $request->setKind($kind);
+        $request->setKind(ProtoEnum::check(Kind::class, $kind, 'kind'));
 
         if ($options?->destinationIdentities !== null) {
             $request->setDestinationIdentities($options->destinationIdentities);

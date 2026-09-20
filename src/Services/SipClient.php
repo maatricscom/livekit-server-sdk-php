@@ -6,6 +6,7 @@ namespace LiveKit\Services;
 
 use Google\Protobuf\Duration;
 use LiveKit\Contracts\SipClientInterface;
+use LiveKit\Enums\ProtoEnum;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Http\DialTimeout;
@@ -40,12 +41,15 @@ use LiveKit\Proto\ListSIPTrunkResponse;
 use LiveKit\Proto\SIPDispatchRule;
 use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPDispatchRuleUpdate;
+use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
+use LiveKit\Proto\SIPMediaEncryption;
 use LiveKit\Proto\SIPOutboundConfig;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkUpdate;
 use LiveKit\Proto\SIPParticipantInfo;
+use LiveKit\Proto\SIPTransport;
 use LiveKit\Proto\SIPTrunkInfo;
 use LiveKit\Proto\TransferSIPParticipantRequest;
 use LiveKit\Proto\TransferSIPParticipantResponse;
@@ -131,13 +135,13 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $trunk->setAttributesToHeaders($options->attributesToHeaders);
         }
         if ($options->includeHeaders !== null) {
-            $trunk->setIncludeHeaders($options->includeHeaders);
+            $trunk->setIncludeHeaders(ProtoEnum::check(SIPHeaderOptions::class, $options->includeHeaders, 'includeHeaders'));
         }
         if ($options->krispEnabled !== null) {
             $trunk->setKrispEnabled($options->krispEnabled);
         }
         if ($options->mediaEncryption !== null) {
-            $trunk->setMediaEncryption($options->mediaEncryption);
+            $trunk->setMediaEncryption(ProtoEnum::check(SIPMediaEncryption::class, $options->mediaEncryption, 'mediaEncryption'));
         }
         if ($options->media !== null) {
             $trunk->setMedia($options->media);
@@ -181,7 +185,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
         $trunk->setName($name);
         $trunk->setAddress($address);
         $trunk->setNumbers($numbers);
-        $trunk->setTransport($options->transport);
+        $trunk->setTransport(ProtoEnum::check(SIPTransport::class, $options->transport, 'transport'));
 
         if ($options->metadata !== null) {
             $trunk->setMetadata($options->metadata);
@@ -205,10 +209,10 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $trunk->setAttributesToHeaders($options->attributesToHeaders);
         }
         if ($options->includeHeaders !== null) {
-            $trunk->setIncludeHeaders($options->includeHeaders);
+            $trunk->setIncludeHeaders(ProtoEnum::check(SIPHeaderOptions::class, $options->includeHeaders, 'includeHeaders'));
         }
         if ($options->mediaEncryption !== null) {
-            $trunk->setMediaEncryption($options->mediaEncryption);
+            $trunk->setMediaEncryption(ProtoEnum::check(SIPMediaEncryption::class, $options->mediaEncryption, 'mediaEncryption'));
         }
         if ($options->media !== null) {
             $trunk->setMedia($options->media);
@@ -287,7 +291,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $update->setMetadata($fields->metadata);
         }
         if ($fields->mediaEncryption !== null) {
-            $update->setMediaEncryption($fields->mediaEncryption);
+            $update->setMediaEncryption(ProtoEnum::check(SIPMediaEncryption::class, $fields->mediaEncryption, 'mediaEncryption'));
         }
         if ($fields->media !== null) {
             $update->setMedia($fields->media);
@@ -343,7 +347,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $update->setAddress($fields->address);
         }
         if ($fields->transport !== null) {
-            $update->setTransport($fields->transport);
+            $update->setTransport(ProtoEnum::check(SIPTransport::class, $fields->transport, 'transport'));
         }
         if ($fields->destinationCountry !== null) {
             $update->setDestinationCountry($fields->destinationCountry);
@@ -364,7 +368,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $update->setMetadata($fields->metadata);
         }
         if ($fields->mediaEncryption !== null) {
-            $update->setMediaEncryption($fields->mediaEncryption);
+            $update->setMediaEncryption(ProtoEnum::check(SIPMediaEncryption::class, $fields->mediaEncryption, 'mediaEncryption'));
         }
         if ($fields->media !== null) {
             $update->setMedia($fields->media);
@@ -659,7 +663,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $update->setAttributes($fields->attributes);
         }
         if ($fields->mediaEncryption !== null) {
-            $update->setMediaEncryption($fields->mediaEncryption);
+            $update->setMediaEncryption(ProtoEnum::check(SIPMediaEncryption::class, $fields->mediaEncryption, 'mediaEncryption'));
         }
         if ($fields->media !== null) {
             $update->setMedia($fields->media);
@@ -822,7 +826,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $request->setHeaders($options->headers);
         }
         if ($options->includeHeaders !== null) {
-            $request->setIncludeHeaders($options->includeHeaders);
+            $request->setIncludeHeaders(ProtoEnum::check(SIPHeaderOptions::class, $options->includeHeaders, 'includeHeaders'));
         }
         if ($options->hidePhoneNumber !== null) {
             $request->setHidePhoneNumber($options->hidePhoneNumber);
@@ -840,7 +844,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $request->setWaitUntilAnswered($options->waitUntilAnswered);
         }
         if ($options->mediaEncryption !== null) {
-            $request->setMediaEncryption($options->mediaEncryption);
+            $request->setMediaEncryption(ProtoEnum::check(SIPMediaEncryption::class, $options->mediaEncryption, 'mediaEncryption'));
         }
         if ($options->media !== null) {
             $request->setMedia($options->media);

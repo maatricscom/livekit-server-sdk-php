@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LiveKit\Grants;
 
+use LiveKit\Enums\ProtoEnum;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Proto\TrackSource;
 
@@ -69,8 +70,7 @@ final readonly class VideoGrant
             $name = null;
         }
 
-        /** @var array<string, int> $known */
-        $known = (new \ReflectionClass(TrackSource::class))->getConstants();
+        $known = ProtoEnum::names(TrackSource::class);
 
         if (!is_string($name) || !isset($known[$name]) || $name === 'UNKNOWN') {
             throw ConfigurationException::unknownTrackSource(

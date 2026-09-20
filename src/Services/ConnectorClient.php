@@ -6,6 +6,7 @@ namespace LiveKit\Services;
 
 use Google\Protobuf\Duration;
 use LiveKit\Contracts\ConnectorClientInterface;
+use LiveKit\Enums\ProtoEnum;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Http\DialTimeout;
 use LiveKit\Options\AcceptWhatsAppCallOptions;
@@ -15,12 +16,14 @@ use LiveKit\Options\DialWhatsAppCallOptions;
 use LiveKit\Proto\AcceptWhatsAppCallRequest;
 use LiveKit\Proto\AcceptWhatsAppCallResponse;
 use LiveKit\Proto\ConnectTwilioCallRequest;
+use LiveKit\Proto\ConnectTwilioCallRequest\TwilioCallDirection;
 use LiveKit\Proto\ConnectTwilioCallResponse;
 use LiveKit\Proto\ConnectWhatsAppCallRequest;
 use LiveKit\Proto\ConnectWhatsAppCallResponse;
 use LiveKit\Proto\DialWhatsAppCallRequest;
 use LiveKit\Proto\DialWhatsAppCallResponse;
 use LiveKit\Proto\DisconnectWhatsAppCallRequest;
+use LiveKit\Proto\DisconnectWhatsAppCallRequest\DisconnectReason;
 use LiveKit\Proto\DisconnectWhatsAppCallResponse;
 use LiveKit\Proto\SessionDescription;
 
@@ -240,7 +243,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
         $request->setWhatsappApiKey($whatsappApiKey);
 
         if ($disconnectReason !== null) {
-            $request->setDisconnectReason($disconnectReason);
+            $request->setDisconnectReason(ProtoEnum::check(DisconnectReason::class, $disconnectReason, 'disconnectReason'));
         }
 
         return $this->rpc(
@@ -265,7 +268,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
         ?ConnectTwilioCallOptions $options = null,
     ): ConnectTwilioCallResponse {
         $request = new ConnectTwilioCallRequest();
-        $request->setTwilioCallDirection($twilioCallDirection);
+        $request->setTwilioCallDirection(ProtoEnum::check(TwilioCallDirection::class, $twilioCallDirection, 'twilioCallDirection'));
         $request->setRoomName($roomName);
 
         if ($options !== null) {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Services;
 
 use LiveKit\Contracts\IngressClientInterface;
+use LiveKit\Enums\ProtoEnum;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateIngressOptions;
 use LiveKit\Options\ListIngressOptions;
@@ -12,6 +13,7 @@ use LiveKit\Options\UpdateIngressOptions;
 use LiveKit\Proto\CreateIngressRequest;
 use LiveKit\Proto\DeleteIngressRequest;
 use LiveKit\Proto\IngressInfo;
+use LiveKit\Proto\IngressInput;
 use LiveKit\Proto\ListIngressRequest;
 use LiveKit\Proto\ListIngressResponse;
 use LiveKit\Proto\TokenPagination;
@@ -24,7 +26,7 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
     public function createIngress(CreateIngressOptions $options): IngressInfo
     {
         $request = new CreateIngressRequest();
-        $request->setInputType($options->inputType);
+        $request->setInputType(ProtoEnum::check(IngressInput::class, $options->inputType, 'inputType'));
 
         if ($options->name !== null) {
             $request->setName($options->name);

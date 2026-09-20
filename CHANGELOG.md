@@ -50,6 +50,9 @@ Initial release.
   sources for `canPublishSources` are validated against the generated `TrackSource` enum, because the
   server maps an unrecognised one to `UNKNOWN` rather than rejecting it: an unchecked typo mints a token
   that silently grants nothing.
+- Every enum-typed integer in the public API is checked against its generated protobuf enum. protoc's
+  setters accept any integer, so `inputType: 99` — or a constant borrowed from the neighbouring enum —
+  would otherwise be encoded and sent, and only the server would ever see that it made no sense.
 - `WebhookReceiver` for verifying LiveKit's webhook signatures against the exact raw request body and
   parsing the result into the generated `WebhookEvent` message, plus `WebhookEventType` for the known
   event names.

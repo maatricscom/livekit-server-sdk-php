@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace LiveKit\Services;
 
 use LiveKit\Contracts\AgentDispatchClientInterface;
+use LiveKit\Enums\ProtoEnum;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Proto\AgentDispatch;
 use LiveKit\Proto\CreateAgentDispatchRequest;
 use LiveKit\Proto\DeleteAgentDispatchRequest;
+use LiveKit\Proto\JobRestartPolicy;
 use LiveKit\Proto\ListAgentDispatchRequest;
 use LiveKit\Proto\ListAgentDispatchResponse;
 
@@ -40,7 +42,7 @@ final class AgentDispatchClient extends ServiceBase implements AgentDispatchClie
             }
 
             if ($options->restartPolicy !== null) {
-                $request->setRestartPolicy($options->restartPolicy);
+                $request->setRestartPolicy(ProtoEnum::check(JobRestartPolicy::class, $options->restartPolicy, 'restartPolicy'));
             }
         }
 

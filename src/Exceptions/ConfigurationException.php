@@ -18,6 +18,23 @@ final class ConfigurationException extends \InvalidArgumentException implements 
         );
     }
 
+    /**
+     * @param class-string  $enum
+     * @param list<string>  $known
+     */
+    public static function unknownEnumValue(string $field, int $value, string $enum, array $known): self
+    {
+        return new self(sprintf(
+            '%d is not a value of %s, which is what $%s expects. Valid constants: %s. '
+            . 'The generated setters accept any integer, so an unchecked one is encoded '
+            . 'and sent, and only the server ever sees that it makes no sense.',
+            $value,
+            $enum,
+            $field,
+            implode(', ', $known)
+        ));
+    }
+
     /** @param list<string> $known */
     public static function unknownTrackSource(string $source, array $known): self
     {
