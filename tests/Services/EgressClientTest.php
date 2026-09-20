@@ -27,6 +27,7 @@ use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\S3Upload;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StartEgressRequest;
+use LiveKit\Proto\StopEgressRequest;
 use LiveKit\Proto\StorageConfig;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\StreamProtocol;
@@ -632,6 +633,31 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame('', $request->getEgressId());
         self::assertFalse($request->getActive());
         self::assertSame('', $this->http->lastBody());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStopEgress(): void
+    {
+        $stopped = new EgressInfo();
+        $stopped->setEgressId('EG_stop');
+        $stopped->setStatus(EgressStatus::EGRESS_ENDING);
+        $this->http->pushResponse($this->protoResponse($stopped));
+
+        $client = $this->egressClient();
+
+        $info = $client->stopEgress('EG_stop');
+
+        self::assertSame('EG_stop', $info->getEgressId());
+        self::assertSame(EgressStatus::EGRESS_ENDING, $info->getStatus());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StopEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StopEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(StopEgressRequest::class);
+
+        self::assertSame('EG_stop', $request->getEgressId());
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }

@@ -25,6 +25,7 @@ use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StartEgressRequest;
+use LiveKit\Proto\StopEgressRequest;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
@@ -216,6 +217,14 @@ final class EgressClient extends ServiceBase
         }
 
         return $items;
+    }
+
+    public function stopEgress(string $egressId): EgressInfo
+    {
+        $request = new StopEgressRequest();
+        $request->setEgressId($egressId);
+
+        return $this->egressInfoRpc('StopEgress', $request);
     }
 
     /**
