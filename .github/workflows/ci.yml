@@ -31,7 +31,7 @@ jobs:
         run: |
           if [ "${{ matrix.psr18 }}" = "symfony" ]; then
             composer remove --dev --no-update guzzlehttp/guzzle guzzlehttp/psr7
-            composer require --dev --no-update symfony/http-client:^7.1 nyholm/psr7:^1.8
+            composer require --dev --no-update symfony/http-client:^7.1 nyholm/psr7:^1.8.2
           fi
 
       - name: Install dependencies
@@ -76,7 +76,7 @@ jobs:
         run: |
           if [ "${{ matrix.psr18 }}" = "symfony" ]; then
             composer remove --dev --no-update guzzlehttp/guzzle guzzlehttp/psr7
-            composer require --dev --no-update symfony/http-client:^7.1 nyholm/psr7:^1.8
+            composer require --dev --no-update symfony/http-client:^7.1 nyholm/psr7:^1.8.2
           fi
 
       - name: Install dependencies
