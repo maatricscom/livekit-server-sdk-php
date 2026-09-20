@@ -147,9 +147,10 @@ Pass `skipAuth: true` to `receive()` only in local development, when you have no
 
 ## Timeouts
 
-`ClientOptions::$requestTimeout` (in seconds, default 10) is sent to LiveKit as the `X-Twirp-Timeout-Ms`
-header. It tells the *server* how long it may spend on the request — it is not a client-side socket
-timeout, and cannot be, because **PSR-18 defines no per-request timeout at all**. If the server never
+`ClientOptions::$requestTimeout` (in seconds, default 10) is sent as the `X-Twirp-Timeout-Ms` header, a
+hint to the *server* for how long it may spend on the request — the Twirp protocol itself defines no such
+header, so this is honoured on a best-effort basis rather than a guarantee. It is not, and cannot be, a
+client-side socket timeout, because **PSR-18 defines no per-request timeout at all**. If the server never
 responds — a dropped connection, a network partition — a PSR-18 client with no timeout configured will
 hang indefinitely, not throw. Configure a client-side timeout yourself on whatever HTTP client you inject:
 
@@ -160,13 +161,20 @@ $livekit = new LiveKit\LiveKitClient(
     host: 'https://my-project.livekit.cloud',
     apiKey: 'API_KEY',
     apiSecret: 'API_SECRET',
-    httpClient: new Client(['timeout' => 15]),
+    httpClient: new Client(['timeout' => 40]),
 );
 ```
 
 If you let `php-http/discovery` find a client for you (the default when you don't pass `httpClient`), it
 uses that client's own defaults, which may have no timeout either — pass an explicit client whenever you
 need a bounded worst case.
+
+> [!WARNING]
+> An application that dials with `waitUntilAnswered` must give its HTTP client a socket timeout longer
+> than `SipClient::dialRequestTimeout()`. That call has to stay open while the callee's phone rings, and
+> its floor is the ringing timeout plus a margin (32 seconds for the defaults) — a client-side timeout
+> shorter than that aborts the request while the phone is still ringing, before LiveKit's own deadline
+> ever has a chance to fire.
 
 ## Error handling
 

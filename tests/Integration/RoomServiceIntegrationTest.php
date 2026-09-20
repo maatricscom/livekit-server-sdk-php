@@ -16,6 +16,11 @@ use PHPUnit\Framework\TestCase;
  * This is the only place the binary-protobuf content type is exercised against a
  * real server. No official LiveKit SDK sends application/protobuf, so run this
  * against your own project before every release.
+ *
+ * Also worth establishing during that pre-release run: whether the `X-Twirp-Timeout-Ms`
+ * header this SDK sends (see ClientOptions::$requestTimeout) actually has any effect on a
+ * real LiveKit deployment. Twirp itself defines no such header, and it is currently sent on
+ * a best-effort, unverified basis -- see the "Timeouts" section of README.md.
  */
 final class RoomServiceIntegrationTest extends TestCase
 {

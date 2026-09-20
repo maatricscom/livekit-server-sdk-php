@@ -12,9 +12,11 @@ use LiveKit\Enums\WireFormat;
 final readonly class ClientOptions
 {
     /**
-     * @param int         $requestTimeout Seconds. Sent to LiveKit as X-Twirp-Timeout-Ms.
-     *                                    PSR-18 has no per-request timeout, so configure
-     *                                    your own HTTP client for a client-side deadline.
+     * @param int         $requestTimeout Seconds. Sent as the X-Twirp-Timeout-Ms header, a hint that
+     *                                    LiveKit may honour -- Twirp itself defines no such header, so
+     *                                    this is not a guarantee. PSR-18 has no per-request timeout
+     *                                    either, so configure your own HTTP client for an actual
+     *                                    client-side deadline.
      * @param string      $prefix         Twirp path prefix; LiveKit uses '/twirp'.
      * @param string|null $token          A pre-signed token used verbatim instead of
      *                                    minting one per call. Lets the SDK run without a secret.
