@@ -98,8 +98,11 @@ try {
         $phoneNumberId,
         $to,
         $apiKey,
-        // Meta's Cloud API version, as in the Graph path /v23.0/{id}/calls
-        'v23.0',
+        // Meta's Cloud API version, WITHOUT the "v" the Graph path carries: the
+        // path is /v23.0/{id}/calls, but this field wants "23.0". Sending
+        // "v23.0" is refused with invalid_argument, "whatsapp cloud api version
+        // not supported" -- as is any version LiveKit has not allow-listed.
+        '23.0',
         new DialWhatsAppCallOptions(
             roomName: $room,
             participantIdentity: 'whatsapp-caller',

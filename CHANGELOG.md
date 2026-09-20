@@ -142,7 +142,10 @@ starting out now has no reason to carry a version that only receives security fi
   surface is driven in full against a real project, trunks and dispatch rules alike, with each `*Fields()`
   partial update asserting that the fields it did not send survived; the two calls that could reach a
   telephone are aimed at a trunk and a participant that do not exist, so the server refuses before
-  anything is dialled. Everything it creates is
+  anything is dialled. The connector's five RPCs are covered the same way: `connectTwilioCall()` runs for
+  real, because it provisions a websocket endpoint rather than placing anything, while each WhatsApp call
+  is arranged to fail at one of LiveKit's own validation gates — the SDP type, then the Cloud API version
+  — so the credential in the request is never forwarded to Meta and no call can be attempted. Everything it creates is
   deleted even when an assertion fails; nothing it calls places a call, starts a recording or incurs a
   charge; and a feature the deployment does not have is a skip rather than a failure. It has been run green against a live LiveKit Cloud deployment, in both wire formats,
   which is what closes the open question of whether the binary content type this SDK sends by default is

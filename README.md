@@ -578,7 +578,17 @@ $call = $livekit->connector->dialWhatsAppCall(
 echo $call->getWhatsappCallId(), ' in ', $call->getRoomName(), PHP_EOL;
 ```
 
-An inbound call arrives on Meta's webhook with an SDP offer, which you hand to `acceptWhatsAppCall()`:
+> [!WARNING]
+> `whatsappCloudApiVersion` takes the version **without** the `v` that Meta's Graph path carries. The path
+> is `/v23.0/{id}/calls`, but the field wants `'23.0'` — send `'v23.0'` and LiveKit answers
+> `invalid_argument`, "whatsapp cloud api version not supported". The same error covers a version LiveKit
+> has not allow-listed, so it does not distinguish a typo from an unsupported release: `'21.0'` is refused
+> exactly like `'v23.0'` is. This package's own example got it wrong until it was checked against a live
+> deployment.
+
+An inbound call arrives on Meta's webhook with an SDP offer, which you hand to `acceptWhatsAppCall()`. The
+`type` on that `SessionDescription` has to be `offer`; an `answer` is refused with `invalid_argument`,
+"incorrect sdp type", before the call id is even looked at:
 
 ```php
 use LiveKit\Options\AcceptWhatsAppCallOptions;

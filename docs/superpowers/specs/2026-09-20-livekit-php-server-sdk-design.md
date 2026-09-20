@@ -476,10 +476,10 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   server can read, in both wire formats, and that the grant minted for each RPC satisfies the server's
   permission table. A unit test with a fake HTTP client cannot prove either.
 - **Integration tests** against a real LiveKit server are opt-in, gated behind environment variables, and
-  never required for CI to pass. Forty-three of them now exist, covering room lifecycle, ingress on both
-  push input types, SIP trunk and dispatch-rule configuration, agent dispatch, the read-only RPCs, the
-  shape of a server error, and a sweep that drives every remaining room, egress and agent-dispatch
-  method; they have been run green against a live LiveKit Cloud project
+  never required for CI to pass. Forty-nine of them now exist, covering room lifecycle, ingress on both
+  push input types, SIP trunk and dispatch-rule configuration, agent dispatch, all five connector RPCs,
+  the read-only RPCs, the shape of a server error, and a sweep that drives every remaining room, egress
+  and agent-dispatch method; they have been run green against a live LiveKit Cloud project
   in both wire formats. The sweep asserts the Twirp code a real deployment answers with, because for a
   method a server SDK cannot reach a live object for -- muting a track, starting an egress -- that code
   is the proof the route, the encoding and the minted grant are all right: a wrong one would fail as
