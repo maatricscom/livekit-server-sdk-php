@@ -19,6 +19,8 @@ use LiveKit\Proto\ListParticipantsRequest;
 use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
+use LiveKit\Proto\MoveParticipantRequest;
+use LiveKit\Proto\MoveParticipantResponse;
 use LiveKit\Proto\MuteRoomTrackRequest;
 use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
@@ -399,6 +401,36 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof ForwardParticipantResponse);
+
+        return $response;
+    }
+
+    /**
+     * Cloud-only. Moves a participant out of the current room and into the destination room.
+     */
+    public function moveParticipant(
+        string $room,
+        string $identity,
+        string $destinationRoom,
+    ): MoveParticipantResponse {
+        $request = new MoveParticipantRequest();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+        $request->setDestinationRoom($destinationRoom);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'MoveParticipant',
+            $request,
+            MoveParticipantResponse::class,
+            $this->authHeader(new VideoGrant(
+                roomAdmin: true,
+                room: $room,
+                destinationRoom: $destinationRoom,
+            )),
+        );
+
+        assert($response instanceof MoveParticipantResponse);
 
         return $response;
     }

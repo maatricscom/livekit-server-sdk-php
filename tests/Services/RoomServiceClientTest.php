@@ -19,6 +19,8 @@ use LiveKit\Proto\ListParticipantsRequest;
 use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
+use LiveKit\Proto\MoveParticipantRequest;
+use LiveKit\Proto\MoveParticipantResponse;
 use LiveKit\Proto\MuteRoomTrackRequest;
 use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
@@ -478,6 +480,26 @@ final class RoomServiceClientTest extends TwirpTestCase
 
         $this->assertVideoGrant(
             ['roomAdmin' => true, 'room' => 'my-room', 'destinationRoom' => 'overflow-room'],
+            $request,
+        );
+    }
+
+    public function testMoveParticipantCarriesTheDestinationRoomInBodyAndGrant(): void
+    {
+        $client = $this->client(new MoveParticipantResponse());
+
+        $client->moveParticipant('my-room', 'alice', 'breakout-1');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'MoveParticipant');
+
+        $sent = $this->decodeRequest(MoveParticipantRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame('breakout-1', $sent->getDestinationRoom());
+
+        $this->assertVideoGrant(
+            ['roomAdmin' => true, 'room' => 'my-room', 'destinationRoom' => 'breakout-1'],
             $request,
         );
     }
