@@ -10,6 +10,8 @@ use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\GetSIPInboundTrunkRequest;
+use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\ListUpdate;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
@@ -383,5 +385,43 @@ final class SipClientTest extends TwirpTestCase
         self::assertFalse($update->hasMetadata());
         self::assertFalse($update->hasFromHost());
         self::assertNull($update->getNumbers());
+    }
+
+    public function testGetSipInboundTrunkUnwrapsTheResponse(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new GetSIPInboundTrunkResponse())->setTrunk(
+                (new SIPInboundTrunkInfo())->setSipTrunkId('ST_inbound')->setName('main'),
+            ),
+        ));
+
+        $trunk = $this->client->getSipInboundTrunk('ST_inbound');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'GetSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(GetSIPInboundTrunkRequest::class);
+        self::assertSame('ST_inbound', $sent->getSipTrunkId());
+
+        self::assertInstanceOf(SIPInboundTrunkInfo::class, $trunk);
+        self::assertSame('main', $trunk->getName());
+    }
+
+    public function testGetSipInboundTrunkReturnsNullWhenTheTrunkIsAbsent(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new GetSIPInboundTrunkResponse()));
+
+        self::assertNull($this->client->getSipInboundTrunk('ST_missing'));
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'GetSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+        self::assertSame(
+            'ST_missing',
+            $this->decodeRequest(GetSIPInboundTrunkRequest::class)->getSipTrunkId(),
+        );
     }
 }

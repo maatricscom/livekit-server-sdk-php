@@ -13,6 +13,8 @@ use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\GetSIPInboundTrunkRequest;
+use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -345,5 +347,22 @@ final class SipClient extends ServiceBase
         );
 
         return $response;
+    }
+
+    /** Fetches one SIP inbound trunk, or null when the server returns no trunk. */
+    public function getSipInboundTrunk(string $sipTrunkId): ?SIPInboundTrunkInfo
+    {
+        $request = new GetSIPInboundTrunkRequest();
+        $request->setSipTrunkId($sipTrunkId);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'GetSIPInboundTrunk',
+            $request,
+            GetSIPInboundTrunkResponse::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response->getTrunk();
     }
 }

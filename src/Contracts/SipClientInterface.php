@@ -73,4 +73,7 @@ interface SipClientInterface
         string $sipTrunkId,
         SipOutboundTrunkUpdateOptions $fields,
     ): SIPOutboundTrunkInfo;
+
+    /** Fetches one SIP inbound trunk, or null when the server returns no trunk. */
+    public function getSipInboundTrunk(string $sipTrunkId): ?SIPInboundTrunkInfo;
 }
