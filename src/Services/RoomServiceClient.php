@@ -98,17 +98,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $request->setAgents($options->agents);
         }
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'CreateRoom',
             $request,
             Room::class,
             $this->authHeader(new VideoGrant(roomCreate: true)),
         );
-
-        assert($response instanceof Room);
-
-        return $response;
     }
 
     /**
@@ -130,11 +126,11 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $this->authHeader(new VideoGrant(roomList: true)),
         );
 
-        assert($response instanceof ListRoomsResponse);
-
         $rooms = [];
 
         foreach ($response->getRooms() as $room) {
+            // RepeatedField's iterator has no generic value type, so foreach yields
+            // mixed here — unlike the rpc() return, which the analyser infers.
             assert($room instanceof Room);
             $rooms[] = $room;
         }
@@ -151,17 +147,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request = new DeleteRoomRequest();
         $request->setRoom($room);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'DeleteRoom',
             $request,
             DeleteRoomResponse::class,
             $this->authHeader(new VideoGrant(roomCreate: true)),
         );
-
-        assert($response instanceof DeleteRoomResponse);
-
-        return $response;
     }
 
     /**
@@ -180,11 +172,11 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
 
-        assert($response instanceof ListParticipantsResponse);
-
         $participants = [];
 
         foreach ($response->getParticipants() as $participant) {
+            // RepeatedField's iterator has no generic value type, so foreach yields
+            // mixed here — unlike the rpc() return, which the analyser infers.
             assert($participant instanceof ParticipantInfo);
             $participants[] = $participant;
         }
@@ -198,17 +190,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setRoom($room);
         $request->setIdentity($identity);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'GetParticipant',
             $request,
             ParticipantInfo::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof ParticipantInfo);
-
-        return $response;
     }
 
     public function removeParticipant(string $room, string $identity): RemoveParticipantResponse
@@ -217,17 +205,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setRoom($room);
         $request->setIdentity($identity);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'RemoveParticipant',
             $request,
             RemoveParticipantResponse::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof RemoveParticipantResponse);
-
-        return $response;
     }
 
     public function mutePublishedTrack(
@@ -242,17 +226,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setTrackSid($trackSid);
         $request->setMuted($muted);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'MutePublishedTrack',
             $request,
             MuteRoomTrackResponse::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof MuteRoomTrackResponse);
-
-        return $response;
     }
 
     public function updateParticipant(
@@ -280,17 +260,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $request->setAttributes($options->attributes);
         }
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'UpdateParticipant',
             $request,
             ParticipantInfo::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof ParticipantInfo);
-
-        return $response;
     }
 
     /**
@@ -308,17 +284,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setTrackSids($trackSids);
         $request->setSubscribe($subscribe);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'UpdateSubscriptions',
             $request,
             UpdateSubscriptionsResponse::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof UpdateSubscriptionsResponse);
-
-        return $response;
     }
 
     /**
@@ -348,17 +320,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $request->setNonce($options->nonce);
         }
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'SendData',
             $request,
             SendDataResponse::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof SendDataResponse);
-
-        return $response;
     }
 
     public function updateRoomMetadata(string $room, string $metadata): Room
@@ -367,17 +335,13 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setRoom($room);
         $request->setMetadata($metadata);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'UpdateRoomMetadata',
             $request,
             Room::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof Room);
-
-        return $response;
     }
 
     /**
@@ -393,7 +357,7 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setIdentity($identity);
         $request->setDestinationRoom($destinationRoom);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'ForwardParticipant',
             $request,
@@ -404,10 +368,6 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
                 destinationRoom: $destinationRoom,
             )),
         );
-
-        assert($response instanceof ForwardParticipantResponse);
-
-        return $response;
     }
 
     /**
@@ -423,7 +383,7 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $request->setIdentity($identity);
         $request->setDestinationRoom($destinationRoom);
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'MoveParticipant',
             $request,
@@ -434,10 +394,6 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
                 destinationRoom: $destinationRoom,
             )),
         );
-
-        assert($response instanceof MoveParticipantResponse);
-
-        return $response;
     }
 
     public function performRpc(
@@ -457,16 +413,12 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $request->setResponseTimeoutMs($responseTimeoutMs);
         }
 
-        $response = $this->rpc(
+        return $this->rpc(
             self::SERVICE,
             'PerformRpc',
             $request,
             PerformRpcResponse::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
         );
-
-        assert($response instanceof PerformRpcResponse);
-
-        return $response;
     }
 }
