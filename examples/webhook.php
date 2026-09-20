@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\WebhookVerificationException;
 use LiveKit\WebhookReceiver;
 
@@ -39,8 +40,19 @@ if ($rawBody === false) {
     exit(1);
 }
 
+// Two different failures, and they are not the caller's fault in the same way.
+// A missing key or secret is this server misconfigured, which is a 500 and not
+// something to tell the sender about; a signature that does not verify is the
+// request's problem, and a 401.
 try {
     $receiver = new WebhookReceiver();
+} catch (ConfigurationException $e) {
+    http_response_code(500);
+    fwrite(STDERR, 'Webhook receiver is not configured: ' . $e->getMessage() . PHP_EOL);
+    exit(1);
+}
+
+try {
     $event = $receiver->receive($rawBody, $authHeader);
 } catch (WebhookVerificationException $e) {
     http_response_code(401);

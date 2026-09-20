@@ -168,9 +168,16 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   hand-written class placed in either is deleted by the next generation run and is excluded from Pint and
   PHPStan until then, with nothing announcing either — which had already happened once, to
   `ProtocolVersion`.
-- `examples/` covers egress and SIP. Those are the two most involved APIs and the two most likely to be
-  copied, and the directory ships. The SIP example deliberately stops short of `createSipParticipant()`,
-  which dials a real number, and says so rather than leaving the absence to be guessed at.
+- `examples/` covers all six service clients: room, egress, ingress, SIP, agent dispatch and the
+  WhatsApp connector, alongside tokens and webhooks. The directory ships, so these are the first code
+  anyone copies. The two that would place a real phone call are handled rather than omitted:
+  `createSipParticipant()` is described but not run, and the connector example prints what it would dial
+  and stops unless `PLACE_A_REAL_WHATSAPP_CALL=yes` is set. The connector example also shows the flow as
+  it really is — the SDP arrives from Meta by webhook between `dialWhatsAppCall()` and
+  `connectWhatsAppCall()`, so the two cannot sit next to each other in real code.
+- `examples/webhook.php` reports a missing key or secret as a 500 with the reason, instead of an uncaught
+  `ConfigurationException` and a stack trace. It caught only `WebhookVerificationException`, so the first
+  thing a misconfigured deployment saw from the example that teaches webhook handling was a PHP fatal.
 - `ToolingConfigTest` asserts that `ZzEnvLeakProbeTest` still sorts last among the unit suite's files.
   It can only check for leaked environment variables from last place, and it holds that place by its
   name alone — a test file added under a path sorting after it would take the slot silently.
