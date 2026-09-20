@@ -1,14 +1,18 @@
 # LiveKit PHP Server SDK — Design
 
-> **This document is a record of how the SDK was built, not a description of what it is now.**
-> It is left as it was written, with one exception marked inline in §4. Names, scope and decisions have
-> moved on since — `README.md` and `CHANGELOG.md` are the current truth, and this file is kept for the
-> reasoning behind the choices, not for the code it shows.
+> **This document records the reasoning behind the SDK's design, and is kept current with it.**
+> It was written before the code existed and has since been corrected where the code moved: the
+> architecture in §3, the namespace mapping and protoc floor in §4, the dependency table in §9, the
+> tooling and CI in §11, and §12. `README.md` and `CHANGELOG.md` remain the reference for *how to use*
+> the package; this file is for *why it is shaped this way*.
+>
+> §2 is the exception and is deliberately not updated. It records which facts were verified and on what
+> machine, and rewriting that would falsify the record rather than refresh it.
 
 **Date:** 2026-09-20
 **Package:** `maatrics/livekit-server-sdk-php`
 **Namespace root:** `LiveKit\`
-**Status:** Approved design, ready for implementation planning
+**Status:** Implemented. This document tracks the design as built.
 
 ---
 
@@ -26,25 +30,22 @@ Packagist as an open-source library.
 | `EgressClient` | 10 methods | full `livekit.Egress` |
 | `IngressClient` | 4 methods | full `livekit.Ingress` |
 | `SipClient` | 16 RPCs (+3 convenience wrappers) | full `livekit.SIP` minus the deleted `CreateSIPTrunk` |
-| `AgentDispatchClient` | 3 methods | full `livekit.AgentDispatchService` |
+| `AgentDispatchClient` | 3 RPCs (+1 convenience wrapper) | full `livekit.AgentDispatchService`; `getDispatch()` is `ListDispatch` filtered by id, since the service has no GetDispatch |
 | `AccessToken` / `TokenVerifier` | — | JWT minting and verification |
 | `WebhookReceiver` | — | signature + body-hash verification |
 | `LiveKitClient` facade | — | equivalent of Node's `LiveKitAPI` |
 
-**Deferred to phase 2**
-
-> **Later note.** Region failover was built after this spec was written and is no longer deferred — see
-> the "Region failover" section of `README.md` for what shipped, including two deliberate divergences from
-> the Node SDK: a `SipCallError` is not replayed, and an HTTP 451 region-pin redirect is followed. Neither
-> is in any official SDK. `ConnectorClient` shipped too. This spec is left as it was written; it records
-> the decisions taken at the time, not the current state of the package.
+**Deferred to phase 2 when this was written, and since shipped**
 
 - `ConnectorClient` (5 methods, LiveKit Cloud only)
-- Region failover against `*.livekit.cloud` (`/settings/regions`, exponential backoff)
+- Region failover against `*.livekit.cloud` (`/settings/regions`, exponential backoff), with two
+  deliberate divergences from the Node SDK that no official SDK has: a `SipCallError` is not replayed,
+  and an HTTP 451 region-pin redirect is followed. See the "Region failover" section of `README.md`.
 
-Phase-2 work adds new optional constructor parameters and a new client class. Because `ClientOptions` is
-built with named arguments, neither breaks backward compatibility, so v1 carries no placeholder fields for
-them — `ClientOptions` has no `failover` flag until failover actually exists.
+The reasoning for deferring them held up: both arrived as new optional constructor parameters and one new
+client class. Because `ClientOptions` is built with named arguments, neither broke backward compatibility,
+which is why v1 carried no placeholder fields for them — `ClientOptions` had no `failover` flag until
+failover existed.
 
 **Out of scope**
 
@@ -77,32 +78,38 @@ protoc 29.3, Go 1.25.5, no protobuf C extension). Facts that drive the design:
 ## 3. Architecture
 
 ```
-LiveKit\                            single PSR-4 root -> src/
-├─ LiveKitClient                    facade: ->room ->egress ->ingress ->sip ->agentDispatch
+LiveKit\                            PSR-4 root -> src/
+├─ LiveKitAPI                       facade: ->room ->egress ->ingress ->sip ->agentDispatch ->connector
 ├─ AccessToken
-├─ AccessTokenOptions
 ├─ TokenVerifier
 ├─ WebhookReceiver
-├─ ClientOptions                    requestTimeout, prefix, presigned token, wire format
 ├─ Grants\
 │   ├─ VideoGrant  SIPGrant  AgentGrant  InferenceGrant  ObservabilityGrant
-│   └─ ClaimGrants                  assembles the flat JWT payload
+│   ├─ ClaimGrants                  assembles the flat JWT payload
+│   └─ SensitiveCredentials         refuses to sign storage credentials into a token
 ├─ Services\
 │   ├─ ServiceBase                  auth header minting, shared transport
 │   ├─ RoomServiceClient  EgressClient  IngressClient  SipClient  AgentDispatchClient
+│   └─ ConnectorClient              WhatsApp and Twilio bridging, LiveKit Cloud only
 ├─ Contracts\                       one interface per service client, for mocking
 ├─ Http\
 │   ├─ TwirpClient                  the only place that speaks HTTP
-│   └─ HttpClientResolver           PSR-18/PSR-17 injection with discovery fallback
-├─ Options\                         final readonly DTOs (CreateRoomOptions, SendDataOptions, ...)
-├─ Enums\
+│   ├─ HttpClientResolver           PSR-18/PSR-17 injection with discovery fallback
+│   └─ Failover  RegionCache  DialTimeout
+├─ Options\                         final readonly DTOs, including AccessTokenOptions and ClientOptions
+├─ Enums\                           ProtoEnum  WebhookEventType  WireFormat
 ├─ Exceptions\
 │   ├─ LiveKitException             base (interface + base class)
 │   ├─ ConfigurationException       missing key/secret, empty host, short secret
 │   ├─ TwirpException               code, msg, meta, httpStatus
+│   ├─ TwirpErrorCode               the eighteen codes the Twirp spec defines
 │   ├─ SipCallError                 extends TwirpException; sipStatusCode, sipStatus
+│   ├─ TokenVerificationException
 │   └─ WebhookVerificationException
-└─ Proto\                           GENERATED, committed to the repo
+└─ Proto\                           GENERATED messages, committed to the repo
+
+GPBMetadata\LiveKit\                second PSR-4 root -> metadata/
+                                    GENERATED descriptors; see §4
 ```
 
 Each service client is independently constructible, exactly like the Node SDK:
@@ -114,7 +121,7 @@ $rooms = new RoomServiceClient($host, $apiKey, $apiSecret);
 The facade is a convenience, not a requirement:
 
 ```php
-$livekit = new LiveKitClient($host, $apiKey, $apiSecret);
+$livekit = new LiveKitAPI($host, $apiKey, $apiSecret);
 $livekit->room->createRoom(new CreateRoomOptions(name: 'my-room'));
 ```
 
@@ -156,10 +163,9 @@ That is the distinction the collision actually turns on, and it is what large ge
 codebases do: `google-cloud-php` registers 238 PSR-4 prefixes under `GPBMetadata` and not one of them is
 the bare root; Temporal's PHP SDK does the same.
 
-> **Updated 2026-09-20**, after the rest of this document was written. As first specified, descriptors went
-> to `LiveKit\Proto\Meta` — everything under one root, which avoided the collision but put them somewhere
-> no PHP developer would look. This table and the two paragraphs above it track the generator; the rest of
-> this document does not.
+> As first specified, descriptors went to `LiveKit\Proto\Meta` — everything under one root, which avoided
+> the collision but put them somewhere no PHP developer would look. The move to `GPBMetadata\LiveKit` came
+> later, from checking what large generated-protobuf PHP codebases actually do.
 
 ### Import closure
 
@@ -185,11 +191,17 @@ working form would be `aggregate_metadata=livekit#logger`, but the flag buys not
 
 ### Shipping
 
-Generated code is committed: messages under `src/Proto/`, descriptors under `metadata/`. Composer has no build step and end users must not need
-protoc. A CI job regenerates and asserts `git diff --exit-code`, so committed output cannot drift from
-the pinned upstream tag. The generation script pins a minimum protoc version (>= 29.3, the version verified
-during research) and aborts if the local protoc is older, because protoc's reserved-word list grows between
-releases and can silently rename a generated class — protoc 29.3 has 80 reserved words, current main has 83.
+Generated code is committed: messages under `src/Proto/`, descriptors under `metadata/`. Composer has no
+build step and end users must not need protoc. A CI job regenerates and compares — with
+`git status --porcelain --untracked-files=all`, not `git diff`, because the script removes and rewrites
+the output directories and `git diff` never reports an added file. So committed output cannot drift from
+the pinned upstream tag.
+
+The generation script pins a minimum protoc version (**>= 36.2**) and aborts if the local protoc is older.
+protoc's reserved-word list grows between releases and can silently rename a generated class, and 36's
+output is also the first to type every setter natively. CI reads the version out of the script rather than
+repeating it, because a protoc that merely satisfies the minimum still generates different code and the
+drift check would then report a diff nobody caused.
 
 ## 5. Transport
 
@@ -203,7 +215,8 @@ final class TwirpClient
         string $method,       // 'CreateRoom'
         Message $request,
         string $responseClass,
-        string $authToken,
+        string $jwt,
+        ?int $timeoutSeconds = null,   // overrides ClientOptions per call
     ): Message;
 }
 ```
@@ -407,8 +420,8 @@ $rooms->deleteRoom('my-room');
 
 | Package | Constraint | Why |
 |---|---|---|
-| `php` | `^8.3` | enums, readonly classes, promotion, named args, first-class callables, `#[\Override]`, typed class constants |
-| `google/protobuf` | `^4.33.6 \|\| ^5.36` | lower bound excludes CVE-2026-6409 (DoS via negative varints); Composer 2.10 already refuses affected versions |
+| `php` | `^8.4` | enums, readonly classes, promotion, named args, first-class callables, `#[\Override]`, typed class constants. 8.3 left active support at the end of 2025 |
+| `google/protobuf` | `^5.36` | the version this package is generated against and tested on. protoc 36's getters for `optional` int64 fields call `GPBUtil::compatibleInt64()`, which no 4.x runtime has |
 | `firebase/php-jwt` | `^7.1` | zero runtime dependencies, no ext-sodium; `lcobucci/jwt` pins exact PHP minors |
 | `psr/http-client`, `psr/http-factory`, `psr/http-message` | `^1.0.3`, `^1.1`, `^2.0` | transport interfaces |
 | `php-http/discovery` | `^1.20` | optional client resolution |
@@ -417,6 +430,11 @@ a few lines over `random_bytes(16)` — not worth a dependency in a library that
 
 `ext-protobuf` is **suggested, not required** — the pure-PHP runtime was verified to work end-to-end with
 no C extension. `ext-bcmath` is suggested for JSON deserialization in the pure-PHP path.
+
+`composer.json` also declares `conflict: {"ext-protobuf": "<5.34"}`. The extension shadows
+`google/protobuf`'s classes, so the requirement above stops applying the moment it is loaded, and before
+5.34 its `GPBUtil` has no `compatibleInt64()`. A conflict states what is broken; the require floor states
+what is supported, which is why the two numbers differ.
 
 **Compatibility trap:** `Google\Protobuf\Internal\RepeatedField` moved in v5 and survives only as a
 `class_alias`, which PSR-4 cannot autoload — referencing it fatals on a cold autoloader. All SDK code uses
@@ -443,23 +461,35 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   `Bearer`-prefixed header; clock tolerance.
 - **Service clients:** each method asserts the correct Twirp path, the correct grant in the minted token,
   and correct option-to-proto mapping.
+- **Against `livekit/test-server`:** a second suite runs in CI against LiveKit's own programmable mock —
+  the one every official server SDK tests against. It is what proves the request encoding is one the
+  server can read, in both wire formats, and that the grant minted for each RPC satisfies the server's
+  permission table. A unit test with a fake HTTP client cannot prove either.
 - **Integration tests** against a real LiveKit server are opt-in, gated behind environment variables, and
   never required for CI to pass.
 
 ## 11. Tooling and CI
 
-- **PHPUnit** `^12`
-- **PHPStan** at max level. `src/Proto` is in `excludePaths.analyse` — not `analyseAndScan`, so generated
-  classes still resolve when checking hand-written code.
-- **Laravel Pint** for formatting; `src/Proto` excluded (files carry a DO NOT EDIT banner)
-- **Rector**, with `src/Proto` skipped
-- **GitHub Actions:** matrix PHP 8.3 / 8.4 / 8.5 × `prefer-lowest` / `prefer-stable`, `fail-fast: false`.
+- **PHPUnit** `^13.3`, failing on warnings, risky tests, deprecations, notices and an empty test suite.
+  `executionOrder` is deliberately unset: the environment-leak probe can only run last under the default
+  alphabetical order.
+- **PHPStan** at max level, pinned to the supported PHP range (`phpVersion: min 80400, max 80599`) rather
+  than to whichever PHP runs it. `src/Proto` is in `excludePaths.analyse` — not `analyseAndScan`, so
+  generated classes still resolve when checking hand-written code. `examples/` is analysed too.
+- **Laravel Pint** for formatting; `src/Proto` and `metadata/` excluded (files carry a DO NOT EDIT banner)
+- **Rector**, advisory rather than a gate, with `src/Proto` skipped
+- **GitHub Actions:** matrix PHP 8.4 / 8.5 × `prefer-lowest` / `prefer-stable`, `fail-fast: false`.
   The `prefer-lowest` leg is what catches a too-loose constraint. Separate jobs for PHPStan, Pint
-  `--test`, `composer validate --strict`, and the proto drift check.
+  `--test`, `composer validate --strict`, the pinned-protocol-version check, the forbidden-symbol check,
+  and the proto drift check.
+- **A second runtime:** one job runs the unit suite against `ext-protobuf`. The pure-PHP runtime and the
+  extension do not agree on every edge case — each accepts malformed input the other rejects — so testing
+  only the one Composer installs leaves half the installed base unexercised.
 - **PSR-18 matrix:** the suite runs against both `guzzlehttp/guzzle` and `symfony/http-client` as a
   dev-dependency axis, since discovery behaviour differs per implementation.
-- `.gitattributes` with `export-ignore` for `/tests`, `/.github`, `/bin`, config files, keeping the dist
-  tarball small while still shipping `src/Proto`.
+- `.gitattributes` with `export-ignore` for `/tests`, `/.github`, `/bin`, `/docs`, config files, keeping
+  the dist tarball to `src/`, `metadata/`, `examples/` and the four documents. `metadata/` is not
+  export-ignored: the package does not load without it.
 - `declare(strict_types=1)` everywhere; PSR-12.
 
 ## 12. Documentation
@@ -469,7 +499,10 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
 - A migration note for users coming from `agence104/livekit-server-sdk`, since class names differ
   (`LiveKit\Proto\Room` vs `Livekit\Room`).
 - `CONTRIBUTING.md` covering proto regeneration.
-- The pinned `livekit/protocol` version is stated in the README and in the generation script.
+- The pinned `livekit/protocol` version is stated by hand in the README, NOTICE, CHANGELOG and
+  CONTRIBUTING, in the `go get` line of each fixture generator, and generated into
+  `src/Proto/ProtocolVersion.php`. `bin/check-protocol-version.sh` treats the generation script as the
+  source of truth and fails if any of them has been left behind.
 
 ## 13. Risks
 
