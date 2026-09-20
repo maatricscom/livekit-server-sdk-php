@@ -251,6 +251,57 @@ A `requestTimeout` of zero or less sends no header at all, leaving the server to
 > shorter than that aborts the request while the phone is still ringing, before LiveKit's own deadline
 > ever has a chance to fire.
 
+## Rooms and participants
+
+`RoomServiceClient` is the one you will reach for most. Beyond `createRoom()`, `listRooms()` and
+`deleteRoom()`, it manages who is in a room and what they are allowed to do:
+
+```php
+use LiveKit\Options\UpdateParticipantOptions;
+
+foreach ($livekit->room->listParticipants('my-room') as $participant) {
+    echo $participant->getIdentity(), PHP_EOL;
+}
+
+$alice = $livekit->room->getParticipant('my-room', 'alice');
+
+// Partial: only the fields you pass are changed. Everything omitted is left as
+// it is rather than cleared, so you do not have to read-modify-write.
+$livekit->room->updateParticipant('my-room', 'alice', new UpdateParticipantOptions(
+    name: 'Alice (host)',
+    metadata: '{"role":"host"}',
+));
+```
+
+Moderation is `mutePublishedTrack()` for one track and `removeParticipant()` for the participant:
+
+```php
+$livekit->room->mutePublishedTrack('my-room', 'alice', 'TR_abc123', true);
+
+$livekit->room->removeParticipant('my-room', 'alice');
+```
+
+Removing someone also stops the token they already hold from letting them straight back in: the server
+rejects tokens for that identity whose `nbf` precedes a cutoff, and picks now-plus-a-minute of leeway
+when you do not choose one. Pass `revokeTokenTs` yourself to set that cutoff explicitly.
+
+`updateSubscriptions()` changes what a participant receives, and `updateRoomMetadata()` sets
+application state on the room itself — both are server-side, so no client has to cooperate:
+
+```php
+$livekit->room->updateSubscriptions('my-room', 'alice', ['TR_abc123'], false);
+
+$livekit->room->updateRoomMetadata('my-room', '{"stage":"q-and-a"}');
+```
+
+`performRpc()` calls a method a *client* SDK registered, from your backend, and returns its reply —
+the inverse of the rest of this package, where your server calls LiveKit.
+
+> [!NOTE]
+> `forwardParticipant()` and `moveParticipant()` are LiveKit Cloud only; an open-source server answers
+> `unimplemented`. They are not the same operation: forwarding copies a participant's tracks into a
+> second room while they stay where they are, and moving relocates them, so they leave the first.
+
 ## Sending data to a room
 
 `sendData()` delivers a payload to everyone in a room, or to named participants:
@@ -286,10 +337,12 @@ $livekit->room->sendData('my-room', $payload, Kind::RELIABLE, $options);
 
 ## Recording and streaming
 
-`EgressClient` records or restreams. There are five ways to start one, differing only in what they
-capture: `startRoomCompositeEgress()` for the room as a composed video, `startWebEgress()` for an
-arbitrary URL, `startParticipantEgress()` for one participant, and `startTrackCompositeEgress()` /
-`startTrackEgress()` for chosen tracks.
+`EgressClient` records or restreams. Five of its calls start one and differ only in what they capture:
+`startRoomCompositeEgress()` for the room as a composed video, `startWebEgress()` for an arbitrary URL,
+`startParticipantEgress()` for one participant, and `startTrackCompositeEgress()` / `startTrackEgress()`
+for chosen tracks. A sixth, `startEgress()`, takes a `StartEgressRequest` you have built yourself —
+LiveKit's newer unified shape, where the source is a `oneof` and the outputs are a list, rather than a
+capture-specific call.
 
 ```php
 use LiveKit\Options\EncodedOutputs;

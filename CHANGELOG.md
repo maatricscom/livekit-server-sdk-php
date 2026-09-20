@@ -179,7 +179,10 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   `WebhookReceiver::receive()` rejects — including that a body which is not a JSON object is refused by
   this package rather than by whichever protobuf runtime is installed.
 - `README.md` documents every service client. Egress, ingress, SIP and agent dispatch had no section at
-  all and now have one each, next to the existing one for the WhatsApp and Twilio connectors; the SIP
+  all and now have one each, next to the existing one for the WhatsApp and Twilio connectors; rooms and
+  participants gained one too, which had been the largest gap — `RoomServiceClient` is the client most
+  people reach for first, and ten of its fourteen methods appeared nowhere, participant moderation and
+  removal among them; the SIP
   section covers the distinction the method names hide, between an update that replaces a trunk
   wholesale and clears what you omit, and the `*Fields()` form that changes only what you pass; that section gains the step it was missing, where an outbound WhatsApp call is completed
   from the SDP Meta posts to your webhook rather than in the request that dialled. The eight runnable
@@ -200,7 +203,7 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   It can only check for leaked environment variables from last place, and it holds that place by its
   name alone — a test file added under a path sorting after it would take the slot silently.
 - `ReadmeCodeBlocksTest` checks every PHP example in `README.md`: that it parses at all, and that every
-  class, named argument, constant and resolvable method call in it exists. Thirty examples, of which
+  class, named argument, constant and resolvable method call in it exists. Thirty-three examples, of which
   one was executed by anything before. It found a block that opened with `} catch` and could not be
   pasted anywhere, and a block that imported two of the three classes it used.
 - Assertions on protobuf maps sort before comparing. A map has no order: the pure-PHP runtime iterates
