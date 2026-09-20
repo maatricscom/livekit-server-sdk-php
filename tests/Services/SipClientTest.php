@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\CreateSipInboundTrunkOptions;
+use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
+use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
+use LiveKit\Proto\SIPOutboundTrunkInfo;
+use LiveKit\Proto\SIPTransport;
 use LiveKit\Services\SipClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -94,5 +98,76 @@ final class SipClientTest extends TwirpTestCase
         // Return value is the unwrapped response message.
         self::assertSame('ST_inbound', $trunk->getSipTrunkId());
         self::assertSame(1, $this->http->requestCount());
+    }
+
+    public function testCreateSipOutboundTrunk(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_outbound'),
+        ));
+
+        $trunk = $this->client->createSipOutboundTrunk(
+            'carrier',
+            'sip.carrier.example:5060',
+            ['+15105550100', '+15105550101'],
+            new CreateSipOutboundTrunkOptions(
+                transport: SIPTransport::SIP_TRANSPORT_TCP,
+                metadata: 'outbound-trunk',
+                destinationCountry: 'US',
+                authUsername: 'out-user',
+                authPassword: 'out-pass',
+                headers: ['X-Out' => '1'],
+                headersToAttributes: ['X-Out' => 'attr.out'],
+                attributesToHeaders: ['attr.in' => 'X-In'],
+                includeHeaders: SIPHeaderOptions::SIP_ALL_HEADERS,
+                fromHost: 'calls.example.com',
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPOutboundTrunkRequest::class)->getTrunk();
+        self::assertInstanceOf(SIPOutboundTrunkInfo::class, $sent);
+        self::assertSame('carrier', $sent->getName());
+        self::assertSame('sip.carrier.example:5060', $sent->getAddress());
+        self::assertSame(
+            ['+15105550100', '+15105550101'],
+            iterator_to_array($sent->getNumbers(), false),
+        );
+        self::assertSame('outbound-trunk', $sent->getMetadata());
+        self::assertSame(SIPTransport::SIP_TRANSPORT_TCP, $sent->getTransport());
+        self::assertSame('US', $sent->getDestinationCountry());
+        self::assertSame('out-user', $sent->getAuthUsername());
+        self::assertSame('out-pass', $sent->getAuthPassword());
+        self::assertSame(['X-Out' => '1'], iterator_to_array($sent->getHeaders()));
+        self::assertSame(['X-Out' => 'attr.out'], iterator_to_array($sent->getHeadersToAttributes()));
+        self::assertSame(['attr.in' => 'X-In'], iterator_to_array($sent->getAttributesToHeaders()));
+        self::assertSame(SIPHeaderOptions::SIP_ALL_HEADERS, $sent->getIncludeHeaders());
+        self::assertSame('calls.example.com', $sent->getFromHost());
+
+        self::assertSame('ST_outbound', $trunk->getSipTrunkId());
+    }
+
+    public function testCreateSipOutboundTrunkDefaultsToAutoTransport(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPOutboundTrunkInfo()));
+
+        $this->client->createSipOutboundTrunk('carrier', 'sip.carrier.example', ['+15105550100']);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPOutboundTrunkRequest::class)->getTrunk();
+        self::assertInstanceOf(SIPOutboundTrunkInfo::class, $sent);
+        self::assertSame('carrier', $sent->getName());
+        self::assertSame('sip.carrier.example', $sent->getAddress());
+        self::assertSame(['+15105550100'], iterator_to_array($sent->getNumbers(), false));
+        self::assertSame(SIPTransport::SIP_TRANSPORT_AUTO, $sent->getTransport());
+        self::assertSame('', $sent->getMetadata());
     }
 }

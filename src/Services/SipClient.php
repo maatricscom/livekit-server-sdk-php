@@ -8,8 +8,11 @@ use Google\Protobuf\Duration;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
+use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
+use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\SIPInboundTrunkInfo;
+use LiveKit\Proto\SIPOutboundTrunkInfo;
 
 /**
  * Client for the LiveKit SIP API.
@@ -107,6 +110,74 @@ final class SipClient extends ServiceBase
             'CreateSIPInboundTrunk',
             $request,
             SIPInboundTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Creates a SIP outbound trunk.
+     *
+     * @param string       $address hostname or IP the INVITE is sent to, with no 'sip:' prefix
+     * @param list<string> $numbers numbers to place calls from; one is picked at random
+     */
+    public function createSipOutboundTrunk(
+        string $name,
+        string $address,
+        array $numbers,
+        ?CreateSipOutboundTrunkOptions $opts = null,
+    ): SIPOutboundTrunkInfo {
+        $opts ??= new CreateSipOutboundTrunkOptions();
+
+        $trunk = new SIPOutboundTrunkInfo();
+        $trunk->setName($name);
+        $trunk->setAddress($address);
+        $trunk->setNumbers($numbers);
+        $trunk->setTransport($opts->transport);
+
+        if ($opts->metadata !== null) {
+            $trunk->setMetadata($opts->metadata);
+        }
+        if ($opts->destinationCountry !== null) {
+            $trunk->setDestinationCountry($opts->destinationCountry);
+        }
+        if ($opts->authUsername !== null) {
+            $trunk->setAuthUsername($opts->authUsername);
+        }
+        if ($opts->authPassword !== null) {
+            $trunk->setAuthPassword($opts->authPassword);
+        }
+        if ($opts->headers !== null) {
+            $trunk->setHeaders($opts->headers);
+        }
+        if ($opts->headersToAttributes !== null) {
+            $trunk->setHeadersToAttributes($opts->headersToAttributes);
+        }
+        if ($opts->attributesToHeaders !== null) {
+            $trunk->setAttributesToHeaders($opts->attributesToHeaders);
+        }
+        if ($opts->includeHeaders !== null) {
+            $trunk->setIncludeHeaders($opts->includeHeaders);
+        }
+        if ($opts->mediaEncryption !== null) {
+            $trunk->setMediaEncryption($opts->mediaEncryption);
+        }
+        if ($opts->media !== null) {
+            $trunk->setMedia($opts->media);
+        }
+        if ($opts->fromHost !== null) {
+            $trunk->setFromHost($opts->fromHost);
+        }
+
+        $request = new CreateSIPOutboundTrunkRequest();
+        $request->setTrunk($trunk);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'CreateSIPOutboundTrunk',
+            $request,
+            SIPOutboundTrunkInfo::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
         );
 
