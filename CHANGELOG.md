@@ -131,8 +131,13 @@ starting out now has no reason to carry a version that only receives security fi
   API that every official server SDK tests against. It covers every RPC in both wire formats, proving
   the grants this SDK mints satisfy the server's own permission table and that the server can decode what
   the SDK encodes. `RpcCoverageTest` fails if a service client grows a method the sweep does not call.
-- `tests/Integration/`, an opt-in test suite that runs against a real LiveKit deployment when
-  `LIVEKIT_URL`, `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set, to serve as a release gate.
+- `tests/Integration/`, an opt-in suite that runs against a real LiveKit deployment when `LIVEKIT_URL`,
+  `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set, to serve as a release gate: room lifecycle in
+  both wire formats, metadata round-tripping, the ingress create/update/delete path, agent dispatch, the
+  list RPCs of the services that must not be mutated, and what a real server returns when the request is
+  wrong. Everything it creates is deleted even when an assertion fails; nothing it calls places a call,
+  starts a recording or incurs a charge; and a feature the deployment does not have is a skip rather
+  than a failure.
 
 ### Notes
 

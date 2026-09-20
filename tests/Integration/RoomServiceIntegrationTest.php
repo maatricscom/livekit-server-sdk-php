@@ -4,95 +4,129 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Integration;
 
-use LiveKit\LiveKitAPI;
 use LiveKit\Options\CreateRoomOptions;
+use LiveKit\Options\ListRoomsOptions;
+use LiveKit\Options\SendDataOptions;
+use LiveKit\Proto\DataPacket\Kind;
 use LiveKit\Proto\Room;
-use PHPUnit\Framework\TestCase;
+use LiveKit\Tests\Integration\Support\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * Runs against a real LiveKit deployment. Skipped unless LIVEKIT_URL,
- * LIVEKIT_API_KEY and LIVEKIT_API_SECRET are all set, so it never gates CI.
- *
- * This is the only place the binary-protobuf content type is exercised against a
- * real server. No official LiveKit SDK sends application/protobuf, so run this
- * against your own project before every release.
- *
- * Also worth establishing during that pre-release run: whether the `X-Twirp-Timeout-Ms`
- * header this SDK sends (see ClientOptions::$requestTimeout) actually has any effect on a
- * real LiveKit deployment. Twirp itself defines no such header, and it is currently sent on
- * a best-effort, unverified basis -- see the "Timeouts" section of README.md.
+ * Not covered here, and deliberately: updateParticipant, mutePublishedTrack,
+ * removeParticipant, updateSubscriptions, forwardParticipant, moveParticipant and
+ * performRpc all need a participant connected over WebRTC, which a server SDK
+ * cannot produce. The mock server answers them -- that is what RpcSweepTest is
+ * for -- but a real deployment can only be asked once a client is in the room.
  */
-final class RoomServiceIntegrationTest extends TestCase
+final class RoomServiceIntegrationTest extends IntegrationTestCase
 {
-    private LiveKitAPI $livekit;
-
-    protected function setUp(): void
+    /** @return iterable<string, array{string}> */
+    public static function wireFormats(): iterable
     {
-        parent::setUp();
-
-        foreach (['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET'] as $name) {
-            if (getenv($name) === false || getenv($name) === '') {
-                self::markTestSkipped(sprintf('%s is not set; skipping integration tests.', $name));
-            }
-        }
-
-        $this->livekit = new LiveKitAPI();
+        yield 'binary protobuf' => ['protobuf'];
+        yield 'json' => ['json'];
     }
 
-    public function test_creates_lists_and_deletes_a_room_over_binary_protobuf(): void
+    /**
+     * The full lifecycle, in both content types. The binary path matters most:
+     * no official LiveKit SDK sends application/protobuf, so nothing upstream
+     * would notice if a real deployment stopped accepting it.
+     */
+    #[DataProvider('wireFormats')]
+    public function test_a_room_can_be_created_found_and_deleted(string $wireFormat): void
     {
-        $name = 'php-sdk-integration-' . bin2hex(random_bytes(4));
+        $api = $wireFormat === 'json' ? $this->jsonClient() : $this->livekit;
+        $name = $this->scratchName('room');
 
-        $room = $this->livekit->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
+        $this->cleanUpAfter(
+            body: function () use ($api, $name): void {
+                $room = $api->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
 
-        // Everything from here on -- including the assertions -- runs inside the
-        // try, so a failed assertion still reaches the finally and the room does
-        // not leak on a real project. $bodySucceeded distinguishes "the try block
-        // threw and deleteRoom() also threw" (don't let the cleanup failure mask
-        // the original, more informative failure) from "the try block was fine
-        // but cleanup itself failed" (that failure IS the thing to report).
-        $bodySucceeded = false;
+                self::assertInstanceOf(Room::class, $room);
+                self::assertSame($name, $room->getName());
+                self::assertNotSame('', $room->getSid(), 'the server assigns a sid');
 
-        try {
-            self::assertInstanceOf(Room::class, $room);
-            self::assertSame($name, $room->getName());
-
-            $names = array_map(
-                static fn (Room $r): string => $r->getName(),
-                $this->livekit->room->listRooms()
-            );
-
-            self::assertContains($name, $names);
-
-            $bodySucceeded = true;
-        } finally {
-            try {
-                $this->livekit->room->deleteRoom($name);
-            } catch (\Throwable $cleanupError) {
-                if ($bodySucceeded) {
-                    // No earlier failure in flight: this IS the failure.
-                    throw $cleanupError;
-                }
-
-                // An assertion or RPC failure from the try block is already
-                // propagating out of this finally. Don't replace it with the
-                // cleanup failure -- PHP would otherwise discard the original,
-                // more informative one. Still surface the leaked room rather
-                // than swallowing the cleanup failure silently.
-                fwrite(STDERR, sprintf(
-                    "Warning: failed to clean up room \"%s\" after an earlier test failure: %s%s",
-                    $name,
-                    $cleanupError->getMessage(),
-                    PHP_EOL
-                ));
-            }
-        }
+                $filtered = $api->room->listRooms(new ListRoomsOptions(names: [$name]));
+                self::assertCount(1, $filtered, 'the names filter reaches the server');
+                self::assertSame($name, $filtered[0]->getName());
+            },
+            cleanup: fn () => $api->room->deleteRoom($name),
+            describe: sprintf('room "%s"', $name),
+        );
 
         $remaining = array_map(
             static fn (Room $r): string => $r->getName(),
             $this->livekit->room->listRooms()
         );
 
-        self::assertNotContains($name, $remaining);
+        self::assertNotContains($name, $remaining, 'deleteRoom actually removed it');
+    }
+
+    public function test_room_metadata_survives_a_round_trip(): void
+    {
+        $name = $this->scratchName('meta');
+        $metadata = json_encode(['tenant' => 'çalışma', 'url' => 'https://example.test/a/b'], JSON_THROW_ON_ERROR);
+
+        $this->cleanUpAfter(
+            body: function () use ($name, $metadata): void {
+                $this->livekit->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
+
+                // Non-ASCII and a URL on purpose: these are what a re-encoding bug
+                // in the JSON path would mangle, and metadata is arbitrary
+                // application data, so LiveKit must return the exact bytes.
+                $updated = $this->livekit->room->updateRoomMetadata($name, $metadata);
+
+                self::assertSame($metadata, $updated->getMetadata());
+            },
+            cleanup: fn () => $this->livekit->room->deleteRoom($name),
+            describe: sprintf('room "%s"', $name),
+        );
+    }
+
+    public function test_an_empty_room_reports_no_participants(): void
+    {
+        $name = $this->scratchName('empty');
+
+        $this->cleanUpAfter(
+            body: function () use ($name): void {
+                $this->livekit->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
+
+                self::assertSame([], $this->livekit->room->listParticipants($name));
+
+                // Nobody is connected, so this delivers to no one. It still proves
+                // the request is accepted, the grant is right and the nonce the
+                // SDK attaches does not upset the server.
+                $this->livekit->room->sendData(
+                    $name,
+                    'integration-probe',
+                    Kind::RELIABLE,
+                    new SendDataOptions(topic: 'php-sdk-it'),
+                );
+            },
+            cleanup: fn () => $this->livekit->room->deleteRoom($name),
+            describe: sprintf('room "%s"', $name),
+        );
+    }
+
+    /**
+     * createRoom is idempotent on LiveKit: asking twice returns the same room
+     * rather than failing. Worth pinning, because a caller that retries a timed-out
+     * createRoom depends on it.
+     */
+    public function test_creating_the_same_room_twice_returns_the_same_room(): void
+    {
+        $name = $this->scratchName('twice');
+
+        $this->cleanUpAfter(
+            body: function () use ($name): void {
+                $first = $this->livekit->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
+                $second = $this->livekit->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
+
+                self::assertSame($first->getSid(), $second->getSid());
+            },
+            cleanup: fn () => $this->livekit->room->deleteRoom($name),
+            describe: sprintf('room "%s"', $name),
+        );
     }
 }

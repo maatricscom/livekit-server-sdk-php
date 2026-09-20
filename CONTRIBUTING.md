@@ -166,6 +166,27 @@ Run this, against your own project, before every release. A green unit suite say
 self-consistent; a green mock-server run says LiveKit's own mock accepts what this SDK puts on the wire;
 only a green integration run says a real deployment does.
 
+It runs against someone's real project, which constrains what it may do:
+
+- **Everything it creates, it deletes**, including when an assertion fails —
+  `IntegrationTestCase::cleanUpAfter()` exists to get that right, and to report the original failure
+  rather than the cleanup failure that follows it. A leaked room or ingress costs the project owner.
+- **Nothing it calls places a call, starts a recording, or incurs a charge.** `createSipParticipant()`
+  dials a real number; `transferSipParticipant()` moves a live call; the `ConnectorClient` RPCs reach
+  WhatsApp and Twilio; starting any egress needs storage credentials and bills for what it records. None
+  of those belongs in a suite someone runs against their own project on a whim. They are covered against
+  the mock server, and named in the test that would otherwise cover them so the absence is deliberate
+  rather than forgotten.
+- **A feature the deployment does not have is a skip, not a failure.** SIP, egress and agent dispatch are
+  provisioned per project, and a server without them is a valid deployment that simply cannot answer.
+  `IntegrationTestCase::skipIfUnavailable()` handles that; a genuine bad-request or bad-auth error still
+  fails.
+
+Also out of reach here, for a reason no amount of care fixes: `updateParticipant`, `mutePublishedTrack`,
+`removeParticipant`, `updateSubscriptions`, `forwardParticipant`, `moveParticipant` and `performRpc` all
+need a participant connected over WebRTC, which a server SDK cannot produce. The mock server answers
+them; a real deployment can only be asked once a client has joined.
+
 ### Running against `ext-protobuf`
 
 Every suite above runs on whichever protobuf runtime is installed, and there are two: the pure-PHP one in
