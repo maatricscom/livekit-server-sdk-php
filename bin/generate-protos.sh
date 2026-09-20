@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Regenerates src/Proto from a pinned livekit/protocol tag.
+# Regenerates src/Proto, metadata/ and src/ProtocolVersion.php from a pinned
+# livekit/protocol tag.
 #
 # Two non-obvious things this script handles, both of which produce broken
 # builds if you do them by hand:
@@ -70,8 +71,9 @@ mkdir -p "$WORK"
 # livekit_rtc.proto is NOT a root but arrives through the closure anyway:
 # livekit_connector_whatsapp.proto imports it for SessionDescription, which
 # AcceptWhatsAppCall carries. That pulls in the signalling messages (JoinRequest,
-# Ping, AddTrackRequest and friends) -- about 430K of generated code this SDK
-# never calls. There is no way to generate one message from a file, and dropping
+# Ping, AddTrackRequest and friends) -- 68 files and about 293K of generated code
+# this SDK never calls. Count it with:
+#     grep -rl 'source: livekit_rtc.proto' src/Proto metadata | xargs wc -c | tail -1 There is no way to generate one message from a file, and dropping
 # AcceptWhatsAppCall to avoid it would leave the Connector client incomplete, so
 # the size is accepted deliberately rather than by oversight.
 ROOTS=(
@@ -162,7 +164,7 @@ done
 echo "==> Running protoc"
 
 # Everything is generated into a staging directory and moved into place at the
-# very end. Generating straight into src/Proto meant deleting 377 committed
+# very end. Generating straight into src/Proto meant deleting 360 committed
 # files and then hoping: a protoc that failed, or a Ctrl-C, left the tree empty
 # and the package unloadable until someone thought to `git checkout src/Proto`.
 # Nothing below touches src/Proto until the whole generation has succeeded.

@@ -38,8 +38,19 @@ echo "Expected protocol version: ${EXPECTED}"
 failed=0
 
 # Prose that must name the current version somewhere.
-for file in README.md NOTICE CHANGELOG.md CONTRIBUTING.md; do
-    if grep -qF "$EXPECTED" "$file"; then
+#
+# The design spec is included because it states the pin as a current fact --
+# "pinned to a tag (currently vX)" -- and says of itself that it is kept current
+# with the code, so a bump leaves it wrong in exactly the way this check exists to
+# prevent. It is globbed rather than named: the filename carries a date, and a
+# rename should not quietly drop it from the list. A missing file is reported as
+# missing rather than as "does not mention", which is what an unmatched glob or a
+# moved spec would otherwise look like.
+for file in README.md NOTICE CHANGELOG.md CONTRIBUTING.md docs/superpowers/specs/*.md; do
+    if [ ! -f "$file" ]; then
+        echo "  FAIL ${file} is missing" >&2
+        failed=1
+    elif grep -qF "$EXPECTED" "$file"; then
         echo "  ok   ${file}"
     else
         echo "  FAIL ${file} does not mention ${EXPECTED}" >&2

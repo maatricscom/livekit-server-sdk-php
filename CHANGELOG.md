@@ -209,9 +209,10 @@ tarball. It is recorded because it is why the package can be trusted to behave a
 - `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
   whole run has succeeded, so a protoc that fails — or a Ctrl-C — cannot leave the generated tree
   half-written or empty.
-- `bin/check-protocol-version.sh` fails if any of the six hand-written copies of the pinned protocol
-  tag disagrees with the generator, including the `go get` line in each fixture generator, and if the
-  generated `src/ProtocolVersion.php` does not match it exactly — seven files in all. Those decide
+- `bin/check-protocol-version.sh` fails if any of the seven hand-written copies of the pinned protocol
+  tag disagrees with the generator — including the `go get` line in each fixture generator and the design
+  spec, which states the pin as a current fact — and if the generated `src/ProtocolVersion.php` does not
+  match it exactly. Eight files in all. Those decide
   which protocol the reference JWTs and webhook body are produced from: a bump that missed them would
   regenerate fixtures from the old protocol, and the suite would stay green asserting new code against
   stale references.
