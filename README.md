@@ -12,10 +12,11 @@ and webhooks.
 
 - **`RoomServiceClient`** — create, list and manage rooms and participants (all 14 `livekit.RoomService` RPCs)
 - **`EgressClient`** — start, update and stop recordings and streams (all 10 `livekit.Egress` RPCs)
-- **`IngressClient`** — configure inbound RTMP/WHIP/SRT feeds (all 4 `livekit.Ingress` RPCs)
+- **`IngressClient`** — bring an RTMP, WHIP or pulled-URL feed into a room (all 4 `livekit.Ingress` RPCs)
 - **`SipClient`** — SIP trunks, dispatch rules and call control (all 16 `livekit.SIP` RPCs)
 - **`AgentDispatchClient`** — dispatch and manage agent jobs (all 3 `livekit.AgentDispatchService` RPCs)
-- **`ConnectorClient`** — bridge WhatsApp and Twilio calls into rooms (all 5 `livekit.Connector` RPCs, LiveKit Cloud only)
+- **`ConnectorClient`** — bridge WhatsApp and Twilio calls into rooms (all 5 `livekit.Connector` RPCs,
+  LiveKit Cloud only)
 - **`AccessToken`** / **`TokenVerifier`** — mint and verify the HS256 JWTs LiveKit uses for room access
 - **`WebhookReceiver`** — verify and parse LiveKit's server-to-server webhooks
 
@@ -58,7 +59,8 @@ time rather than at a call site. The reason is that the extension *shadows* `goo
 loaded, its own `Google\Protobuf\Internal\*` classes are used and the Composer package's are never
 autoloaded, so the `^5.36` requirement on the package constrains nothing. Generated code here is produced
 by protoc 36, whose getters for `optional` int64 fields call `GPBUtil::compatibleInt64()` — a method the
-extension gained in 5.34.0. Against an older one (4.32.1 is what Alpine ships today) those getters raise
+extension gained in 5.34.0. Against an older one — 4.32.1 was Alpine's package at the time of writing —
+those getters raise
 `Call to undefined method`. The conflict is set at 5.34 rather than 5.36 because it says what is broken;
 `^5.36` on the Composer package says what this SDK is built and tested against.
 
@@ -434,8 +436,9 @@ $livekit->ingress->listIngress(new ListIngressOptions(roomName: 'my-room'));
 $livekit->ingress->deleteIngress($ingress->getIngressId());
 ```
 
-`getState()?->getStatus()` reports progress — `ENDPOINT_INACTIVE` until something connects, then
-`ENDPOINT_BUFFERING`, `ENDPOINT_PUBLISHING`, and `ENDPOINT_ERROR` if the feed is refused.
+`getState()?->getStatus()` reports progress: `ENDPOINT_INACTIVE` until something connects, then
+`ENDPOINT_BUFFERING` and `ENDPOINT_PUBLISHING`. It ends at `ENDPOINT_COMPLETE` when the feed stops
+cleanly, or `ENDPOINT_ERROR` if it was refused.
 
 ## Agent dispatch
 
@@ -464,12 +467,14 @@ Dispatching a name no worker has registered is harmless — the request is recor
 
 `getDispatch()` is this package's own convenience: `livekit.AgentDispatchService` has no `GetDispatch`
 rpc, so it is `ListDispatch` filtered by id, returning the dispatch or `null` rather than an array to
-index. A missing dispatch is `null` whichever way your deployment reports it — LiveKit Cloud answers
-`not_found` where the mock server returns an empty list, and both arrive here as `null`. This is a
-deliberate difference from the Node SDK, which checks only for the empty list and so throws in the
-case it documents. Note that it and `deleteDispatch()` take the dispatch id first while `listDispatch()` takes the
-room — the order mirrors the Node SDK and the proto's own field order, which is why named arguments are
-worth using here.
+index. A dispatch that does not exist is `null` whichever way your deployment reports it — LiveKit Cloud
+answers `not_found`, others return an empty list, and both arrive here as `null`. That is a deliberate
+difference from the Node SDK, which checks only for the empty list and therefore throws in the very case
+its own documentation says returns nothing.
+
+Watch the argument order: `getDispatch()` and `deleteDispatch()` take the dispatch id first, while
+`listDispatch()` takes the room. It mirrors the Node SDK and the proto's own field order, and it is why
+named arguments are worth using here.
 
 ## SIP
 
@@ -546,10 +551,10 @@ $participant = $livekit->sip->createSipParticipant(
 $livekit->sip->transferSipParticipant('support-call', 'caller', 'tel:+15551112222');
 ```
 
-These two are the only RPCs in this package that make something happen in the physical world, and they
-fail differently from everything else: a refusal by the far end arrives as `SipCallError`, a
-`TwirpException` subclass carrying the SIP status. Catch it first — see
-[Error handling](#error-handling).
+These two reach the telephone network, and they fail differently from everything else: a refusal by the
+far end arrives as `SipCallError`, a `TwirpException` subclass carrying the SIP status. Catch it first —
+see [Error handling](#error-handling). The WhatsApp connector below rings a real device too, but reports
+failures as ordinary Twirp errors rather than as `SipCallError`.
 
 > [!NOTE]
 > `waitUntilAnswered` holds the request open while the phone rings, so the SDK raises this call's request
@@ -707,7 +712,7 @@ token to a host named by whatever produced the response.
 > No official LiveKit SDK implements this yet — LiveKit's own SDK test server specifies the behaviour, and
 > this implementation is written and tested against that specification.
 
-The region list is cached for as long as its `Cache-Control: max-age` allows, and shared by the five
+The region list is cached for as long as its `Cache-Control: max-age` allows, and shared by the six
 clients behind one `LiveKitAPI`. Under PHP-FPM each request is a fresh process, so that cache starts cold
 every time and a failover costs one extra request to discover regions — on the failure path only. In a
 long-running process (a queue worker, Swoole, RoadRunner) it is reused for its full lifetime.
@@ -806,7 +811,7 @@ expired token from a forged one still can:
 use LiveKit\Exceptions\TokenVerificationException;
 
 try {
-    $claims = (new LiveKit\TokenVerifier())->verify($jwt);
+    $claims = new LiveKit\TokenVerifier()->verify($jwt);
 } catch (TokenVerificationException $e) {
     if ($e->getPrevious() instanceof Firebase\JWT\ExpiredException) {
         // ask for a fresh token
@@ -912,8 +917,9 @@ self::assertSame('RM_test', new RoomProvisioner($rooms)->provision('my-room'));
 ```
 
 The interfaces declare every method its client has — nothing is available on the class but missing from
-the contract — and are covered by this package's backward-compatibility promise, so a mock written against
-one keeps working across minor versions.
+the contract, and a test fails if that ever stops being true. They are the surface to write a mock
+against. Until 1.0 they can still change: the package follows semantic versioning, which permits that
+before a stable major, so pin a version if a mock of yours depends on the shape.
 
 If you would rather exercise the real client against a real transport, inject a PSR-18 double instead of
 mocking the interface: the clients accept one, and it is what this package's own test suite uses. See
