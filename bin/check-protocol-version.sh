@@ -2,11 +2,14 @@
 #
 # Fails if the pinned livekit/protocol version has drifted apart across the repo.
 #
-# The version is written by hand in several places — the README tells users what
-# the package was built against, the NOTICE attributes the generated code, the
-# CHANGELOG records it per release, and CONTRIBUTING documents the bump. Keeping
-# those in step by remembering to edit each one does not survive contact with a
-# real upgrade, so this checks it instead.
+# The version is written by hand in several documents -- what the package was built
+# against, the attribution for the generated code, the release record, the bump
+# procedure, the design spec. Keeping those in step by remembering to edit each one
+# does not survive contact with a real upgrade, so this checks it instead.
+#
+# The loop below is the list; this comment deliberately does not repeat it. It did
+# once, and went stale the first time a file was added to the check -- which is the
+# exact failure this script exists to catch.
 #
 # bin/generate-protos.sh is the single source of truth. src/ProtocolVersion.php
 # is generated from it, so a mismatch there means the tree was not regenerated after
