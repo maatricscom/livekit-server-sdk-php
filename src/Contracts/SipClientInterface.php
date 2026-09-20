@@ -6,6 +6,7 @@ namespace LiveKit\Contracts;
 
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
@@ -79,4 +80,11 @@ interface SipClientInterface
 
     /** Fetches one SIP outbound trunk, or null when the server returns no trunk. */
     public function getSipOutboundTrunk(string $sipTrunkId): ?SIPOutboundTrunkInfo;
+
+    /**
+     * Lists SIP inbound trunks. With no filters, all trunks are listed.
+     *
+     * @return list<SIPInboundTrunkInfo>
+     */
+    public function listSipInboundTrunk(?ListSipTrunkOptions $opts = null): array;
 }

@@ -6,6 +6,7 @@ namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
@@ -14,7 +15,10 @@ use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\GetSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPOutboundTrunkResponse;
+use LiveKit\Proto\ListSIPInboundTrunkRequest;
+use LiveKit\Proto\ListSIPInboundTrunkResponse;
 use LiveKit\Proto\ListUpdate;
+use LiveKit\Proto\Pagination;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -465,5 +469,60 @@ final class SipClientTest extends TwirpTestCase
             'ST_missing',
             $this->decodeRequest(GetSIPOutboundTrunkRequest::class)->getSipTrunkId(),
         );
+    }
+
+    public function testListSipInboundTrunkUnwrapsToAnArray(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new ListSIPInboundTrunkResponse())->setItems([
+                (new SIPInboundTrunkInfo())->setSipTrunkId('ST_a'),
+                (new SIPInboundTrunkInfo())->setSipTrunkId('ST_b'),
+            ]),
+        ));
+
+        $trunks = $this->client->listSipInboundTrunk(
+            new ListSipTrunkOptions(
+                page: (new Pagination())->setAfterId('ST_0')->setLimit(50),
+                trunkIds: ['ST_a', 'ST_b'],
+                numbers: ['+15105550100'],
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'ListSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(ListSIPInboundTrunkRequest::class);
+        self::assertSame(['ST_a', 'ST_b'], iterator_to_array($sent->getTrunkIds(), false));
+        self::assertSame(['+15105550100'], iterator_to_array($sent->getNumbers(), false));
+        self::assertSame('ST_0', $sent->getPage()?->getAfterId());
+        self::assertSame(50, $sent->getPage()?->getLimit());
+
+        // The list RPC unwraps: an array of messages, never the response wrapper.
+        self::assertIsArray($trunks);
+        self::assertCount(2, $trunks);
+        self::assertSame('ST_a', $trunks[0]->getSipTrunkId());
+        self::assertSame('ST_b', $trunks[1]->getSipTrunkId());
+    }
+
+    public function testListSipInboundTrunkWithNoFiltersSendsAnEmptyRequest(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new ListSIPInboundTrunkResponse()));
+
+        self::assertSame([], $this->client->listSipInboundTrunk());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'ListSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        // No filters set: an all-defaults proto message serialises to zero bytes.
+        self::assertSame('', $this->http->lastBody());
+
+        $sent = $this->decodeRequest(ListSIPInboundTrunkRequest::class);
+        self::assertNull($sent->getPage());
+        self::assertCount(0, $sent->getTrunkIds());
+        self::assertCount(0, $sent->getNumbers());
     }
 }

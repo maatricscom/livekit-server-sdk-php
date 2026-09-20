@@ -9,6 +9,7 @@ use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
@@ -17,6 +18,8 @@ use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
 use LiveKit\Proto\GetSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPOutboundTrunkResponse;
+use LiveKit\Proto\ListSIPInboundTrunkRequest;
+use LiveKit\Proto\ListSIPInboundTrunkResponse;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -383,5 +386,45 @@ final class SipClient extends ServiceBase
         );
 
         return $response->getTrunk();
+    }
+
+    /**
+     * Lists SIP inbound trunks. With no filters, all trunks are listed.
+     *
+     * @return list<SIPInboundTrunkInfo>
+     */
+    public function listSipInboundTrunk(?ListSipTrunkOptions $opts = null): array
+    {
+        $request = new ListSIPInboundTrunkRequest();
+
+        if ($opts !== null) {
+            if ($opts->page !== null) {
+                $request->setPage($opts->page);
+            }
+            if ($opts->trunkIds !== null) {
+                $request->setTrunkIds($opts->trunkIds);
+            }
+            if ($opts->numbers !== null) {
+                $request->setNumbers($opts->numbers);
+            }
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListSIPInboundTrunk',
+            $request,
+            ListSIPInboundTrunkResponse::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        $items = [];
+        foreach ($response->getItems() as $item) {
+            // RepeatedField's iterator carries no generic value type, so this
+            // yields mixed — unlike the rpc() return, which the analyser infers.
+            assert($item instanceof SIPInboundTrunkInfo);
+            $items[] = $item;
+        }
+
+        return $items;
     }
 }
