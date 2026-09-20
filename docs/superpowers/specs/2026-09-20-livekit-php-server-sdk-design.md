@@ -328,9 +328,15 @@ $event = $receiver->receive($rawBody, $request->getHeaderLine('Authorization'));
   is tolerated but never required.
 - Verification: decode the JWT, then compare `base64_encode(hash('sha256', $rawBody, true))` against the
   token's `sha256` claim using `hash_equals`.
-- The body must be the **raw request bytes**. Re-serializing the JSON breaks verification, because Go's
-  protojson byte layout is not reproducible. The README documents how to obtain the raw body in plain PHP,
+- The body must be the **raw request bytes**. The README documents how to obtain the raw body in plain PHP,
   Laravel and Symfony.
+
+  The reason is narrower than "Go's output cannot be reproduced", which turned out to be false for simple
+  payloads — a plain-ASCII `WebhookEvent` re-encodes byte-identically in PHP. What diverges is content
+  PHP's encoder treats specially: non-ASCII becomes `\uXXXX`, `/` becomes `\/`, and a float loses a
+  trailing `.0`. Real webhooks carry room names and participant metadata, so such content is ordinary.
+  Hashing the raw bytes is correct regardless; the point is that a round-trip happening to work on one
+  payload proves nothing about the next.
 - Content type is `application/webhook+json`, not `application/json`. Most frameworks will not auto-parse it,
   which is desirable — it keeps the body intact.
 - Parsing uses `WebhookEvent::mergeFromJsonString($rawBody, true)`; `$ignore_unknown = true` is mandatory.
