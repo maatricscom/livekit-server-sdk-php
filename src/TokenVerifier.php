@@ -7,6 +7,7 @@ namespace LiveKit;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use LiveKit\Exceptions\ConfigurationException;
+use LiveKit\Exceptions\TokenVerificationException;
 
 /**
  * Verifies LiveKit access tokens and returns their claims.
@@ -41,7 +42,17 @@ final class TokenVerifier
         JWT::$leeway = $clockToleranceSeconds;
 
         try {
+            // The algorithm is pinned here, not read from the token's own header.
+            // Letting a token choose is how "alg: none" and RS256-verified-with-the-
+            // HMAC-secret forgeries work.
             $decoded = JWT::decode($token, new Key($this->apiSecret, 'HS256'));
+        } catch (\Throwable $e) {
+            // firebase/php-jwt raises its own exceptions -- SignatureInvalid,
+            // Expired, BeforeValid, and a plain DomainException for a token it
+            // cannot even split. None of them is a LiveKitException, so every way
+            // this can fail would otherwise escape the one contract this package
+            // makes about its own errors.
+            throw TokenVerificationException::rejected($e);
         } finally {
             JWT::$leeway = $previousLeeway;
         }
@@ -55,7 +66,7 @@ final class TokenVerifier
         // token minted for a different API key must not verify here just because it
         // happens to be signed with the same secret.
         if (! isset($claims['iss']) || $claims['iss'] !== $this->apiKey) {
-            throw new \UnexpectedValueException('Token issuer does not match the configured API key.');
+            throw TokenVerificationException::issuerMismatch($this->apiKey, $claims['iss'] ?? null);
         }
 
         return $claims;

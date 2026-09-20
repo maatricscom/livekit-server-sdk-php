@@ -6,10 +6,12 @@ namespace LiveKit\Tests;
 
 use LiveKit\AccessToken;
 use LiveKit\Enums\WebhookEventType;
+use LiveKit\Exceptions\LiveKitException;
 use LiveKit\Exceptions\WebhookVerificationException;
 use LiveKit\Proto\WebhookEvent;
 use LiveKit\Tests\Support\TestCase;
 use LiveKit\WebhookReceiver;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class WebhookReceiverTest extends TestCase
 {
@@ -244,5 +246,60 @@ final class WebhookReceiverTest extends TestCase
         $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $auth);
 
         self::assertSame(WebhookEventType::RoomStarted, WebhookEventType::tryFrom($event->getEvent()));
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function bodiesThatCannotBeDecoded(): iterable
+    {
+        yield 'truncated json' => ['{"event":'];
+        yield 'not json at all' => ['not json at all'];
+        yield 'empty' => [''];
+    }
+
+    /**
+     * The protobuf runtime raises GPBDecodeException, which is not ours. It is
+     * reachable with a truncated body, with skipAuth in development, and with
+     * anything that is not protojson -- so it has to be wrapped like any other
+     * failure this package reports.
+     */
+    #[DataProvider('bodiesThatCannotBeDecoded')]
+    public function test_a_body_that_cannot_be_decoded_is_a_livekit_exception(string $body): void
+    {
+        $caught = null;
+
+        try {
+            (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, null, skipAuth: true);
+        } catch (\Throwable $e) {
+            // Assigned rather than asserted in place: self::fail() raises an
+            // AssertionFailedError, which this same catch would swallow.
+            $caught = $e;
+        }
+
+        self::assertInstanceOf(LiveKitException::class, $caught);
+        self::assertInstanceOf(WebhookVerificationException::class, $caught);
+        self::assertNotNull($caught->getPrevious(), 'The protobuf error is kept as the cause.');
+    }
+
+    public function test_a_json_array_decodes_to_an_empty_event_rather_than_failing(): void
+    {
+        // Recorded because it is surprising: protojson accepts a JSON array where an
+        // object belongs and yields a default message. Harmless — LiveKit never
+        // sends one, and the signature check is not what is being skipped here —
+        // but worth pinning so a future change to it is noticed.
+        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive('[1,2,3]', null, skipAuth: true);
+
+        self::assertSame('', $event->getEvent());
+    }
+
+    public function test_the_signature_is_checked_before_the_body_is_decoded(): void
+    {
+        // Order matters: decoding first would run the parser over bytes nobody has
+        // vouched for yet. An unsigned request must fail on the token, not the body.
+        try {
+            (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive('{"event":', null);
+            self::fail('Expected the request to be rejected');
+        } catch (WebhookVerificationException $e) {
+            self::assertStringContainsString('Authorization header', $e->getMessage());
+        }
     }
 }

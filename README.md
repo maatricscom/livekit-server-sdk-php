@@ -381,6 +381,27 @@ try {
 Configuration mistakes (a missing host, a missing or too-short API secret) throw
 `LiveKit\Exceptions\ConfigurationException` at construction time, before any network call is made.
 
+Verifying rather than making a call has its own two: `TokenVerificationException` for a token that does
+not check out — a bad signature, an expired or not-yet-valid window, a token that cannot be parsed, or one
+minted for a different API key — and `WebhookVerificationException` for a webhook this SDK will not
+accept. Both keep the underlying cause as the previous exception, so a caller that wants to tell an
+expired token from a forged one still can:
+
+```php
+use LiveKit\Exceptions\TokenVerificationException;
+
+try {
+    $claims = (new LiveKit\TokenVerifier())->verify($jwt);
+} catch (TokenVerificationException $e) {
+    if ($e->getPrevious() instanceof Firebase\JWT\ExpiredException) {
+        // ask for a fresh token
+    }
+}
+```
+
+The verifier is handed one algorithm, HS256, rather than the one the token names for itself — a token
+signed with the same secret under HS384 or HS512 is rejected, and so is one claiming `alg: none`.
+
 ## Room configuration in a token
 
 A token can carry a `RoomConfiguration`, applied when its holder creates the room:

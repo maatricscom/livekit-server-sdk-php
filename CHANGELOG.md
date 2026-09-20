@@ -53,6 +53,9 @@ Initial release.
 - Every enum-typed integer in the public API is checked against its generated protobuf enum. protoc's
   setters accept any integer, so `inputType: 99` — or a constant borrowed from the neighbouring enum —
   would otherwise be encoded and sent, and only the server would ever see that it made no sense.
+- `TokenVerificationException` and a widened `WebhookVerificationException`, so that every way a token or
+  a webhook can be rejected is a `LiveKitException`. Each keeps the underlying cause as its previous
+  exception. The verifier pins HS256 rather than reading the algorithm from the token.
 - `WebhookReceiver` for verifying LiveKit's webhook signatures against the exact raw request body and
   parsing the result into the generated `WebhookEvent` message, plus `WebhookEventType` for the known
   event names.

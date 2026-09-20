@@ -51,9 +51,16 @@ final class WebhookReceiver
 
         $event = new WebhookEvent();
 
-        // ignore_unknown = true: LiveKit adds webhook fields over time and the
-        // strict parser would throw GPBDecodeException on the first new one.
-        $event->mergeFromJsonString($rawBody, true);
+        try {
+            // ignore_unknown = true: LiveKit adds webhook fields over time and the
+            // strict parser would throw GPBDecodeException on the first new one.
+            $event->mergeFromJsonString($rawBody, true);
+        } catch (\Throwable $e) {
+            // That exception is the protobuf runtime's, not ours. Reachable with a
+            // truncated body, with skipAuth in development, and with anything that
+            // is not protojson at all.
+            throw WebhookVerificationException::unparseableBody($e);
+        }
 
         return $event;
     }
