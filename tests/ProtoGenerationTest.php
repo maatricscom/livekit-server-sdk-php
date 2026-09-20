@@ -128,8 +128,20 @@ final class ProtoGenerationTest extends TestCase
         // value at all is the assertion -- on a runtime without the helper, every
         // one of these raises before returning anything.
         self::assertEquals(0, (new \LiveKit\Proto\EventMetric())->getEndTimestampMs());
+        self::assertEquals(0, (new \LiveKit\Proto\UserPacket())->getStartTime());
+        self::assertEquals(0, (new \LiveKit\Proto\UserPacket())->getEndTime());
         self::assertEquals(0, (new \LiveKit\Proto\ChatMessage())->getEditTimestamp());
         self::assertEquals(0, (new \LiveKit\Proto\DataStream\Header())->getTotalLength());
+
+        // The list above must stay complete, or this test drifts into covering a
+        // subset without saying so.
+        $callSites = 0;
+
+        foreach (self::generatedFiles() as $file) {
+            $callSites += substr_count((string) file_get_contents($file), 'GPBUtil::compatibleInt64(');
+        }
+
+        self::assertSame(5, $callSites, 'A getter using this helper was added or removed; cover it above.');
     }
 
     /**
