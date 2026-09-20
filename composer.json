@@ -1,6 +1,6 @@
 {
     "name": "maatrics/livekit-server-sdk-php",
-    "description": "LiveKit server SDK for PHP — room management, egress, ingress, SIP, agent dispatch, access tokens and webhooks",
+    "description": "LiveKit server SDK for PHP — room management, egress, ingress, SIP, agent dispatch, WhatsApp&Twilio connectors, access tokens and webhooks",
     "keywords": ["livekit", "webrtc", "sdk", "video", "sip", "egress"],
     "type": "library",
     "license": "Apache-2.0",
@@ -55,7 +55,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "analyse": "phpstan analyse",
+        "analyse": "phpstan analyse --memory-limit=512M",
         "lint": "pint --test",
         "fix": "pint",
         "generate-protos": "bin/generate-protos.sh",

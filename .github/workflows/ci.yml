@@ -112,7 +112,11 @@ jobs:
           php-version: '8.4'
           coverage: none
       - run: composer install --prefer-dist --no-interaction --no-progress
-      - run: vendor/bin/phpstan analyse --no-progress
+      # Through composer, so the memory limit is defined once. PHP's 128M default
+      # is not enough for PHPStan's parallel workers on this tree, and the failure
+      # is a crashed child process rather than an analysis error -- easy to mistake
+      # for a real finding.
+      - run: composer analyse -- --no-progress
 
   pint:
     runs-on: ubuntu-latest
