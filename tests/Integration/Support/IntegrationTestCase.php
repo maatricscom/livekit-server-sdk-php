@@ -58,6 +58,20 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /** A name no other test run will collide with, and one a human can recognise. */
+    /**
+     * A client that does not fail over, for a call expected to fail.
+     *
+     * Failover replays a retryable failure across regions, and the regions it
+     * reaches next can be slower to give up than the one first asked: measured
+     * against a live Cloud project, the same failing call took 7.8 seconds with
+     * this client and 177 with the default. A test that already knows the answer
+     * should not pay that three times to hear it again.
+     */
+    protected function noFailoverClient(): LiveKitAPI
+    {
+        return new LiveKitAPI(options: new ClientOptions(failover: false));
+    }
+
     protected function scratchName(string $what): string
     {
         return sprintf('php-sdk-it-%s-%s', $what, bin2hex(random_bytes(4)));

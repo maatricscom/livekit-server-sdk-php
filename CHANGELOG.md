@@ -138,7 +138,11 @@ starting out now has no reason to carry a version that only receives security fi
   both wire formats, metadata round-tripping, the ingress create/update/delete path, agent dispatch, the
   list RPCs of the services that must not be mutated, and what a real server returns when the request is
   wrong, plus a sweep over every remaining room, egress and agent-dispatch method — the three services
-  an outage hurts most — asserting the code a real deployment answers each with. Everything it creates is
+  an outage hurts most — asserting the code a real deployment answers each with. SIP's configuration
+  surface is driven in full against a real project, trunks and dispatch rules alike, with each `*Fields()`
+  partial update asserting that the fields it did not send survived; the two calls that could reach a
+  telephone are aimed at a trunk and a participant that do not exist, so the server refuses before
+  anything is dialled. Everything it creates is
   deleted even when an assertion fails; nothing it calls places a call, starts a recording or incurs a
   charge; and a feature the deployment does not have is a skip rather than a failure. It has been run green against a live LiveKit Cloud deployment, in both wire formats,
   which is what closes the open question of whether the binary content type this SDK sends by default is
