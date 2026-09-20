@@ -32,23 +32,50 @@ classes and doubles the suites share; `tests/MockServer/Support/` holds the ones
 Note that `ZzEnvLeakProbeTest` has to sort last, because it checks that nothing before it leaked an
 environment variable; `ToolingConfigTest` fails if a file is ever added that sorts after it.
 
-Three directories hold PHP, and the line between them is **who decides when a class changes, and whether
-you may name it in your own code**:
+### Why `metadata/` is not inside `src/`
 
-| | governed by | may a consumer name it | contents |
+Both generated trees are PHP, and one is inside `src/` while the other is not. The reason is mechanical,
+not a matter of taste: there are two PSR-4 roots, and `src/` is the directory the first one maps to.
+
+```
+LiveKit\               ->  src/
+GPBMetadata\LiveKit\   ->  metadata/
+```
+
+PSR-4's contract is that the path mirrors the namespace. Under `LiveKit\ => src/`, a file at
+`src/Grants/VideoGrant.php` *must* be `LiveKit\Grants\VideoGrant`. Put the descriptors at
+`src/Metadata/LivekitRoom.php` and that path claims `LiveKit\Metadata\LivekitRoom`, while the class in it
+is `GPBMetadata\LiveKit\LivekitRoom`. Composer accepts the arrangement, and the result is one file
+reachable under two class names — asking for the wrong one includes the file a second time:
+
+```
+Fatal error: Cannot redeclare class GPBMetadata\LiveKit\LivekitRoom
+  ClassLoader->loadClass('LiveKit\Metadata\LivekitRoom')
+```
+
+A `class_exists()` probe or a static analyser walking the namespace is enough to trigger it. Keeping each
+root in its own tree is what makes the wrong name resolve to nothing instead. `google-cloud-php` and
+Temporal's PHP SDK both do the same — no root nested inside another's directory.
+
+### Which tree a class belongs in
+
+The namespace is the deciding question, and it follows from who governs the class:
+
+| | governed by | namespace root | contents |
 |---|---|---|---|
-| `src/` (excluding `Proto/`) | this package | yes | 71 hand-written files |
-| `src/Proto/` | `livekit/protocol`'s `.proto` files | yes | 360 files, all from protoc |
-| `metadata/` | the protobuf runtime | **no** | 16 descriptor files |
+| `src/` (excluding `Proto/`) | this package | `LiveKit\` | 71 hand-written files |
+| `src/Proto/` | `livekit/protocol`'s `.proto` files | `LiveKit\` | 360 files, all from protoc |
+| `metadata/` | the protobuf runtime | `GPBMetadata\` | 16 descriptor files |
 
-That is why `src/Proto/` sits inside `src/` while `metadata/` does not, even though both are generated.
-`src/` means *what this package offers you to name*, not *what a human typed*: the service interfaces in
-`src/Contracts/` return `LiveKit\Proto\Room`, so those types are unavoidably part of the API. Descriptors
-are the opposite — `GPBMetadata\LiveKit\*` appears nowhere in this package's hand-written code and is
-never meant to appear in yours. It exists so the protobuf runtime can find a message definition.
+Descriptors are the runtime's plumbing rather than this package's API, which is why they live in the
+runtime's shared `GPBMetadata` root instead of ours — beneath a prefix of our own, never at the bare
+root, which two packages can claim at once.
 
-The namespace segment carries the same information. `LiveKit\Proto\Room` tells a caller that this type's
-stability tracks upstream rather than this package's own semver, which `LiveKit\Room` would not.
+Messages stay under `LiveKit\` because they are unavoidably part of this package's surface: the service
+interfaces in `src/Contracts/` return `LiveKit\Proto\Room`. The `Proto` segment then tells a caller that
+this type's stability tracks upstream rather than this package's own semver, which `LiveKit\Room` would
+not. (`src/Proto/` also holds plenty nobody calls — `JoinRequest`, `Ping` and the rest of the signalling
+messages arrive through the import closure — so it is the namespace that decides, not usage.)
 
 Two consequences worth knowing before moving a file:
 
