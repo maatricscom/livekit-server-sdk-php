@@ -120,7 +120,7 @@ starting out now has no reason to carry a version that only receives security fi
   `google/protobuf`'s classes, so the `^5.36` requirement on the Composer package stops applying the
   moment it is loaded; and before 5.34 its `GPBUtil` has no `compatibleInt64()`, which protoc 36's
   getters for `optional` int64 fields call. Measured against ext-protobuf 4.32.1, which is what Alpine
-  ships today: `EventMetric::getEndTimestampMs()`, `ChatMessage::getEditTimestamp()` and
+  shipped at the time of writing: `EventMetric::getEndTimestampMs()`, `ChatMessage::getEditTimestamp()` and
   `DataStream\Header::getTotalLength()` all raise `Call to undefined method`.
 - `sendData()` puts a fresh 16-byte nonce on every packet, which is what `livekit_room.proto` asks the
   SDK to do ("added by SDK to enable de-duping of messages") and what the Node SDK does. A packet
@@ -129,132 +129,24 @@ starting out now has no reason to carry a version that only receives security fi
 - One naming rule across every client: the per-call option object is always `$options`, a room is `$room`
   or `$roomName` following the proto field, and `$output` / `$fields` keep their own meanings. Named
   arguments make a parameter name part of the API, so a name that changes between clients is a trap.
-- `tests/MockServer/`, run in CI against `livekit/test-server` — the programmable mock of the LiveKit HTTP
-  API that every official server SDK tests against. It covers every RPC in both wire formats, proving
-  the grants this SDK mints satisfy the server's own permission table and that the server can decode what
-  the SDK encodes. `RpcCoverageTest` fails if a service client grows a method the sweep does not call.
-- `tests/Integration/`, a suite that runs against a real LiveKit deployment when `LIVEKIT_URL`,
-  `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set — locally, and in CI from repository secrets on
-  pushes to `main` and manual dispatch, never on a pull request, since a job holding a live API key that
-  runs the code in an arbitrary pull request is a way to publish that key. It is the release gate: room lifecycle in
-  both wire formats, metadata round-tripping, the ingress create/update/delete path, agent dispatch, the
-  list RPCs of the services that must not be mutated, and what a real server returns when the request is
-  wrong, plus a sweep over every remaining room, egress and agent-dispatch method — the three services
-  an outage hurts most — asserting the code a real deployment answers each with. SIP's configuration
-  surface is driven in full against a real project, trunks and dispatch rules alike, with each `*Fields()`
-  partial update asserting that the fields it did not send survived; the two calls that could reach a
-  telephone are aimed at a trunk and a participant that do not exist, so the server refuses before
-  anything is dialled. The connector's five RPCs are covered the same way: `connectTwilioCall()` runs for
-  real, because it provisions a websocket endpoint rather than placing anything, while each WhatsApp call
-  is arranged to fail at one of LiveKit's own validation gates — the SDP type, then the Cloud API version
-  — so the credential in the request is never forwarded to Meta and no call can be attempted.
-  `AccessToken` is proved the only way that counts: a token is minted, handed to the client verbatim, and
-  the deployment decides — `roomList` lists rooms and a token without it does not, `roomAdmin` reaches only
-  the room its grant names, and an expired or wrongly-signed token is refused. A missing grant and a bad
-  credential both come back `unauthenticated`, and only the `http_error_from_intermediary` metadata tells
-  them apart. `WebhookReceiver` has no such test and the suite says why: a real webhook needs a publicly
-  reachable URL, so it rests on the body fixture generated from LiveKit's own `webhook/url_notifier.go`. Everything it creates is
-  deleted even when an assertion fails; nothing it calls places a call, starts a recording or incurs a
-  charge; and a feature the deployment does not have is a skip rather than a failure. It has been run green against a live LiveKit Cloud deployment, in both wire formats,
-  which is what closes the open question of whether the binary content type this SDK sends by default is
-  one LiveKit Cloud accepts.
+- Verified against LiveKit rather than only against itself, which is the claim a new SDK has to earn. Every
+  RPC is exercised in both wire formats against `livekit/test-server`, LiveKit's own programmable mock and
+  the one every official server SDK tests against — proving the server can decode what this package encodes
+  and that the grant minted for each RPC satisfies its permission table. A second suite drives the same
+  surface against a real LiveKit Cloud deployment, including the token grants, the SIP configuration path
+  and the connector, and has been run green there in both wire formats. Nothing in either suite places a
+  call, starts a recording or incurs a charge. `CONTRIBUTING.md` describes how to run both.
 
 ### Notes
 
-About the package:
+- `src/Proto/` carries LiveKit's signalling messages (`JoinRequest`, `Ping`, `AddTrackRequest` and the rest
+  of `livekit_rtc.proto`) even though no client here calls them, which is most of the package's size. They
+  arrive through the import closure: `AcceptWhatsAppCall` carries a `SessionDescription`, which lives in
+  that file, and protoc cannot generate one message out of a file. The alternative would be dropping
+  `acceptWhatsAppCall()`.
 
-- `src/Proto/` carries the LiveKit signalling messages (`JoinRequest`, `Ping`, `AddTrackRequest` and the
-  rest of `livekit_rtc.proto`) even though no client here calls them. They arrive through the import
-  closure: `AcceptWhatsAppCall` carries a `SessionDescription`, which lives in that file. protoc cannot
-  generate one message from a file, so the alternative would be dropping `acceptWhatsAppCall()`.
-
-About the repository — none of this reaches an installed package, since `.gitattributes`
-keeps `bin/`, `.github/`, `tests/` and the analyser configuration out of the distributed
-tarball. It is recorded because it is why the package can be trusted to behave as described:
-
-- `ProtocolVersion` is `LiveKit\ProtocolVersion` in `src/`, not `LiveKit\Proto\ProtocolVersion` in the
-  generated tree. It is written by `bin/generate-protos.sh` rather than by protoc, and its shape is this
-  package's own, so it belongs with the code it serves. Each directory now answers "who decides when a
-  class in here changes?" with one answer: `src/` is ours, `src/Proto/` is upstream's `.proto` files,
-  `metadata/` is the protobuf runtime's. Being outside the generated tree also puts it under Pint and
-  PHPStan, which is why its constants are typed like the rest of the package's.
-- `CONTRIBUTING.md` tells a contributor what the machine will do to their change: that
-  `ProtoGenerationTest` refuses a hand-written file in either generated tree, that `examples/` ships and
-  is analysed like the rest, and that `ReadmeCodeBlocksTest` checks every snippet in the README.
-- `CONTRIBUTING.md` documents commands that were run as written rather than typed from memory. The
-  drift check it gave used `git diff`, which never reports the added file a new upstream message type
-  arrives as; the forbidden-symbol grep and the analyser exclusions named only `src/Proto`; the
-  protocol-bump checklist omitted the two fixture generators that `check-protocol` fails on; and the
-  port-forwarding step for running the mock-server suite under `ext-protobuf` never said it runs inside
-  the container, which does not have `socat` installed.
-- `ProtoGenerationTest` fails if a file in `src/Proto/` or `metadata/` was not written by protoc. A
-  hand-written class placed in either is deleted by the next generation run and is excluded from Pint and
-  PHPStan until then, with nothing announcing either — which had already happened once, to
-  `ProtocolVersion`.
-- `README.md` documents `sendData()` and the nonce it attaches to every packet, and says what
-  `WebhookReceiver::receive()` rejects — including that a body which is not a JSON object is refused by
-  this package rather than by whichever protobuf runtime is installed.
-- `README.md` documents every service client. Egress, ingress, SIP and agent dispatch had no section at
-  all and now have one each, next to the existing one for the WhatsApp and Twilio connectors; rooms and
-  participants gained one too, which had been the largest gap — `RoomServiceClient` is the client most
-  people reach for first, and ten of its fourteen methods appeared nowhere, participant moderation and
-  removal among them; the SIP
-  section covers the distinction the method names hide, between an update that replaces a trunk
-  wholesale and clears what you omit, and the `*Fields()` form that changes only what you pass; that section gains the step it was missing, where an outbound WhatsApp call is completed
-  from the SDP Meta posts to your webhook rather than in the request that dialled. The eight runnable
-  examples are listed with what each demonstrates. Every snippet in the file is checked by
-  `ReadmeCodeBlocksTest`, so none of them can name a class, parameter, constant or method that does not
-  exist.
-- `examples/` covers all six service clients: room, egress, ingress, SIP, agent dispatch and the
-  WhatsApp connector, alongside tokens and webhooks. The directory ships, so these are the first code
-  anyone copies. The two that would place a real phone call are handled rather than omitted:
-  `createSipParticipant()` is described but not run, and the connector example prints what it would dial
-  and stops unless `PLACE_A_REAL_WHATSAPP_CALL=yes` is set. The connector example also shows the flow as
-  it really is — the SDP arrives from Meta by webhook between `dialWhatsAppCall()` and
-  `connectWhatsAppCall()`, so the two cannot sit next to each other in real code.
-- `examples/webhook.php` reports a missing key or secret as a 500 with the reason, instead of an uncaught
-  `ConfigurationException` and a stack trace. It caught only `WebhookVerificationException`, so the first
-  thing a misconfigured deployment saw from the example that teaches webhook handling was a PHP fatal.
-- `ToolingConfigTest` asserts that `ZzEnvLeakProbeTest` still sorts last among the unit suite's files.
-  It can only check for leaked environment variables from last place, and it holds that place by its
-  name alone — a test file added under a path sorting after it would take the slot silently.
-- `ReadmeCodeBlocksTest` checks every PHP example in `README.md`: that it parses at all, and that every
-  class, named argument, constant and resolvable method call in it exists. Thirty-three examples, of which
-  one was executed by anything before. It found a block that opened with `} catch` and could not be
-  pasted anywhere, and a block that imported two of the three classes it used.
-- Assertions on protobuf maps sort before comparing. A map has no order: the pure-PHP runtime iterates
-  one in insertion order and `ext-protobuf` in hash order, so an order-sensitive assertion passes
-  reliably on one and intermittently on the other — the one this rule came from failed 22 times in 40.
-- `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
-  whole run has succeeded, so a protoc that fails — or a Ctrl-C — cannot leave the generated tree
-  half-written or empty.
-- `bin/check-protocol-version.sh` fails if any of the seven hand-written copies of the pinned protocol
-  tag disagrees with the generator — including the `go get` line in each fixture generator and the design
-  spec, which states the pin as a current fact — and if the generated `src/ProtocolVersion.php` does not
-  match it exactly. Eight files in all. Those decide
-  which protocol the reference JWTs and webhook body are produced from: a bump that missed them would
-  regenerate fixtures from the old protocol, and the suite would stay green asserting new code against
-  stale references.
-- CI reads protoc's version out of `bin/generate-protos.sh` rather than carrying its own copy. protoc's
-  output differs between versions and the drift job compares generated files against committed ones, so
-  a CI protoc that merely satisfied the script's minimum would fail with a diff that reads like someone
-  forgot to regenerate. Runs on a non-`main` ref cancel when superseded, and the jobs say
-  `composer update`, which is what Composer does anyway with no lock file committed.
-- PHPUnit fails on deprecations, notices, its own deprecated API, and an empty test suite. The last of
-  those catches a `--filter` that matches nothing, which otherwise reports success having run no test.
-  `executionOrder` is deliberately left at its default and `ToolingConfigTest` fails if it is ever set:
-  `ZzEnvLeakProbeTest` can only check for leaked environment variables from last place, and the default
-  alphabetical order is the only thing putting it there.
-- PHPStan caches in `.phpstan.cache`, a per-project directory that can be cleared by deleting it,
-  rather than in the system temp directory it shares with every other project.
-- `examples/` is analysed by PHPStan and covered by Rector, not only formatted by Pint. It was the one
-  hand-written directory no tool checked, and PHPStan found a real defect there the moment it looked:
-  `examples/webhook.php` passed `$_SERVER['HTTP_AUTHORIZATION']`, which is `mixed`, straight into a
-  `?string` parameter. Sample code is the first thing anyone copies.
-- PHPStan analyses against the whole supported PHP range (`phpVersion: min 80400, max 80599`) rather
-  than against whichever PHP happens to run it. Unset, it assumed 8.5 on a machine running 8.5 and 8.4
-  in CI, so a function that exists only in 8.5 — `array_first()`, say — passed locally and would have
-  broken for a user on 8.4. `ToolingConfigTest` ties the lower bound to the `php` constraint in
-  composer.json so the two cannot drift apart.
+Why the package is built and checked the way it is — the generated trees, the guard tests, the tooling —
+is not repeated here. `CONTRIBUTING.md` covers how to work on it and `docs/design.md` records the
+reasoning behind the design.
 
 [0.1.0]: https://github.com/maatrics/livekit-server-sdk-php/releases/tag/v0.1.0
