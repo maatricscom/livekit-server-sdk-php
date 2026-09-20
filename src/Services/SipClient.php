@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Services;
 
 use Google\Protobuf\Duration;
+use LiveKit\Contracts\SipClientInterface;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
@@ -67,12 +68,8 @@ use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
  * Only createSipParticipant() and transferSipParticipant() can fail with
  * LiveKit\Exceptions\SipCallError: they are the only RPCs whose Twirp error meta carries a
  * SIP status. Everything else fails with a plain LiveKit\Exceptions\TwirpException.
- *
- * Note: this class implements LiveKit\Contracts\SipClientInterface. The `implements`
- * clause is added once all 19 public methods exist (see the closing cycle of Task 13),
- * so that the class never fails to load with a partially-built interface.
  */
-final class SipClient extends ServiceBase
+final class SipClient extends ServiceBase implements SipClientInterface
 {
     /** Twirp service name as it appears in the URL: /twirp/livekit.SIP/<Method>. */
     private const SERVICE = 'SIP';

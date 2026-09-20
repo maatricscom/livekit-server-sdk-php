@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Services;
 
+use LiveKit\Contracts\SipClientInterface;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
@@ -1274,5 +1275,48 @@ final class SipClientTest extends TwirpTestCase
             'ST_missing',
             $this->decodeRequest(DeleteSIPTrunkRequest::class)->getSipTrunkId(),
         );
+    }
+
+    public function testTheClientImplementsEveryLiveRpcAndNoDeletedOne(): void
+    {
+        $expected = [
+            // 16 live rpcs of livekit.SIP
+            'listSipTrunk',
+            'createSipInboundTrunk',
+            'createSipOutboundTrunk',
+            'updateSipInboundTrunk',
+            'updateSipOutboundTrunk',
+            'getSipInboundTrunk',
+            'getSipOutboundTrunk',
+            'listSipInboundTrunk',
+            'listSipOutboundTrunk',
+            'deleteSipTrunk',
+            'createSipDispatchRule',
+            'updateSipDispatchRule',
+            'listSipDispatchRule',
+            'deleteSipDispatchRule',
+            'createSipParticipant',
+            'transferSipParticipant',
+            // 3 convenience wrappers over the 'update' arm of the update rpcs
+            'updateSipDispatchRuleFields',
+            'updateSipInboundTrunkFields',
+            'updateSipOutboundTrunkFields',
+        ];
+
+        $actual = get_class_methods(SipClientInterface::class);
+        sort($expected);
+        sort($actual);
+        self::assertSame($expected, $actual);
+
+        // CreateSIPTrunk is commented out and marked DELETED in livekit_sip.proto at
+        // protocol v1.52.0: its Twirp route is gone, so the SDK must not offer it.
+        //
+        // Asserted via get_class_methods() + assertNotContains() rather than
+        // method_exists(SipClient::class, 'createSipTrunk'): PHPStan can prove the latter
+        // always evaluates to false against a final class with no such method, which is
+        // exactly the invariant this test wants to pin — but that provability is also why
+        // PHPStan flags it as an impossible check (function.impossibleType). The indirect
+        // form here asserts the identical fact without being statically decidable.
+        self::assertNotContains('createSipTrunk', get_class_methods(SipClient::class));
     }
 }
