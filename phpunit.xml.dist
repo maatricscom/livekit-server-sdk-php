@@ -6,7 +6,14 @@
          failOnWarning="true"
          failOnRisky="true"
          beStrictAboutOutputDuringTests="true"
-         cacheDirectory=".phpunit.cache">
+         cacheDirectory=".phpunit.cache"
+         defaultTestSuite="unit">
+    <!--
+        defaultTestSuite keeps a bare `vendor/bin/phpunit` on the unit suite. The
+        integration suite's directory does not exist until Task 17 of the plan, and
+        without this a bare run fails on the missing path. Run it explicitly with
+        the testsuite flag: `vendor/bin/phpunit` with `testsuite=integration`.
+    -->
     <testsuites>
         <testsuite name="unit">
             <directory>tests</directory>
