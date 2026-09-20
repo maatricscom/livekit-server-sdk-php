@@ -49,6 +49,15 @@ final class TokenVerifier
         /** @var array<string, mixed> $claims */
         $claims = json_decode(json_encode($decoded, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
 
+        // Signature, expiry and not-before are all JWT::decode()'s job above, but it
+        // has no notion of *whose* token this is meant to be -- that check is ours.
+        // Node's TokenVerifier passes `issuer: this.apiKey` to the same effect: a
+        // token minted for a different API key must not verify here just because it
+        // happens to be signed with the same secret.
+        if (! isset($claims['iss']) || $claims['iss'] !== $this->apiKey) {
+            throw new \UnexpectedValueException('Token issuer does not match the configured API key.');
+        }
+
         return $claims;
     }
 

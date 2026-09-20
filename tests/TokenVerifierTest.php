@@ -62,4 +62,36 @@ final class TokenVerifierTest extends TestCase
 
         self::assertSame(self::API_KEY, $claims['iss']);
     }
+
+    /**
+     * Signature alone is not enough: a token correctly signed with this secret but
+     * minted for a different API key must still be rejected, mirroring Node's
+     * TokenVerifier passing `issuer: this.apiKey` to its JWT library.
+     */
+    public function test_rejects_a_token_whose_issuer_does_not_match_the_configured_api_key(): void
+    {
+        $jwt = JWT::encode(
+            ['iss' => 'a-different-api-key', 'sub' => 'alice', 'exp' => time() + 3600],
+            self::API_SECRET,
+            'HS256'
+        );
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Token issuer does not match the configured API key.');
+
+        (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt);
+    }
+
+    public function test_rejects_a_token_with_no_issuer_claim(): void
+    {
+        $jwt = JWT::encode(
+            ['sub' => 'alice', 'exp' => time() + 3600],
+            self::API_SECRET,
+            'HS256'
+        );
+
+        $this->expectException(\UnexpectedValueException::class);
+
+        (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt);
+    }
 }
