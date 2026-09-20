@@ -163,6 +163,22 @@ LIVEKIT_TEST_SERVER_SECRET=test-server-secret-not-a-real-credential \
 vendor/bin/phpunit --testsuite mock-server
 ```
 
+Without Docker, build it from source instead. Note the first line: `go install` does **not** work here,
+because `livekit/livekit`'s `go.mod` carries `replace` directives and Go refuses to install a package
+whose module would be interpreted differently as a dependency than as the main module. Cloning makes it
+the main module, which is what the refusal is asking for.
+
+```bash
+git clone --depth 1 --branch v1.13.7 https://github.com/livekit/livekit.git
+cd livekit && go build -o test-server ./cmd/test-server
+LK_TEST_SERVER_API_SECRET=test-server-secret-not-a-real-credential ./test-server
+```
+
+Expect that to pull several hundred megabytes of Go modules the first time; the Docker image is much
+cheaper if you have a daemon to run it on. Either way the server binds 9999 for the primary region and
+10000-10002 for the failover targets it advertises on `GET /settings/regions`, which is what `FailoverTest`
+and `RegionPinTest` need.
+
 The secret must be **at least 32 bytes** and must match the server's. `AccessToken` refuses to sign with
 anything shorter, which rules out the mock's own default of `secret` (the `livekit-server --dev` value) —
 so the mock has to be started with a longer one. It is not a credential; the mock accepts whatever it is

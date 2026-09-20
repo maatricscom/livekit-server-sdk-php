@@ -46,7 +46,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
  * It proves **authorization**: the mock enforces the same per-RPC permission
  * table as the real server, so a method whose VideoGrant is too narrow fails
  * here with permission_denied. That is the bug which is otherwise invisible
- * until a user hits it in production, and it is covered for all 47 RPCs.
+ * until a user hits it in production, and it is covered for all 52 RPCs the six
+ * clients call, reached through 56 entries here -- the extra four being the three
+ * SIP *Fields() wrappers and getDispatch(), which share an RPC with the method
+ * beside them but mint their own grant and build their own request.
  * Verified by mutation: weakening deleteRoom's grant from roomCreate to roomList
  * fails this test.
  *
