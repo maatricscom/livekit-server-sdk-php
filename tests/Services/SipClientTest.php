@@ -8,6 +8,7 @@ use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\ListSipTrunkOptions;
+use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
@@ -717,5 +718,71 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(['ST_inbound'], iterator_to_array($sentRule->getTrunkIds(), false));
 
         self::assertSame('renamed', $info->getName());
+    }
+
+    public function testUpdateSipDispatchRuleFieldsSendsTheUpdateArm(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct'),
+        ));
+
+        $this->client->updateSipDispatchRuleFields(
+            'SDR_direct',
+            new SipDispatchRuleUpdateOptions(
+                trunkIds: (new ListUpdate())->setAdd(['ST_extra']),
+                rule: (new SIPDispatchRule())->setDispatchRuleIndividual(
+                    (new SIPDispatchRuleIndividual())->setRoomPrefix('call-'),
+                ),
+                name: 'renamed',
+                metadata: 'updated',
+                attributes: ['tier' => 'silver'],
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPDispatchRuleRequest::class);
+        self::assertSame('SDR_direct', $sent->getSipDispatchRuleId());
+        self::assertSame('update', $sent->getAction());
+        self::assertNull($sent->getReplace());
+
+        $update = $sent->getUpdate();
+        self::assertNotNull($update);
+        self::assertNotNull($update->getTrunkIds());
+        self::assertSame(['ST_extra'], iterator_to_array($update->getTrunkIds()->getAdd(), false));
+        self::assertSame('dispatch_rule_individual', $update->getRule()?->getRule());
+        self::assertSame('renamed', $update->getName());
+        self::assertSame('updated', $update->getMetadata());
+        self::assertSame(['tier' => 'silver'], iterator_to_array($update->getAttributes()));
+    }
+
+    public function testUpdateSipDispatchRuleFieldsOmitsUnsetOptionalScalars(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPDispatchRuleInfo()));
+
+        $this->client->updateSipDispatchRuleFields(
+            'SDR_direct',
+            new SipDispatchRuleUpdateOptions(name: 'only-the-name'),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPDispatchRuleRequest::class);
+        self::assertSame('SDR_direct', $sent->getSipDispatchRuleId());
+        self::assertSame('update', $sent->getAction());
+
+        $update = $sent->getUpdate();
+        self::assertNotNull($update);
+        self::assertSame('only-the-name', $update->getName());
+        self::assertFalse($update->hasMetadata());
+        self::assertNull($update->getTrunkIds());
+        self::assertNull($update->getRule());
+        self::assertCount(0, $update->getAttributes());
     }
 }

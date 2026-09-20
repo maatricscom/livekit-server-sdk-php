@@ -8,6 +8,7 @@ use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\ListSipTrunkOptions;
+use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\SIPDispatchRule;
@@ -135,5 +136,14 @@ interface SipClientInterface
     public function updateSipDispatchRule(
         string $sipDispatchRuleId,
         SIPDispatchRuleInfo $rule,
+    ): SIPDispatchRuleInfo;
+
+    /**
+     * Updates only the given fields of a SIP dispatch rule, leaving the rest alone.
+     * Sends the 'update' arm of the oneof in livekit.UpdateSIPDispatchRuleRequest.
+     */
+    public function updateSipDispatchRuleFields(
+        string $sipDispatchRuleId,
+        SipDispatchRuleUpdateOptions $fields,
     ): SIPDispatchRuleInfo;
 }

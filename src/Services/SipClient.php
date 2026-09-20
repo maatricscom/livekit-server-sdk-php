@@ -11,6 +11,7 @@ use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\ListSipTrunkOptions;
+use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
@@ -29,6 +30,7 @@ use LiveKit\Proto\ListSIPTrunkRequest;
 use LiveKit\Proto\ListSIPTrunkResponse;
 use LiveKit\Proto\SIPDispatchRule;
 use LiveKit\Proto\SIPDispatchRuleInfo;
+use LiveKit\Proto\SIPDispatchRuleUpdate;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -598,6 +600,53 @@ final class SipClient extends ServiceBase
         $request = new UpdateSIPDispatchRuleRequest();
         $request->setSipDispatchRuleId($sipDispatchRuleId);
         $request->setReplace($rule);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateSIPDispatchRule',
+            $request,
+            SIPDispatchRuleInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Updates only the given fields of a SIP dispatch rule, leaving the rest alone.
+     * Sends the 'update' arm of the oneof in livekit.UpdateSIPDispatchRuleRequest.
+     */
+    public function updateSipDispatchRuleFields(
+        string $sipDispatchRuleId,
+        SipDispatchRuleUpdateOptions $fields,
+    ): SIPDispatchRuleInfo {
+        $update = new SIPDispatchRuleUpdate();
+
+        if ($fields->trunkIds !== null) {
+            $update->setTrunkIds($fields->trunkIds);
+        }
+        if ($fields->rule !== null) {
+            $update->setRule($fields->rule);
+        }
+        if ($fields->name !== null) {
+            $update->setName($fields->name);
+        }
+        if ($fields->metadata !== null) {
+            $update->setMetadata($fields->metadata);
+        }
+        if ($fields->attributes !== null) {
+            $update->setAttributes($fields->attributes);
+        }
+        if ($fields->mediaEncryption !== null) {
+            $update->setMediaEncryption($fields->mediaEncryption);
+        }
+        if ($fields->media !== null) {
+            $update->setMedia($fields->media);
+        }
+
+        $request = new UpdateSIPDispatchRuleRequest();
+        $request->setSipDispatchRuleId($sipDispatchRuleId);
+        $request->setUpdate($update);
 
         $response = $this->rpc(
             self::SERVICE,
