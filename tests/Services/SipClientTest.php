@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Services;
 
+use LiveKit\Exceptions\SipCallError;
+use LiveKit\Exceptions\TwirpException;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
@@ -1180,6 +1182,97 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(
             '32000',
             $this->http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'),
+        );
+    }
+
+    public function testCreateSipParticipantRaisesSipCallErrorWhenTheMetaCarriesASipStatus(): void
+    {
+        // A real LiveKit failure body: the Twirp envelope is JSON even in binary mode, and
+        // the SIP status rides along in meta.
+        $this->http->pushResponse($this->errorResponse(
+            500,
+            'internal',
+            'sip: call failed',
+            [
+                'sip_status_code' => '486',
+                'sip_status' => 'Busy Here',
+            ],
+        ));
+
+        try {
+            $this->client->createSipParticipant('ST_outbound', '+15105550123', 'my-room');
+            self::fail('expected SipCallError');
+        } catch (SipCallError $e) {
+            self::assertSame(486, $e->getSipStatusCode());
+            self::assertSame('Busy Here', $e->getSipStatus());
+            self::assertSame('internal', $e->getTwirpCode());
+            self::assertSame(500, $e->getHttpStatus());
+        }
+
+        // The failure does not change the request: same envelope, same grant, same body.
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+        self::assertSame(
+            '+15105550123',
+            $this->decodeRequest(CreateSIPParticipantRequest::class)->getSipCallTo(),
+        );
+    }
+
+    public function testTransferSipParticipantRaisesSipCallErrorWhenTheMetaCarriesASipStatus(): void
+    {
+        $this->http->pushResponse($this->errorResponse(
+            500,
+            'internal',
+            'sip: transfer failed',
+            [
+                'sip_status_code' => '603',
+                'sip_status' => 'Decline',
+            ],
+        ));
+
+        try {
+            $this->client->transferSipParticipant('my-room', 'caller-7', 'tel:+15105550199');
+            self::fail('expected SipCallError');
+        } catch (SipCallError $e) {
+            self::assertSame(603, $e->getSipStatusCode());
+            self::assertSame('Decline', $e->getSipStatus());
+            self::assertSame('internal', $e->getTwirpCode());
+            self::assertSame(500, $e->getHttpStatus());
+        }
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'TransferSIPParticipant');
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+        $this->assertSipGrant(['call' => true], $request);
+        self::assertSame(
+            'tel:+15105550199',
+            $this->decodeRequest(TransferSIPParticipantRequest::class)->getTransferTo(),
+        );
+    }
+
+    public function testTrunkFailuresStayPlainTwirpExceptions(): void
+    {
+        $this->http->pushResponse($this->errorResponse(404, 'not_found', 'trunk does not exist'));
+
+        try {
+            $this->client->deleteSipTrunk('ST_missing');
+            self::fail('expected TwirpException');
+        } catch (TwirpException $e) {
+            self::assertNotInstanceOf(SipCallError::class, $e);
+            self::assertSame('not_found', $e->getTwirpCode());
+            self::assertSame(404, $e->getHttpStatus());
+            self::assertSame([], $e->getMeta());
+        }
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'DeleteSIPTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+        self::assertSame(
+            'ST_missing',
+            $this->decodeRequest(DeleteSIPTrunkRequest::class)->getSipTrunkId(),
         );
     }
 }
