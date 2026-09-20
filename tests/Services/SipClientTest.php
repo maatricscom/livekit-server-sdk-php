@@ -7,6 +7,7 @@ namespace LiveKit\Tests\Services;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\CreateSipParticipantOptions;
 use LiveKit\Options\ListSipDispatchRuleOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
@@ -15,6 +16,7 @@ use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\CreateSIPParticipantRequest;
 use LiveKit\Proto\DeleteSIPDispatchRuleRequest;
 use LiveKit\Proto\DeleteSIPTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
@@ -38,7 +40,9 @@ use LiveKit\Proto\SIPDispatchRuleIndividual;
 use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
+use LiveKit\Proto\SIPOutboundConfig;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
+use LiveKit\Proto\SIPParticipantInfo;
 use LiveKit\Proto\SIPTransport;
 use LiveKit\Proto\SIPTrunkInfo;
 use LiveKit\Proto\UpdateSIPDispatchRuleRequest;
@@ -885,5 +889,201 @@ final class SipClientTest extends TwirpTestCase
         // A 5s timeout against a 60s ring window would abort mid-ring: raise it to the floor.
         self::assertSame(62, SipClient::dialRequestTimeout(5, 60));
         self::assertSame(32, SipClient::dialRequestTimeout(10, null));
+    }
+
+    public function testCreateSipParticipantUsesTheSipCallGrantNotAdmin(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPParticipantInfo())->setParticipantId('PA_1'),
+        ));
+
+        $this->client->createSipParticipant('ST_outbound', '+15105550123', 'my-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+
+        // VERIFIED against node-sdks SipClient.ts: createSipParticipant calls
+        // this.authHeader({}, { call: true }). It is 'call', NOT 'admin' - the opposite of
+        // every trunk and dispatch-rule method - and the video grant is empty.
+        $claims = $this->claims($request);
+        self::assertEquals(['call' => true], $claims['sip']);
+        self::assertArrayNotHasKey('admin', (array) $claims['sip']);
+        self::assertEquals([], $claims['video'] ?? []);
+        self::assertSame(self::API_KEY, $claims['iss']);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+        self::assertSame('ST_outbound', $sent->getSipTrunkId());
+        self::assertSame('+15105550123', $sent->getSipCallTo());
+        self::assertSame('my-room', $sent->getRoomName());
+    }
+
+    public function testCreateSipParticipantRemapsOptionNames(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPParticipantInfo()));
+
+        $this->client->createSipParticipant(
+            'ST_outbound',
+            '+15105550123',
+            'my-room',
+            new CreateSipParticipantOptions(
+                fromNumber: '+15105550100',
+                participantIdentity: 'caller-7',
+                participantName: 'Caller Seven',
+                displayName: 'LiveKit',
+                participantMetadata: 'meta',
+                participantAttributes: ['tier' => 'gold'],
+                toUserOverride: '5550123',
+                dtmf: '1w2',
+                playDialtone: true,
+                headers: ['X-Lk' => '1'],
+                includeHeaders: SIPHeaderOptions::SIP_X_HEADERS,
+                hidePhoneNumber: true,
+                ringingTimeout: 45,
+                maxCallDuration: 900,
+                krispEnabled: true,
+            ),
+            (new SIPOutboundConfig())->setHostname('sip.carrier.example'),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+
+        // The Node option `fromNumber` is the proto field sip_number,
+        self::assertSame('+15105550100', $sent->getSipNumber());
+        // and the positional $number argument is sip_call_to.
+        self::assertSame('+15105550123', $sent->getSipCallTo());
+
+        self::assertSame('ST_outbound', $sent->getSipTrunkId());
+        self::assertSame('my-room', $sent->getRoomName());
+        self::assertSame('caller-7', $sent->getParticipantIdentity());
+        self::assertSame('Caller Seven', $sent->getParticipantName());
+        self::assertSame('LiveKit', $sent->getDisplayName());
+        self::assertSame('meta', $sent->getParticipantMetadata());
+        self::assertSame(['tier' => 'gold'], iterator_to_array($sent->getParticipantAttributes()));
+        self::assertSame('5550123', $sent->getToUserOverride());
+        self::assertSame('1w2', $sent->getDtmf());
+        self::assertTrue($sent->getPlayDialtone());
+        self::assertSame(['X-Lk' => '1'], iterator_to_array($sent->getHeaders()));
+        self::assertSame(SIPHeaderOptions::SIP_X_HEADERS, $sent->getIncludeHeaders());
+        self::assertTrue($sent->getHidePhoneNumber());
+        self::assertSame(45, (int) $sent->getRingingTimeout()?->getSeconds());
+        self::assertSame(900, (int) $sent->getMaxCallDuration()?->getSeconds());
+        self::assertTrue($sent->getKrispEnabled());
+        self::assertSame('sip.carrier.example', $sent->getTrunk()?->getHostname());
+    }
+
+    public function testCreateSipParticipantDefaultsIdentityToSipParticipant(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPParticipantInfo()));
+
+        $this->client->createSipParticipant('ST_outbound', '+15105550123', 'my-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+        self::assertSame('sip-participant', $sent->getParticipantIdentity());
+        self::assertSame('+15105550123', $sent->getSipCallTo());
+    }
+
+    public function testCreateSipParticipantFallsBackFromPlayDialtoneToPlayRingtone(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPParticipantInfo()));
+
+        // playDialtone unset, deprecated playRingtone set: the value lands on play_dialtone.
+        $this->client->createSipParticipant(
+            'ST_outbound',
+            '+15105550123',
+            'my-room',
+            new CreateSipParticipantOptions(playRingtone: true),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+        self::assertTrue($sent->getPlayDialtone());
+        // play_ringtone itself is never put on the wire: the deprecated option is folded in.
+        self::assertFalse($sent->getPlayRingtone());
+
+        // When both are given, playDialtone wins.
+        $this->http->pushResponse($this->protoResponse(new SIPParticipantInfo()));
+        $this->client->createSipParticipant(
+            'ST_outbound',
+            '+15105550123',
+            'my-room',
+            new CreateSipParticipantOptions(playDialtone: false, playRingtone: true),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+        self::assertFalse($sent->getPlayDialtone());
+        self::assertFalse($sent->getPlayRingtone());
+        self::assertSame(2, $this->http->requestCount());
+    }
+
+    public function testCreateSipParticipantPinsTheRingingWindowWhenWaitingForAnAnswer(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPParticipantInfo()));
+
+        $this->client->createSipParticipant(
+            'ST_outbound',
+            '+15105550123',
+            'my-room',
+            new CreateSipParticipantOptions(waitUntilAnswered: true),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+        self::assertTrue($sent->getWaitUntilAnswered());
+        // The ring window is pinned to the SDK default rather than left to the server,
+        // because the request timeout is derived from it.
+        self::assertSame(30, (int) $sent->getRingingTimeout()?->getSeconds());
+
+        // Step 5's per-request override, visible on the wire: 30s ring + 2s margin. Without
+        // it the server would abort the call mid-ring at the ClientOptions deadline.
+        self::assertSame(
+            '32000',
+            $this->http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'),
+        );
+    }
+
+    public function testCreateSipParticipantLeavesTheRingingWindowUnsetWhenNotWaiting(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPParticipantInfo()));
+
+        $this->client->createSipParticipant('ST_outbound', '+15105550123', 'my-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'CreateSIPParticipant');
+        $this->assertSipGrant(['call' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(CreateSIPParticipantRequest::class);
+        self::assertFalse($sent->getWaitUntilAnswered());
+        self::assertNull($sent->getRingingTimeout());
+
+        // No override is passed, so the deadline is whatever ClientOptions holds - not the
+        // dialing floor. Only the absence of '32000' is this test's business.
+        self::assertNotSame(
+            '32000',
+            $this->http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'),
+        );
     }
 }

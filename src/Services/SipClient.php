@@ -10,6 +10,7 @@ use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\CreateSipParticipantOptions;
 use LiveKit\Options\ListSipDispatchRuleOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
@@ -18,6 +19,7 @@ use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\CreateSIPParticipantRequest;
 use LiveKit\Proto\DeleteSIPDispatchRuleRequest;
 use LiveKit\Proto\DeleteSIPTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
@@ -37,8 +39,10 @@ use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPDispatchRuleUpdate;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
+use LiveKit\Proto\SIPOutboundConfig;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkUpdate;
+use LiveKit\Proto\SIPParticipantInfo;
 use LiveKit\Proto\SIPTrunkInfo;
 use LiveKit\Proto\UpdateSIPDispatchRuleRequest;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
@@ -740,6 +744,115 @@ final class SipClient extends ServiceBase
             $request,
             SIPDispatchRuleInfo::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Dials a number over a SIP trunk and joins the resulting call to a room.
+     *
+     * The grant is sip.call, not sip.admin: dialing is a call operation, and a token with
+     * only sip.admin is rejected. Verified against the Node SDK.
+     *
+     * @param string                 $number              number to dial (proto field sip_call_to)
+     * @param SIPOutboundConfig|null $outboundTrunkConfig inline trunk config instead of a stored trunk
+     *
+     * @throws \LiveKit\Exceptions\SipCallError when the failure carries a SIP status
+     * @throws \LiveKit\Exceptions\TwirpException
+     */
+    public function createSipParticipant(
+        string $sipTrunkId,
+        string $number,
+        string $roomName,
+        ?CreateSipParticipantOptions $opts = null,
+        ?SIPOutboundConfig $outboundTrunkConfig = null,
+    ): SIPParticipantInfo {
+        $opts ??= new CreateSipParticipantOptions();
+
+        // Waiting for an answer means the HTTP request has to outlast the ring window.
+        // Pin the window explicitly so the timeout does not depend on the server default.
+        $ringingTimeout = $opts->ringingTimeout;
+        $requestTimeout = $opts->timeout;
+
+        if ($opts->waitUntilAnswered === true) {
+            $ringingTimeout ??= self::DEFAULT_RINGING_TIMEOUT_SECONDS;
+            $requestTimeout = self::dialRequestTimeout($opts->timeout, $ringingTimeout);
+        }
+
+        $request = new CreateSIPParticipantRequest();
+        $request->setSipTrunkId($sipTrunkId);
+        $request->setSipCallTo($number);
+        $request->setRoomName($roomName);
+        $request->setParticipantIdentity($opts->participantIdentity ?? 'sip-participant');
+
+        if ($outboundTrunkConfig !== null) {
+            $request->setTrunk($outboundTrunkConfig);
+        }
+        if ($opts->fromNumber !== null) {
+            $request->setSipNumber($opts->fromNumber);
+        }
+        if ($opts->participantName !== null) {
+            $request->setParticipantName($opts->participantName);
+        }
+        if ($opts->displayName !== null) {
+            $request->setDisplayName($opts->displayName);
+        }
+        if ($opts->participantMetadata !== null) {
+            $request->setParticipantMetadata($opts->participantMetadata);
+        }
+        if ($opts->participantAttributes !== null) {
+            $request->setParticipantAttributes($opts->participantAttributes);
+        }
+        if ($opts->toUserOverride !== null) {
+            $request->setToUserOverride($opts->toUserOverride);
+        }
+        if ($opts->dtmf !== null) {
+            $request->setDtmf($opts->dtmf);
+        }
+
+        // play_ringtone is deprecated upstream in favour of play_dialtone, and has the same
+        // effect, so the deprecated option is folded into the current field.
+        $playDialtone = $opts->playDialtone ?? $opts->playRingtone;
+        if ($playDialtone !== null) {
+            $request->setPlayDialtone($playDialtone);
+        }
+
+        if ($opts->headers !== null) {
+            $request->setHeaders($opts->headers);
+        }
+        if ($opts->includeHeaders !== null) {
+            $request->setIncludeHeaders($opts->includeHeaders);
+        }
+        if ($opts->hidePhoneNumber !== null) {
+            $request->setHidePhoneNumber($opts->hidePhoneNumber);
+        }
+        if ($ringingTimeout !== null) {
+            $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
+        }
+        if ($opts->maxCallDuration !== null) {
+            $request->setMaxCallDuration((new Duration())->setSeconds($opts->maxCallDuration));
+        }
+        if ($opts->krispEnabled !== null) {
+            $request->setKrispEnabled($opts->krispEnabled);
+        }
+        if ($opts->waitUntilAnswered !== null) {
+            $request->setWaitUntilAnswered($opts->waitUntilAnswered);
+        }
+        if ($opts->mediaEncryption !== null) {
+            $request->setMediaEncryption($opts->mediaEncryption);
+        }
+        if ($opts->media !== null) {
+            $request->setMedia($opts->media);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'CreateSIPParticipant',
+            $request,
+            SIPParticipantInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(call: true)),
+            $requestTimeout,
         );
 
         return $response;

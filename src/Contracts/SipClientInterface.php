@@ -7,6 +7,7 @@ namespace LiveKit\Contracts;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\CreateSipParticipantOptions;
 use LiveKit\Options\ListSipDispatchRuleOptions;
 use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
@@ -15,7 +16,9 @@ use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\SIPDispatchRule;
 use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPInboundTrunkInfo;
+use LiveKit\Proto\SIPOutboundConfig;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
+use LiveKit\Proto\SIPParticipantInfo;
 use LiveKit\Proto\SIPTrunkInfo;
 
 /**
@@ -157,4 +160,21 @@ interface SipClientInterface
 
     /** Deletes a SIP dispatch rule and returns the rule as it was. */
     public function deleteSipDispatchRule(string $sipDispatchRuleId): SIPDispatchRuleInfo;
+
+    /**
+     * Dials a number over a SIP trunk and joins the resulting call to a room.
+     *
+     * @param string                 $number              number to dial (proto field sip_call_to)
+     * @param SIPOutboundConfig|null $outboundTrunkConfig inline trunk config instead of a stored trunk
+     *
+     * @throws \LiveKit\Exceptions\SipCallError when the failure carries a SIP status
+     * @throws \LiveKit\Exceptions\TwirpException
+     */
+    public function createSipParticipant(
+        string $sipTrunkId,
+        string $number,
+        string $roomName,
+        ?CreateSipParticipantOptions $opts = null,
+        ?SIPOutboundConfig $outboundTrunkConfig = null,
+    ): SIPParticipantInfo;
 }
