@@ -21,6 +21,7 @@ use LiveKit\Proto\ImageOutput;
 use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
+use LiveKit\Proto\StartEgressRequest;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
@@ -142,6 +143,11 @@ final class EgressClient extends ServiceBase
         }
 
         return $this->egressInfoRpc('StartTrackEgress', $request);
+    }
+
+    public function startEgress(StartEgressRequest $request): EgressInfo
+    {
+        return $this->egressInfoRpc('StartEgress', $request);
     }
 
     /**

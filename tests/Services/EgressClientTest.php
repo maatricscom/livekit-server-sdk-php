@@ -16,13 +16,18 @@ use LiveKit\Proto\EncodedFileOutput;
 use LiveKit\Proto\EncodedFileType;
 use LiveKit\Proto\EncodingOptions;
 use LiveKit\Proto\EncodingOptionsPreset;
+use LiveKit\Proto\FileOutput;
 use LiveKit\Proto\ImageOutput;
+use LiveKit\Proto\Output;
 use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\S3Upload;
 use LiveKit\Proto\SegmentedFileOutput;
+use LiveKit\Proto\StartEgressRequest;
+use LiveKit\Proto\StorageConfig;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\StreamProtocol;
+use LiveKit\Proto\TemplateSource;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
 use LiveKit\Proto\WebEgressRequest;
@@ -439,6 +444,67 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame('websocket_url', $request->getOutput());
         self::assertSame('wss://relay.example/track', $request->getWebsocketUrl());
         self::assertCount(0, $this->messagesIn($request->getWebhooks(), WebhookConfig::class));
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartEgressSendsTheUnifiedRequestVerbatim(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_unified')));
+        $client = $this->egressClient();
+
+        $template = new TemplateSource();
+        $template->setLayout('grid-light');
+        $template->setAudioOnly(true);
+
+        $fileOutput = new FileOutput();
+        $fileOutput->setFilepath('unified/room.mp4');
+
+        $s3 = new S3Upload();
+        $s3->setBucket('unified-bucket');
+
+        $storage = new StorageConfig();
+        $storage->setS3($s3);
+
+        $output = new Output();
+        $output->setFile($fileOutput);
+
+        $request = new StartEgressRequest();
+        $request->setRoomName('my-room');
+        $request->setTemplate($template);
+        $request->setPreset(EncodingOptionsPreset::H264_1080P_60);
+        $request->setOutputs([$output]);
+        $request->setStorage($storage);
+
+        $info = $client->startEgress($request);
+
+        self::assertSame('EG_unified', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartEgress', (string) $sent->getUri());
+
+        $decoded = $this->decodeRequest(StartEgressRequest::class);
+
+        self::assertSame('my-room', $decoded->getRoomName());
+        self::assertSame('template', $decoded->getSource());
+        self::assertSame(
+            'grid-light',
+            $this->messageOf($decoded->getTemplate(), TemplateSource::class)->getLayout(),
+        );
+        self::assertSame('preset', $decoded->getEncoding());
+        self::assertSame(EncodingOptionsPreset::H264_1080P_60, $decoded->getPreset());
+
+        $outputs = $this->messagesIn($decoded->getOutputs(), Output::class);
+        self::assertCount(1, $outputs);
+        self::assertSame('file', $outputs[0]->getConfig());
+        self::assertSame(
+            'unified/room.mp4',
+            $this->messageOf($outputs[0]->getFile(), FileOutput::class)->getFilepath(),
+        );
+
+        $decodedStorage = $this->messageOf($decoded->getStorage(), StorageConfig::class);
+        self::assertSame('unified-bucket', $this->messageOf($decodedStorage->getS3(), S3Upload::class)->getBucket());
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }
