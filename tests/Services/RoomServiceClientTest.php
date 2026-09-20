@@ -6,7 +6,10 @@ namespace LiveKit\Tests\Services;
 
 use Google\Protobuf\Internal\Message;
 use LiveKit\Options\CreateRoomOptions;
+use LiveKit\Options\ListRoomsOptions;
 use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\ListRoomsRequest;
+use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Services\RoomServiceClient;
 use LiveKit\Tests\Support\TwirpTestCase;
@@ -72,6 +75,48 @@ final class RoomServiceClientTest extends TwirpTestCase
 
         self::assertSame('RM_abc', $room->getSid());
         self::assertSame('my-room', $room->getName());
+    }
+
+    public function testListRoomsFiltersByNameAndUnwrapsTheResponse(): void
+    {
+        $client = $this->client(
+            (new ListRoomsResponse())->setRooms([
+                (new Room())->setSid('RM_1')->setName('alpha'),
+                (new Room())->setSid('RM_2')->setName('beta'),
+            ]),
+        );
+
+        $rooms = $client->listRooms(new ListRoomsOptions(names: ['alpha', 'beta']));
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'ListRooms');
+
+        $sent = $this->decodeRequest(ListRoomsRequest::class);
+        self::assertSame(['alpha', 'beta'], iterator_to_array($sent->getNames()));
+
+        $this->assertVideoGrant(['roomList' => true], $request);
+
+        self::assertCount(2, $rooms);
+        self::assertContainsOnlyInstancesOf(Room::class, $rooms);
+        self::assertSame('alpha', $rooms[0]->getName());
+        self::assertSame('beta', $rooms[1]->getName());
+    }
+
+    public function testListRoomsWithoutOptionsSendsAnEmptyNameFilter(): void
+    {
+        $client = $this->client(new ListRoomsResponse());
+
+        $rooms = $client->listRooms();
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'ListRooms');
+
+        $sent = $this->decodeRequest(ListRoomsRequest::class);
+        self::assertCount(0, $sent->getNames());
+
+        $this->assertVideoGrant(['roomList' => true], $request);
+
+        self::assertSame([], $rooms);
     }
 
     private function client(Message $response): RoomServiceClient
