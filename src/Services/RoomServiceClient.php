@@ -7,8 +7,10 @@ namespace LiveKit\Services;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
+use LiveKit\Options\SendDataOptions;
 use LiveKit\Options\UpdateParticipantOptions;
 use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\DataPacket\Kind;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
 use LiveKit\Proto\ListParticipantsRequest;
@@ -21,6 +23,8 @@ use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
+use LiveKit\Proto\SendDataRequest;
+use LiveKit\Proto\SendDataResponse;
 use LiveKit\Proto\UpdateParticipantRequest;
 use LiveKit\Proto\UpdateSubscriptionsRequest;
 use LiveKit\Proto\UpdateSubscriptionsResponse;
@@ -303,6 +307,46 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof UpdateSubscriptionsResponse);
+
+        return $response;
+    }
+
+    /**
+     * @param string $data raw bytes of the payload
+     * @param int    $kind one of LiveKit\Proto\DataPacket\Kind
+     */
+    public function sendData(
+        string $room,
+        string $data,
+        int $kind = Kind::RELIABLE,
+        ?SendDataOptions $options = null,
+    ): SendDataResponse {
+        $request = new SendDataRequest();
+        $request->setRoom($room);
+        $request->setData($data);
+        $request->setKind($kind);
+
+        if ($options?->destinationIdentities !== null) {
+            $request->setDestinationIdentities($options->destinationIdentities);
+        }
+
+        if ($options?->topic !== null) {
+            $request->setTopic($options->topic);
+        }
+
+        if ($options?->nonce !== null) {
+            $request->setNonce($options->nonce);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'SendData',
+            $request,
+            SendDataResponse::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof SendDataResponse);
 
         return $response;
     }

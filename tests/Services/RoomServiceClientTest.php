@@ -7,8 +7,10 @@ namespace LiveKit\Tests\Services;
 use Google\Protobuf\Internal\Message;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
+use LiveKit\Options\SendDataOptions;
 use LiveKit\Options\UpdateParticipantOptions;
 use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\DataPacket\Kind;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
 use LiveKit\Proto\ListParticipantsRequest;
@@ -22,6 +24,8 @@ use LiveKit\Proto\ParticipantPermission;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
+use LiveKit\Proto\SendDataRequest;
+use LiveKit\Proto\SendDataResponse;
 use LiveKit\Proto\TrackInfo;
 use LiveKit\Proto\TrackSource;
 use LiveKit\Proto\UpdateParticipantRequest;
@@ -379,6 +383,60 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertSame('alice', $sent->getIdentity());
         self::assertFalse($sent->getSubscribe());
         self::assertSame(['TR_1'], iterator_to_array($sent->getTrackSids()));
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testSendDataMapsPayloadKindIdentitiesTopicAndNonce(): void
+    {
+        $client = $this->client(new SendDataResponse());
+
+        $client->sendData(
+            'my-room',
+            'hello world',
+            Kind::LOSSY,
+            new SendDataOptions(
+                destinationIdentities: ['alice', 'bob'],
+                topic: 'chat',
+                nonce: "\x01\x02\x03",
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'SendData');
+
+        $sent = $this->decodeRequest(SendDataRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('hello world', $sent->getData());
+        self::assertSame(Kind::LOSSY, $sent->getKind());
+        self::assertSame(['alice', 'bob'], iterator_to_array($sent->getDestinationIdentities()));
+        self::assertSame('chat', $sent->getTopic());
+        self::assertTrue($sent->hasTopic());
+        self::assertSame("\x01\x02\x03", $sent->getNonce());
+
+        // destination_sids is deprecated in livekit_room.proto and must never be populated by this SDK.
+        self::assertCount(0, $sent->getDestinationSids());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testSendDataDefaultsToReliableAndOmitsTopic(): void
+    {
+        $client = $this->client(new SendDataResponse());
+
+        $client->sendData('my-room', 'ping');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'SendData');
+
+        $sent = $this->decodeRequest(SendDataRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('ping', $sent->getData());
+        self::assertSame(Kind::RELIABLE, $sent->getKind());
+        self::assertFalse($sent->hasTopic());
+        self::assertCount(0, $sent->getDestinationIdentities());
+        self::assertCount(0, $sent->getDestinationSids());
+        self::assertSame('', $sent->getNonce());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }
