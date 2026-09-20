@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace LiveKit\Services;
 
+use Google\Protobuf\Duration;
+use LiveKit\Grants\SIPGrant;
+use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\CreateSipInboundTrunkOptions;
+use LiveKit\Proto\CreateSIPInboundTrunkRequest;
+use LiveKit\Proto\SIPInboundTrunkInfo;
+
 /**
  * Client for the LiveKit SIP API.
  *
@@ -29,4 +36,80 @@ final class SipClient extends ServiceBase
 {
     /** Twirp service name as it appears in the URL: /twirp/livekit.SIP/<Method>. */
     private const SERVICE = 'SIP';
+
+    /**
+     * Creates a SIP inbound trunk.
+     *
+     * @param list<string> $numbers phone numbers this trunk accepts calls for
+     */
+    public function createSipInboundTrunk(
+        string $name,
+        array $numbers,
+        ?CreateSipInboundTrunkOptions $opts = null,
+    ): SIPInboundTrunkInfo {
+        $opts ??= new CreateSipInboundTrunkOptions();
+
+        $trunk = new SIPInboundTrunkInfo();
+        $trunk->setName($name);
+        $trunk->setNumbers($numbers);
+
+        if ($opts->metadata !== null) {
+            $trunk->setMetadata($opts->metadata);
+        }
+        if ($opts->allowedAddresses !== null) {
+            $trunk->setAllowedAddresses($opts->allowedAddresses);
+        }
+        if ($opts->allowedNumbers !== null) {
+            $trunk->setAllowedNumbers($opts->allowedNumbers);
+        }
+        if ($opts->authUsername !== null) {
+            $trunk->setAuthUsername($opts->authUsername);
+        }
+        if ($opts->authPassword !== null) {
+            $trunk->setAuthPassword($opts->authPassword);
+        }
+        if ($opts->authRealm !== null) {
+            $trunk->setAuthRealm($opts->authRealm);
+        }
+        if ($opts->headers !== null) {
+            $trunk->setHeaders($opts->headers);
+        }
+        if ($opts->headersToAttributes !== null) {
+            $trunk->setHeadersToAttributes($opts->headersToAttributes);
+        }
+        if ($opts->attributesToHeaders !== null) {
+            $trunk->setAttributesToHeaders($opts->attributesToHeaders);
+        }
+        if ($opts->includeHeaders !== null) {
+            $trunk->setIncludeHeaders($opts->includeHeaders);
+        }
+        if ($opts->krispEnabled !== null) {
+            $trunk->setKrispEnabled($opts->krispEnabled);
+        }
+        if ($opts->mediaEncryption !== null) {
+            $trunk->setMediaEncryption($opts->mediaEncryption);
+        }
+        if ($opts->media !== null) {
+            $trunk->setMedia($opts->media);
+        }
+        if ($opts->ringingTimeout !== null) {
+            $trunk->setRingingTimeout((new Duration())->setSeconds($opts->ringingTimeout));
+        }
+        if ($opts->maxCallDuration !== null) {
+            $trunk->setMaxCallDuration((new Duration())->setSeconds($opts->maxCallDuration));
+        }
+
+        $request = new CreateSIPInboundTrunkRequest();
+        $request->setTrunk($trunk);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'CreateSIPInboundTrunk',
+            $request,
+            SIPInboundTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
 }

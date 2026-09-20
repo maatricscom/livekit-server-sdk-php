@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LiveKit\Contracts;
 
+use LiveKit\Options\CreateSipInboundTrunkOptions;
+use LiveKit\Proto\SIPInboundTrunkInfo;
+
 /**
  * The LiveKit SIP service: trunks, dispatch rules and SIP participants.
  *
@@ -13,4 +16,14 @@ namespace LiveKit\Contracts;
  */
 interface SipClientInterface
 {
+    /**
+     * Creates a SIP inbound trunk.
+     *
+     * @param list<string> $numbers phone numbers this trunk accepts calls for
+     */
+    public function createSipInboundTrunk(
+        string $name,
+        array $numbers,
+        ?CreateSipInboundTrunkOptions $opts = null,
+    ): SIPInboundTrunkInfo;
 }
