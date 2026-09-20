@@ -8,6 +8,13 @@ on:
 permissions:
   contents: read
 
+# A push that supersedes another on the same ref makes the earlier run's result
+# irrelevant, and this workflow is nine jobs wide. main is excluded: its runs are
+# what the badge and the release history refer to, so they finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   tests:
     name: PHP ${{ matrix.php }} / ${{ matrix.dependencies }} / ${{ matrix.psr18 }}
@@ -144,7 +151,9 @@ jobs:
         with:
           php-version: '8.4'
           coverage: none
-      - run: composer install --prefer-dist --no-interaction --no-progress
+      # composer.lock is not committed -- a library resolves against its consumer's
+      # tree, not ours -- so `install` would print that it is updating instead.
+      - run: composer update --prefer-dist --no-interaction --no-progress
       # Through composer, so the memory limit is defined once. PHP's 128M default
       # is not enough for PHPStan's parallel workers on this tree, and the failure
       # is a crashed child process rather than an analysis error -- easy to mistake
@@ -159,7 +168,9 @@ jobs:
         with:
           php-version: '8.4'
           coverage: none
-      - run: composer install --prefer-dist --no-interaction --no-progress
+      # composer.lock is not committed -- a library resolves against its consumer's
+      # tree, not ours -- so `install` would print that it is updating instead.
+      - run: composer update --prefer-dist --no-interaction --no-progress
       - run: vendor/bin/pint --test
 
   composer-validate:
@@ -215,11 +226,23 @@ jobs:
           coverage: none
       - name: Install protoc
         run: |
-          PROTOC_VERSION=36.2
+          # Read it from the generator rather than repeating it here. protoc's output
+          # differs between versions, and the drift step below compares the result
+          # against committed files -- so a CI protoc that is merely *compatible*
+          # with the script's minimum, rather than the same, fails with a diff that
+          # looks like someone forgot to regenerate.
+          PROTOC_VERSION="$(grep -oE 'MIN_PROTOC_VERSION="[^"]+"' bin/generate-protos.sh | cut -d'"' -f2)"
+          if [ -z "$PROTOC_VERSION" ]; then
+            echo "::error::could not read MIN_PROTOC_VERSION from bin/generate-protos.sh"
+            exit 1
+          fi
+          echo "Installing protoc ${PROTOC_VERSION}"
           curl -sSLo /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip"
           unzip -q /tmp/protoc.zip -d /tmp/protoc
           echo "/tmp/protoc/bin" >> "$GITHUB_PATH"
-      - run: composer install --prefer-dist --no-interaction --no-progress
+      # composer.lock is not committed -- a library resolves against its consumer's
+      # tree, not ours -- so `install` would print that it is updating instead.
+      - run: composer update --prefer-dist --no-interaction --no-progress
       - run: bin/generate-protos.sh
       - name: Fail if generated code drifted
         run: |

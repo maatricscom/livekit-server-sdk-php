@@ -107,6 +107,12 @@ starting out now has no reason to carry a version that only receives security fi
 - A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
   unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
   under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
+- CI derives protoc's version from `bin/generate-protos.sh` instead of repeating it. The two only had
+  to agree because protoc's output differs between versions and the drift job compares generated files
+  against committed ones — a CI protoc that merely satisfied the script's minimum would have failed with
+  a diff that reads like someone forgot to regenerate. Runs on a non-`main` ref now cancel when
+  superseded, and the three jobs that said `composer install` say `composer update`, which is what
+  Composer was doing anyway with no lock file committed.
 - PHPUnit fails on deprecations, notices, its own deprecated API, and an empty test suite. The last of
   those catches a `--filter` that matches nothing, which otherwise reports success having run no test.
   `executionOrder` is deliberately left at its default and `ToolingConfigTest` fails if it is ever set:
