@@ -225,7 +225,7 @@ commit it together with the tag bump.
 
 1. Edit `PROTOCOL_VERSION` near the top of `bin/generate-protos.sh` to the new tag (currently `v1.52.0`).
 2. Run `composer generate-protos` and review the resulting diff under `src/Proto/`. The script also
-   rewrites `src/Proto/ProtocolVersion.php`, which records the tag and the exact upstream commit.
+   rewrites `src/ProtocolVersion.php`, which records the tag and the exact upstream commit.
 3. Update the version everywhere it is stated by hand: `README.md`, `NOTICE`, `CHANGELOG.md`, the
    "(currently ...)" note in step 1 above, and the `go get` line in `bin/generate-jwt-fixtures.go` and
    `bin/generate-webhook-fixture.go`. Those two decide which protocol the reference fixtures are built

@@ -251,7 +251,7 @@ jobs:
           # shows up as an UNTRACKED file, which `git diff` never reports.
           # `git status --porcelain --untracked-files=all` sees added, modified
           # and deleted paths alike.
-          drift="$(git status --porcelain --untracked-files=all -- src/Proto)"
+          drift="$(git status --porcelain --untracked-files=all -- src/Proto metadata src/ProtocolVersion.php)"
           if [ -n "$drift" ]; then
             echo "::error::Generated src/Proto is out of date. Run bin/generate-protos.sh and commit the diff."
             echo "$drift"

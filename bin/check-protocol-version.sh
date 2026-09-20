@@ -8,7 +8,7 @@
 # those in step by remembering to edit each one does not survive contact with a
 # real upgrade, so this checks it instead.
 #
-# bin/generate-protos.sh is the single source of truth. src/Proto/ProtocolVersion.php
+# bin/generate-protos.sh is the single source of truth. src/ProtocolVersion.php
 # is generated from it, so a mismatch there means the tree was not regenerated after
 # the version was changed.
 #
@@ -59,13 +59,16 @@ for file in bin/generate-jwt-fixtures.go bin/generate-webhook-fixture.go; do
 done
 
 # Generated code: must match exactly, not merely contain the string.
-GENERATED_FILE="src/Proto/ProtocolVersion.php"
+GENERATED_FILE="src/ProtocolVersion.php"
 
 if [ ! -f "$GENERATED_FILE" ]; then
     echo "  FAIL ${GENERATED_FILE} is missing — run bin/generate-protos.sh" >&2
     failed=1
 else
-    ACTUAL=$(grep -oE "const TAG = '[^']+'" "$GENERATED_FILE" | head -n1 | cut -d"'" -f2)
+    # `const string TAG` since the file moved out of src/Proto and came under Pint
+    # and PHPStan, which is where the typed constant comes from. The type is
+    # optional in the pattern so this keeps working either way.
+    ACTUAL=$(grep -oE "const (string )?TAG = '[^']+'" "$GENERATED_FILE" | head -n1 | cut -d"'" -f2)
 
     if [ "$ACTUAL" = "$EXPECTED" ]; then
         echo "  ok   ${GENERATED_FILE}"

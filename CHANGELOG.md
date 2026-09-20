@@ -147,6 +147,12 @@ About the repository — none of this reaches an installed package, since `.gita
 keeps `bin/`, `.github/`, `tests/` and the analyser configuration out of the distributed
 tarball. It is recorded because it is why the package can be trusted to behave as described:
 
+- `ProtocolVersion` is `LiveKit\ProtocolVersion` in `src/`, not `LiveKit\Proto\ProtocolVersion` in the
+  generated tree. It is written by `bin/generate-protos.sh` rather than by protoc, and its shape is this
+  package's own, so it belongs with the code it serves. Each directory now answers "who decides when a
+  class in here changes?" with one answer: `src/` is ours, `src/Proto/` is upstream's `.proto` files,
+  `metadata/` is the protobuf runtime's. Being outside the generated tree also puts it under Pint and
+  PHPStan, which is why its constants are typed like the rest of the package's.
 - `CONTRIBUTING.md` documents commands that were run as written rather than typed from memory. The
   drift check it gave used `git diff`, which never reports the added file a new upstream message type
   arrives as; the forbidden-symbol grep and the analyser exclusions named only `src/Proto`; the

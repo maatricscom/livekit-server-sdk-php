@@ -11,7 +11,7 @@ use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpErrorCode;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Options\ClientOptions;
-use LiveKit\Proto\ProtocolVersion;
+use LiveKit\ProtocolVersion;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
