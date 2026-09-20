@@ -7,6 +7,7 @@ namespace LiveKit\Tests\Services;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
+use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\ListUpdate;
@@ -310,5 +311,77 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(SIPTransport::SIP_TRANSPORT_TLS, $sentTrunk->getTransport());
 
         self::assertSame('new.example', $trunk->getAddress());
+    }
+
+    public function testUpdateSipOutboundTrunkFieldsSendsTheUpdateArm(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_outbound'),
+        ));
+
+        $this->client->updateSipOutboundTrunkFields(
+            'ST_outbound',
+            new SipOutboundTrunkUpdateOptions(
+                address: 'sip2.carrier.example',
+                transport: SIPTransport::SIP_TRANSPORT_UDP,
+                destinationCountry: 'DE',
+                numbers: (new ListUpdate())->setRemove(['+15105550101']),
+                authUsername: 'out-user-2',
+                authPassword: 'out-pass-2',
+                name: 'carrier-2',
+                metadata: 'updated',
+                fromHost: 'calls2.example.com',
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPOutboundTrunkRequest::class);
+        self::assertSame('ST_outbound', $sent->getSipTrunkId());
+        self::assertSame('update', $sent->getAction());
+        self::assertNull($sent->getReplace());
+
+        $update = $sent->getUpdate();
+        self::assertNotNull($update);
+        self::assertSame('sip2.carrier.example', $update->getAddress());
+        self::assertSame(SIPTransport::SIP_TRANSPORT_UDP, $update->getTransport());
+        self::assertSame('DE', $update->getDestinationCountry());
+        self::assertSame(['+15105550101'], iterator_to_array($update->getNumbers()->getRemove(), false));
+        self::assertSame('out-user-2', $update->getAuthUsername());
+        self::assertSame('out-pass-2', $update->getAuthPassword());
+        self::assertSame('carrier-2', $update->getName());
+        self::assertSame('updated', $update->getMetadata());
+        self::assertSame('calls2.example.com', $update->getFromHost());
+    }
+
+    public function testUpdateSipOutboundTrunkFieldsOmitsUnsetOptionalScalars(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPOutboundTrunkInfo()));
+
+        $this->client->updateSipOutboundTrunkFields(
+            'ST_outbound',
+            new SipOutboundTrunkUpdateOptions(address: 'only.the.address'),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPOutboundTrunkRequest::class);
+        self::assertSame('ST_outbound', $sent->getSipTrunkId());
+        self::assertSame('update', $sent->getAction());
+
+        $update = $sent->getUpdate();
+        self::assertNotNull($update);
+        self::assertSame('only.the.address', $update->getAddress());
+        self::assertFalse($update->hasTransport());
+        self::assertFalse($update->hasName());
+        self::assertFalse($update->hasMetadata());
+        self::assertFalse($update->hasFromHost());
+        self::assertNull($update->getNumbers());
     }
 }

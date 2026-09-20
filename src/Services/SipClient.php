@@ -10,11 +10,13 @@ use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
+use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
+use LiveKit\Proto\SIPOutboundTrunkUpdate;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 
@@ -274,6 +276,65 @@ final class SipClient extends ServiceBase
         $request = new UpdateSIPOutboundTrunkRequest();
         $request->setSipTrunkId($sipTrunkId);
         $request->setReplace($trunk);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateSIPOutboundTrunk',
+            $request,
+            SIPOutboundTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Updates only the given fields of a SIP outbound trunk, leaving the rest alone.
+     * Sends the 'update' arm of the oneof in livekit.UpdateSIPOutboundTrunkRequest.
+     */
+    public function updateSipOutboundTrunkFields(
+        string $sipTrunkId,
+        SipOutboundTrunkUpdateOptions $fields,
+    ): SIPOutboundTrunkInfo {
+        $update = new SIPOutboundTrunkUpdate();
+
+        if ($fields->address !== null) {
+            $update->setAddress($fields->address);
+        }
+        if ($fields->transport !== null) {
+            $update->setTransport($fields->transport);
+        }
+        if ($fields->destinationCountry !== null) {
+            $update->setDestinationCountry($fields->destinationCountry);
+        }
+        if ($fields->numbers !== null) {
+            $update->setNumbers($fields->numbers);
+        }
+        if ($fields->authUsername !== null) {
+            $update->setAuthUsername($fields->authUsername);
+        }
+        if ($fields->authPassword !== null) {
+            $update->setAuthPassword($fields->authPassword);
+        }
+        if ($fields->name !== null) {
+            $update->setName($fields->name);
+        }
+        if ($fields->metadata !== null) {
+            $update->setMetadata($fields->metadata);
+        }
+        if ($fields->mediaEncryption !== null) {
+            $update->setMediaEncryption($fields->mediaEncryption);
+        }
+        if ($fields->media !== null) {
+            $update->setMedia($fields->media);
+        }
+        if ($fields->fromHost !== null) {
+            $update->setFromHost($fields->fromHost);
+        }
+
+        $request = new UpdateSIPOutboundTrunkRequest();
+        $request->setSipTrunkId($sipTrunkId);
+        $request->setUpdate($update);
 
         $response = $this->rpc(
             self::SERVICE,

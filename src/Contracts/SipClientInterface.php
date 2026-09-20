@@ -7,6 +7,7 @@ namespace LiveKit\Contracts;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
+use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 
@@ -63,4 +64,13 @@ interface SipClientInterface
      * Use updateSipOutboundTrunkFields() to change only some fields.
      */
     public function updateSipOutboundTrunk(string $sipTrunkId, SIPOutboundTrunkInfo $trunk): SIPOutboundTrunkInfo;
+
+    /**
+     * Updates only the given fields of a SIP outbound trunk, leaving the rest alone.
+     * Sends the 'update' arm of the oneof in livekit.UpdateSIPOutboundTrunkRequest.
+     */
+    public function updateSipOutboundTrunkFields(
+        string $sipTrunkId,
+        SipOutboundTrunkUpdateOptions $fields,
+    ): SIPOutboundTrunkInfo;
 }
