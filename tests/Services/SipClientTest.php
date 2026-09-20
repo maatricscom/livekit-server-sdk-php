@@ -36,6 +36,7 @@ use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPTransport;
 use LiveKit\Proto\SIPTrunkInfo;
+use LiveKit\Proto\UpdateSIPDispatchRuleRequest;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 use LiveKit\Services\SipClient;
@@ -681,5 +682,40 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame('call-', $sent->getRule()?->getDispatchRuleIndividual()?->getRoomPrefix());
         self::assertSame('', $sent->getName());
         self::assertCount(0, $sent->getTrunkIds());
+    }
+
+    public function testUpdateSipDispatchRuleSendsTheReplaceArm(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct')->setName('renamed'),
+        ));
+
+        $replacement = (new SIPDispatchRuleInfo())
+            ->setName('renamed')
+            ->setTrunkIds(['ST_inbound'])
+            ->setRule(
+                (new SIPDispatchRule())->setDispatchRuleDirect(
+                    (new SIPDispatchRuleDirect())->setRoomName('support'),
+                ),
+            );
+
+        $info = $this->client->updateSipDispatchRule('SDR_direct', $replacement);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPDispatchRuleRequest::class);
+        self::assertSame('SDR_direct', $sent->getSipDispatchRuleId());
+        self::assertSame('replace', $sent->getAction());
+        self::assertNull($sent->getUpdate());
+
+        $sentRule = $sent->getReplace();
+        self::assertInstanceOf(SIPDispatchRuleInfo::class, $sentRule);
+        self::assertSame('renamed', $sentRule->getName());
+        self::assertSame(['ST_inbound'], iterator_to_array($sentRule->getTrunkIds(), false));
+
+        self::assertSame('renamed', $info->getName());
     }
 }

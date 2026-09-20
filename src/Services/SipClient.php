@@ -34,6 +34,7 @@ use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkUpdate;
 use LiveKit\Proto\SIPTrunkInfo;
+use LiveKit\Proto\UpdateSIPDispatchRuleRequest;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 
@@ -578,6 +579,29 @@ final class SipClient extends ServiceBase
         $response = $this->rpc(
             self::SERVICE,
             'CreateSIPDispatchRule',
+            $request,
+            SIPDispatchRuleInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Replaces a SIP dispatch rule wholesale. Fields left unset on $rule are cleared.
+     * Use updateSipDispatchRuleFields() to change only some fields.
+     */
+    public function updateSipDispatchRule(
+        string $sipDispatchRuleId,
+        SIPDispatchRuleInfo $rule,
+    ): SIPDispatchRuleInfo {
+        $request = new UpdateSIPDispatchRuleRequest();
+        $request->setSipDispatchRuleId($sipDispatchRuleId);
+        $request->setReplace($rule);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateSIPDispatchRule',
             $request,
             SIPDispatchRuleInfo::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),

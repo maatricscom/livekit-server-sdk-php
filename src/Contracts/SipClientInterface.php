@@ -127,4 +127,13 @@ interface SipClientInterface
         SIPDispatchRule $rule,
         ?CreateSipDispatchRuleOptions $opts = null,
     ): SIPDispatchRuleInfo;
+
+    /**
+     * Replaces a SIP dispatch rule wholesale. Fields left unset on $rule are cleared.
+     * Use updateSipDispatchRuleFields() to change only some fields.
+     */
+    public function updateSipDispatchRule(
+        string $sipDispatchRuleId,
+        SIPDispatchRuleInfo $rule,
+    ): SIPDispatchRuleInfo;
 }
