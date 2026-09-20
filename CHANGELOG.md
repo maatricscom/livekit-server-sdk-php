@@ -64,8 +64,8 @@ starting out now has no reason to carry a version that only receives security fi
   message saying so rather than failing later on a nonsense URI; a malformed protobuf response raises a
   `TwirpException` like a malformed JSON one, instead of letting the protobuf runtime's own exception
   escape; a non-positive `requestTimeout` sends no deadline header; a region list can never redirect a
-  request to a host outside `*.livekit.cloud`; a default port in that list no longer makes a host look
-  unvisited; the region-list lifetime is capped at a day; a negative ringing timeout cannot produce a
+  request to a host outside `*.livekit.cloud`; a host that differs only by an
+  explicit default port is recognised as one already tried; the region-list lifetime is capped at a day; a negative ringing timeout cannot produce a
   negative request timeout; and an unparseable error body is excerpted rather than echoed whole into the
   exception message.
 - `TwirpErrorCode`, the eighteen error codes the Twirp specification defines, so a caller can match on a
@@ -99,58 +99,27 @@ starting out now has no reason to carry a version that only receives security fi
   conflicted below 5.34 instead, because a conflict states what is broken, not what is supported.
   `ProtoGenerationTest` checks that every runtime helper the generated tree calls exists on the
   installed runtime, so neither number rests on a comment.
-- `WebhookReceiver` rejects a body that is not a JSON object before the protobuf parser sees it, so
-  what the SDK does with a malformed webhook no longer depends on which protobuf runtime is installed.
-  The two disagree in opposite directions: the pure-PHP parser accepts `[1,2,3]` and returns a default
-  message, `ext-protobuf` accepts an empty body and does the same. Measured by running the suite under
-  both; the tests had recorded the pure-PHP answer as though it were the specification.
-- A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
-  unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
-  under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
-- Protobuf descriptors are generated as `GPBMetadata\LiveKit\` into `metadata/`, not `LiveKit\Proto\Meta\`
-  into `src/Proto/Meta/`. `GPBMetadata` is where a PHP consumer of protobuf expects descriptors, and
-  claiming a prefix beneath it rather than the bare root is what keeps two packages from colliding there
-  — `google-cloud-php` registers 238 prefixes under `GPBMetadata` and not one of them is the bare root.
-  `src/Proto/` now holds only message classes. Two PSR-4 prefixes, one generated file count: 361 messages
-  plus 16 descriptors, the same 377 as before.
-- `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
-  whole run has succeeded. It used to delete `src/Proto` before invoking protoc, so a protoc failure or
-  a Ctrl-C left 377 committed files gone and the package unloadable.
-- `bin/check-protocol-version.sh` also checks the `go get` line in the two fixture generators. They pin
-  the protocol tag that the reference JWTs and webhook body are produced from, so a bump that missed
-  them would regenerate fixtures from the old protocol and the suite would stay green while asserting
-  new code against stale references.
-- CI derives protoc's version from `bin/generate-protos.sh` instead of repeating it. The two only had
-  to agree because protoc's output differs between versions and the drift job compares generated files
-  against committed ones — a CI protoc that merely satisfied the script's minimum would have failed with
-  a diff that reads like someone forgot to regenerate. Runs on a non-`main` ref now cancel when
-  superseded, and the three jobs that said `composer install` say `composer update`, which is what
-  Composer was doing anyway with no lock file committed.
-- PHPUnit fails on deprecations, notices, its own deprecated API, and an empty test suite. The last of
-  those catches a `--filter` that matches nothing, which otherwise reports success having run no test.
-  `executionOrder` is deliberately left at its default and `ToolingConfigTest` fails if it is ever set:
-  `ZzEnvLeakProbeTest` can only check for leaked environment variables from last place, and the default
-  alphabetical order is the only thing putting it there.
-- PHPStan caches in `.phpstan.cache` rather than the shared system temp directory. `.gitignore` already
-  named that path; nothing had ever created it.
-- `examples/` is analysed by PHPStan and covered by Rector, not only formatted by Pint. It was the one
-  hand-written directory no tool checked, and PHPStan found a real defect there the moment it looked:
-  `examples/webhook.php` passed `$_SERVER['HTTP_AUTHORIZATION']`, which is `mixed`, straight into a
-  `?string` parameter. Sample code is the first thing anyone copies.
-- PHPStan analyses against the whole supported PHP range (`phpVersion: min 80400, max 80599`) rather
-  than against whichever PHP happens to run it. Unset, it assumed 8.5 on a machine running 8.5 and 8.4
-  in CI, so a function that exists only in 8.5 — `array_first()`, say — passed locally and would have
-  broken for a user on 8.4. `ToolingConfigTest` ties the lower bound to the `php` constraint in
-  composer.json so the two cannot drift apart.
-- CI runs the unit suite against `ext-protobuf` as well as the pure-PHP runtime, on 8.4 and 8.5. It
-  previously tested only the runtime Composer installs, which is how the two items above went unnoticed.
-- `ext-protobuf` is constrained to **5.34 or newer** via a `conflict` entry, not just named in `suggest`.
-  The extension shadows `google/protobuf`'s classes, so the `^5.36` requirement on the Composer package
-  buys nothing once the extension is loaded — and before 5.34 its `GPBUtil` has no `compatibleInt64()`,
-  which protoc 36's generated getters for `optional` int64 fields call. Measured: with ext-protobuf
-  4.32.1 (what Alpine ships today), `EventMetric::getEndTimestampMs()`, `ChatMessage::getEditTimestamp()`
-  and `DataStream\Header::getTotalLength()` all raise `Call to undefined method`. Composer now refuses to
-  install instead.
+- `WebhookReceiver` requires the body to be a JSON object and rejects anything else before the protobuf
+  parser sees it, so a malformed webhook is rejected identically whichever protobuf runtime is installed.
+  The two are lenient about different things, in opposite directions: the pure-PHP parser takes a JSON
+  array where a message belongs and hands back a default message, `ext-protobuf` takes an empty body and
+  does the same. Neither gets to decide what this SDK does with a body that is not an event.
+- Protobuf descriptors under `GPBMetadata\LiveKit\`, autoloaded from `metadata/`, while `src/Proto/`
+  holds message classes only. `GPBMetadata` is where a PHP consumer of protobuf looks for descriptors,
+  and claiming a prefix beneath it rather than the bare root is what keeps two packages from colliding
+  there: Composer settles a doubly-claimed prefix by merging the directories and using whichever it
+  lists first, silently. `google-cloud-php` registers 238 prefixes under `GPBMetadata` and not one is
+  the bare root. Two PSR-4 prefixes, 361 message classes and 16 descriptors.
+- Both protobuf runtimes are supported and both are tested: CI runs the unit suite against the pure-PHP
+  runtime and against `ext-protobuf`, on 8.4 and 8.5. They do not agree on every edge case, so testing
+  only the one Composer installs would leave half the installed base unexercised.
+- `ext-protobuf` is optional, and constrained to **5.34 or newer** by a `conflict` entry so an
+  incompatible one is refused at install time rather than at a call site. The extension shadows
+  `google/protobuf`'s classes, so the `^5.36` requirement on the Composer package stops applying the
+  moment it is loaded; and before 5.34 its `GPBUtil` has no `compatibleInt64()`, which protoc 36's
+  getters for `optional` int64 fields call. Measured against ext-protobuf 4.32.1, which is what Alpine
+  ships today: `EventMetric::getEndTimestampMs()`, `ChatMessage::getEditTimestamp()` and
+  `DataStream\Header::getTotalLength()` all raise `Call to undefined method`.
 - `sendData()` puts a fresh 16-byte nonce on every packet, which is what `livekit_room.proto` asks the
   SDK to do ("added by SDK to enable de-duping of messages") and what the Node SDK does. A packet
   without one cannot be de-duplicated. `SendDataOptions::$nonce` overrides it, for the one case that
@@ -167,9 +136,48 @@ starting out now has no reason to carry a version that only receives security fi
 
 ### Notes
 
+About the package:
+
 - `src/Proto/` carries the LiveKit signalling messages (`JoinRequest`, `Ping`, `AddTrackRequest` and the
   rest of `livekit_rtc.proto`) even though no client here calls them. They arrive through the import
   closure: `AcceptWhatsAppCall` carries a `SessionDescription`, which lives in that file. protoc cannot
   generate one message from a file, so the alternative would be dropping `acceptWhatsAppCall()`.
+
+About the repository — none of this reaches an installed package, since `.gitattributes`
+keeps `bin/`, `.github/`, `tests/` and the analyser configuration out of the distributed
+tarball. It is recorded because it is why the package can be trusted to behave as described:
+
+- Assertions on protobuf maps sort before comparing. A map has no order: the pure-PHP runtime iterates
+  one in insertion order and `ext-protobuf` in hash order, so an order-sensitive assertion passes
+  reliably on one and intermittently on the other — the one this rule came from failed 22 times in 40.
+- `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
+  whole run has succeeded, so a protoc that fails — or a Ctrl-C — cannot leave the generated tree
+  half-written or empty.
+- `bin/check-protocol-version.sh` fails if any of the seven hand-written copies of the pinned protocol
+  tag disagrees with the generator, including the `go get` line in each fixture generator. Those decide
+  which protocol the reference JWTs and webhook body are produced from: a bump that missed them would
+  regenerate fixtures from the old protocol, and the suite would stay green asserting new code against
+  stale references.
+- CI reads protoc's version out of `bin/generate-protos.sh` rather than carrying its own copy. protoc's
+  output differs between versions and the drift job compares generated files against committed ones, so
+  a CI protoc that merely satisfied the script's minimum would fail with a diff that reads like someone
+  forgot to regenerate. Runs on a non-`main` ref cancel when superseded, and the jobs say
+  `composer update`, which is what Composer does anyway with no lock file committed.
+- PHPUnit fails on deprecations, notices, its own deprecated API, and an empty test suite. The last of
+  those catches a `--filter` that matches nothing, which otherwise reports success having run no test.
+  `executionOrder` is deliberately left at its default and `ToolingConfigTest` fails if it is ever set:
+  `ZzEnvLeakProbeTest` can only check for leaked environment variables from last place, and the default
+  alphabetical order is the only thing putting it there.
+- PHPStan caches in `.phpstan.cache`, a per-project directory that can be cleared by deleting it,
+  rather than in the system temp directory it shares with every other project.
+- `examples/` is analysed by PHPStan and covered by Rector, not only formatted by Pint. It was the one
+  hand-written directory no tool checked, and PHPStan found a real defect there the moment it looked:
+  `examples/webhook.php` passed `$_SERVER['HTTP_AUTHORIZATION']`, which is `mixed`, straight into a
+  `?string` parameter. Sample code is the first thing anyone copies.
+- PHPStan analyses against the whole supported PHP range (`phpVersion: min 80400, max 80599`) rather
+  than against whichever PHP happens to run it. Unset, it assumed 8.5 on a machine running 8.5 and 8.4
+  in CI, so a function that exists only in 8.5 — `array_first()`, say — passed locally and would have
+  broken for a user on 8.4. `ToolingConfigTest` ties the lower bound to the `php` constraint in
+  composer.json so the two cannot drift apart.
 
 [0.1.0]: https://github.com/maatrics/livekit-server-sdk-php/releases/tag/v0.1.0
