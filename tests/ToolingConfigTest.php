@@ -140,4 +140,56 @@ final class ToolingConfigTest extends TestCase
 
         return $constraint;
     }
+
+    /**
+     * CI runs the mock-server suite with --fail-on-skipped, and that is only safe
+     * while a skip there can mean one thing.
+     *
+     * The suite has exactly one skip: MockServerTestCase, when
+     * LIVEKIT_TEST_SERVER_URL or LIVEKIT_TEST_SERVER_SECRET is missing. Because
+     * that is the only one, every skip in CI is a broken environment, which is
+     * precisely what the flag should fail on -- otherwise a job whose service
+     * container never came up reports success having asserted nothing.
+     *
+     * The integration suite is the opposite case and deliberately does not use the
+     * flag: skipIfUnavailable() is called two dozen times there, because a
+     * deployment without SIP or egress is a valid one to run against and a skip is
+     * the right answer. That job checks its environment in the shell instead.
+     *
+     * So a feature-conditional skip added to tests/MockServer/ would quietly turn
+     * CI's flag from a guard into a false alarm. This fails if one appears.
+     */
+    public function test_the_mock_server_suite_skips_only_for_a_missing_environment(): void
+    {
+        $root = dirname(__DIR__) . '/tests/MockServer';
+        $offenders = [];
+
+        /** @var \SplFileInfo $file */
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root)) as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $relative = substr($file->getPathname(), strlen(dirname(__DIR__)) + 1);
+            $source = (string) file_get_contents($file->getPathname());
+
+            // The one sanctioned skip, and the helper that makes a skip conditional
+            // on what a deployment offers -- which has no meaning against a mock.
+            if (str_contains($source, 'skipIfUnavailable')) {
+                $offenders[] = $relative . ' calls skipIfUnavailable()';
+            }
+
+            if (str_contains($source, 'markTestSkipped') && $relative !== 'tests/MockServer/Support/MockServerTestCase.php') {
+                $offenders[] = $relative . ' calls markTestSkipped()';
+            }
+        }
+
+        sort($offenders);
+
+        self::assertSame([], $offenders, implode("\n", [
+            'CI runs this suite with --fail-on-skipped, which assumes every skip means the environment is broken.',
+            'These would skip for another reason, so the flag would fail the job for a healthy run:',
+            ...$offenders,
+        ]));
+    }
 }

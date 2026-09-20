@@ -185,8 +185,20 @@ so the mock has to be started with a longer one. It is not a credential; the moc
 given.
 
 Both variables are required, and each test skips itself if either is missing. CI therefore runs this suite
-with `--fail-on-skipped`: without it, a job that lost its environment would report success having asserted
-nothing. Keep that flag.
+with `--fail-on-skipped`. Measured, so that the flag is not folklore: with the environment gone, the suite
+skips all 143 tests, asserts nothing and exits **0** — under the words "OK, but some tests were skipped",
+which is what makes it dangerous — and with the flag the same run exits **1**, as does a half-configured
+one with only the URL set. Keep that flag.
+
+It works here only because a skip in this suite can mean one thing. `MockServerTestCase`'s check for the
+two variables is its *only* skip, so every skip is a broken environment. Do not add a feature-conditional
+one: the moment a test here skips for a reason other than the environment, the flag stops being a guard
+and starts failing healthy runs. `ToolingConfigTest` fails if one appears, and says this when it does.
+
+That is also why the integration job does not use the flag, and the difference is deliberate rather than
+an oversight. `skipIfUnavailable()` is called two dozen times over there, because a deployment without SIP
+or egress provisioned is a perfectly valid one to run against and a skip is the correct answer; that job
+checks its environment in the shell before running instead.
 
 The **integration suite** (`tests/Integration/`) is the release gate. Where the mock-server suite proves
 the SDK behaves correctly against LiveKit's *model* of its API, this one proves the model is faithful — it is the only thing that touches a real deployment, with real state, real latency and real

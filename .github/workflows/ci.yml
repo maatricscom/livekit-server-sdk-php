@@ -136,10 +136,21 @@ jobs:
           echo "::error::the mock server never became ready"
           exit 1
 
-      # --fail-on-skipped is the point of this step, not a detail. Every test in
-      # this suite skips itself when the environment is missing, so without it a
-      # job that lost its env vars would report success having asserted nothing
-      # -- a green check for a suite that ran zero tests.
+      # --fail-on-skipped is the point of this step, not a detail, and it was
+      # measured rather than assumed. Without it, a run with the environment
+      # missing skips all 143 tests, asserts nothing, and exits 0 under the words
+      # "OK, but some tests were skipped" -- a green check over an empty run. With
+      # it the same run exits 1, and so does a half-configured one with only the
+      # URL set. With the server up it exits 0 on 143 tests and 695 assertions.
+      #
+      # It is safe here only because a skip in this suite can mean one thing:
+      # MockServerTestCase's check for LIVEKIT_TEST_SERVER_URL and
+      # LIVEKIT_TEST_SERVER_SECRET is the suite's only one. The integration job
+      # deliberately does not use the flag, because skipIfUnavailable() is called
+      # two dozen times there and a deployment without SIP is a valid one to run
+      # against; that job checks its environment in the shell instead.
+      # ToolingConfigTest fails if a feature-conditional skip is ever added here,
+      # which would turn this flag from a guard into a false alarm.
       - name: Run the mock-server suite
         run: vendor/bin/phpunit --testsuite mock-server --fail-on-skipped
         env:
