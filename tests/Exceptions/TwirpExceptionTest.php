@@ -6,8 +6,10 @@ namespace LiveKit\Tests\Exceptions;
 
 use LiveKit\Exceptions\LiveKitException;
 use LiveKit\Exceptions\SipCallError;
+use LiveKit\Exceptions\TwirpErrorCode;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Tests\Support\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class TwirpExceptionTest extends TestCase
 {
@@ -59,9 +61,83 @@ final class TwirpExceptionTest extends TestCase
     {
         $exception = TwirpException::fromResponse(502, '<html>bad gateway</html>');
 
-        self::assertSame('unknown', $exception->getTwirpCode());
+        // Not a Twirp envelope, so it did not come from the Twirp handler. The spec
+        // asks a client to guess an equivalent code from the status rather than
+        // report every such failure as "unknown".
+        self::assertSame(TwirpErrorCode::UNAVAILABLE, $exception->getTwirpCode());
         self::assertSame(502, $exception->getHttpStatus());
         self::assertStringContainsString('bad gateway', $exception->getMessage());
+    }
+
+    /** @return iterable<string, array{int, string}> */
+    public static function intermediaryStatuses(): iterable
+    {
+        yield '301 moved' => [301, TwirpErrorCode::INTERNAL];
+        yield '302 found' => [302, TwirpErrorCode::INTERNAL];
+        yield '400 bad request' => [400, TwirpErrorCode::INTERNAL];
+        yield '401 unauthorized' => [401, TwirpErrorCode::UNAUTHENTICATED];
+        yield '403 forbidden' => [403, TwirpErrorCode::PERMISSION_DENIED];
+        yield '404 not found' => [404, TwirpErrorCode::BAD_ROUTE];
+        yield '429 too many requests' => [429, TwirpErrorCode::RESOURCE_EXHAUSTED];
+        yield '502 bad gateway' => [502, TwirpErrorCode::UNAVAILABLE];
+        yield '503 unavailable' => [503, TwirpErrorCode::UNAVAILABLE];
+        yield '504 gateway timeout' => [504, TwirpErrorCode::UNAVAILABLE];
+        yield '500, which has no better guess' => [500, TwirpErrorCode::UNKNOWN];
+        yield '418, which has none either' => [418, TwirpErrorCode::UNKNOWN];
+    }
+
+    /**
+     * The table in the Twirp spec, for responses a proxy or load balancer produced
+     * rather than the service. Without it every one of these is "unknown", and a
+     * caller cannot tell a rate limit from a gateway timeout.
+     */
+    #[DataProvider('intermediaryStatuses')]
+    public function test_a_non_twirp_response_is_mapped_by_its_status(int $status, string $expected): void
+    {
+        self::assertSame($expected, TwirpException::fromResponse($status, 'not an envelope')->getTwirpCode());
+    }
+
+    public function test_an_intermediary_error_says_so_in_its_metadata(): void
+    {
+        $exception = TwirpException::fromResponse(503, '<html>Service Unavailable</html>');
+
+        // This is how a caller tells "LiveKit said no" from "something between us
+        // said no", which is the difference between a bug and an outage.
+        self::assertSame('true', $exception->getMeta()[TwirpErrorCode::META_FROM_INTERMEDIARY] ?? null);
+        self::assertSame('503', $exception->getMeta()['status_code'] ?? null);
+        self::assertStringContainsString('Service Unavailable', $exception->getMeta()['body'] ?? '');
+    }
+
+    public function test_a_redirect_reports_where_it_pointed_rather_than_its_body(): void
+    {
+        // Twirp only speaks POST, so a redirect is always an intermediary. Where it
+        // pointed is the useful part; the body of a 302 rarely says anything.
+        $exception = TwirpException::fromResponse(302, '', 'https://elsewhere.example.com/');
+
+        self::assertSame(TwirpErrorCode::INTERNAL, $exception->getTwirpCode());
+        self::assertSame('https://elsewhere.example.com/', $exception->getMeta()['location'] ?? null);
+        self::assertArrayNotHasKey('body', $exception->getMeta());
+        self::assertStringContainsString('elsewhere.example.com', $exception->getMessage());
+    }
+
+    public function test_a_real_twirp_envelope_is_not_marked_as_intermediary(): void
+    {
+        $exception = TwirpException::fromResponse(503, '{"code":"unavailable","msg":"restarting"}');
+
+        self::assertSame(TwirpErrorCode::UNAVAILABLE, $exception->getTwirpCode());
+        self::assertSame('restarting', $exception->getMessage());
+        self::assertArrayNotHasKey(TwirpErrorCode::META_FROM_INTERMEDIARY, $exception->getMeta());
+    }
+
+    public function test_the_code_vocabulary_matches_the_spec(): void
+    {
+        self::assertCount(18, TwirpErrorCode::all());
+        self::assertTrue(TwirpErrorCode::isValid('not_found'));
+        self::assertFalse(TwirpErrorCode::isValid('notfound'));
+
+        // A server is free to send a code this list does not know, and passing it
+        // through beats replacing it with something we invented.
+        self::assertSame('brand_new_code', TwirpException::fromResponse(500, '{"code":"brand_new_code"}')->getTwirpCode());
     }
 
     /**
@@ -121,7 +197,7 @@ final class TwirpExceptionTest extends TestCase
         // other end chooses its length, and this message ends up in logs.
         self::assertLessThan(2_000, strlen($e->getMessage()));
         self::assertStringContainsString('100000 bytes total', $e->getMessage());
-        self::assertSame('unknown', $e->getTwirpCode());
+        self::assertSame(TwirpErrorCode::UNAVAILABLE, $e->getTwirpCode());
         self::assertSame(502, $e->getHttpStatus());
     }
 

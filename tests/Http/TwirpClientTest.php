@@ -8,6 +8,7 @@ use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\LiveKitException;
 use LiveKit\Exceptions\SipCallError;
+use LiveKit\Exceptions\TwirpErrorCode;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Http\Failover;
 use LiveKit\Http\RegionCache;
@@ -928,6 +929,94 @@ final class TwirpClientTest extends TestCase
 
         $uri = $http->lastRequest()->getUri();
         self::assertContains($uri->getScheme(), ['http', 'https'], 'ws(s) must be rewritten to http(s).');
+    }
+
+    public function test_a_redirect_is_reported_as_an_intermediary_with_its_location(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(302, ['Location' => 'https://elsewhere.example.com/twirp'], ''));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            // PSR-18 clients do not follow redirects -- Guzzle disables them in
+            // sendRequest() -- so a 3xx really does arrive here. Twirp only speaks
+            // POST, which makes a redirect something in the middle rather than the
+            // service, and where it pointed is the part worth reporting.
+            self::assertSame(TwirpErrorCode::INTERNAL, $e->getTwirpCode());
+            self::assertSame('https://elsewhere.example.com/twirp', $e->getMeta()['location'] ?? null);
+            self::assertSame('true', $e->getMeta()[TwirpErrorCode::META_FROM_INTERMEDIARY] ?? null);
+        }
+
+        self::assertSame(1, $http->requestCount(), 'A redirect is not something to retry.');
+    }
+
+    public function test_a_proxy_failure_is_still_retried_when_its_status_says_so(): void
+    {
+        $http = new MockHttpClient();
+        // A load balancer's HTML 503, not a Twirp envelope. The status is what makes
+        // it retryable, and the mapped code is what a caller sees.
+        $http->pushResponse(new Response(503, ['Content-Type' => 'text/html'], '<html>Service Unavailable</html>'));
+        $http->pushResponse($this->regionsResponse('https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $room = $this->transport($http, $this->noBackoff())
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        self::assertSame('my-room', $room->getName());
+        self::assertSame(3, $http->requestCount());
+    }
+
+    public function test_an_auth_proxy_rejection_is_not_retried_and_says_what_it_was(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(401, ['Content-Type' => 'text/plain'], 'Unauthorized'));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertSame(TwirpErrorCode::UNAUTHENTICATED, $e->getTwirpCode());
+            self::assertSame('true', $e->getMeta()[TwirpErrorCode::META_FROM_INTERMEDIARY] ?? null);
+        }
+
+        self::assertSame(1, $http->requestCount());
+    }
+
+    /** @return iterable<string, array{string, bool}> */
+    public static function responseContentTypes(): iterable
+    {
+        yield 'the other encoding' => ['application/json', true];
+        yield 'html from a gateway' => ['text/html', true];
+        yield 'the one requested' => ['application/protobuf', false];
+        yield 'the one requested, with a charset' => ['application/protobuf; charset=binary', false];
+        yield 'none at all' => ['', false];
+    }
+
+    /**
+     * The Twirp spec says a response's Content-Type must match the request's, so a
+     * mismatch is the likeliest reason a body will not parse. "Could not decode"
+     * alone sends people to look at their own message definitions; naming the
+     * mismatch points at the gateway that actually caused it.
+     */
+    #[DataProvider('responseContentTypes')]
+    public function test_a_decode_failure_names_a_content_type_mismatch(string $contentType, bool $expectNote): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(200, $contentType === '' ? [] : ['Content-Type' => $contentType], '{"name":"x"}'));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected the decode to fail');
+        } catch (TwirpException $e) {
+            $expectNote
+                ? self::assertStringContainsString('was requested', $e->getMessage())
+                : self::assertStringNotContainsString('was requested', $e->getMessage());
+        }
     }
 
     public function test_an_empty_host_throws_a_configuration_exception(): void

@@ -68,6 +68,13 @@ starting out now has no reason to carry a version that only receives security fi
   unvisited; the region-list lifetime is capped at a day; a negative ringing timeout cannot produce a
   negative request timeout; and an unparseable error body is excerpted rather than echoed whole into the
   exception message.
+- `TwirpErrorCode`, the eighteen error codes the Twirp specification defines, so a caller can match on a
+  constant rather than a string literal.
+- Twirp-conformant handling of failures that did not come from the service: a response that is not an
+  error envelope is mapped to the nearest code by its HTTP status and marked with
+  `http_error_from_intermediary`, so a load balancer's HTML `503` or an auth proxy's `401` is reported as
+  `unavailable` and `unauthenticated` rather than `unknown`. A `3xx` reports the `Location` it pointed at;
+  Twirp only speaks POST, so a redirect is never the service answering.
 - A Twirp transport (`TwirpClient`) speaking binary protobuf by default (`ClientOptions::$wireFormat` can
   switch to JSON), with `ClientOptions::$requestTimeout` driving the server-side `X-Twirp-Timeout-Ms`
   deadline.

@@ -57,16 +57,47 @@ class TwirpException extends \RuntimeException implements LiveKitException
         return substr($body, 0, self::BODY_EXCERPT_BYTES) . sprintf('... (%d bytes total)', strlen($body));
     }
 
-    public static function fromResponse(int $status, string $body): static
+    /**
+     * Builds the exception for a non-2xx response.
+     *
+     * @param string|null $location the Location header, when the status is a redirect
+     */
+    public static function fromResponse(int $status, string $body, ?string $location = null): static
     {
+        // Twirp only speaks POST, so a redirect never comes from the service: it is
+        // something in the middle answering instead. The body is not worth showing
+        // for one -- where it was pointed is.
+        if ($status >= 300 && $status <= 399) {
+            return new static(
+                sprintf('An intermediary answered HTTP %d with Location "%s" instead of LiveKit.', $status, (string) $location),
+                TwirpErrorCode::fromHttpStatus($status),
+                $status,
+                [
+                    TwirpErrorCode::META_FROM_INTERMEDIARY => 'true',
+                    'status_code' => (string) $status,
+                    'location' => (string) $location,
+                ],
+            );
+        }
+
         /** @var array{code?: mixed, msg?: mixed, meta?: mixed}|null $decoded */
         $decoded = json_decode($body, true);
 
         if (! is_array($decoded) || ! isset($decoded['code'])) {
+            // Not a Twirp envelope, so this did not come from the Twirp handler: a
+            // load balancer's HTML 503, a gateway timeout, an auth proxy's 401. The
+            // spec asks a client to guess an equivalent code from the status so the
+            // caller can treat it like any other failure, and to mark it so the
+            // caller can tell it apart when that matters.
             return new static(
-                sprintf('LiveKit returned HTTP %d: %s', $status, self::excerpt($body)),
-                'unknown',
+                sprintf('An intermediary returned HTTP %d rather than a LiveKit error: %s', $status, self::excerpt($body)),
+                TwirpErrorCode::fromHttpStatus($status),
                 $status,
+                [
+                    TwirpErrorCode::META_FROM_INTERMEDIARY => 'true',
+                    'status_code' => (string) $status,
+                    'body' => self::excerpt($body),
+                ],
             );
         }
 

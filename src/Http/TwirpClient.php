@@ -8,6 +8,7 @@ use Google\Protobuf\Internal\Message;
 use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
+use LiveKit\Exceptions\TwirpErrorCode;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Options\ClientOptions;
 use LiveKit\Proto\ProtocolVersion;
@@ -39,17 +40,6 @@ final class TwirpClient
     /** Origin-rooted, never relative to the configured host's path. */
     private const string REGIONS_PATH = '/settings/regions';
 
-    /**
-     * Identifies both the SDK and the protocol revision its generated classes came
-     * from. The protocol part is what tells you whether a missing field is a bug or
-     * simply newer than the tree this package was built against — it shows up in
-     * LiveKit's server logs and in any bug report that pastes the request.
-     */
-    public static function userAgent(): string
-    {
-        return sprintf('%s%s (protocol %s)', self::USER_AGENT_PREFIX, self::VERSION, ProtocolVersion::TAG);
-    }
-
     private readonly string $host;
 
     private readonly ClientInterface $httpClient;
@@ -75,6 +65,17 @@ final class TwirpClient
         // Shared by default so the five clients behind one LiveKitAPI discover the
         // project's regions once between them rather than once each.
         $this->regionCache = $regionCache ?? RegionCache::shared();
+    }
+
+    /**
+     * Identifies both the SDK and the protocol revision its generated classes came
+     * from. The protocol part is what tells you whether a missing field is a bug or
+     * simply newer than the tree this package was built against — it shows up in
+     * LiveKit's server logs and in any bug report that pastes the request.
+     */
+    public static function userAgent(): string
+    {
+        return sprintf('%s%s (protocol %s)', self::USER_AGENT_PREFIX, self::VERSION, ProtocolVersion::TAG);
     }
 
     /**
@@ -182,7 +183,7 @@ final class TwirpClient
                     }
                 }
 
-                $error = self::errorFromResponse($status, (string) $response->getBody());
+                $error = self::errorFromResponse($response);
             }
 
             // A transport error or a 5xx may be this region's problem; a 4xx is the
@@ -215,7 +216,7 @@ final class TwirpClient
                 /** @var ClientExceptionInterface $transportError */
                 throw new TwirpException(
                     sprintf('The request to %s failed: %s', $uri, $transportError->getMessage()),
-                    'unavailable',
+                    TwirpErrorCode::UNAVAILABLE,
                     0,
                     [],
                     $transportError,
@@ -268,6 +269,7 @@ final class TwirpClient
     {
         $responseBody = (string) $response->getBody();
         $message = new $responseClass();
+        $expected = $this->options->wireFormat->contentType();
 
         if ($this->options->wireFormat === WireFormat::Json) {
             // A 204, or a proxy that strips the body, leaves nothing to decode.
@@ -280,8 +282,13 @@ final class TwirpClient
                     $message->mergeFromJsonString($responseBody, true);
                 } catch (\Throwable $e) {
                     throw new TwirpException(
-                        sprintf('Could not decode the JSON response from %s: %s', $uri, $e->getMessage()),
-                        'internal',
+                        sprintf(
+                            'Could not decode the JSON response from %s: %s%s',
+                            $uri,
+                            $e->getMessage(),
+                            self::contentTypeNote($response, $expected),
+                        ),
+                        TwirpErrorCode::INTERNAL,
                         $response->getStatusCode(),
                         [],
                         $e,
@@ -297,7 +304,12 @@ final class TwirpClient
                 // this SDK throws is a LiveKitException -- and this is the default
                 // wire format, so it is the likeliest path, not an exotic one.
                 throw new TwirpException(
-                    sprintf('Could not decode the protobuf response from %s: %s', $uri, $e->getMessage()),
+                    sprintf(
+                        'Could not decode the protobuf response from %s: %s%s',
+                        $uri,
+                        $e->getMessage(),
+                        self::contentTypeNote($response, $expected),
+                    ),
                     'internal',
                     $response->getStatusCode(),
                     [],
@@ -375,6 +387,30 @@ final class TwirpClient
     }
 
     /**
+     * Explains a decode failure when the server answered in the other encoding.
+     *
+     * The Twirp spec says a response's Content-Type must match the request's, so a
+     * mismatch is the likeliest reason a body will not parse — usually a gateway
+     * that rewrote the response, or a prefix that reached something other than the
+     * Twirp handler. Said plainly here, because "could not decode" on its own sends
+     * people looking at their own message definitions.
+     *
+     * Only ever added to a message that is already an error; the happy path never
+     * looks at the header, so a server that omits it or spells it with a charset
+     * costs nothing.
+     */
+    private static function contentTypeNote(ResponseInterface $response, string $expected): string
+    {
+        $actual = $response->getHeaderLine('Content-Type');
+
+        if ($actual === '' || str_contains(strtolower($actual), strtolower($expected))) {
+            return '';
+        }
+
+        return sprintf(' (the response was %s, but %s was requested)', $actual, $expected);
+    }
+
+    /**
      * Pulls the region URLs out of a /settings/regions payload, tolerating anything
      * unexpected in it. This body is the reason failover is restricted to LiveKit
      * Cloud hosts: every URL here becomes a candidate to receive the caller's token.
@@ -413,9 +449,15 @@ final class TwirpClient
      * place that parses the envelope, so this is where the decision belongs — and
      * a caller can never accidentally ask for the wrong class.
      */
-    private static function errorFromResponse(int $status, string $body): TwirpException
+    private static function errorFromResponse(ResponseInterface $response): TwirpException
     {
-        $exception = TwirpException::fromResponse($status, $body);
+        $status = $response->getStatusCode();
+
+        // A redirect is never the Twirp service answering -- Twirp only speaks POST
+        // -- so where it points is the useful part, not the body.
+        $location = $status >= 300 && $status <= 399 ? $response->getHeaderLine('Location') : null;
+
+        $exception = TwirpException::fromResponse($status, (string) $response->getBody(), $location);
         $meta = $exception->getMeta();
 
         if (isset($meta['sip_status_code']) || isset($meta['sip_status'])) {

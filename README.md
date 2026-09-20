@@ -351,16 +351,44 @@ Twirp error code, the HTTP status and any metadata LiveKit attached:
 
 ```php
 use LiveKit\Exceptions\SipCallError;
+use LiveKit\Exceptions\TwirpErrorCode;
 use LiveKit\Exceptions\TwirpException;
 
 try {
     $livekit->room->deleteRoom('my-room');
 } catch (TwirpException $e) {
-    echo $e->getTwirpCode();   // e.g. not_found
+    if ($e->getTwirpCode() === TwirpErrorCode::NOT_FOUND) {
+        // ...
+    }
+
     echo $e->getHttpStatus();  // e.g. 404
     print_r($e->getMeta());
 }
 ```
+
+`TwirpErrorCode` holds the eighteen codes the Twirp protocol defines, so you can match on a constant
+instead of retyping a string. The code is whatever the server sent, though: if LiveKit ever adds one this
+list does not know, it reaches you unchanged rather than being flattened into something else.
+
+### Failures that did not come from LiveKit
+
+A non-2xx response does not always come from the Twirp service. A load balancer can answer `503` with an
+HTML page, a gateway can time out, an auth proxy can return `401`, and none of those is a Twirp error
+envelope. Following the Twirp specification, this SDK maps such a response to the nearest code by its HTTP
+status — `401` to `unauthenticated`, `404` to `bad_route`, `429` to `resource_exhausted`, `502`/`503`/`504`
+to `unavailable` — and marks it, so you can tell the two apart when it matters:
+
+```php
+} catch (TwirpException $e) {
+    if (($e->getMeta()[TwirpErrorCode::META_FROM_INTERMEDIARY] ?? null) === 'true') {
+        // Something between you and LiveKit answered: the original status is in
+        // meta['status_code'], and the body it sent in meta['body'].
+    }
+}
+```
+
+A redirect counts as one of these. Twirp only speaks POST, so a `3xx` is never the service answering; the
+`Location` it pointed at is reported in `meta['location']` rather than the body.
 
 `SipClient::createSipParticipant()` and `SipClient::transferSipParticipant()` can additionally fail with
 `SipCallError` (a `TwirpException` subclass), which adds `getSipStatusCode()` and `getSipStatus()` for the
