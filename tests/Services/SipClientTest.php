@@ -859,4 +859,31 @@ final class SipClientTest extends TwirpTestCase
 
         self::assertSame('SDR_direct', $deleted->getSipDispatchRuleId());
     }
+
+    public function testDialRequestTimeoutDefaultsToThirtySecondsPlusMargin(): void
+    {
+        self::assertSame(30, SipClient::DEFAULT_RINGING_TIMEOUT_SECONDS);
+        self::assertSame(2, SipClient::RINGING_TIMEOUT_MARGIN_SECONDS);
+
+        // Neither value given: 30s ring window + 2s margin.
+        self::assertSame(32, SipClient::dialRequestTimeout(null, null));
+    }
+
+    public function testDialRequestTimeoutTracksTheRingingTimeout(): void
+    {
+        self::assertSame(62, SipClient::dialRequestTimeout(null, 60));
+        self::assertSame(7, SipClient::dialRequestTimeout(null, 5));
+    }
+
+    public function testDialRequestTimeoutHonoursALongerUserTimeout(): void
+    {
+        self::assertSame(120, SipClient::dialRequestTimeout(120, 60));
+    }
+
+    public function testDialRequestTimeoutRaisesATooShortUserTimeout(): void
+    {
+        // A 5s timeout against a 60s ring window would abort mid-ring: raise it to the floor.
+        self::assertSame(62, SipClient::dialRequestTimeout(5, 60));
+        self::assertSame(32, SipClient::dialRequestTimeout(10, null));
+    }
 }

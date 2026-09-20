@@ -71,6 +71,16 @@ final class SipClient extends ServiceBase
     private const SERVICE = 'SIP';
 
     /**
+     * Ring window assumed when a dialing request does not set one; matches the server
+     * default. Pinned explicitly so our request timeout does not silently change if the
+     * server default does.
+     */
+    public const DEFAULT_RINGING_TIMEOUT_SECONDS = 30;
+
+    /** Margin kept between the ring window and the HTTP request timeout. */
+    public const RINGING_TIMEOUT_MARGIN_SECONDS = 2;
+
+    /**
      * Creates a SIP inbound trunk.
      *
      * @param list<string> $numbers phone numbers this trunk accepts calls for
@@ -701,6 +711,21 @@ final class SipClient extends ServiceBase
         }
 
         return $items;
+    }
+
+    /**
+     * Resolves the HTTP request timeout, in seconds, for an rpc that dials a phone.
+     *
+     * The request must outlast the ring window or it aborts before the callee can answer,
+     * so the floor is $ringingTimeout + RINGING_TIMEOUT_MARGIN_SECONDS. A longer
+     * caller-supplied timeout is honoured; a shorter one is raised to the floor.
+     */
+    public static function dialRequestTimeout(?int $timeout, ?int $ringingTimeout): int
+    {
+        $ring = $ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS;
+        $floor = $ring + self::RINGING_TIMEOUT_MARGIN_SECONDS;
+
+        return max($timeout ?? $floor, $floor);
     }
 
     /** Deletes a SIP dispatch rule and returns the rule as it was. */
