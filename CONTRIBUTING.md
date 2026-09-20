@@ -71,9 +71,14 @@ The namespace is the deciding question, and it follows from who governs the clas
 
 | | governed by | namespace root | contents |
 |---|---|---|---|
-| `src/` (excluding `Proto/`) | this package | `LiveKit\` | 71 hand-written files |
+| `src/` (excluding `Proto/`) | this package | `LiveKit\` | 70 hand-written files, plus `ProtocolVersion.php` |
 | `src/Proto/` | `livekit/protocol`'s `.proto` files | `LiveKit\` | 360 files, all from protoc |
 | `metadata/` | the protobuf runtime | `GPBMetadata\` | 16 descriptor files |
+
+`ProtocolVersion.php` is the exception that proves the column: it is written by
+`bin/generate-protos.sh`, not by hand, but its shape is this package's own rather than protoc's, so it
+belongs with the code it serves instead of among protoc's output. Being outside the generated tree also
+puts it under Pint and PHPStan, which is why its constants are typed like the rest of the package.
 
 Descriptors are the runtime's plumbing rather than this package's API, which is why they live in the
 runtime's shared `GPBMetadata` root instead of ours — beneath a prefix of our own, never at the bare
@@ -460,11 +465,13 @@ into `metadata/` as `GPBMetadata\LiveKit\`.
 After regenerating, confirm nothing changed unexpectedly:
 
 ```bash
-git status --porcelain --untracked-files=all -- src/Proto metadata
+git status --porcelain --untracked-files=all -- src/Proto metadata src/ProtocolVersion.php
 ```
 
-`git status`, not `git diff`: the script removes and rewrites both output directories, so a message type
-added upstream arrives as an *untracked* file, which `git diff` never reports. Empty output means the
+All three paths, because the script writes all three: `src/ProtocolVersion.php` is generated too, and a
+check that leaves it out passes locally and then fails in CI, which does not. `git status`, not
+`git diff`: the script removes and rewrites both output directories, so a message type added upstream
+arrives as an *untracked* file, which `git diff` never reports. Empty output means the
 committed code still matches the pinned tag. A non-empty diff is expected only
 when you have just bumped the pinned tag (see below) — review it like any other generated-code diff, then
 commit it together with the tag bump.
@@ -474,13 +481,18 @@ commit it together with the tag bump.
 1. Edit `PROTOCOL_VERSION` near the top of `bin/generate-protos.sh` to the new tag (currently `v1.52.0`).
 2. Run `composer generate-protos` and review the resulting diff under `src/Proto/`. The script also
    rewrites `src/ProtocolVersion.php`, which records the tag and the exact upstream commit.
-3. Update the version everywhere it is stated by hand: `README.md`, `NOTICE`, `CHANGELOG.md`, the
-   "(currently ...)" note in step 1 above, and the `go get` line in `bin/generate-jwt-fixtures.go` and
-   `bin/generate-webhook-fixture.go`. Those two decide which protocol the reference fixtures are built
-   from, so leaving them behind regenerates fixtures from the old tag and the suite stays green while
-   asserting new code against stale references.
-4. Run `composer check-protocol`. It fails if any of those files still names the old version, or if
-   `src/Proto` was not regenerated. CI runs the same check, so a missed file will not reach `main`.
+3. Run `composer check-protocol` and let it tell you what to edit. It names every file still on the old
+   tag, so there is no list to keep here — a list in this file is exactly what went stale last time, when
+   the design spec was added to the check and this step was not updated with it.
+
+   Two of those files are worth understanding rather than just editing. The `go get` line in
+   `bin/generate-jwt-fixtures.go` and `bin/generate-webhook-fixture.go` decides which protocol the
+   reference fixtures are built from: leave them behind and the fixtures are regenerated from the old
+   tag, so the suite stays green while asserting new code against stale references. Regenerate the
+   fixtures after changing them, following the `go run` line in each generator's header.
+4. Run `composer check-protocol` again until it passes. It also compares the generated
+   `src/ProtocolVersion.php` exactly, so it fails if you edited the tag without regenerating. CI runs the
+   same check, so a missed file will not reach `main`.
 5. Run the full verification sweep (unit suite, phpstan, pint, and ideally the integration suite against a
    real project) to confirm the new generated code still behaves correctly.
 6. Commit the diff together with the `PROTOCOL_VERSION` edit in one commit.
@@ -511,12 +523,43 @@ An empty result is correct.
 
 ## Before opening a pull request
 
+Every one of these is a CI job that runs on your pull request, so anything you skip here is something you
+find out about later rather than never.
+
 - `vendor/bin/phpunit` (unit suite) passes
-- `vendor/bin/phpunit --testsuite mock-server` passes against a local `livekit/test-server`
+- `vendor/bin/phpunit --testsuite mock-server --fail-on-skipped` passes against a local
+  `livekit/test-server`. Keep the flag: without it, a run with the server down skips every test, asserts
+  nothing and still exits 0
 - If you changed how a message is encoded, decoded or validated: the unit suite passes under
   [`ext-protobuf`](#running-against-ext-protobuf) too
 - `composer analyse` is clean
 - `vendor/bin/pint --test` is clean
 - `composer validate --strict` is clean
+- `composer check-protocol` is clean
+- If you touched `bin/*.sh`: ShellCheck is clean, with the `--enable` list from
+  [Static analysis and style](#static-analysis-and-style)
+- If you touched `bin/*.go`: `gofmt -l bin/` prints nothing
 - If you touched anything under `src/Proto` or `metadata/` by hand: don't. Both are generated. Change
   `bin/generate-protos.sh` or bump `PROTOCOL_VERSION` instead, and regenerate.
+
+The integration suite is not on this list. It needs a real deployment, does not run on pull requests, and
+is the release gate rather than a contribution gate — see [Running the test suite](#running-the-test-suite).
+
+## Cutting a release
+
+Nothing here is automated, and the order matters: the integration suite is the only step that can tell you
+the package works against something other than this repository's own idea of LiveKit.
+
+1. Everything in [Before opening a pull request](#before-opening-a-pull-request) is clean.
+2. `vendor/bin/phpunit --testsuite integration` passes against a **real** LiveKit project. This is the
+   release gate. A green unit suite says the logic is self-consistent, a green mock-server run says
+   LiveKit's own mock accepts what goes on the wire, and only this says a deployment does.
+3. `CHANGELOG.md` has an entry for the version, with its link at the bottom of the file pointing at the
+   tag you are about to create. The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
+   the versioning is [semver](https://semver.org/spec/v2.0.0.html), which before 1.0 permits a breaking
+   change in a minor — say so in the entry when one is there.
+4. `composer check-protocol` passes, so the pinned `livekit/protocol` tag is stated consistently in every
+   file that names it.
+5. Tag the commit `vX.Y.Z` and push the tag. Packagist builds the release from it, and
+   `.gitattributes` decides what the tarball contains — check with
+   `git archive --format=tar HEAD | tar -t` if you have changed what ships.
