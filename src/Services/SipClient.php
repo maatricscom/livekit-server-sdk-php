@@ -20,6 +20,8 @@ use LiveKit\Proto\GetSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPOutboundTrunkResponse;
 use LiveKit\Proto\ListSIPInboundTrunkRequest;
 use LiveKit\Proto\ListSIPInboundTrunkResponse;
+use LiveKit\Proto\ListSIPOutboundTrunkRequest;
+use LiveKit\Proto\ListSIPOutboundTrunkResponse;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -422,6 +424,46 @@ final class SipClient extends ServiceBase
             // RepeatedField's iterator carries no generic value type, so this
             // yields mixed — unlike the rpc() return, which the analyser infers.
             assert($item instanceof SIPInboundTrunkInfo);
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Lists SIP outbound trunks. With no filters, all trunks are listed.
+     *
+     * @return list<SIPOutboundTrunkInfo>
+     */
+    public function listSipOutboundTrunk(?ListSipTrunkOptions $opts = null): array
+    {
+        $request = new ListSIPOutboundTrunkRequest();
+
+        if ($opts !== null) {
+            if ($opts->page !== null) {
+                $request->setPage($opts->page);
+            }
+            if ($opts->trunkIds !== null) {
+                $request->setTrunkIds($opts->trunkIds);
+            }
+            if ($opts->numbers !== null) {
+                $request->setNumbers($opts->numbers);
+            }
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListSIPOutboundTrunk',
+            $request,
+            ListSIPOutboundTrunkResponse::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        $items = [];
+        foreach ($response->getItems() as $item) {
+            // RepeatedField's iterator carries no generic value type, so this
+            // yields mixed — unlike the rpc() return, which the analyser infers.
+            assert($item instanceof SIPOutboundTrunkInfo);
             $items[] = $item;
         }
 

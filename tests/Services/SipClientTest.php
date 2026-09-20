@@ -17,6 +17,8 @@ use LiveKit\Proto\GetSIPOutboundTrunkRequest;
 use LiveKit\Proto\GetSIPOutboundTrunkResponse;
 use LiveKit\Proto\ListSIPInboundTrunkRequest;
 use LiveKit\Proto\ListSIPInboundTrunkResponse;
+use LiveKit\Proto\ListSIPOutboundTrunkRequest;
+use LiveKit\Proto\ListSIPOutboundTrunkResponse;
 use LiveKit\Proto\ListUpdate;
 use LiveKit\Proto\Pagination;
 use LiveKit\Proto\SIPHeaderOptions;
@@ -524,5 +526,32 @@ final class SipClientTest extends TwirpTestCase
         self::assertNull($sent->getPage());
         self::assertCount(0, $sent->getTrunkIds());
         self::assertCount(0, $sent->getNumbers());
+    }
+
+    public function testListSipOutboundTrunkUnwrapsToAnArray(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new ListSIPOutboundTrunkResponse())->setItems([
+                (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_c'),
+            ]),
+        ));
+
+        $trunks = $this->client->listSipOutboundTrunk(
+            new ListSipTrunkOptions(trunkIds: ['ST_c'], numbers: ['+15105550101']),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'ListSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(ListSIPOutboundTrunkRequest::class);
+        self::assertSame(['ST_c'], iterator_to_array($sent->getTrunkIds(), false));
+        self::assertSame(['+15105550101'], iterator_to_array($sent->getNumbers(), false));
+        self::assertNull($sent->getPage());
+
+        self::assertIsArray($trunks);
+        self::assertCount(1, $trunks);
+        self::assertSame('ST_c', $trunks[0]->getSipTrunkId());
     }
 }

@@ -87,4 +87,11 @@ interface SipClientInterface
      * @return list<SIPInboundTrunkInfo>
      */
     public function listSipInboundTrunk(?ListSipTrunkOptions $opts = null): array;
+
+    /**
+     * Lists SIP outbound trunks. With no filters, all trunks are listed.
+     *
+     * @return list<SIPOutboundTrunkInfo>
+     */
+    public function listSipOutboundTrunk(?ListSipTrunkOptions $opts = null): array;
 }
