@@ -30,6 +30,9 @@ Initial release.
   the same way `SipClient::createSipParticipant()` does.
 - `LiveKitAPI`, a facade constructing all six service clients from one set of credentials and one
   shared HTTP client.
+- An interface per service client under `LiveKit\Contracts`, so application code can depend on the
+  capability rather than the concrete class and stand in for it in tests. Each declares every method its
+  client has.
 - Credential resolution from the environment: `LIVEKIT_URL`, and then either `LIVEKIT_TOKEN` or
   `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`, so `new LiveKitAPI()` needs no arguments. The environment is
   read only when no credential was passed in at all — never field by field, so an explicit API key is not

@@ -375,6 +375,63 @@ try {
 Configuration mistakes (a missing host, a missing or too-short API secret) throw
 `LiveKit\Exceptions\ConfigurationException` at construction time, before any network call is made.
 
+## Dependency injection and testing
+
+Each service client implements an interface in `LiveKit\Contracts`, so application code can depend on the
+capability rather than on this package's concrete class:
+
+| Interface | Implemented by |
+| --- | --- |
+| `RoomServiceClientInterface` | `RoomServiceClient` |
+| `EgressClientInterface` | `EgressClient` |
+| `IngressClientInterface` | `IngressClient` |
+| `SipClientInterface` | `SipClient` |
+| `AgentDispatchClientInterface` | `AgentDispatchClient` |
+| `ConnectorClientInterface` | `ConnectorClient` |
+
+Type-hint the interface and let the container supply the client:
+
+```php
+use LiveKit\Contracts\RoomServiceClientInterface;
+
+final readonly class RoomProvisioner
+{
+    public function __construct(private RoomServiceClientInterface $rooms)
+    {
+    }
+
+    public function provision(string $name): string
+    {
+        return $this->rooms->createRoom(new CreateRoomOptions(name: $name))->getSid();
+    }
+}
+```
+
+```php
+// Container wiring: one LiveKitAPI, its clients bound to their interfaces.
+$livekit = new LiveKit\LiveKitAPI();
+
+$container->set(RoomServiceClientInterface::class, $livekit->room);
+$container->set(SipClientInterface::class, $livekit->sip);
+```
+
+In tests this lets you stand in for the service without touching HTTP at all:
+
+```php
+$rooms = $this->createStub(RoomServiceClientInterface::class);
+$rooms->method('createRoom')->willReturn((new Room())->setSid('RM_test'));
+
+self::assertSame('RM_test', (new RoomProvisioner($rooms))->provision('my-room'));
+```
+
+The interfaces declare every method its client has — nothing is available on the class but missing from
+the contract — and are covered by this package's backward-compatibility promise, so a mock written against
+one keeps working across minor versions.
+
+If you would rather exercise the real client against a real transport, inject a PSR-18 double instead of
+mocking the interface: the clients accept one, and it is what this package's own test suite uses. See
+[Timeouts](#timeouts) for how the HTTP client is supplied.
+
 ## Migrating from `agence104/livekit-server-sdk`
 
 If you're moving from the existing community SDK, the biggest difference is namespacing — everything else
