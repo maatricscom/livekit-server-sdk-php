@@ -22,6 +22,7 @@ jobs:
   tests:
     name: PHP ${{ matrix.php }} / ${{ matrix.dependencies }} / ${{ matrix.psr18 }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -57,6 +58,7 @@ jobs:
   tests-ext-protobuf:
     name: PHP ${{ matrix.php }} / ext-protobuf
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -86,6 +88,7 @@ jobs:
   mock-server:
     name: Against livekit/test-server / ${{ matrix.psr18 }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -168,6 +171,12 @@ jobs:
     # are the trusted paths, and both are covered.
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # The suite takes about two and a half minutes against a healthy project. The
+    # cap matters because a sick one is slow rather than fast: failover replays a
+    # retryable failure across regions, and a single call measured at 177 seconds
+    # that way. Without a limit a bad deployment would hold the queued concurrency
+    # group below for GitHub's six-hour default and pile the next runs up behind it.
+    timeout-minutes: 20
     # One at a time. These tests create and delete objects in a real project, and
     # two runs racing each other there is a source of failures that says nothing
     # about the code. Queued rather than cancelled: a half-finished run is what
@@ -212,6 +221,7 @@ jobs:
 
   phpstan:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
@@ -229,6 +239,7 @@ jobs:
 
   pint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
@@ -242,6 +253,7 @@ jobs:
 
   composer-validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
@@ -253,9 +265,11 @@ jobs:
   shellcheck:
     name: Shell scripts pass ShellCheck
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      # Pinned rather than taken from the runner image, which ships 0.9.0 today.
+      # Pinned rather than taken from the runner image, which carried 0.9.0 when this
+      # was written.
       # ShellCheck gains diagnostics between releases, so an unpinned one can turn
       # this job red without anything in the repository having moved -- and an
       # --enable name that a older build does not know is a hard error, not a
@@ -287,6 +301,7 @@ jobs:
   gofmt:
     name: Go fixture generators are formatted
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       # Deliberately not pinned. gofmt has one canonical output and following it
@@ -320,6 +335,7 @@ jobs:
   protocol-version:
     name: Pinned protocol version is consistent
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       # The version is written by hand in the README, NOTICE, CHANGELOG and
@@ -331,6 +347,7 @@ jobs:
   forbidden-symbols:
     name: No Internal RepeatedField in any shipped code
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       # Internal\RepeatedField survives only as a class_alias, created when
@@ -353,6 +370,7 @@ jobs:
   proto-drift:
     name: Generated protobuf is up to date
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
@@ -375,9 +393,10 @@ jobs:
           curl -sSLo /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip"
           unzip -q /tmp/protoc.zip -d /tmp/protoc
           echo "/tmp/protoc/bin" >> "$GITHUB_PATH"
-      # composer.lock is not committed -- a library resolves against its consumer's
-      # tree, not ours -- so `install` would print that it is updating instead.
-      - run: composer update --prefer-dist --no-interaction --no-progress
+      # No composer install step: bin/generate-protos.sh shells out to git and
+      # protoc and calls neither composer nor php, and the drift check below is
+      # git. Installing the dev dependencies here would download them to run
+      # nothing.
       - run: bin/generate-protos.sh
       - name: Fail if generated code drifted
         run: |
