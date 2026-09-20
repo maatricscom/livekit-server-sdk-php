@@ -4,12 +4,15 @@ on:
   push:
     branches: [main]
   pull_request:
+  # So the integration suite can be run against a deployment on demand, without
+  # waiting for a push to main.
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 # A push that supersedes another on the same ref makes the earlier run's result
-# irrelevant, and this workflow is eleven jobs wide. main is excluded: its runs are
+# irrelevant, and this workflow is twelve jobs wide. main is excluded: its runs are
 # what the badge and the release history refer to, so they finish.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -142,6 +145,59 @@ jobs:
         env:
           LIVEKIT_TEST_SERVER_URL: http://127.0.0.1:9999
           LIVEKIT_TEST_SERVER_SECRET: test-server-secret-not-a-real-credential
+
+  integration:
+    name: Against a real LiveKit deployment
+    # Never on pull_request. A workflow triggered by a pull request runs the code
+    # in that pull request, so giving this job the secrets would hand a live API
+    # key and secret to anyone who opens one -- a fork only has to edit a test to
+    # print them. GitHub withholds secrets from fork-triggered runs for exactly
+    # this reason, which would make the job fail rather than be safe; refusing to
+    # run it at all is the honest version. Pushes to main and manual dispatches
+    # are the trusted paths, and both are covered.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    # One at a time. These tests create and delete objects in a real project, and
+    # two runs racing each other there is a source of failures that says nothing
+    # about the code. Queued rather than cancelled: a half-finished run is what
+    # leaves objects behind.
+    concurrency:
+      group: integration-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: json, mbstring, bcmath
+          coverage: none
+
+      # composer.lock is not committed -- a library resolves against its consumer's
+      # tree, not ours -- so `install` would print that it is updating instead.
+      - run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Run the integration suite
+        env:
+          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+        run: |
+          # The suite skips itself when these are unset, which is the right
+          # behaviour for a contributor running it locally and the wrong result to
+          # report here: a job that skipped every test because a secret went
+          # missing would be a green tick over nothing. Checking first separates
+          # "not configured" from "configured and broken".
+          if [ -z "${LIVEKIT_URL}" ] || [ -z "${LIVEKIT_API_KEY}" ] || [ -z "${LIVEKIT_API_SECRET}" ]; then
+            echo "::notice title=Integration suite not run::Set the LIVEKIT_URL, LIVEKIT_API_KEY and LIVEKIT_API_SECRET repository secrets to run these against a deployment."
+            exit 0
+          fi
+
+          # Deliberately without --fail-on-skipped, unlike the mock-server job. A
+          # deployment with no SIP or no egress provisioned is a valid one, and the
+          # suite skips those features on purpose; the case that flag exists to
+          # catch is the missing environment, which the check above already did.
+          vendor/bin/phpunit --testsuite integration
 
   phpstan:
     runs-on: ubuntu-latest

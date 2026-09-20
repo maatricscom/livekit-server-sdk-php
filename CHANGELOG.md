@@ -133,8 +133,10 @@ starting out now has no reason to carry a version that only receives security fi
   API that every official server SDK tests against. It covers every RPC in both wire formats, proving
   the grants this SDK mints satisfy the server's own permission table and that the server can decode what
   the SDK encodes. `RpcCoverageTest` fails if a service client grows a method the sweep does not call.
-- `tests/Integration/`, an opt-in suite that runs against a real LiveKit deployment when `LIVEKIT_URL`,
-  `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set, to serve as a release gate: room lifecycle in
+- `tests/Integration/`, a suite that runs against a real LiveKit deployment when `LIVEKIT_URL`,
+  `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set — locally, and in CI from repository secrets on
+  pushes to `main` and manual dispatch, never on a pull request, since a job holding a live API key that
+  runs the code in an arbitrary pull request is a way to publish that key. It is the release gate: room lifecycle in
   both wire formats, metadata round-tripping, the ingress create/update/delete path, agent dispatch, the
   list RPCs of the services that must not be mutated, and what a real server returns when the request is
   wrong, plus a sweep over every remaining room, egress and agent-dispatch method — the three services

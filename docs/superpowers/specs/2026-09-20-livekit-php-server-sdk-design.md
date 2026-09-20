@@ -475,8 +475,12 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   the one every official server SDK tests against. It is what proves the request encoding is one the
   server can read, in both wire formats, and that the grant minted for each RPC satisfies the server's
   permission table. A unit test with a fake HTTP client cannot prove either.
-- **Integration tests** against a real LiveKit server are opt-in, gated behind environment variables, and
-  never required for CI to pass. Sixty of them now exist, covering room lifecycle, ingress on both push
+- **Integration tests** against a real LiveKit server are gated behind environment variables, so they skip
+  themselves entirely for anyone without a deployment to point them at. CI runs them as their own job from
+  repository secrets, on pushes to `main` and on manual dispatch but never on a pull request: a job holding
+  a live API key that runs the code in an arbitrary pull request is a way to publish that key. The job
+  checks the secrets are present rather than passing `--fail-on-skipped`, because a skip is also how a
+  deployment without SIP or egress reports a feature it does not have, and the two must not be conflated. Sixty of them now exist, covering room lifecycle, ingress on both push
   input types, SIP trunk and dispatch-rule configuration, agent dispatch, all five connector RPCs, the
   read-only RPCs, the shape of a server error, the grants a minted token actually buys against a live
   deployment, and a sweep that drives every remaining room, egress and agent-dispatch method; they have been run green against a live LiveKit Cloud project
@@ -501,8 +505,9 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   hand-written tree, so `composer refactor` exits 0
 - **GitHub Actions:** matrix PHP 8.4 / 8.5 × `prefer-lowest` / `prefer-stable`, `fail-fast: false`.
   The `prefer-lowest` leg is what catches a too-loose constraint. Separate jobs for PHPStan, Pint
-  `--test`, `composer validate --strict`, the pinned-protocol-version check, the forbidden-symbol check,
-  and the proto drift check.
+  `--test`, `composer validate --strict`, ShellCheck over `bin/*.sh`, `gofmt` over the fixture generators,
+  the pinned-protocol-version check, the forbidden-symbol check, the proto drift check, and the
+  integration suite against a real deployment. Twelve in all.
 - **A second runtime:** one job runs the unit suite against `ext-protobuf`. The pure-PHP runtime and the
   extension do not agree on every edge case — each accepts malformed input the other rejects — so testing
   only the one Composer installs leaves half the installed base unexercised.

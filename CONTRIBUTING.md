@@ -172,9 +172,8 @@ Both variables are required, and each test skips itself if either is missing. CI
 with `--fail-on-skipped`: without it, a job that lost its environment would report success having asserted
 nothing. Keep that flag.
 
-The **integration suite** (`tests/Integration/`) is a release gate, not a CI gate. Where the mock-server
-suite proves the SDK behaves correctly against LiveKit's *model* of its API, this one proves the model is
-faithful — it is the only thing that touches a real deployment, with real state, real latency and real
+The **integration suite** (`tests/Integration/`) is the release gate. Where the mock-server suite proves
+the SDK behaves correctly against LiveKit's *model* of its API, this one proves the model is faithful — it is the only thing that touches a real deployment, with real state, real latency and real
 region behaviour. It is skipped entirely, test by test, unless all three of these environment variables
 are set:
 
@@ -196,11 +195,35 @@ Run this, against your own project, before every release. A green unit suite say
 self-consistent; a green mock-server run says LiveKit's own mock accepts what this SDK puts on the wire;
 only a green integration run says a real deployment does.
 
+CI runs it too, as the `integration` job, from the same three values held as repository secrets. Two
+things about that job are deliberate and worth knowing before you change it.
+
+**It does not run on pull requests.** A workflow triggered by a pull request runs the code in that pull
+request, so a job holding these secrets would hand a live API key to anyone who opens one — editing a
+test to print them is all it takes. GitHub already withholds secrets from fork-triggered runs, which
+would make such a job fail rather than make it safe, so this one declines to run at all: `push` to
+`main` and `workflow_dispatch` are the trusted paths. Run it on a branch with the Actions tab's *Run
+workflow* button when you need it before merging.
+
+**It checks the secrets are set before running, instead of passing `--fail-on-skipped`.** Those are not
+the same test. Without the environment the suite skips every test and PHPUnit exits 0 — "OK, but some
+tests were skipped", sixty tests and no assertions, which is a green tick over nothing. But a skip is
+also the correct outcome for a feature the deployment does not have, and `--fail-on-skipped` cannot tell
+the two apart: it would fail the job for a project with SIP switched off. Checking the environment first
+separates "not configured" from "configured and broken", and leaves the feature skips alone.
+
+A repository with no secrets set gets a notice and a pass, so a fork is not left with a permanently red
+job it cannot fix.
+
 It runs against someone's real project, which constrains what it may do:
 
 - **Everything it creates, it deletes**, including when an assertion fails —
   `IntegrationTestCase::cleanUpAfter()` exists to get that right, and to report the original failure
   rather than the cleanup failure that follows it. A leaked room or ingress costs the project owner.
+  There is one documented exception, in `ConnectorIntegrationTest`: `connectTwilioCall()` provisions a
+  room of its own that `listRooms()` does not report for at least twenty seconds, so deleting it is a
+  race the test loses; it is empty, carries its own timeout and closes itself, and the test says so
+  rather than shipping cleanup code that looks thorough and does nothing.
 - **Nothing it calls places a call, starts a recording, or incurs a charge.** `createSipParticipant()`
   dials a real number; `transferSipParticipant()` moves a live call; the `ConnectorClient` RPCs reach
   WhatsApp and Twilio; starting any egress needs storage credentials and bills for what it records. None
