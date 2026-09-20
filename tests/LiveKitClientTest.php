@@ -81,10 +81,19 @@ final class LiveKitClientTest extends TestCase
 
     public function test_requires_a_host(): void
     {
+        $original = getenv('LIVEKIT_URL');
         putenv('LIVEKIT_URL');
 
-        $this->expectException(ConfigurationException::class);
+        try {
+            $this->expectException(ConfigurationException::class);
 
-        new LiveKitClient(null, self::API_KEY, self::API_SECRET);
+            new LiveKitClient(null, self::API_KEY, self::API_SECRET);
+        } finally {
+            if ($original !== false) {
+                putenv('LIVEKIT_URL=' . $original);
+            } else {
+                putenv('LIVEKIT_URL');
+            }
+        }
     }
 }
