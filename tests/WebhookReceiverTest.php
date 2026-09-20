@@ -254,6 +254,11 @@ final class WebhookReceiverTest extends TestCase
         yield 'truncated json' => ['{"event":'];
         yield 'not json at all' => ['not json at all'];
         yield 'empty' => [''];
+        yield 'whitespace only' => ["  \n\t "];
+        // protojson permits an array at the top level of a *field*, never of a message.
+        yield 'json array' => ['[1,2,3]'];
+        yield 'json string' => ['"an event"'];
+        yield 'json null' => ['null'];
     }
 
     /**
@@ -277,18 +282,50 @@ final class WebhookReceiverTest extends TestCase
 
         self::assertInstanceOf(LiveKitException::class, $caught);
         self::assertInstanceOf(WebhookVerificationException::class, $caught);
-        self::assertNotNull($caught->getPrevious(), 'The protobuf error is kept as the cause.');
     }
 
-    public function test_a_json_array_decodes_to_an_empty_event_rather_than_failing(): void
+    /**
+     * The two protobuf runtimes are lenient about different malformed bodies -- the
+     * pure-PHP parser accepts a JSON array, ext-protobuf accepts an empty body, and
+     * each yields a default message. Neither may decide what this SDK does, so the
+     * receiver rejects anything that is not a JSON object before the parser is
+     * reached. This is the test that fails if that check is removed: it passes on
+     * one runtime either way, and only fails on both once the SDK decides.
+     */
+    public function test_rejecting_a_malformed_body_does_not_depend_on_the_protobuf_runtime(): void
     {
-        // Recorded because it is surprising: protojson accepts a JSON array where an
-        // object belongs and yields a default message. Harmless — LiveKit never
-        // sends one, and the signature check is not what is being skipped here —
-        // but worth pinning so a future change to it is noticed.
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive('[1,2,3]', null, skipAuth: true);
+        $receiver = new WebhookReceiver(self::API_KEY, self::API_SECRET);
+        $bodies = ['', '  ', '[1,2,3]', 'null', '"an event"', '123'];
+        $accepted = [];
 
-        self::assertSame('', $event->getEvent());
+        foreach ($bodies as $body) {
+            try {
+                $receiver->receive($body, null, skipAuth: true);
+                $accepted[] = var_export($body, true);
+            } catch (WebhookVerificationException) {
+                // The only outcome either runtime may produce.
+            }
+        }
+
+        self::assertSame([], $accepted, 'These are not LiveKit events and must be rejected on every runtime.');
+    }
+
+    /**
+     * A body that IS a JSON object but not decodable reaches the protobuf parser, and
+     * that runtime's exception is kept as the cause.
+     */
+    public function test_a_protobuf_decode_error_is_kept_as_the_cause(): void
+    {
+        $caught = null;
+
+        try {
+            (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive('{"event":', null, skipAuth: true);
+        } catch (\Throwable $e) {
+            $caught = $e;
+        }
+
+        self::assertInstanceOf(WebhookVerificationException::class, $caught);
+        self::assertNotNull($caught->getPrevious(), 'The protobuf error is kept as the cause.');
     }
 
     public function test_the_signature_is_checked_before_the_body_is_decoded(): void

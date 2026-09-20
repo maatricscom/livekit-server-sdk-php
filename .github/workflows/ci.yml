@@ -40,6 +40,39 @@ jobs:
       - name: Run tests
         run: vendor/bin/phpunit --testsuite unit
 
+  # The pure-PHP protobuf runtime and ext-protobuf do not agree on every edge case --
+  # each accepts malformed input the other rejects. Testing only the runtime that
+  # comes with Composer means half the installed base is untested, so this job runs
+  # the suite against the extension we suggest.
+  tests-ext-protobuf:
+    name: PHP ${{ matrix.php }} / ext-protobuf
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          # composer.json conflicts with ext-protobuf < 5.34, whose GPBUtil has no
+          # compatibleInt64() for protoc 36's generated int64 getters to call.
+          extensions: json, mbstring, bcmath, protobuf
+          coverage: none
+
+      - name: Confirm the extension is the runtime in use
+        run: |
+          php -r 'exit(extension_loaded("protobuf") ? 0 : 1);'
+          php -r 'printf("ext-protobuf %s\n", phpversion("protobuf"));'
+
+      - name: Install dependencies
+        run: composer update --prefer-stable --prefer-dist --no-interaction --no-progress
+
+      - name: Run tests
+        run: vendor/bin/phpunit --testsuite unit
+
   mock-server:
     name: Against livekit/test-server / ${{ matrix.psr18 }}
     runs-on: ubuntu-latest

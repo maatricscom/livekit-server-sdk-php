@@ -49,6 +49,16 @@ final class WebhookReceiver
             $this->verify($rawBody, $authHeader, $clockToleranceSeconds);
         }
 
+        // The two protobuf runtimes disagree about what is acceptable here, in
+        // opposite directions: the pure-PHP parser takes a JSON array and hands back
+        // a default message, while ext-protobuf takes an empty body and does the
+        // same. Whichever one is installed would otherwise decide what this SDK
+        // does with a malformed webhook, so the check belongs here. Every LiveKit
+        // event is a JSON object.
+        if (! str_starts_with(ltrim($rawBody), '{')) {
+            throw WebhookVerificationException::bodyIsNotAJsonObject();
+        }
+
         $event = new WebhookEvent();
 
         try {

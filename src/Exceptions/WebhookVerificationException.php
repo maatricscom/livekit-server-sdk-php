@@ -20,6 +20,17 @@ final class WebhookVerificationException extends \RuntimeException implements Li
         );
     }
 
+    /**
+     * Raised before the protobuf parser is reached, so there is no cause to attach.
+     */
+    public static function bodyIsNotAJsonObject(): self
+    {
+        return new self(
+            'The webhook body is not a JSON object. LiveKit sends protojson; '
+            . 'an empty body, an array, or anything else is not an event.'
+        );
+    }
+
     public static function missingAuthorizationHeader(): self
     {
         return new self('The webhook request carried no Authorization header.');
