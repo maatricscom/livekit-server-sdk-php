@@ -32,8 +32,16 @@ use PHPUnit\Framework\Attributes\DataProvider;
  *
  * connectTwilioCall() is the exception and runs for real, because it places no
  * call: it provisions the websocket endpoint that Twilio's Media Stream would
- * later connect to, and hands back the URL. Note that it leaves a transient
- * `wactr_` room behind, which this test deletes rather than waiting out.
+ * later connect to, and hands back the URL.
+ *
+ * It does leave a room behind, named `wactr_...`, and this test does not delete
+ * it -- not an oversight. The room is registered asynchronously: polling
+ * listRooms() every half second for twenty seconds after the call never saw it,
+ * and it turned up afterwards, so a cleanup step here would be a race it loses
+ * most of the time while making the suite twenty seconds slower. The room is
+ * empty and carries its own empty timeout, so the server closes it without help;
+ * measured, it was gone within a couple of minutes. Cleanup code that looks
+ * thorough and usually does nothing is worse than saying this plainly.
  */
 final class ConnectorIntegrationTest extends IntegrationTestCase
 {
@@ -150,7 +158,6 @@ final class ConnectorIntegrationTest extends IntegrationTestCase
     public function test_twilio_connect_hands_back_a_media_stream_url(int $direction): void
     {
         $room = $this->scratchName('twilio');
-        $before = $this->roomNames();
 
         $this->cleanUpAfter(
             body: function () use ($direction, $room): void {
@@ -166,29 +173,8 @@ final class ConnectorIntegrationTest extends IntegrationTestCase
                 self::assertNotSame('', $url, 'the server hands back somewhere for Twilio to stream to');
                 self::assertSame('wss', parse_url($url, PHP_URL_SCHEME), 'a media stream needs a websocket url');
             },
-            cleanup: function () use ($room, $before): void {
-                $this->livekit->room->deleteRoom($room);
-
-                // The call provisions a transient room of its own, which would
-                // otherwise sit here until its own timeout ran out.
-                foreach (array_diff($this->roomNames(), $before, [$room]) as $left) {
-                    try {
-                        $this->livekit->room->deleteRoom($left);
-                    } catch (TwirpException) {
-                        // Already closed itself; nothing to do.
-                    }
-                }
-            },
+            cleanup: fn () => $this->livekit->room->deleteRoom($room),
             describe: sprintf('room "%s"', $room),
-        );
-    }
-
-    /** @return list<string> */
-    private function roomNames(): array
-    {
-        return array_map(
-            static fn (\LiveKit\Proto\Room $room): string => $room->getName(),
-            $this->livekit->room->listRooms()
         );
     }
 }

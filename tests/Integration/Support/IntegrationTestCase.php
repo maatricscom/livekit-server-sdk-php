@@ -23,7 +23,10 @@ use PHPUnit\Framework\TestCase;
  * do. Two rules:
  *
  *   1. Anything created is deleted, including when an assertion fails — see
- *      cleanUpAfter(). A leaked room or ingress costs the project owner.
+ *      cleanUpAfter(). A leaked room or ingress costs the project owner. The one
+ *      exception is named where it happens: connectTwilioCall() provisions a
+ *      room of its own that is registered too late to delete synchronously, and
+ *      ConnectorIntegrationTest says why it is left to close itself.
  *   2. Nothing is called that places a call, starts a recording or incurs a
  *      charge. The RPCs left untested for that reason are named in the test that
  *      would otherwise cover them, rather than quietly skipped.

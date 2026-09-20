@@ -145,7 +145,13 @@ starting out now has no reason to carry a version that only receives security fi
   anything is dialled. The connector's five RPCs are covered the same way: `connectTwilioCall()` runs for
   real, because it provisions a websocket endpoint rather than placing anything, while each WhatsApp call
   is arranged to fail at one of LiveKit's own validation gates — the SDP type, then the Cloud API version
-  — so the credential in the request is never forwarded to Meta and no call can be attempted. Everything it creates is
+  — so the credential in the request is never forwarded to Meta and no call can be attempted.
+  `AccessToken` is proved the only way that counts: a token is minted, handed to the client verbatim, and
+  the deployment decides — `roomList` lists rooms and a token without it does not, `roomAdmin` reaches only
+  the room its grant names, and an expired or wrongly-signed token is refused. A missing grant and a bad
+  credential both come back `unauthenticated`, and only the `http_error_from_intermediary` metadata tells
+  them apart. `WebhookReceiver` has no such test and the suite says why: a real webhook needs a publicly
+  reachable URL, so it rests on the body fixture generated from LiveKit's own `webhook/url_notifier.go`. Everything it creates is
   deleted even when an assertion fails; nothing it calls places a call, starts a recording or incurs a
   charge; and a feature the deployment does not have is a skip rather than a failure. It has been run green against a live LiveKit Cloud deployment, in both wire formats,
   which is what closes the open question of whether the binary content type this SDK sends by default is

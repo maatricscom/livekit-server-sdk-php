@@ -763,6 +763,20 @@ try {
 A redirect counts as one of these. Twirp only speaks POST, so a `3xx` is never the service answering; the
 `Location` it pointed at is reported in `meta['location']` rather than the body.
 
+This is not a corner case: it is how you tell the two ways authentication fails apart. Measured against a
+live LiveKit Cloud project, both arrive as `unauthenticated` with HTTP 401, and only the metadata
+distinguishes them.
+
+| what is wrong | code | metadata |
+|---|---|---|
+| the token is valid but carries no grant for the call | `unauthenticated` | empty — LiveKit itself answered |
+| the token is expired, or signed with the wrong secret | `unauthenticated` | `http_error_from_intermediary` — the auth layer refused it before Twirp saw it |
+
+So an empty `meta` on a 401 means your key and secret are right and the *grant* is missing, while
+`http_error_from_intermediary` means the credential itself was rejected. Matching on the code alone cannot
+separate those, and neither is `permission_denied` — LiveKit does not use that code for a missing grant,
+so a `catch` written around it never fires.
+
 `SipClient::createSipParticipant()` and `SipClient::transferSipParticipant()` can additionally fail with
 `SipCallError` (a `TwirpException` subclass), which adds `getSipStatusCode()` and `getSipStatus()` for the
 SIP-specific failure reported by the far end of the call — catch it before the general `TwirpException` if
