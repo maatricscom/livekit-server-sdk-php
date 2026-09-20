@@ -158,6 +158,9 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   class in here changes?" with one answer: `src/` is ours, `src/Proto/` is upstream's `.proto` files,
   `metadata/` is the protobuf runtime's. Being outside the generated tree also puts it under Pint and
   PHPStan, which is why its constants are typed like the rest of the package's.
+- `CONTRIBUTING.md` tells a contributor what the machine will do to their change: that
+  `ProtoGenerationTest` refuses a hand-written file in either generated tree, that `examples/` ships and
+  is analysed like the rest, and that `ReadmeCodeBlocksTest` checks every snippet in the README.
 - `CONTRIBUTING.md` documents commands that were run as written rather than typed from memory. The
   drift check it gave used `git diff`, which never reports the added file a new upstream message type
   arrives as; the forbidden-symbol grep and the analyser exclusions named only `src/Proto`; the
