@@ -1,0 +1,85 @@
+<?php
+
+declare(strict_types=1);
+
+namespace LiveKit\Services;
+
+use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\CreateRoomOptions;
+use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\Room;
+
+final class RoomServiceClient extends ServiceBase
+{
+    private const SERVICE = 'RoomService';
+
+    public function createRoom(CreateRoomOptions $options): Room
+    {
+        $request = new CreateRoomRequest();
+        $request->setName($options->name);
+
+        if ($options->roomPreset !== null) {
+            $request->setRoomPreset($options->roomPreset);
+        }
+
+        if ($options->emptyTimeout !== null) {
+            $request->setEmptyTimeout($options->emptyTimeout);
+        }
+
+        if ($options->departureTimeout !== null) {
+            $request->setDepartureTimeout($options->departureTimeout);
+        }
+
+        if ($options->maxParticipants !== null) {
+            $request->setMaxParticipants($options->maxParticipants);
+        }
+
+        if ($options->nodeId !== null) {
+            $request->setNodeId($options->nodeId);
+        }
+
+        if ($options->metadata !== null) {
+            $request->setMetadata($options->metadata);
+        }
+
+        if ($options->tags !== null) {
+            $request->setTags($options->tags);
+        }
+
+        if ($options->egress !== null) {
+            $request->setEgress($options->egress);
+        }
+
+        if ($options->minPlayoutDelay !== null) {
+            $request->setMinPlayoutDelay($options->minPlayoutDelay);
+        }
+
+        if ($options->maxPlayoutDelay !== null) {
+            $request->setMaxPlayoutDelay($options->maxPlayoutDelay);
+        }
+
+        if ($options->syncStreams !== null) {
+            $request->setSyncStreams($options->syncStreams);
+        }
+
+        if ($options->replayEnabled !== null) {
+            $request->setReplayEnabled($options->replayEnabled);
+        }
+
+        if ($options->agents !== null) {
+            $request->setAgents($options->agents);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'CreateRoom',
+            $request,
+            Room::class,
+            $this->authHeader(new VideoGrant(roomCreate: true)),
+        );
+
+        assert($response instanceof Room);
+
+        return $response;
+    }
+}
