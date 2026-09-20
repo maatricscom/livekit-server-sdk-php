@@ -8,6 +8,7 @@ use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Proto\AgentDispatch;
 use LiveKit\Proto\CreateAgentDispatchRequest;
+use LiveKit\Proto\DeleteAgentDispatchRequest;
 
 final class AgentDispatchClient extends ServiceBase
 {
@@ -43,6 +44,21 @@ final class AgentDispatchClient extends ServiceBase
         return $this->rpc(
             self::SERVICE,
             'CreateDispatch',
+            $request,
+            AgentDispatch::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+    }
+
+    public function deleteDispatch(string $dispatchId, string $room): AgentDispatch
+    {
+        $request = new DeleteAgentDispatchRequest();
+        $request->setDispatchId($dispatchId);
+        $request->setRoom($room);
+
+        return $this->rpc(
+            self::SERVICE,
+            'DeleteDispatch',
             $request,
             AgentDispatch::class,
             $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),

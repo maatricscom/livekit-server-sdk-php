@@ -14,4 +14,6 @@ interface AgentDispatchClientInterface
         string $agentName,
         ?CreateDispatchOptions $options = null,
     ): AgentDispatch;
+
+    public function deleteDispatch(string $dispatchId, string $room): AgentDispatch;
 }

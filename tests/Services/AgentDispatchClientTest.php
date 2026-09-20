@@ -7,6 +7,7 @@ namespace LiveKit\Tests\Services;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Proto\AgentDispatch;
 use LiveKit\Proto\CreateAgentDispatchRequest;
+use LiveKit\Proto\DeleteAgentDispatchRequest;
 use LiveKit\Proto\JobRestartPolicy;
 use LiveKit\Services\AgentDispatchClient;
 use LiveKit\Tests\Support\TwirpTestCase;
@@ -84,6 +85,35 @@ final class AgentDispatchClientTest extends TwirpTestCase
         self::assertSame('', $sent->getDeployment());
         self::assertSame(JobRestartPolicy::JRP_ON_FAILURE, $sent->getRestartPolicy());
         self::assertCount(0, $sent->getAttributes());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testDeleteDispatchSendsDispatchIdAndRoom(): void
+    {
+        $expected = new AgentDispatch();
+        $expected->setId('AD_abc123');
+        $expected->setRoom('my-room');
+
+        $this->http->pushResponse($this->protoResponse($expected));
+
+        $client = new AgentDispatchClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $dispatch = $client->deleteDispatch('AD_abc123', 'my-room');
+
+        self::assertSame('AD_abc123', $dispatch->getId());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'AgentDispatchService', 'DeleteDispatch');
+
+        $sent = $this->decodeRequest(DeleteAgentDispatchRequest::class);
+        self::assertSame('AD_abc123', $sent->getDispatchId());
+        self::assertSame('my-room', $sent->getRoom());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }
