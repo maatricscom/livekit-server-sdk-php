@@ -65,6 +65,43 @@ final class ToolingConfigTest extends TestCase
     }
 
     /**
+     * The probe has to run last, and two things decide that: PHPUnit's execution
+     * order, guarded above, and where the file sorts. PHPUnit discovers a
+     * <directory> by relative path, so `Zz` is what puts it after everything --
+     * verified against `--list-tests`, which returns these 29 classes in exactly
+     * this order. A test file added under a path sorting after it would take the
+     * last slot and leave the probe checking a suite that had not finished.
+     */
+    public function test_the_environment_probe_is_the_last_test_in_the_unit_suite(): void
+    {
+        $root = dirname(__DIR__) . '/tests';
+        $files = [];
+
+        /** @var \SplFileInfo $file */
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root)) as $file) {
+            if (! str_ends_with($file->getFilename(), 'Test.php')) {
+                continue;
+            }
+
+            $relative = substr($file->getPathname(), strlen($root) + 1);
+
+            // phpunit.xml.dist excludes these two from the unit suite.
+            if (str_starts_with($relative, 'Integration/') || str_starts_with($relative, 'MockServer/')) {
+                continue;
+            }
+
+            $files[] = $relative;
+        }
+
+        sort($files);
+
+        self::assertSame('ZzEnvLeakProbeTest.php', end($files), sprintf(
+            'ZzEnvLeakProbeTest must sort last so it runs after every other test; %s now sorts after it.',
+            end($files)
+        ));
+    }
+
+    /**
      * @return array{min: int, max: int}
      */
     private static function phpstanPhpVersion(): array

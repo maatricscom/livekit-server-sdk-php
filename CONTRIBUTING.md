@@ -25,6 +25,13 @@ Root layout follows [`pds/skeleton`](https://github.com/php-pds/skeleton): `src/
 files. `examples/`, `metadata/` and `NOTICE` are outside that publication, which permits root-level
 directories and files it does not describe.
 
+Inside `tests/`, a test for a class in `src/` mirrors its path: `src/Grants/VideoGrant.php` is tested by
+`tests/Grants/VideoGrantTest.php`. Tests with no single class behind them — the README examples, the
+generated tree, the tooling configuration — sit at the root of `tests/`. `tests/Support/` holds the base
+classes and doubles the suites share; `tests/MockServer/Support/` holds the ones only that suite needs.
+Note that `ZzEnvLeakProbeTest` has to sort last, because it checks that nothing before it leaked an
+environment variable; `ToolingConfigTest` fails if a file is ever added that sorts after it.
+
 Three directories hold PHP, and the line between them is **who decides when a class changes, and whether
 you may name it in your own code**:
 

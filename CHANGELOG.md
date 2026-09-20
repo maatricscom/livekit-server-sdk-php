@@ -159,6 +159,9 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   protocol-bump checklist omitted the two fixture generators that `check-protocol` fails on; and the
   port-forwarding step for running the mock-server suite under `ext-protobuf` never said it runs inside
   the container, which does not have `socat` installed.
+- `ToolingConfigTest` asserts that `ZzEnvLeakProbeTest` still sorts last among the unit suite's files.
+  It can only check for leaked environment variables from last place, and it holds that place by its
+  name alone — a test file added under a path sorting after it would take the slot silently.
 - `ReadmeCodeBlocksTest` checks every PHP example in `README.md`: that it parses at all, and that every
   class, named argument, constant and resolvable method call in it exists. Twenty-one examples, of which
   one was executed by anything before. It found a block that opened with `} catch` and could not be
