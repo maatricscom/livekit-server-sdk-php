@@ -23,8 +23,10 @@ final readonly class ClientOptions
      *                                    either, so configure your own HTTP client for an actual
      *                                    client-side deadline.
      * @param string      $prefix         Twirp path prefix; LiveKit uses '/twirp'.
-     * @param string|null $token          A pre-signed token used verbatim instead of
-     *                                    minting one per call. Lets the SDK run without a secret.
+     * @param string|null $token          A pre-signed token used verbatim instead of minting one per
+     *                                    call. Lets the SDK run without a secret. LIVEKIT_TOKEN is the
+     *                                    environment equivalent, read only when no credential at all was
+     *                                    passed in -- see the "Credentials" section of README.md.
      * @param bool        $failover       Retry a failed request against another LiveKit Cloud region.
      *                                    On a transport error or an HTTP 5xx the client asks the host
      *                                    for its region list and replays the request against the next

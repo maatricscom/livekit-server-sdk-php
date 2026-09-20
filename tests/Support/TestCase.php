@@ -13,10 +13,21 @@ abstract class TestCase extends BaseTestCase
     /** Must be at least 32 bytes: firebase/php-jwt v7 rejects shorter HMAC keys. */
     protected const API_SECRET = 'secret-that-is-long-enough-for-hs256';
 
-    /** Captured once per process before any test runs, to verify environment survives the test suite. */
-    public static string|false $originalLivekitUrl = '';
-    public static string|false $originalLivekitApiKey = '';
-    public static string|false $originalLivekitApiSecret = '';
+    /**
+     * Every environment variable the SDK reads. A list rather than one property
+     * each, so adding a variable to the SDK extends the leak probe by one line
+     * instead of needing a matching property and assertion.
+     */
+    public const TRACKED_ENV = ['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_TOKEN'];
+
+    /**
+     * Captured once per process before any test runs, to verify the environment
+     * survives the suite. getenv() returns false for an unset variable, and that
+     * false is part of the baseline.
+     *
+     * @var array<string, string|false>
+     */
+    public static array $originalEnv = [];
 
     /**
      * Captures the baseline environment variables before any tests run.
@@ -27,13 +38,13 @@ abstract class TestCase extends BaseTestCase
     public static function captureEnvironmentBaseline(): void
     {
         // Only capture once per process. On subsequent calls, preserve the original baseline.
-        if (self::$originalLivekitUrl !== '') {
+        if (self::$originalEnv !== []) {
             return;
         }
 
-        self::$originalLivekitUrl = getenv('LIVEKIT_URL');
-        self::$originalLivekitApiKey = getenv('LIVEKIT_API_KEY');
-        self::$originalLivekitApiSecret = getenv('LIVEKIT_API_SECRET');
+        foreach (self::TRACKED_ENV as $name) {
+            self::$originalEnv[$name] = getenv($name);
+        }
     }
 
     /**

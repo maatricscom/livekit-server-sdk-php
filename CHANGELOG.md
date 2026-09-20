@@ -28,6 +28,12 @@ Initial release.
   the same way `SipClient::createSipParticipant()` does.
 - `LiveKitAPI`, a facade constructing all six service clients from one set of credentials and one
   shared HTTP client.
+- Credential resolution from the environment: `LIVEKIT_URL`, and then either `LIVEKIT_TOKEN` or
+  `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`, so `new LiveKitAPI()` needs no arguments. The environment is
+  read only when no credential was passed in at all — never field by field, so an explicit API key is not
+  completed with a secret from the environment and an ambient token cannot stand in for credentials that
+  were passed. `LIVEKIT_TOKEN` takes precedence over the key and secret, being a complete credential on
+  its own.
 - `AccessToken` / `AccessTokenOptions` for minting HS256 JWTs, and `TokenVerifier` for verifying and
   decoding them, with grant types `VideoGrant`, `SIPGrant`, `AgentGrant`, `InferenceGrant` and
   `ObservabilityGrant`. Tri-state permission fields (`canPublish`, `canSubscribe`, `canPublishData`,

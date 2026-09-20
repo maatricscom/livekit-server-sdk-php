@@ -9,8 +9,12 @@ final class ConfigurationException extends \InvalidArgumentException implements 
     public static function missingCredentials(): self
     {
         return new self(
-            'LiveKit API key and secret are required. Pass them to the constructor, '
-            . 'or set the LIVEKIT_API_KEY and LIVEKIT_API_SECRET environment variables.'
+            'LiveKit credentials are required: either an API key and secret, or a pre-signed '
+            . 'token (ClientOptions::$token). Pass them to the constructor, or set '
+            . 'LIVEKIT_API_KEY and LIVEKIT_API_SECRET, or LIVEKIT_TOKEN, in the environment. '
+            . 'Note that the environment is read only when nothing was passed in at all: an '
+            . 'API key given to the constructor is not completed with a secret from the '
+            . 'environment.'
         );
     }
 

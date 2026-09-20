@@ -65,11 +65,42 @@ foreach ($livekit->room->listRooms() as $existing) {
 }
 ```
 
-Every constructor argument is optional and falls back to the `LIVEKIT_URL`, `LIVEKIT_API_KEY` and
-`LIVEKIT_API_SECRET` environment variables, so in most deployments you can simply write
-`new LiveKitAPI()`. List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on)
-return plain PHP arrays rather than a generated protobuf `RepeatedField`; every other method returns the
-generated `LiveKit\Proto\*` message for that RPC's response.
+Every constructor argument is optional, so in most deployments you can simply write `new LiveKitAPI()`
+and configure it through the environment — see [Credentials](#credentials) below.
+
+List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on) return plain PHP arrays
+rather than a generated protobuf `RepeatedField`; every other method returns the generated
+`LiveKit\Proto\*` message for that RPC's response.
+
+## Credentials
+
+The host comes from the `host` argument or `LIVEKIT_URL`. For authentication you need **either** an API
+key and secret **or** a pre-signed token:
+
+```php
+// Key and secret — the usual choice for a backend.
+new LiveKitAPI('https://my-project.livekit.cloud', 'API_KEY', 'API_SECRET');
+
+// A pre-signed token, for somewhere the API secret must not go. Its grants have
+// to cover the calls you make with it.
+new LiveKitAPI(
+    host: 'https://my-project.livekit.cloud',
+    options: new LiveKit\Options\ClientOptions(token: $token),
+);
+
+// Nothing passed: read from LIVEKIT_URL plus either LIVEKIT_TOKEN, or
+// LIVEKIT_API_KEY and LIVEKIT_API_SECRET.
+new LiveKitAPI();
+```
+
+**The environment is read only when you pass no credential at all.** It is not a per-field fallback: an
+API key given to the constructor is *not* completed with a secret from the environment, and an ambient
+`LIVEKIT_TOKEN` does *not* stand in for credentials you passed in. Mixing the two is how a process ends up
+authenticating as something nobody chose, so a half-supplied credential is an error rather than a guess.
+Every other LiveKit server SDK draws the line in the same place.
+
+When the environment is used, `LIVEKIT_TOKEN` wins: a token is a complete credential on its own, so
+`LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are not read at all.
 
 ## Access tokens
 

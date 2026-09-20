@@ -33,6 +33,13 @@ abstract class ServiceBase
 
     private readonly ?string $apiSecret;
 
+    /**
+     * The token this client actually authenticates with, which is not the same
+     * thing as ClientOptions::$token — that records what the caller configured,
+     * while this may have come from LIVEKIT_TOKEN.
+     */
+    private readonly ?string $token;
+
     protected readonly ClientOptions $options;
 
     protected readonly TwirpClient $transport;
@@ -54,13 +61,34 @@ abstract class ServiceBase
 
         $this->options = $options ?? new ClientOptions();
 
-        $this->apiKey = $apiKey ?? self::env('LIVEKIT_API_KEY');
-        $this->apiSecret = $apiSecret ?? self::env('LIVEKIT_API_SECRET');
+        $token = self::nonEmpty($this->options->token);
+        $apiKey = self::nonEmpty($apiKey);
+        $apiSecret = self::nonEmpty($apiSecret);
 
-        // Credentials are optional only when a pre-signed token is supplied.
-        if ($this->options->token === null
-            && ($this->apiKey === null || $this->apiKey === '' || $this->apiSecret === null || $this->apiSecret === '')
-        ) {
+        // The environment is consulted only when the caller supplied no credential
+        // at all — never field by field. Completing an explicit API key with a
+        // secret from the environment, or letting an ambient LIVEKIT_TOKEN stand in
+        // for credentials that were passed in, is how a process ends up
+        // authenticating as something nobody chose. Every other LiveKit server SDK
+        // draws the line in the same place, and for the same reason.
+        if ($token === null && $apiKey === null && $apiSecret === null) {
+            $token = self::env('LIVEKIT_TOKEN');
+
+            // A token in the environment is a complete credential on its own, so
+            // there is nothing left to read. Reading the key and secret anyway
+            // would only create a second candidate to choose between.
+            if ($token === null) {
+                $apiKey = self::env('LIVEKIT_API_KEY');
+                $apiSecret = self::env('LIVEKIT_API_SECRET');
+            }
+        }
+
+        $this->token = $token;
+        $this->apiKey = $apiKey;
+        $this->apiSecret = $apiSecret;
+
+        // A key without its secret is not a credential; a token stands alone.
+        if ($token === null && ($apiKey === null || $apiSecret === null)) {
             throw ConfigurationException::missingCredentials();
         }
 
@@ -82,8 +110,8 @@ abstract class ServiceBase
      */
     protected function authHeader(VideoGrant $video, ?SIPGrant $sip = null): string
     {
-        if ($this->options->token !== null) {
-            return $this->options->token;
+        if ($this->token !== null) {
+            return $this->token;
         }
 
         $token = new AccessToken(
@@ -129,6 +157,12 @@ abstract class ServiceBase
     /**
      * getenv() returns false when unset, so `??` never fires on its result.
      */
+    /** Treats a blank string as absent, so `token: ''` is not a credential. */
+    private static function nonEmpty(?string $value): ?string
+    {
+        return $value === null || $value === '' ? null : $value;
+    }
+
     private static function env(string $name): ?string
     {
         $value = getenv($name);
