@@ -8,6 +8,10 @@ use LiveKit\Enums\WireFormat;
 
 /**
  * Transport-level options shared by every service client.
+ *
+ * This configures the SDK itself and is passed once, when a client is built. The
+ * per-call option objects — CreateRoomOptions, SendDataOptions and the rest — live
+ * in the LiveKit\Options namespace and are passed to individual methods.
  */
 final readonly class ClientOptions
 {

@@ -6,6 +6,9 @@ namespace LiveKit;
 
 /**
  * Participant-level options carried in an access token.
+ *
+ * Sits beside AccessToken because the two are always used together. This is not a
+ * per-call option object; those live in the LiveKit\Options namespace.
  */
 final readonly class AccessTokenOptions
 {
