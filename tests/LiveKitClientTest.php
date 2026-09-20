@@ -1,0 +1,90 @@
+<?php
+
+declare(strict_types=1);
+
+namespace LiveKit\Tests;
+
+use LiveKit\Exceptions\ConfigurationException;
+use LiveKit\LiveKitClient;
+use LiveKit\Services\AgentDispatchClient;
+use LiveKit\Services\EgressClient;
+use LiveKit\Services\IngressClient;
+use LiveKit\Services\RoomServiceClient;
+use LiveKit\Services\SipClient;
+use LiveKit\Tests\Support\MockHttpClient;
+use LiveKit\Tests\Support\TestCase;
+use Nyholm\Psr7\Factory\Psr17Factory;
+
+final class LiveKitClientTest extends TestCase
+{
+    private function client(?MockHttpClient $http = null): LiveKitClient
+    {
+        $factory = new Psr17Factory();
+
+        return new LiveKitClient(
+            'https://example.livekit.cloud',
+            self::API_KEY,
+            self::API_SECRET,
+            null,
+            $http ?? new MockHttpClient(),
+            $factory,
+            $factory,
+        );
+    }
+
+    public function test_exposes_every_service_client(): void
+    {
+        $client = $this->client();
+
+        self::assertInstanceOf(RoomServiceClient::class, $client->room);
+        self::assertInstanceOf(EgressClient::class, $client->egress);
+        self::assertInstanceOf(IngressClient::class, $client->ingress);
+        self::assertInstanceOf(SipClient::class, $client->sip);
+        self::assertInstanceOf(AgentDispatchClient::class, $client->agentDispatch);
+    }
+
+    public function test_service_clients_are_stable_across_accesses(): void
+    {
+        $client = $this->client();
+
+        self::assertSame($client->room, $client->room);
+    }
+
+    public function test_every_service_client_shares_the_injected_http_client(): void
+    {
+        $http = new MockHttpClient();
+        $client = $this->client($http);
+
+        // Each client wraps the same PSR-18 instance, so requests from any of
+        // them land in the same recorder.
+        self::assertSame(0, $http->requestCount());
+        self::assertInstanceOf(RoomServiceClient::class, $client->room);
+    }
+
+    public function test_falls_back_to_environment_configuration(): void
+    {
+        putenv('LIVEKIT_URL=https://env.livekit.cloud');
+        putenv('LIVEKIT_API_KEY=env-key');
+        putenv('LIVEKIT_API_SECRET=env-secret-that-is-long-enough-yes');
+
+        try {
+            $factory = new Psr17Factory();
+            $client = new LiveKitClient(null, null, null, null, new MockHttpClient(), $factory, $factory);
+
+            self::assertInstanceOf(RoomServiceClient::class, $client->room);
+        } finally {
+            putenv('LIVEKIT_URL');
+            putenv('LIVEKIT_API_KEY');
+            putenv('LIVEKIT_API_SECRET');
+        }
+    }
+
+    public function test_requires_a_host(): void
+    {
+        putenv('LIVEKIT_URL');
+
+        $this->expectException(ConfigurationException::class);
+
+        new LiveKitClient(null, self::API_KEY, self::API_SECRET);
+    }
+}
