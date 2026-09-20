@@ -31,6 +31,7 @@ use LiveKit\Proto\TemplateSource;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
 use LiveKit\Proto\UpdateLayoutRequest;
+use LiveKit\Proto\UpdateStreamRequest;
 use LiveKit\Proto\WebEgressRequest;
 use LiveKit\Proto\WebhookConfig;
 use LiveKit\Services\EgressClient;
@@ -527,6 +528,55 @@ final class EgressClientTest extends TwirpTestCase
 
         self::assertSame('EG_layout', $request->getEgressId());
         self::assertSame('grid-dark', $request->getLayout());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testUpdateStreamSendsBothUrlLists(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_stream')));
+        $client = $this->egressClient();
+
+        $info = $client->updateStream(
+            'EG_stream',
+            ['rtmp://add-one.example/live', 'rtmp://add-two.example/live'],
+            ['rtmp://remove.example/live'],
+        );
+
+        self::assertSame('EG_stream', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'UpdateStream');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/UpdateStream', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(UpdateStreamRequest::class);
+
+        self::assertSame('EG_stream', $request->getEgressId());
+        self::assertSame(
+            ['rtmp://add-one.example/live', 'rtmp://add-two.example/live'],
+            $this->stringsIn($request->getAddOutputUrls()),
+        );
+        self::assertSame(['rtmp://remove.example/live'], $this->stringsIn($request->getRemoveOutputUrls()));
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testUpdateStreamDefaultsBothUrlListsToEmpty(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_stream_empty')));
+        $client = $this->egressClient();
+
+        $client->updateStream('EG_stream_empty');
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'UpdateStream');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/UpdateStream', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(UpdateStreamRequest::class);
+
+        self::assertSame('EG_stream_empty', $request->getEgressId());
+        self::assertSame([], $this->stringsIn($request->getAddOutputUrls()));
+        self::assertSame([], $this->stringsIn($request->getRemoveOutputUrls()));
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }

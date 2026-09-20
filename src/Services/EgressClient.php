@@ -26,6 +26,7 @@ use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
 use LiveKit\Proto\UpdateLayoutRequest;
+use LiveKit\Proto\UpdateStreamRequest;
 use LiveKit\Proto\WebEgressRequest;
 use LiveKit\Proto\WebhookConfig;
 
@@ -158,6 +159,23 @@ final class EgressClient extends ServiceBase
         $request->setLayout($layout);
 
         return $this->egressInfoRpc('UpdateLayout', $request);
+    }
+
+    /**
+     * @param list<string>|null $addOutputUrls
+     * @param list<string>|null $removeOutputUrls
+     */
+    public function updateStream(
+        string $egressId,
+        ?array $addOutputUrls = null,
+        ?array $removeOutputUrls = null,
+    ): EgressInfo {
+        $request = new UpdateStreamRequest();
+        $request->setEgressId($egressId);
+        $request->setAddOutputUrls($addOutputUrls ?? []);
+        $request->setRemoveOutputUrls($removeOutputUrls ?? []);
+
+        return $this->egressInfoRpc('UpdateStream', $request);
     }
 
     /**
