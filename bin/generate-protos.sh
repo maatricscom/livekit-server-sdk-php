@@ -97,9 +97,20 @@ echo "==> Resolving transitive import closure"
 declare -A SEEN=()
 QUEUE=("${ROOTS[@]}")
 
-while [ ${#QUEUE[@]} -gt 0 ]; do
-    current="${QUEUE[0]}"
-    QUEUE=("${QUEUE[@]:1}")
+# A read index rather than reslicing the array. Dropping the head with
+# QUEUE=("${QUEUE[@]:1}") expands to nothing on the last element, which bash
+# before 4.4 treats as an unbound variable under `set -u` -- so the old form
+# needed 4.4 while the gate above only asks for 4.0, the floor `declare -A`
+# actually sets. Advancing an index needs neither, and rebuilds no array.
+#
+# `head=$((head + 1))` rather than `((head++))`: the latter evaluates to the
+# value *before* the increment, so on the first pass it yields 0, which is a
+# false arithmetic result and therefore exit status 1 -- which `set -e` acts on.
+# It would kill the script on its first proto.
+head=0
+while ((head < ${#QUEUE[@]})); do
+    current="${QUEUE[head]}"
+    head=$((head + 1))
 
     [ -n "${SEEN[$current]:-}" ] && continue
     # google/protobuf/*.proto ships with protoc itself; never copy or compile it
