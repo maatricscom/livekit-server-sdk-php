@@ -71,7 +71,7 @@ final class EchoRoundTripTest extends MockServerTestCase
     {
         $info = $this->apiFor($format)->egress->startRoomCompositeEgress(
             'echo-egress-room',
-            new EncodedOutputs(file: (new EncodedFileOutput())->setFilepath('out.mp4')),
+            new EncodedOutputs(file: new EncodedFileOutput()->setFilepath('out.mp4')),
         );
 
         self::assertSame('echo-egress-room', $info->getRoomName());

@@ -49,9 +49,9 @@ final class ReadmeExamplesTest extends TestCase
         // PHPUnit emits a notice for a mock with no configured expectations.
         // The README says createStub for the same reason.
         $rooms = $this->createStub(RoomServiceClientInterface::class);
-        $rooms->method('createRoom')->willReturn((new Room())->setSid('RM_test'));
+        $rooms->method('createRoom')->willReturn(new Room()->setSid('RM_test'));
 
-        self::assertSame('RM_test', (new RoomProvisioner($rooms))->provision('my-room'));
+        self::assertSame('RM_test', new RoomProvisioner($rooms)->provision('my-room'));
     }
 
     /** @return iterable<string, array{string, string}> */

@@ -81,7 +81,7 @@ final class SipClientTest extends TwirpTestCase
     public function testCreateSipInboundTrunk(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPInboundTrunkInfo())
+            new SIPInboundTrunkInfo()
                 ->setSipTrunkId('ST_inbound')
                 ->setName('main'),
         ));
@@ -146,7 +146,7 @@ final class SipClientTest extends TwirpTestCase
     public function testCreateSipOutboundTrunk(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_outbound'),
+            new SIPOutboundTrunkInfo()->setSipTrunkId('ST_outbound'),
         ));
 
         $trunk = $this->client->createSipOutboundTrunk(
@@ -217,10 +217,10 @@ final class SipClientTest extends TwirpTestCase
     public function testUpdateSipInboundTrunkSendsTheReplaceArm(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPInboundTrunkInfo())->setSipTrunkId('ST_inbound')->setName('renamed'),
+            new SIPInboundTrunkInfo()->setSipTrunkId('ST_inbound')->setName('renamed'),
         ));
 
-        $replacement = (new SIPInboundTrunkInfo())
+        $replacement = new SIPInboundTrunkInfo()
             ->setName('renamed')
             ->setNumbers(['+15105550100'])
             ->setKrispEnabled(true);
@@ -249,15 +249,15 @@ final class SipClientTest extends TwirpTestCase
     public function testUpdateSipInboundTrunkFieldsSendsTheUpdateArm(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPInboundTrunkInfo())->setSipTrunkId('ST_inbound'),
+            new SIPInboundTrunkInfo()->setSipTrunkId('ST_inbound'),
         ));
 
         $this->client->updateSipInboundTrunkFields(
             'ST_inbound',
             new SipInboundTrunkUpdateOptions(
-                numbers: (new ListUpdate())->setAdd(['+15105550111']),
-                allowedAddresses: (new ListUpdate())->setSet(['10.0.0.0/8']),
-                allowedNumbers: (new ListUpdate())->setClear(true),
+                numbers: new ListUpdate()->setAdd(['+15105550111']),
+                allowedAddresses: new ListUpdate()->setSet(['10.0.0.0/8']),
+                allowedNumbers: new ListUpdate()->setClear(true),
                 authUsername: 'new-user',
                 authPassword: 'new-pass',
                 authRealm: 'realm.example.com',
@@ -326,10 +326,10 @@ final class SipClientTest extends TwirpTestCase
     public function testUpdateSipOutboundTrunkSendsTheReplaceArm(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_outbound')->setAddress('new.example'),
+            new SIPOutboundTrunkInfo()->setSipTrunkId('ST_outbound')->setAddress('new.example'),
         ));
 
-        $replacement = (new SIPOutboundTrunkInfo())
+        $replacement = new SIPOutboundTrunkInfo()
             ->setName('carrier')
             ->setAddress('new.example')
             ->setTransport(SIPTransport::SIP_TRANSPORT_TLS);
@@ -357,7 +357,7 @@ final class SipClientTest extends TwirpTestCase
     public function testUpdateSipOutboundTrunkFieldsSendsTheUpdateArm(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_outbound'),
+            new SIPOutboundTrunkInfo()->setSipTrunkId('ST_outbound'),
         ));
 
         $this->client->updateSipOutboundTrunkFields(
@@ -366,7 +366,7 @@ final class SipClientTest extends TwirpTestCase
                 address: 'sip2.carrier.example',
                 transport: SIPTransport::SIP_TRANSPORT_UDP,
                 destinationCountry: 'DE',
-                numbers: (new ListUpdate())->setRemove(['+15105550101']),
+                numbers: new ListUpdate()->setRemove(['+15105550101']),
                 authUsername: 'out-user-2',
                 authPassword: 'out-pass-2',
                 name: 'carrier-2',
@@ -430,8 +430,8 @@ final class SipClientTest extends TwirpTestCase
     public function testGetSipInboundTrunkUnwrapsTheResponse(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new GetSIPInboundTrunkResponse())->setTrunk(
-                (new SIPInboundTrunkInfo())->setSipTrunkId('ST_inbound')->setName('main'),
+            new GetSIPInboundTrunkResponse()->setTrunk(
+                new SIPInboundTrunkInfo()->setSipTrunkId('ST_inbound')->setName('main'),
             ),
         ));
 
@@ -468,8 +468,8 @@ final class SipClientTest extends TwirpTestCase
     public function testGetSipOutboundTrunkUnwrapsTheResponse(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new GetSIPOutboundTrunkResponse())->setTrunk(
-                (new SIPOutboundTrunkInfo())
+            new GetSIPOutboundTrunkResponse()->setTrunk(
+                new SIPOutboundTrunkInfo()
                     ->setSipTrunkId('ST_outbound')
                     ->setAddress('sip.carrier.example'),
             ),
@@ -508,15 +508,15 @@ final class SipClientTest extends TwirpTestCase
     public function testListSipInboundTrunkUnwrapsToAnArray(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new ListSIPInboundTrunkResponse())->setItems([
-                (new SIPInboundTrunkInfo())->setSipTrunkId('ST_a'),
-                (new SIPInboundTrunkInfo())->setSipTrunkId('ST_b'),
+            new ListSIPInboundTrunkResponse()->setItems([
+                new SIPInboundTrunkInfo()->setSipTrunkId('ST_a'),
+                new SIPInboundTrunkInfo()->setSipTrunkId('ST_b'),
             ]),
         ));
 
         $trunks = $this->client->listSipInboundTrunk(
             new ListSipTrunkOptions(
-                page: (new Pagination())->setAfterId('ST_0')->setLimit(50),
+                page: new Pagination()->setAfterId('ST_0')->setLimit(50),
                 trunkIds: ['ST_a', 'ST_b'],
                 numbers: ['+15105550100'],
             ),
@@ -562,8 +562,8 @@ final class SipClientTest extends TwirpTestCase
     public function testListSipOutboundTrunkUnwrapsToAnArray(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new ListSIPOutboundTrunkResponse())->setItems([
-                (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_c'),
+            new ListSIPOutboundTrunkResponse()->setItems([
+                new SIPOutboundTrunkInfo()->setSipTrunkId('ST_c'),
             ]),
         ));
 
@@ -588,8 +588,8 @@ final class SipClientTest extends TwirpTestCase
     public function testListSipTrunkUnwrapsToAnArray(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new ListSIPTrunkResponse())->setItems([
-                (new SIPTrunkInfo())->setSipTrunkId('ST_legacy'),
+            new ListSIPTrunkResponse()->setItems([
+                new SIPTrunkInfo()->setSipTrunkId('ST_legacy'),
             ]),
         ));
 
@@ -614,7 +614,7 @@ final class SipClientTest extends TwirpTestCase
     public function testDeleteSipTrunk(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPTrunkInfo())->setSipTrunkId('ST_inbound'),
+            new SIPTrunkInfo()->setSipTrunkId('ST_inbound'),
         ));
 
         $deleted = $this->client->deleteSipTrunk('ST_inbound');
@@ -634,11 +634,11 @@ final class SipClientTest extends TwirpTestCase
     public function testCreateSipDispatchRuleDirect(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct'),
+            new SIPDispatchRuleInfo()->setSipDispatchRuleId('SDR_direct'),
         ));
 
-        $rule = (new SIPDispatchRule())->setDispatchRuleDirect(
-            (new SIPDispatchRuleDirect())->setRoomName('support')->setPin('1234'),
+        $rule = new SIPDispatchRule()->setDispatchRuleDirect(
+            new SIPDispatchRuleDirect()->setRoomName('support')->setPin('1234'),
         );
 
         $info = $this->client->createSipDispatchRule(
@@ -651,7 +651,7 @@ final class SipClientTest extends TwirpTestCase
                 inboundNumbers: ['+15105550100'],
                 attributes: ['tier' => 'gold'],
                 roomPreset: 'preset-a',
-                roomConfig: (new RoomConfiguration())->setName('support'),
+                roomConfig: new RoomConfiguration()->setName('support'),
             ),
         );
 
@@ -682,8 +682,8 @@ final class SipClientTest extends TwirpTestCase
     {
         $this->http->pushResponse($this->protoResponse(new SIPDispatchRuleInfo()));
 
-        $rule = (new SIPDispatchRule())->setDispatchRuleIndividual(
-            (new SIPDispatchRuleIndividual())->setRoomPrefix('call-'),
+        $rule = new SIPDispatchRule()->setDispatchRuleIndividual(
+            new SIPDispatchRuleIndividual()->setRoomPrefix('call-'),
         );
 
         $this->client->createSipDispatchRule($rule);
@@ -703,15 +703,15 @@ final class SipClientTest extends TwirpTestCase
     public function testUpdateSipDispatchRuleSendsTheReplaceArm(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct')->setName('renamed'),
+            new SIPDispatchRuleInfo()->setSipDispatchRuleId('SDR_direct')->setName('renamed'),
         ));
 
-        $replacement = (new SIPDispatchRuleInfo())
+        $replacement = new SIPDispatchRuleInfo()
             ->setName('renamed')
             ->setTrunkIds(['ST_inbound'])
             ->setRule(
-                (new SIPDispatchRule())->setDispatchRuleDirect(
-                    (new SIPDispatchRuleDirect())->setRoomName('support'),
+                new SIPDispatchRule()->setDispatchRuleDirect(
+                    new SIPDispatchRuleDirect()->setRoomName('support'),
                 ),
             );
 
@@ -738,15 +738,15 @@ final class SipClientTest extends TwirpTestCase
     public function testUpdateSipDispatchRuleFieldsSendsTheUpdateArm(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct'),
+            new SIPDispatchRuleInfo()->setSipDispatchRuleId('SDR_direct'),
         ));
 
         $this->client->updateSipDispatchRuleFields(
             'SDR_direct',
             new SipDispatchRuleUpdateOptions(
-                trunkIds: (new ListUpdate())->setAdd(['ST_extra']),
-                rule: (new SIPDispatchRule())->setDispatchRuleIndividual(
-                    (new SIPDispatchRuleIndividual())->setRoomPrefix('call-'),
+                trunkIds: new ListUpdate()->setAdd(['ST_extra']),
+                rule: new SIPDispatchRule()->setDispatchRuleIndividual(
+                    new SIPDispatchRuleIndividual()->setRoomPrefix('call-'),
                 ),
                 name: 'renamed',
                 metadata: 'updated',
@@ -804,15 +804,15 @@ final class SipClientTest extends TwirpTestCase
     public function testListSipDispatchRuleUnwrapsToAnArray(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new ListSIPDispatchRuleResponse())->setItems([
-                (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_a'),
-                (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_b'),
+            new ListSIPDispatchRuleResponse()->setItems([
+                new SIPDispatchRuleInfo()->setSipDispatchRuleId('SDR_a'),
+                new SIPDispatchRuleInfo()->setSipDispatchRuleId('SDR_b'),
             ]),
         ));
 
         $rules = $this->client->listSipDispatchRule(
             new ListSipDispatchRuleOptions(
-                page: (new Pagination())->setLimit(10),
+                page: new Pagination()->setLimit(10),
                 dispatchRuleIds: ['SDR_a', 'SDR_b'],
                 trunkIds: ['ST_inbound'],
             ),
@@ -855,7 +855,7 @@ final class SipClientTest extends TwirpTestCase
     public function testDeleteSipDispatchRule(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct'),
+            new SIPDispatchRuleInfo()->setSipDispatchRuleId('SDR_direct'),
         ));
 
         $deleted = $this->client->deleteSipDispatchRule('SDR_direct');
@@ -901,7 +901,7 @@ final class SipClientTest extends TwirpTestCase
     public function testCreateSipParticipantUsesTheSipCallGrantNotAdmin(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new SIPParticipantInfo())->setParticipantId('PA_1'),
+            new SIPParticipantInfo()->setParticipantId('PA_1'),
         ));
 
         $this->client->createSipParticipant('ST_outbound', '+15105550123', 'my-room');
@@ -949,7 +949,7 @@ final class SipClientTest extends TwirpTestCase
                 maxCallDuration: 900,
                 krispEnabled: true,
             ),
-            (new SIPOutboundConfig())->setHostname('sip.carrier.example'),
+            new SIPOutboundConfig()->setHostname('sip.carrier.example'),
         );
 
         $request = $this->http->lastRequest();
@@ -1122,7 +1122,7 @@ final class SipClientTest extends TwirpTestCase
     public function testTransferSipParticipantMapsItsOptions(): void
     {
         $this->http->pushResponse($this->protoResponse(
-            (new TransferSIPParticipantResponse())
+            new TransferSIPParticipantResponse()
                 ->setTransferId('TR_1')
                 ->setStatus(SIPTransferStatus::STS_TRANSFER_SUCCESSFUL),
         ));

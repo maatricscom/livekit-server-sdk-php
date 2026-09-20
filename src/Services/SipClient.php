@@ -147,10 +147,10 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $trunk->setMedia($options->media);
         }
         if ($options->ringingTimeout !== null) {
-            $trunk->setRingingTimeout((new Duration())->setSeconds($options->ringingTimeout));
+            $trunk->setRingingTimeout(new Duration()->setSeconds($options->ringingTimeout));
         }
         if ($options->maxCallDuration !== null) {
-            $trunk->setMaxCallDuration((new Duration())->setSeconds($options->maxCallDuration));
+            $trunk->setMaxCallDuration(new Duration()->setSeconds($options->maxCallDuration));
         }
 
         $request = new CreateSIPInboundTrunkRequest();
@@ -820,10 +820,10 @@ final class SipClient extends ServiceBase implements SipClientInterface
             $request->setHidePhoneNumber($options->hidePhoneNumber);
         }
         if ($ringingTimeout !== null) {
-            $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
+            $request->setRingingTimeout(new Duration()->setSeconds($ringingTimeout));
         }
         if ($options->maxCallDuration !== null) {
-            $request->setMaxCallDuration((new Duration())->setSeconds($options->maxCallDuration));
+            $request->setMaxCallDuration(new Duration()->setSeconds($options->maxCallDuration));
         }
         if ($options->krispEnabled !== null) {
             $request->setKrispEnabled($options->krispEnabled);
@@ -879,7 +879,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
         $request->setRoomName($roomName);
         $request->setParticipantIdentity($participantIdentity);
         $request->setTransferTo($transferTo);
-        $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
+        $request->setRingingTimeout(new Duration()->setSeconds($ringingTimeout));
 
         if ($options->playDialtone !== null) {
             $request->setPlayDialtone($options->playDialtone);

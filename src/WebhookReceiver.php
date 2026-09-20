@@ -19,7 +19,7 @@ use LiveKit\Proto\WebhookEvent;
  * requires the RAW body — a body that has been decoded and re-encoded will not
  * match, because Go's protojson output is not byte-reproducible.
  */
-final class WebhookReceiver
+final readonly class WebhookReceiver
 {
     /**
      * LiveKit uses a custom media type deliberately, so that frameworks do not
@@ -27,7 +27,7 @@ final class WebhookReceiver
      */
     public const string CONTENT_TYPE = 'application/webhook+json';
 
-    private readonly TokenVerifier $verifier;
+    private TokenVerifier $verifier;
 
     public function __construct(?string $apiKey = null, ?string $apiSecret = null)
     {

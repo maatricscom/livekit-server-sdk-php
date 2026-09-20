@@ -95,7 +95,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
                 $request->setDestinationCountry($options->destinationCountry);
             }
             if ($options->ringingTimeout !== null) {
-                $request->setRingingTimeout((new Duration())->setSeconds($options->ringingTimeout));
+                $request->setRingingTimeout(new Duration()->setSeconds($options->ringingTimeout));
             }
         }
 
@@ -175,7 +175,7 @@ final class ConnectorClient extends ServiceBase implements ConnectorClientInterf
             }
 
             if ($ringingTimeout !== null) {
-                $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
+                $request->setRingingTimeout(new Duration()->setSeconds($ringingTimeout));
             }
         }
 

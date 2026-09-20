@@ -117,7 +117,7 @@ final class TwirpTestCaseTest extends TwirpTestCase
 
     private function requestWithoutGrants(): RequestInterface
     {
-        return $this->requestWithToken((new AccessToken(self::API_KEY, self::API_SECRET))->toJwt());
+        return $this->requestWithToken(new AccessToken(self::API_KEY, self::API_SECRET)->toJwt());
     }
 
     private function requestWithVideoGrant(VideoGrant $grant): RequestInterface

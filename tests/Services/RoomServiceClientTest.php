@@ -48,7 +48,7 @@ final class RoomServiceClientTest extends TwirpTestCase
     {
         $psr17 = $this->psr17();
 
-        $expected = (new Room())
+        $expected = new Room()
             ->setSid('RM_abc')
             ->setName('my-room')
             ->setEmptyTimeout(300);
@@ -108,9 +108,9 @@ final class RoomServiceClientTest extends TwirpTestCase
     public function testListRoomsFiltersByNameAndUnwrapsTheResponse(): void
     {
         $client = $this->client(
-            (new ListRoomsResponse())->setRooms([
-                (new Room())->setSid('RM_1')->setName('alpha'),
-                (new Room())->setSid('RM_2')->setName('beta'),
+            new ListRoomsResponse()->setRooms([
+                new Room()->setSid('RM_1')->setName('alpha'),
+                new Room()->setSid('RM_2')->setName('beta'),
             ]),
         );
 
@@ -191,9 +191,9 @@ final class RoomServiceClientTest extends TwirpTestCase
     public function testListParticipantsUnwrapsTheResponse(): void
     {
         $client = $this->client(
-            (new ListParticipantsResponse())->setParticipants([
-                (new ParticipantInfo())->setSid('PA_1')->setIdentity('alice'),
-                (new ParticipantInfo())->setSid('PA_2')->setIdentity('bob'),
+            new ListParticipantsResponse()->setParticipants([
+                new ParticipantInfo()->setSid('PA_1')->setIdentity('alice'),
+                new ParticipantInfo()->setSid('PA_2')->setIdentity('bob'),
             ]),
         );
 
@@ -216,7 +216,7 @@ final class RoomServiceClientTest extends TwirpTestCase
     public function testGetParticipantPostsRoomParticipantIdentity(): void
     {
         $client = $this->client(
-            (new ParticipantInfo())->setSid('PA_1')->setIdentity('alice')->setName('Alice'),
+            new ParticipantInfo()->setSid('PA_1')->setIdentity('alice')->setName('Alice'),
         );
 
         $participant = $client->getParticipant('my-room', 'alice');
@@ -269,7 +269,7 @@ final class RoomServiceClientTest extends TwirpTestCase
     {
         // Both rpcs send RoomParticipantIdentity, but the field is documented as
         // read by RemoveParticipant only, so getParticipant() does not offer it.
-        $client = $this->client((new ParticipantInfo())->setIdentity('alice'));
+        $client = $this->client(new ParticipantInfo()->setIdentity('alice'));
 
         $client->getParticipant('my-room', 'alice');
 
@@ -279,8 +279,8 @@ final class RoomServiceClientTest extends TwirpTestCase
     public function testMutePublishedTrackSendsTheMutedFlag(): void
     {
         $client = $this->client(
-            (new MuteRoomTrackResponse())->setTrack(
-                (new TrackInfo())->setSid('TR_1')->setMuted(true),
+            new MuteRoomTrackResponse()->setTrack(
+                new TrackInfo()->setSid('TR_1')->setMuted(true),
             ),
         );
 
@@ -305,7 +305,7 @@ final class RoomServiceClientTest extends TwirpTestCase
     public function testMutePublishedTrackCanUnmute(): void
     {
         $client = $this->client(
-            (new MuteRoomTrackResponse())->setTrack((new TrackInfo())->setSid('TR_1')->setMuted(false)),
+            new MuteRoomTrackResponse()->setTrack(new TrackInfo()->setSid('TR_1')->setMuted(false)),
         );
 
         $client->mutePublishedTrack('my-room', 'alice', 'TR_1', false);
@@ -324,9 +324,9 @@ final class RoomServiceClientTest extends TwirpTestCase
 
     public function testUpdateParticipantMapsMetadataNameAttributesAndPermission(): void
     {
-        $client = $this->client((new ParticipantInfo())->setIdentity('alice')->setName('Alice B'));
+        $client = $this->client(new ParticipantInfo()->setIdentity('alice')->setName('Alice B'));
 
-        $permission = (new ParticipantPermission())
+        $permission = new ParticipantPermission()
             ->setCanSubscribe(true)
             ->setCanPublish(false)
             ->setCanPublishData(true)
@@ -367,7 +367,7 @@ final class RoomServiceClientTest extends TwirpTestCase
 
     public function testUpdateParticipantWithoutOptionsSendsOnlyRoomAndIdentity(): void
     {
-        $client = $this->client((new ParticipantInfo())->setIdentity('alice'));
+        $client = $this->client(new ParticipantInfo()->setIdentity('alice'));
 
         $client->updateParticipant('my-room', 'alice');
 
@@ -495,7 +495,7 @@ final class RoomServiceClientTest extends TwirpTestCase
 
     public function testUpdateRoomMetadataSendsTheNewMetadata(): void
     {
-        $client = $this->client((new Room())->setName('my-room')->setMetadata('{"v":2}'));
+        $client = $this->client(new Room()->setName('my-room')->setMetadata('{"v":2}'));
 
         $room = $client->updateRoomMetadata('my-room', '{"v":2}');
 
@@ -553,7 +553,7 @@ final class RoomServiceClientTest extends TwirpTestCase
 
     public function testPerformRpcSendsMethodPayloadAndTimeout(): void
     {
-        $client = $this->client((new PerformRpcResponse())->setPayload('{"ok":true}'));
+        $client = $this->client(new PerformRpcResponse()->setPayload('{"ok":true}'));
 
         $result = $client->performRpc('my-room', 'alice', 'greet', '{"name":"bob"}', 5000);
 

@@ -65,8 +65,8 @@ try {
     // "Individual" puts every caller in their own room, named from the prefix
     // plus a random suffix. The alternative, SIPDispatchRuleDirect, sends every
     // caller to one named room.
-    $rule = (new SIPDispatchRule())->setDispatchRuleIndividual(
-        (new SIPDispatchRuleIndividual())->setRoomPrefix('call-')
+    $rule = new SIPDispatchRule()->setDispatchRuleIndividual(
+        new SIPDispatchRuleIndividual()->setRoomPrefix('call-')
     );
 
     echo 'Creating a dispatch rule...' . PHP_EOL;

@@ -35,7 +35,7 @@ final class RpcCoverageTest extends TestCase
     {
         $cases = [];
 
-        foreach ((new \ReflectionClass(LiveKitAPI::class))->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach (new \ReflectionClass(LiveKitAPI::class)->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $type = $property->getType();
 
             if (!$type instanceof \ReflectionNamedType) {

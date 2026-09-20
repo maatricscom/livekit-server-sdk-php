@@ -13,7 +13,7 @@ final class VideoGrantTest extends TestCase
 {
     public function test_omits_every_unset_field(): void
     {
-        self::assertSame([], (new VideoGrant())->toArray());
+        self::assertSame([], new VideoGrant()->toArray());
     }
 
     public function test_emits_plain_bools_only_when_true(): void
@@ -50,7 +50,7 @@ final class VideoGrantTest extends TestCase
 
     public function test_tri_state_true_emits_true(): void
     {
-        $array = (new VideoGrant(canSubscribe: true))->toArray();
+        $array = new VideoGrant(canSubscribe: true)->toArray();
 
         self::assertTrue($array['canSubscribe']);
     }
@@ -95,7 +95,7 @@ final class VideoGrantTest extends TestCase
 
     public function test_json_encodes_without_turning_false_into_omission(): void
     {
-        $json = json_encode((new VideoGrant(roomJoin: true, room: 'r', canPublish: false))->toArray());
+        $json = json_encode(new VideoGrant(roomJoin: true, room: 'r', canPublish: false)->toArray());
 
         self::assertSame('{"roomJoin":true,"room":"r","canPublish":false}', $json);
     }
@@ -127,7 +127,7 @@ final class VideoGrantTest extends TestCase
     #[DataProvider('acceptedTrackSources')]
     public function test_track_sources_are_normalized_to_the_names_livekit_reads(array $given, array $expected): void
     {
-        self::assertSame($expected, (new VideoGrant(canPublishSources: $given))->toArray()['canPublishSources']);
+        self::assertSame($expected, new VideoGrant(canPublishSources: $given)->toArray()['canPublishSources']);
     }
 
     /** @return iterable<string, array{string|int}> */
@@ -146,14 +146,14 @@ final class VideoGrantTest extends TestCase
     {
         $this->expectException(ConfigurationException::class);
 
-        (new VideoGrant(canPublishSources: [$source]))->toArray();
+        new VideoGrant(canPublishSources: [$source])->toArray();
     }
 
     public function test_the_accepted_set_comes_from_the_generated_enum(): void
     {
         // Written out here it would drift from the pinned protocol; derived from the
         // enum it cannot. If LiveKit adds a source, regenerating is all it takes.
-        $names = array_keys((new \ReflectionClass(\LiveKit\Proto\TrackSource::class))->getConstants());
+        $names = array_keys(new \ReflectionClass(\LiveKit\Proto\TrackSource::class)->getConstants());
 
         foreach ($names as $name) {
             if ($name === 'UNKNOWN') {

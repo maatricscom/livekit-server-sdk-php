@@ -48,7 +48,7 @@ final class ReadmeCodeBlocksTest extends TestCase
         // exercises it. Both rely on the enclosing file's imports, and ReadmeExamplesTest
         // runs that example for real.
         ['use LiveKit\\Contracts\\RoomServiceClientInterface;', 'final readonly class RoomProvisioner'],
-        ['$rooms = $this->createStub(RoomServiceClientInterface::class);', '$rooms->method(\'createRoom\')->willReturn((new Room())->setSid(\'RM_test\'));'],
+        ['$rooms = $this->createStub(RoomServiceClientInterface::class);', '$rooms->method(\'createRoom\')->willReturn(new Room()->setSid(\'RM_test\'));'],
     ];
 
     /** @return iterable<string, array{string, int}> */
@@ -82,7 +82,7 @@ final class ReadmeCodeBlocksTest extends TestCase
         // Keyed on the first two non-empty lines. One is not distinctive enough:
         // `try {` alone would quietly exempt any block that happens to start with it.
         $significant = array_slice(array_values(array_filter(
-            array_map('rtrim', explode("\n", trim($code))),
+            array_map(rtrim(...), explode("\n", trim($code))),
             static fn (string $line): bool => trim($line) !== '',
         )), 0, 2);
 
@@ -101,7 +101,7 @@ final class ReadmeCodeBlocksTest extends TestCase
         $src = str_starts_with(ltrim($code), '<?php') ? $code : "<?php\n" . $code;
 
         try {
-            return (new ParserFactory())->createForNewestSupportedVersion()->parse($src);
+            return new ParserFactory()->createForNewestSupportedVersion()->parse($src);
         } catch (\Throwable) {
             return null;
         }
@@ -115,7 +115,7 @@ final class ReadmeCodeBlocksTest extends TestCase
     {
         $facade = [];
 
-        foreach ((new \ReflectionClass(LiveKitAPI::class))->getProperties() as $property) {
+        foreach (new \ReflectionClass(LiveKitAPI::class)->getProperties() as $property) {
             $type = $property->getType();
 
             if ($type instanceof \ReflectionNamedType) {
@@ -200,7 +200,7 @@ final class ReadmeCodeBlocksTest extends TestCase
 
                     if (class_exists($fqcn)) {
                         $this->checkNamedArguments(
-                            (new \ReflectionClass($fqcn))->getConstructor(),
+                            new \ReflectionClass($fqcn)->getConstructor(),
                             $node->args,
                             sprintf('new %s()', $written)
                         );

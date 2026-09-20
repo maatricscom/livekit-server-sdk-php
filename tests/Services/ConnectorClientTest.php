@@ -35,7 +35,7 @@ final class ConnectorClientTest extends TwirpTestCase
 
     private function sdp(string $type = 'offer'): SessionDescription
     {
-        return (new SessionDescription())->setType($type)->setSdp('v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n');
+        return new SessionDescription()->setType($type)->setSdp('v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n');
     }
 
     public function testDialWhatsAppCallSendsTheMetaCredentialsAndReturnsTheCall(): void
@@ -46,7 +46,7 @@ final class ConnectorClientTest extends TwirpTestCase
 
         $this->http->pushResponse($this->protoResponse($expected));
 
-        $agent = (new RoomAgentDispatch())->setAgentName('support-bot');
+        $agent = new RoomAgentDispatch()->setAgentName('support-bot');
 
         $response = $this->client()->dialWhatsAppCall(
             'PN_123',

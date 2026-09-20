@@ -72,7 +72,7 @@ final class TwirpErrorCode
     public static function all(): array
     {
         /** @var array<string, string> $constants */
-        $constants = (new \ReflectionClass(self::class))->getConstants();
+        $constants = new \ReflectionClass(self::class)->getConstants();
 
         unset($constants['META_FROM_INTERMEDIARY']);
 

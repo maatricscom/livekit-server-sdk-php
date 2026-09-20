@@ -60,7 +60,7 @@ final class WebhookReceiverTest extends TestCase
     {
         [$body, $auth] = $this->signedWebhook($this->goFixtureBody());
 
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $auth);
+        $event = new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, $auth);
 
         self::assertInstanceOf(WebhookEvent::class, $event);
         self::assertSame('room_started', $event->getEvent());
@@ -80,7 +80,7 @@ final class WebhookReceiverTest extends TestCase
     {
         [$body, $auth] = $this->signedWebhook($this->sampleBody());
 
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, 'Bearer ' . $auth);
+        $event = new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, 'Bearer ' . $auth);
 
         self::assertSame('room_started', $event->getEvent());
     }
@@ -92,7 +92,7 @@ final class WebhookReceiverTest extends TestCase
         $this->expectException(WebhookVerificationException::class);
         $this->expectExceptionMessageMatches('/raw request body/');
 
-        (new WebhookReceiver(self::API_KEY, self::API_SECRET))
+        new WebhookReceiver(self::API_KEY, self::API_SECRET)
             ->receive('{"event":"room_finished"}', $auth);
     }
 
@@ -129,7 +129,7 @@ final class WebhookReceiverTest extends TestCase
 
         $this->expectException(WebhookVerificationException::class);
 
-        (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($reserialized, $auth);
+        new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($reserialized, $auth);
     }
 
     public function test_rejects_a_token_signed_with_another_secret(): void
@@ -141,14 +141,14 @@ final class WebhookReceiverTest extends TestCase
 
         $this->expectException(WebhookVerificationException::class);
 
-        (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $token->toJwt());
+        new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, $token->toJwt());
     }
 
     public function test_rejects_a_missing_authorization_header(): void
     {
         $this->expectException(WebhookVerificationException::class);
 
-        (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($this->sampleBody(), null);
+        new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($this->sampleBody(), null);
     }
 
     public function test_rejects_a_token_without_a_sha256_claim(): void
@@ -157,12 +157,12 @@ final class WebhookReceiverTest extends TestCase
 
         $this->expectException(WebhookVerificationException::class);
 
-        (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($this->sampleBody(), $token->toJwt());
+        new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($this->sampleBody(), $token->toJwt());
     }
 
     public function test_skip_auth_bypasses_verification_for_local_development(): void
     {
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))
+        $event = new WebhookReceiver(self::API_KEY, self::API_SECRET)
             ->receive($this->sampleBody(), null, skipAuth: true);
 
         self::assertSame('room_started', $event->getEvent());
@@ -176,7 +176,7 @@ final class WebhookReceiverTest extends TestCase
         $body = '{"event":"room_started","id":"EV_1","brandNewFieldFromANewerServer":42}';
         [, $auth] = $this->signedWebhook($body);
 
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $auth);
+        $event = new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, $auth);
 
         self::assertSame('room_started', $event->getEvent());
     }
@@ -204,7 +204,7 @@ final class WebhookReceiverTest extends TestCase
 
         $this->expectException(WebhookVerificationException::class);
 
-        (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $jwt);
+        new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, $jwt);
     }
 
     public function test_accepts_a_token_inside_the_clock_tolerance_window(): void
@@ -225,7 +225,7 @@ final class WebhookReceiverTest extends TestCase
             'HS256'
         );
 
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))
+        $event = new WebhookReceiver(self::API_KEY, self::API_SECRET)
             ->receive($body, $jwt, clockToleranceSeconds: 60);
 
         self::assertSame('room_started', $event->getEvent());
@@ -243,7 +243,7 @@ final class WebhookReceiverTest extends TestCase
     {
         [$body, $auth] = $this->signedWebhook($this->sampleBody());
 
-        $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $auth);
+        $event = new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, $auth);
 
         self::assertSame(WebhookEventType::RoomStarted, WebhookEventType::tryFrom($event->getEvent()));
     }
@@ -273,7 +273,7 @@ final class WebhookReceiverTest extends TestCase
         $caught = null;
 
         try {
-            (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, null, skipAuth: true);
+            new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive($body, null, skipAuth: true);
         } catch (\Throwable $e) {
             // Assigned rather than asserted in place: self::fail() raises an
             // AssertionFailedError, which this same catch would swallow.
@@ -319,7 +319,7 @@ final class WebhookReceiverTest extends TestCase
         $caught = null;
 
         try {
-            (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive('{"event":', null, skipAuth: true);
+            new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive('{"event":', null, skipAuth: true);
         } catch (\Throwable $e) {
             $caught = $e;
         }
@@ -333,7 +333,7 @@ final class WebhookReceiverTest extends TestCase
         // Order matters: decoding first would run the parser over bytes nobody has
         // vouched for yet. An unsigned request must fail on the token, not the body.
         try {
-            (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive('{"event":', null);
+            new WebhookReceiver(self::API_KEY, self::API_SECRET)->receive('{"event":', null);
             self::fail('Expected the request to be rejected');
         } catch (WebhookVerificationException $e) {
             self::assertStringContainsString('Authorization header', $e->getMessage());

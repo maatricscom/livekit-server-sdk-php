@@ -29,7 +29,7 @@ use Psr\Http\Message\StreamFactoryInterface;
  * A request may be attempted against more than one host: see Failover for when
  * that happens and why it is restricted to LiveKit Cloud domains.
  */
-final class TwirpClient
+final readonly class TwirpClient
 {
     public const string VERSION = '0.1.0';
 
@@ -40,19 +40,19 @@ final class TwirpClient
     /** Origin-rooted, never relative to the configured host's path. */
     private const string REGIONS_PATH = '/settings/regions';
 
-    private readonly string $host;
+    private string $host;
 
-    private readonly ClientInterface $httpClient;
+    private ClientInterface $httpClient;
 
-    private readonly RequestFactoryInterface $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
-    private readonly StreamFactoryInterface $streamFactory;
+    private StreamFactoryInterface $streamFactory;
 
-    private readonly RegionCache $regionCache;
+    private RegionCache $regionCache;
 
     public function __construct(
         string $host,
-        private readonly ClientOptions $options = new ClientOptions(),
+        private ClientOptions $options = new ClientOptions(),
         ?ClientInterface $httpClient = null,
         ?RequestFactoryInterface $requestFactory = null,
         ?StreamFactoryInterface $streamFactory = null,

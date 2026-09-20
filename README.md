@@ -299,9 +299,9 @@ use LiveKit\Proto\S3Upload;
 
 $egress = $livekit->egress->startRoomCompositeEgress(
     'my-room',
-    new EncodedOutputs(file: (new EncodedFileOutput())
+    new EncodedOutputs(file: new EncodedFileOutput()
         ->setFilepath('my-room-{time}.mp4')
-        ->setS3((new S3Upload())->setBucket('recordings')->setRegion('eu-central-1'))),
+        ->setS3(new S3Upload()->setBucket('recordings')->setRegion('eu-central-1'))),
     new RoomCompositeOptions(layout: 'speaker'),
 );
 
@@ -443,8 +443,8 @@ use LiveKit\Proto\SIPDispatchRuleIndividual;
 // Every caller gets their own room, named from the prefix. SIPDispatchRuleDirect
 // sends all callers to one named room instead; SIPDispatchRuleCallee keys the
 // room on the number that was dialled.
-$rule = (new SIPDispatchRule())->setDispatchRuleIndividual(
-    (new SIPDispatchRuleIndividual())->setRoomPrefix('call-')
+$rule = new SIPDispatchRule()->setDispatchRuleIndividual(
+    new SIPDispatchRuleIndividual()->setRoomPrefix('call-')
 );
 
 $livekit->sip->createSipDispatchRule($rule, new CreateSipDispatchRuleOptions(
@@ -538,7 +538,7 @@ use LiveKit\Proto\SessionDescription;
 
 $livekit->connector->connectWhatsAppCall(
     $callIdFromTheDial,
-    (new SessionDescription())->setType('answer')->setSdp($sdpFromTheWebhook),
+    new SessionDescription()->setType('answer')->setSdp($sdpFromTheWebhook),
     new ConnectWhatsAppCallOptions(waitUntilAnswered: true, timeout: 45),
 );
 
@@ -726,7 +726,7 @@ use LiveKit\Proto\RoomConfiguration;
 
 $token = new AccessToken('API_KEY', 'API_SECRET', new AccessTokenOptions(
     identity: 'alice',
-    roomConfig: (new RoomConfiguration())->setEmptyTimeout(300),
+    roomConfig: new RoomConfiguration()->setEmptyTimeout(300),
 ));
 ```
 
@@ -804,9 +804,9 @@ In tests this lets you stand in for the service without touching HTTP at all:
 
 ```php
 $rooms = $this->createStub(RoomServiceClientInterface::class);
-$rooms->method('createRoom')->willReturn((new Room())->setSid('RM_test'));
+$rooms->method('createRoom')->willReturn(new Room()->setSid('RM_test'));
 
-self::assertSame('RM_test', (new RoomProvisioner($rooms))->provision('my-room'));
+self::assertSame('RM_test', new RoomProvisioner($rooms)->provision('my-room'));
 ```
 
 The interfaces declare every method its client has — nothing is available on the class but missing from

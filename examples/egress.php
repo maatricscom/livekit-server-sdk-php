@@ -45,13 +45,13 @@ function env(string $name): string
 
 $room = env('ROOM');
 
-$s3 = (new S3Upload())
+$s3 = new S3Upload()
     ->setAccessKey(env('AWS_ACCESS_KEY_ID'))
     ->setSecret(env('AWS_SECRET_ACCESS_KEY'))
     ->setBucket(env('EGRESS_BUCKET'))
     ->setRegion(env('EGRESS_REGION'));
 
-$file = (new EncodedFileOutput())
+$file = new EncodedFileOutput()
     ->setFileType(EncodedFileType::MP4)
     ->setFilepath(sprintf('%s-{time}.mp4', $room))
     ->setS3($s3);

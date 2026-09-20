@@ -26,20 +26,20 @@ use Psr\Http\Message\StreamFactoryInterface;
  * Every service client can also be constructed on its own; this exists so a
  * single set of credentials and one HTTP client serve all of them.
  */
-final class LiveKitAPI
+final readonly class LiveKitAPI
 {
-    public readonly RoomServiceClient $room;
+    public RoomServiceClient $room;
 
-    public readonly EgressClient $egress;
+    public EgressClient $egress;
 
-    public readonly IngressClient $ingress;
+    public IngressClient $ingress;
 
-    public readonly SipClient $sip;
+    public SipClient $sip;
 
-    public readonly AgentDispatchClient $agentDispatch;
+    public AgentDispatchClient $agentDispatch;
 
     /** LiveKit Cloud only: the open-source server does not implement livekit.Connector. */
-    public readonly ConnectorClient $connector;
+    public ConnectorClient $connector;
 
     public function __construct(
         ?string $host = null,

@@ -64,7 +64,7 @@ function env(string $name): string
  */
 function completeHandshake(LiveKitAPI $livekit, string $callId, string $sdpFromMeta): ConnectWhatsAppCallResponse
 {
-    $sdp = (new SessionDescription())
+    $sdp = new SessionDescription()
         ->setType('answer')
         ->setSdp($sdpFromMeta);
 

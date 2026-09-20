@@ -21,7 +21,7 @@ final class TokenVerifierTest extends TestCase
         $token = new AccessToken(self::API_KEY, self::API_SECRET, new AccessTokenOptions(identity: 'alice'));
         $token->addGrant(new VideoGrant(roomJoin: true, room: 'my-room'));
 
-        $claims = (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($token->toJwt());
+        $claims = new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($token->toJwt());
 
         self::assertSame(self::API_KEY, $claims['iss']);
         self::assertSame('alice', $claims['sub']);
@@ -34,7 +34,7 @@ final class TokenVerifierTest extends TestCase
         $token->addGrant(new VideoGrant(roomList: true));
 
         try {
-            (new TokenVerifier(self::API_KEY, 'a-completely-different-secret-value'))->verify($token->toJwt());
+            new TokenVerifier(self::API_KEY, 'a-completely-different-secret-value')->verify($token->toJwt());
             self::fail('Expected the forged token to be rejected');
         } catch (TokenVerificationException $e) {
             // Wrapped, not replaced: a caller that wants to tell a forged token from
@@ -53,7 +53,7 @@ final class TokenVerifierTest extends TestCase
         );
 
         try {
-            (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt);
+            new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($jwt);
             self::fail('Expected the expired token to be rejected');
         } catch (TokenVerificationException $e) {
             self::assertInstanceOf(\Firebase\JWT\ExpiredException::class, $e->getPrevious());
@@ -69,7 +69,7 @@ final class TokenVerifierTest extends TestCase
             'HS256'
         );
 
-        $claims = (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt, clockToleranceSeconds: 60);
+        $claims = new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($jwt, clockToleranceSeconds: 60);
 
         self::assertSame(self::API_KEY, $claims['iss']);
     }
@@ -88,7 +88,7 @@ final class TokenVerifierTest extends TestCase
         );
 
         try {
-            (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt);
+            new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($jwt);
             self::fail('Expected the mismatched issuer to be rejected');
         } catch (TokenVerificationException $e) {
             // The signature passed before this check, so the token was signed with
@@ -109,7 +109,7 @@ final class TokenVerifierTest extends TestCase
 
         $this->expectException(TokenVerificationException::class);
 
-        (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt);
+        new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($jwt);
     }
 
     /** @return iterable<string, array{string}> */
@@ -133,7 +133,7 @@ final class TokenVerifierTest extends TestCase
     public function test_every_rejection_is_a_livekit_exception(string $jwt): void
     {
         try {
-            (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($jwt);
+            new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($jwt);
             self::fail('Expected the token to be rejected');
         } catch (\Throwable $e) {
             self::assertInstanceOf(LiveKitException::class, $e);
@@ -146,10 +146,10 @@ final class TokenVerifierTest extends TestCase
         // Worth having because the constructor falls back to the environment: this
         // is how a caller sees which key it actually ended up bound to.
         $this->withEnv(['LIVEKIT_API_KEY' => 'env-key', 'LIVEKIT_API_SECRET' => self::API_SECRET], function (): void {
-            self::assertSame('env-key', (new TokenVerifier())->getApiKey());
+            self::assertSame('env-key', new TokenVerifier()->getApiKey());
         });
 
-        self::assertSame(self::API_KEY, (new TokenVerifier(self::API_KEY, self::API_SECRET))->getApiKey());
+        self::assertSame(self::API_KEY, new TokenVerifier(self::API_KEY, self::API_SECRET)->getApiKey());
     }
 
     /** @return iterable<string, array{string}> */
@@ -184,7 +184,7 @@ final class TokenVerifierTest extends TestCase
         // from the header would accept this; one handed HS256 does not.
         $this->expectException(TokenVerificationException::class);
 
-        (new TokenVerifier(self::API_KEY, $secret))->verify($jwt);
+        new TokenVerifier(self::API_KEY, $secret)->verify($jwt);
     }
 
     public function test_a_token_claiming_no_algorithm_is_rejected(): void
@@ -198,6 +198,6 @@ final class TokenVerifierTest extends TestCase
 
         $this->expectException(TokenVerificationException::class);
 
-        (new TokenVerifier(self::API_KEY, self::API_SECRET))->verify($header . '.' . $payload . '.');
+        new TokenVerifier(self::API_KEY, self::API_SECRET)->verify($header . '.' . $payload . '.');
     }
 }

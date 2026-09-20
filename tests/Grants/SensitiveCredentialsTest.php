@@ -38,48 +38,48 @@ final class SensitiveCredentialsTest extends TestCase
     /** @return iterable<string, array{RoomConfiguration}> */
     public static function configsThatLeak(): iterable
     {
-        $withEgress = static fn (RoomEgress $e): RoomConfiguration => (new RoomConfiguration())->setEgress($e);
+        $withEgress = static fn (RoomEgress $e): RoomConfiguration => new RoomConfiguration()->setEgress($e);
 
-        $s3 = static fn (): S3Upload => (new S3Upload())->setBucket('b')->setAccessKey('k')->setSecret('SECRET');
+        $s3 = static fn (): S3Upload => new S3Upload()->setBucket('b')->setAccessKey('k')->setSecret('SECRET');
 
         yield 'room file output with an S3 secret' => [$withEgress(
-            (new RoomEgress())->setRoom((new RoomCompositeEgressRequest())->setFileOutputs([
-                (new EncodedFileOutput())->setFilepath('f')->setS3($s3()),
+            new RoomEgress()->setRoom(new RoomCompositeEgressRequest()->setFileOutputs([
+                new EncodedFileOutput()->setFilepath('f')->setS3($s3()),
             ]))
         )];
 
         yield 'room segment output with GCP credentials' => [$withEgress(
-            (new RoomEgress())->setRoom((new RoomCompositeEgressRequest())->setSegmentOutputs([
-                (new SegmentedFileOutput())->setGcp((new GCPUpload())->setCredentials('{"private_key":"..."}')),
+            new RoomEgress()->setRoom(new RoomCompositeEgressRequest()->setSegmentOutputs([
+                new SegmentedFileOutput()->setGcp(new GCPUpload()->setCredentials('{"private_key":"..."}')),
             ]))
         )];
 
         yield 'room image output with an Azure account key' => [$withEgress(
-            (new RoomEgress())->setRoom((new RoomCompositeEgressRequest())->setImageOutputs([
-                (new ImageOutput())->setAzure((new AzureBlobUpload())->setAccountKey('KEY')),
+            new RoomEgress()->setRoom(new RoomCompositeEgressRequest()->setImageOutputs([
+                new ImageOutput()->setAzure(new AzureBlobUpload()->setAccountKey('KEY')),
             ]))
         )];
 
         yield 'any stream output at all' => [$withEgress(
-            (new RoomEgress())->setRoom((new RoomCompositeEgressRequest())->setStreamOutputs([
-                (new StreamOutput())->setUrls(['rtmp://example.com/live/STREAMKEY']),
+            new RoomEgress()->setRoom(new RoomCompositeEgressRequest()->setStreamOutputs([
+                new StreamOutput()->setUrls(['rtmp://example.com/live/STREAMKEY']),
             ]))
         )];
 
         yield 'participant file output with an AliOSS secret' => [$withEgress(
-            (new RoomEgress())->setParticipant((new AutoParticipantEgress())->setFileOutputs([
-                (new EncodedFileOutput())->setAliOSS((new AliOSSUpload())->setSecret('SECRET')),
+            new RoomEgress()->setParticipant(new AutoParticipantEgress()->setFileOutputs([
+                new EncodedFileOutput()->setAliOSS(new AliOSSUpload()->setSecret('SECRET')),
             ]))
         )];
 
         yield 'participant segment output with an S3 secret' => [$withEgress(
-            (new RoomEgress())->setParticipant((new AutoParticipantEgress())->setSegmentOutputs([
-                (new SegmentedFileOutput())->setS3($s3()),
+            new RoomEgress()->setParticipant(new AutoParticipantEgress()->setSegmentOutputs([
+                new SegmentedFileOutput()->setS3($s3()),
             ]))
         )];
 
         yield 'track egress with an S3 secret' => [$withEgress(
-            (new RoomEgress())->setTracks((new AutoTrackEgress())->setFilepath('f')->setS3($s3()))
+            new RoomEgress()->setTracks(new AutoTrackEgress()->setFilepath('f')->setS3($s3()))
         )];
     }
 
@@ -119,16 +119,16 @@ final class SensitiveCredentialsTest extends TestCase
     /** @return iterable<string, array{RoomConfiguration}> */
     public static function configsThatAreSafe(): iterable
     {
-        yield 'no egress at all' => [(new RoomConfiguration())->setName('r')];
+        yield 'no egress at all' => [new RoomConfiguration()->setName('r')];
 
         // A bucket reached by an instance role carries no secret to leak.
-        yield 'S3 without a secret' => [(new RoomConfiguration())->setEgress(
-            (new RoomEgress())->setRoom((new RoomCompositeEgressRequest())->setFileOutputs([
-                (new EncodedFileOutput())->setS3((new S3Upload())->setBucket('b')->setRegion('eu-central-1')),
+        yield 'S3 without a secret' => [new RoomConfiguration()->setEgress(
+            new RoomEgress()->setRoom(new RoomCompositeEgressRequest()->setFileOutputs([
+                new EncodedFileOutput()->setS3(new S3Upload()->setBucket('b')->setRegion('eu-central-1')),
             ]))
         )];
 
-        yield 'agents, timeouts and metadata' => [(new RoomConfiguration())
+        yield 'agents, timeouts and metadata' => [new RoomConfiguration()
             ->setName('r')
             ->setEmptyTimeout(300)
             ->setMetadata('{"tier":"gold"}'), ];

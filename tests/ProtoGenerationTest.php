@@ -127,11 +127,11 @@ final class ProtoGenerationTest extends TestCase
         // string where they are not, so the type is not ours to pin. Reading the
         // value at all is the assertion -- on a runtime without the helper, every
         // one of these raises before returning anything.
-        self::assertEquals(0, (new \LiveKit\Proto\EventMetric())->getEndTimestampMs());
-        self::assertEquals(0, (new \LiveKit\Proto\UserPacket())->getStartTime());
-        self::assertEquals(0, (new \LiveKit\Proto\UserPacket())->getEndTime());
-        self::assertEquals(0, (new \LiveKit\Proto\ChatMessage())->getEditTimestamp());
-        self::assertEquals(0, (new \LiveKit\Proto\DataStream\Header())->getTotalLength());
+        self::assertEquals(0, new \LiveKit\Proto\EventMetric()->getEndTimestampMs());
+        self::assertEquals(0, new \LiveKit\Proto\UserPacket()->getStartTime());
+        self::assertEquals(0, new \LiveKit\Proto\UserPacket()->getEndTime());
+        self::assertEquals(0, new \LiveKit\Proto\ChatMessage()->getEditTimestamp());
+        self::assertEquals(0, new \LiveKit\Proto\DataStream\Header()->getTotalLength());
 
         // The list above must stay complete, or this test drifts into covering a
         // subset without saying so.

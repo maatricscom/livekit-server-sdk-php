@@ -13,7 +13,7 @@ final class ClaimGrantsTest extends TestCase
 {
     public function test_is_empty_by_default(): void
     {
-        self::assertSame([], (new ClaimGrants())->toArray());
+        self::assertSame([], new ClaimGrants()->toArray());
     }
 
     /**
@@ -23,7 +23,7 @@ final class ClaimGrantsTest extends TestCase
      */
     public function test_produces_a_flat_payload(): void
     {
-        $grants = (new ClaimGrants())
+        $grants = new ClaimGrants()
             ->setIdentity('alice')
             ->setName('Alice')
             ->setVideo(new VideoGrant(roomJoin: true, room: 'my-room'));
@@ -40,7 +40,7 @@ final class ClaimGrantsTest extends TestCase
 
     public function test_omits_a_grant_that_was_never_set(): void
     {
-        self::assertArrayNotHasKey('video', (new ClaimGrants())->toArray());
+        self::assertArrayNotHasKey('video', new ClaimGrants()->toArray());
     }
 
     /**
@@ -51,7 +51,7 @@ final class ClaimGrantsTest extends TestCase
      */
     public function test_a_grant_set_but_carrying_no_permissions_serializes_as_an_empty_object(): void
     {
-        $grants = (new ClaimGrants())->setVideo(new VideoGrant())->setSip(new SIPGrant());
+        $grants = new ClaimGrants()->setVideo(new VideoGrant())->setSip(new SIPGrant());
 
         $claims = $grants->toArray();
 
@@ -65,14 +65,14 @@ final class ClaimGrantsTest extends TestCase
 
     public function test_includes_sip_grant_when_set(): void
     {
-        $grants = (new ClaimGrants())->setSip(new SIPGrant(call: true));
+        $grants = new ClaimGrants()->setSip(new SIPGrant(call: true));
 
         self::assertSame(['sip' => ['call' => true]], $grants->toArray());
     }
 
     public function test_carries_participant_metadata_and_kind(): void
     {
-        $grants = (new ClaimGrants())
+        $grants = new ClaimGrants()
             ->setKind('agent')
             ->setKindDetails(['worker'])
             ->setMetadata('{"tier":"pro"}')
@@ -97,26 +97,26 @@ final class ClaimGrantsTest extends TestCase
      */
     public function test_omits_empty_attributes_rather_than_encoding_an_array(): void
     {
-        $grants = (new ClaimGrants())->setAttributes([]);
+        $grants = new ClaimGrants()->setAttributes([]);
 
         self::assertArrayNotHasKey('attributes', $grants->toArray());
     }
 
     public function test_encodes_non_empty_attributes_as_an_object(): void
     {
-        $grants = (new ClaimGrants())->setAttributes(['seat' => '3A']);
+        $grants = new ClaimGrants()->setAttributes(['seat' => '3A']);
 
         self::assertSame('{"attributes":{"seat":"3A"}}', json_encode($grants->toArray()));
     }
 
     public function test_a_room_configuration_is_serialized_the_way_the_server_reads_it(): void
     {
-        $config = (new \LiveKit\Proto\RoomConfiguration())
+        $config = new \LiveKit\Proto\RoomConfiguration()
             ->setName('my-room')
             ->setEmptyTimeout(300)
             ->setMetadata('{"tier":"gold"}');
 
-        $claims = (new ClaimGrants())->setRoomConfig($config)->toArray();
+        $claims = new ClaimGrants()->setRoomConfig($config)->toArray();
 
         // Go marshals this field with protojson, not encoding/json. That means
         // camelCase field names from the proto's json_name, which a hand-built
@@ -129,7 +129,7 @@ final class ClaimGrantsTest extends TestCase
 
     public function test_a_room_configuration_set_but_empty_stays_an_object(): void
     {
-        $claims = (new ClaimGrants())->setRoomConfig(new \LiveKit\Proto\RoomConfiguration())->toArray();
+        $claims = new ClaimGrants()->setRoomConfig(new \LiveKit\Proto\RoomConfiguration())->toArray();
 
         // Same reason as the grants: Go's omitempty on a pointer tests nil, so a
         // config that was set serializes even when it carries nothing -- and it has
@@ -140,6 +140,6 @@ final class ClaimGrantsTest extends TestCase
 
     public function test_no_room_configuration_means_no_claim(): void
     {
-        self::assertArrayNotHasKey('roomConfig', (new ClaimGrants())->toArray());
+        self::assertArrayNotHasKey('roomConfig', new ClaimGrants()->toArray());
     }
 }

@@ -63,7 +63,7 @@ final class AccessToken
         $options ??= new AccessTokenOptions();
         $this->ttl = $options->ttl;
 
-        $this->grants = (new ClaimGrants())
+        $this->grants = new ClaimGrants()
             ->setIdentity($options->identity)
             ->setName($options->name)
             ->setKind($options->kind)

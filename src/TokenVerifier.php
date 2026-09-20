@@ -12,11 +12,11 @@ use LiveKit\Exceptions\TokenVerificationException;
 /**
  * Verifies LiveKit access tokens and returns their claims.
  */
-final class TokenVerifier
+final readonly class TokenVerifier
 {
-    private readonly string $apiKey;
+    private string $apiKey;
 
-    private readonly string $apiSecret;
+    private string $apiSecret;
 
     public function __construct(?string $apiKey = null, ?string $apiSecret = null)
     {

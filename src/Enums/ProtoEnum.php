@@ -34,7 +34,7 @@ final class ProtoEnum
     public static function names(string $enum): array
     {
         /** @var array<string, int> $constants */
-        $constants = (new \ReflectionClass($enum))->getConstants();
+        $constants = new \ReflectionClass($enum)->getConstants();
 
         return $constants;
     }

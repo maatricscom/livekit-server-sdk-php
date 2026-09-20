@@ -88,9 +88,9 @@ final class RpcSweepTest extends MockServerTestCase
         yield 'egress.startWebEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->startWebEgress('https://example.com', self::encodedOutputs())];
         yield 'egress.startParticipantEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->startParticipantEgress('sweep', 'alice', self::encodedOutputs())];
         yield 'egress.startTrackCompositeEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->startTrackCompositeEgress('sweep', self::encodedOutputs())];
-        yield 'egress.startTrackEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->startTrackEgress('sweep', (new DirectFileOutput())->setFilepath('out.mp4'), 'TR_abc')];
+        yield 'egress.startTrackEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->startTrackEgress('sweep', new DirectFileOutput()->setFilepath('out.mp4'), 'TR_abc')];
         yield 'egress.startEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->startEgress(
-            (new StartEgressRequest())->setRoomName('sweep')
+            new StartEgressRequest()->setRoomName('sweep')
         )];
         yield 'egress.updateLayout' => [static fn (LiveKitAPI $a): mixed => $a->egress->updateLayout('EG_abc', 'speaker')];
         yield 'egress.updateStream' => [static fn (LiveKitAPI $a): mixed => $a->egress->updateStream('EG_abc', ['rtmp://example.com/live'])];
@@ -106,9 +106,9 @@ final class RpcSweepTest extends MockServerTestCase
         // -- SIP -----------------------------------------------------------
         yield 'sip.createSipInboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->createSipInboundTrunk('sweep', ['+15551234567'])];
         yield 'sip.createSipOutboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->createSipOutboundTrunk('sweep', 'sip.example.com', ['+15551234567'])];
-        yield 'sip.updateSipInboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipInboundTrunk('ST_abc', (new SIPInboundTrunkInfo())->setName('renamed'))];
+        yield 'sip.updateSipInboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipInboundTrunk('ST_abc', new SIPInboundTrunkInfo()->setName('renamed'))];
         yield 'sip.updateSipInboundTrunkFields' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipInboundTrunkFields('ST_abc', new SipInboundTrunkUpdateOptions(name: 'renamed'))];
-        yield 'sip.updateSipOutboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipOutboundTrunk('ST_abc', (new SIPOutboundTrunkInfo())->setName('renamed'))];
+        yield 'sip.updateSipOutboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipOutboundTrunk('ST_abc', new SIPOutboundTrunkInfo()->setName('renamed'))];
         yield 'sip.updateSipOutboundTrunkFields' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipOutboundTrunkFields('ST_abc', new SipOutboundTrunkUpdateOptions(name: 'renamed'))];
         // Nullable by contract: the response wraps the trunk in an optional field,
         // and the mock only populates scalars, so the wrapper comes back unset.
@@ -121,10 +121,10 @@ final class RpcSweepTest extends MockServerTestCase
         yield 'sip.listSipTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->listSipTrunk()];
         yield 'sip.deleteSipTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->deleteSipTrunk('ST_abc')];
         yield 'sip.createSipDispatchRule' => [static fn (LiveKitAPI $a): mixed => $a->sip->createSipDispatchRule(
-            (new SIPDispatchRule())->setDispatchRuleDirect((new SIPDispatchRuleDirect())->setRoomName('sweep')),
+            new SIPDispatchRule()->setDispatchRuleDirect(new SIPDispatchRuleDirect()->setRoomName('sweep')),
             new CreateSipDispatchRuleOptions(name: 'sweep')
         )];
-        yield 'sip.updateSipDispatchRule' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipDispatchRule('SDR_abc', (new SIPDispatchRuleInfo())->setName('renamed'))];
+        yield 'sip.updateSipDispatchRule' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipDispatchRule('SDR_abc', new SIPDispatchRuleInfo()->setName('renamed'))];
         yield 'sip.updateSipDispatchRuleFields' => [static fn (LiveKitAPI $a): mixed => $a->sip->updateSipDispatchRuleFields('SDR_abc', new SipDispatchRuleUpdateOptions(name: 'renamed'))];
         yield 'sip.listSipDispatchRule' => [static fn (LiveKitAPI $a): mixed => $a->sip->listSipDispatchRule()];
         yield 'sip.deleteSipDispatchRule' => [static fn (LiveKitAPI $a): mixed => $a->sip->deleteSipDispatchRule('SDR_abc')];
@@ -176,12 +176,12 @@ final class RpcSweepTest extends MockServerTestCase
 
     private static function sdp(): SessionDescription
     {
-        return (new SessionDescription())->setType('offer')->setSdp('v=0');
+        return new SessionDescription()->setType('offer')->setSdp('v=0');
     }
 
     private static function encodedOutputs(): EncodedOutputs
     {
-        return new EncodedOutputs(file: (new EncodedFileOutput())->setFilepath('out.mp4'));
+        return new EncodedOutputs(file: new EncodedFileOutput()->setFilepath('out.mp4'));
     }
 
     /** @param callable(LiveKitAPI): mixed $call */
