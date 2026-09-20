@@ -245,9 +245,35 @@ final class RoomServiceClientTest extends TwirpTestCase
         $sent = $this->decodeRequest(RoomParticipantIdentity::class);
         self::assertSame('my-room', $sent->getRoom());
         self::assertSame('alice', $sent->getIdentity());
+        // Unset, so the server applies its own default of now plus a minute.
         self::assertSame(0, $sent->getRevokeTokenTs());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testRemoveParticipantCanRevokeTokensIssuedBeforeAGivenMoment(): void
+    {
+        $client = $this->client(new RemoveParticipantResponse());
+
+        $client->removeParticipant('my-room', 'alice', revokeTokenTs: 1_767_225_600);
+
+        $sent = $this->decodeRequest(RoomParticipantIdentity::class);
+
+        // Without this, a token already handed to the participant keeps working and
+        // they can rejoin the room they were just removed from.
+        self::assertSame(1_767_225_600, $sent->getRevokeTokenTs());
+        self::assertSame('alice', $sent->getIdentity());
+    }
+
+    public function testGetParticipantNeverSendsRevokeTokenTs(): void
+    {
+        // Both rpcs send RoomParticipantIdentity, but the field is documented as
+        // read by RemoveParticipant only, so getParticipant() does not offer it.
+        $client = $this->client((new ParticipantInfo())->setIdentity('alice'));
+
+        $client->getParticipant('my-room', 'alice');
+
+        self::assertSame(0, $this->decodeRequest(RoomParticipantIdentity::class)->getRevokeTokenTs());
     }
 
     public function testMutePublishedTrackSendsTheMutedFlag(): void

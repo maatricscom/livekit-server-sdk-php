@@ -41,7 +41,18 @@ interface RoomServiceClientInterface
 
     public function getParticipant(string $room, string $identity): ParticipantInfo;
 
-    public function removeParticipant(string $room, string $identity): RemoveParticipantResponse;
+    /**
+     * Removes a participant from a room.
+     *
+     * @param int|null $revokeTokenTs Unix timestamp, in seconds; tokens for this participant whose
+     *                                `nbf` falls before it stop being accepted. Null lets the server
+     *                                choose now plus a minute of leeway.
+     */
+    public function removeParticipant(
+        string $room,
+        string $identity,
+        ?int $revokeTokenTs = null,
+    ): RemoveParticipantResponse;
 
     public function mutePublishedTrack(
         string $room,

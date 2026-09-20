@@ -13,7 +13,8 @@ Initial release.
 
 - `RoomServiceClient` covering all 14 RPCs of `livekit.RoomService`: creating, listing and deleting rooms;
   listing, muting, updating, removing and forwarding/moving participants; sending data; updating room
-  metadata and subscriptions; and `performRpc`.
+  metadata and subscriptions; and `performRpc`. `removeParticipant()` takes an optional `revokeTokenTs`,
+  so a token already handed to the participant stops being accepted and cannot be used to rejoin.
 - `EgressClient` covering all 10 RPCs of `livekit.Egress`, including room composite, web, participant and
   track (composite and single-track) egress, layout/stream updates, listing and stopping.
 - `IngressClient` covering all 4 RPCs of `livekit.Ingress`: create, update, list and delete.

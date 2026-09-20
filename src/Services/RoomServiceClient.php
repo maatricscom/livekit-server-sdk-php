@@ -199,11 +199,28 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         );
     }
 
-    public function removeParticipant(string $room, string $identity): RemoveParticipantResponse
-    {
+    /**
+     * Removes a participant from a room.
+     *
+     * @param int|null $revokeTokenTs Unix timestamp, in seconds. Tokens for this participant whose
+     *                                `nbf` falls before it stop being accepted, so a token that was
+     *                                already handed out cannot be used to rejoin. Left null, the
+     *                                server picks now plus a minute of leeway. Only RemoveParticipant
+     *                                reads this field, which is why getParticipant() has no such
+     *                                parameter even though it sends the same message type.
+     */
+    public function removeParticipant(
+        string $room,
+        string $identity,
+        ?int $revokeTokenTs = null,
+    ): RemoveParticipantResponse {
         $request = new RoomParticipantIdentity();
         $request->setRoom($room);
         $request->setIdentity($identity);
+
+        if ($revokeTokenTs !== null) {
+            $request->setRevokeTokenTs($revokeTokenTs);
+        }
 
         return $this->rpc(
             self::SERVICE,
