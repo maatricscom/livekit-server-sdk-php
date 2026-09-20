@@ -98,72 +98,6 @@ List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on)
 rather than a generated protobuf `RepeatedField`; every other method returns the generated
 `LiveKit\Proto\*` message for that RPC's response.
 
-## The other services
-
-The quickstart uses rooms. The shape is the same for the rest — an option object per call, and the
-generated response message back:
-
-```php
-use LiveKit\Options\CreateDispatchOptions;
-use LiveKit\Options\CreateIngressOptions;
-use LiveKit\Options\EncodedOutputs;
-use LiveKit\Options\RoomCompositeOptions;
-use LiveKit\Proto\EncodedFileOutput;
-use LiveKit\Proto\IngressInput;
-use LiveKit\Proto\S3Upload;
-
-// Record a room. The storage credentials travel inside this request; they are
-// never put in an access token, and AccessToken refuses to sign one carrying them.
-$egress = $livekit->egress->startRoomCompositeEgress(
-    'my-room',
-    new EncodedOutputs(file: (new EncodedFileOutput())
-        ->setFilepath('my-room-{time}.mp4')
-        ->setS3((new S3Upload())->setBucket('recordings')->setRegion('eu-central-1'))),
-    new RoomCompositeOptions(layout: 'speaker'),
-);
-
-$livekit->egress->stopEgress($egress->getEgressId());
-
-// Take an RTMP feed into a room. The response carries the url and stream key to
-// point an encoder at.
-$ingress = $livekit->ingress->createIngress(new CreateIngressOptions(
-    inputType: IngressInput::RTMP_INPUT,
-    roomName: 'my-room',
-    participantIdentity: 'rtmp-source',
-));
-
-// Send a named agent into a room. Its metadata reaches the agent as job metadata.
-$dispatch = $livekit->agentDispatch->createDispatch(
-    'my-room',
-    'my-agent',
-    new CreateDispatchOptions(metadata: '{"locale":"tr"}'),
-);
-```
-
-SIP is in [Error handling](#failures-that-did-not-come-from-livekit), because its failures carry more than
-a Twirp code; WhatsApp and Twilio are in
-[WhatsApp and Twilio calls](#whatsapp-and-twilio-calls).
-
-## Runnable examples
-
-`examples/` ships with the package. Each one runs against a real deployment, reads its credentials from
-the environment, and prints what it did:
-
-| | shows |
-|---|---|
-| `examples/token.php` | minting an access token with a video grant |
-| `examples/room.php` | create, list, delete |
-| `examples/egress.php` | recording a room to S3, then stopping it |
-| `examples/ingress.php` | an RTMP endpoint, a partial update, and deleting it |
-| `examples/sip.php` | an outbound trunk and a dispatch rule |
-| `examples/agent-dispatch.php` | dispatching a named agent and finding it again |
-| `examples/connector.php` | bridging a WhatsApp call into a room |
-| `examples/webhook.php` | verifying an inbound webhook against the raw body |
-
-Two of them could ring a telephone, and neither does so by accident. `sip.php` describes
-`createSipParticipant()` without calling it, and `connector.php` prints what it would dial and exits
-unless `PLACE_A_REAL_WHATSAPP_CALL=yes` is set.
-
 ## Credentials
 
 The host comes from the `host` argument or `LIVEKIT_URL`. For authentication you need **either** an API
@@ -307,6 +241,116 @@ A `requestTimeout` of zero or less sends no header at all, leaving the server to
 > shorter than that aborts the request while the phone is still ringing, before LiveKit's own deadline
 > ever has a chance to fire.
 
+## Recording and streaming
+
+`EgressClient` records or restreams. There are five ways to start one, differing only in what they
+capture: `startRoomCompositeEgress()` for the room as a composed video, `startWebEgress()` for an
+arbitrary URL, `startParticipantEgress()` for one participant, and `startTrackCompositeEgress()` /
+`startTrackEgress()` for chosen tracks.
+
+```php
+use LiveKit\Options\EncodedOutputs;
+use LiveKit\Options\RoomCompositeOptions;
+use LiveKit\Proto\EncodedFileOutput;
+use LiveKit\Proto\S3Upload;
+
+$egress = $livekit->egress->startRoomCompositeEgress(
+    'my-room',
+    new EncodedOutputs(file: (new EncodedFileOutput())
+        ->setFilepath('my-room-{time}.mp4')
+        ->setS3((new S3Upload())->setBucket('recordings')->setRegion('eu-central-1'))),
+    new RoomCompositeOptions(layout: 'speaker'),
+);
+
+foreach ($livekit->egress->listEgress() as $running) {
+    echo $running->getEgressId(), ' ', $running->getStatus(), PHP_EOL;
+}
+
+$livekit->egress->stopEgress($egress->getEgressId());
+```
+
+`EncodedOutputs` carries up to four destinations at once — a file, a stream, segments and images — and
+fills the plural `*_outputs` arrays. Passing a single output object instead also fills the deprecated
+singular field, for servers old enough to read only that.
+
+> [!IMPORTANT]
+> Storage credentials travel inside the egress request, which is why they are set on the upload object
+> rather than configured once. Do not put them in an access token: a JWT is readable by whoever holds it,
+> and `AccessToken::toJwt()` refuses to sign a room configuration whose egress carries them.
+
+## Ingest
+
+`IngressClient` takes an external feed into a room. The input type decides what the server hands back:
+
+| input | what you get | transcoding |
+|---|---|---|
+| `RTMP_INPUT` | an RTMP url and a stream key | always |
+| `WHIP_INPUT` | a WHIP endpoint | optional — `enableTranscoding: false` forwards the media as-is |
+| `URL_INPUT` | nothing to connect to; LiveKit pulls from the `url` you give it | always |
+
+```php
+use LiveKit\Options\CreateIngressOptions;
+use LiveKit\Options\ListIngressOptions;
+use LiveKit\Options\UpdateIngressOptions;
+use LiveKit\Proto\IngressInput;
+
+$ingress = $livekit->ingress->createIngress(new CreateIngressOptions(
+    inputType: IngressInput::RTMP_INPUT,
+    name: 'studio feed',
+    roomName: 'my-room',
+    participantIdentity: 'rtmp-source',
+));
+
+echo $ingress->getUrl(), ' ', $ingress->getStreamKey(), PHP_EOL;
+
+// Only the fields you pass are changed. Everything omitted keeps its current
+// value rather than being cleared, which is why the options are all nullable.
+$livekit->ingress->updateIngress($ingress->getIngressId(), new UpdateIngressOptions(
+    participantName: 'Studio',
+));
+
+$livekit->ingress->listIngress(new ListIngressOptions(roomName: 'my-room'));
+$livekit->ingress->deleteIngress($ingress->getIngressId());
+```
+
+`getState()?->getStatus()` reports progress — `ENDPOINT_INACTIVE` until something connects, then
+`ENDPOINT_BUFFERING`, `ENDPOINT_PUBLISHING`, and `ENDPOINT_ERROR` if the feed is refused.
+
+## Agent dispatch
+
+`AgentDispatchClient` sends a **named** agent into a room. An agent worker that registered without a name
+is dispatched automatically to every new room and is not addressable here — if a dispatch appears to do
+nothing, that is usually why.
+
+```php
+use LiveKit\Options\CreateDispatchOptions;
+
+$dispatch = $livekit->agentDispatch->createDispatch(
+    'my-room',
+    'my-agent',
+    // Reaches the agent as job metadata: which customer, which language, which prompt.
+    new CreateDispatchOptions(metadata: '{"locale":"tr"}'),
+);
+
+$livekit->agentDispatch->listDispatch('my-room');
+
+$one = $livekit->agentDispatch->getDispatch(dispatchId: $dispatch->getId(), room: 'my-room');
+
+$livekit->agentDispatch->deleteDispatch(dispatchId: $dispatch->getId(), room: 'my-room');
+```
+
+Dispatching a name no worker has registered is harmless — the request is recorded and never assigned.
+
+`getDispatch()` is this package's own convenience: `livekit.AgentDispatchService` has no `GetDispatch`
+rpc, so it is `ListDispatch` filtered by id, returning the dispatch or `null` rather than an array to
+index. Note that it and `deleteDispatch()` take the dispatch id first while `listDispatch()` takes the
+room — the order mirrors the Node SDK and the proto's own field order, which is why named arguments are
+worth using here.
+
+SIP has no section of its own; its distinctive part is how failures arrive, which is in
+[Error handling](#failures-that-did-not-come-from-livekit), and `examples/sip.php` shows a trunk and a
+dispatch rule.
+
 ## WhatsApp and Twilio calls
 
 `ConnectorClient` bridges a call from WhatsApp or Twilio into a LiveKit room. It is a **LiveKit Cloud**
@@ -355,6 +399,23 @@ $twilio = $livekit->connector->connectTwilioCall(
 );
 
 echo $twilio->getConnectUrl(), PHP_EOL; // wss://...
+```
+
+An **outbound** call is two requests, not one, and they cannot sit next to each other: `dialWhatsAppCall()`
+starts the ringing, then Meta posts the callee's SDP answer to *your* webhook, and that handler completes
+the handshake:
+
+```php
+use LiveKit\Options\ConnectWhatsAppCallOptions;
+use LiveKit\Proto\SessionDescription;
+
+$livekit->connector->connectWhatsAppCall(
+    $callIdFromTheDial,
+    (new SessionDescription())->setType('answer')->setSdp($sdpFromTheWebhook),
+    new ConnectWhatsAppCallOptions(waitUntilAnswered: true, timeout: 45),
+);
+
+$livekit->connector->disconnectWhatsAppCall($callIdFromTheDial, 'META_API_KEY');
 ```
 
 > [!NOTE]
@@ -628,6 +689,26 @@ one keeps working across minor versions.
 If you would rather exercise the real client against a real transport, inject a PSR-18 double instead of
 mocking the interface: the clients accept one, and it is what this package's own test suite uses. See
 [Timeouts](#timeouts) for how the HTTP client is supplied.
+
+## Runnable examples
+
+`examples/` ships with the package. Each one runs against a real deployment, reads its credentials from
+the environment, and prints what it did:
+
+| | shows |
+|---|---|
+| `examples/token.php` | minting an access token with a video grant |
+| `examples/room.php` | create, list, delete |
+| `examples/egress.php` | recording a room to S3, then stopping it |
+| `examples/ingress.php` | an RTMP endpoint, a partial update, and deleting it |
+| `examples/sip.php` | an outbound trunk and a dispatch rule |
+| `examples/agent-dispatch.php` | dispatching a named agent and finding it again |
+| `examples/connector.php` | bridging a WhatsApp call into a room |
+| `examples/webhook.php` | verifying an inbound webhook against the raw body |
+
+Two of them could ring a telephone, and neither does so by accident. `sip.php` describes
+`createSipParticipant()` without calling it, and `connector.php` prints what it would dial and exits
+unless `PLACE_A_REAL_WHATSAPP_CALL=yes` is set.
 
 ## Migrating from `agence104/livekit-server-sdk`
 

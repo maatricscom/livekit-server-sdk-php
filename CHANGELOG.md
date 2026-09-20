@@ -168,9 +168,13 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   hand-written class placed in either is deleted by the next generation run and is excluded from Pint and
   PHPStan until then, with nothing announcing either — which had already happened once, to
   `ProtocolVersion`.
-- `README.md` shows egress, ingress and agent dispatch, which had no code in it at all, and lists the
-  eight runnable examples with what each one demonstrates. Every snippet in the file is checked by
-  `ReadmeCodeBlocksTest`, so the new ones cannot name a class, parameter or method that does not exist.
+- `README.md` documents every service client. Egress, ingress and agent dispatch had no code in it at
+  all and now have sections of their own, next to the existing one for the WhatsApp and Twilio
+  connectors; that section gains the step it was missing, where an outbound WhatsApp call is completed
+  from the SDP Meta posts to your webhook rather than in the request that dialled. The eight runnable
+  examples are listed with what each demonstrates. Every snippet in the file is checked by
+  `ReadmeCodeBlocksTest`, so none of them can name a class, parameter, constant or method that does not
+  exist.
 - `examples/` covers all six service clients: room, egress, ingress, SIP, agent dispatch and the
   WhatsApp connector, alongside tokens and webhooks. The directory ships, so these are the first code
   anyone copies. The two that would place a real phone call are handled rather than omitted:
