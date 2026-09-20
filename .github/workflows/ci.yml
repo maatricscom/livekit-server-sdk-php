@@ -26,7 +26,7 @@ jobs:
         dependencies: ['prefer-lowest', 'prefer-stable']
         psr18: ['guzzle', 'symfony']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -59,7 +59,7 @@ jobs:
       matrix:
         php: ['8.4', '8.5']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -104,7 +104,7 @@ jobs:
           # "secret". Not a credential: the mock accepts whatever it is given.
           LK_TEST_SERVER_API_SECRET: test-server-secret-not-a-real-credential
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -146,7 +146,7 @@ jobs:
   phpstan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -163,7 +163,7 @@ jobs:
   pint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -176,7 +176,7 @@ jobs:
   composer-validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -187,17 +187,18 @@ jobs:
     name: Pinned protocol version is consistent
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # The version is written by hand in the README, NOTICE, CHANGELOG and
-      # CONTRIBUTING, and generated into src/Proto. Remembering to edit all of
-      # them does not survive a real upgrade, so check it rather than trust it.
+      # CONTRIBUTING, in the `go get` line of each fixture generator, and generated
+      # into src/ProtocolVersion.php. Remembering to edit all of them does not
+      # survive a real upgrade, so check it rather than trust it.
       - run: bin/check-protocol-version.sh
 
   forbidden-symbols:
     name: No Internal RepeatedField in any shipped code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # Internal\RepeatedField survives only as a class_alias, created when
       # Google\Protobuf\RepeatedField loads, so no static analyser can see it and
       # PSR-4 cannot autoload it. Nothing fatals from a `use` statement or a
@@ -205,7 +206,7 @@ jobs:
       # one of these getters is told the class is unknown and loses the type.
       #
       # src/Proto used to be excluded here, because protoc 29.3 emitted the old
-      # name. The generator now requires protoc >= 33.1, which emits the canonical
+      # name. The generator now requires protoc >= 36.2, which emits the canonical
       # one, so the rule covers all of src -- and this job is what catches a
       # regeneration done with an older protoc.
       - name: Reject the non-autoloadable RepeatedField alias
@@ -219,7 +220,7 @@ jobs:
     name: Generated protobuf is up to date
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -253,7 +254,7 @@ jobs:
           # and deleted paths alike.
           drift="$(git status --porcelain --untracked-files=all -- src/Proto metadata src/ProtocolVersion.php)"
           if [ -n "$drift" ]; then
-            echo "::error::Generated src/Proto is out of date. Run bin/generate-protos.sh and commit the diff."
+            echo "::error::Generated code (src/Proto, metadata, src/ProtocolVersion.php) is out of date. Run bin/generate-protos.sh and commit the diff."
             echo "$drift"
             exit 1
           fi
