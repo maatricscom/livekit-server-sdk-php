@@ -107,6 +107,10 @@ starting out now has no reason to carry a version that only receives security fi
 - A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
   unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
   under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
+- `examples/` is analysed by PHPStan and covered by Rector, not only formatted by Pint. It was the one
+  hand-written directory no tool checked, and PHPStan found a real defect there the moment it looked:
+  `examples/webhook.php` passed `$_SERVER['HTTP_AUTHORIZATION']`, which is `mixed`, straight into a
+  `?string` parameter. Sample code is the first thing anyone copies.
 - PHPStan analyses against the whole supported PHP range (`phpVersion: min 80400, max 80599`) rather
   than against whichever PHP happens to run it. Unset, it assumed 8.5 on a machine running 8.5 and 8.4
   in CI, so a function that exists only in 8.5 — `array_first()`, say — passed locally and would have

@@ -151,10 +151,19 @@ composer refactor            # rector, dry run: what a newer PHP idiom would cha
 ```
 
 `composer refactor` exits 2 when it has suggestions and 0 when it has none — that is Rector's contract
-for `--dry-run`, not a failure. It is advisory and not a CI gate. Rector reports what it *could* rewrite, which is not
-the same as what should be rewritten — it currently suggests turning classes with readonly properties
-into readonly classes, including two that have no properties at all, and one whose subclass would be
-dragged along with it. Read the diff before taking any of it.
+for `--dry-run`, not a failure. It is advisory and not a CI gate. Rector reports what it *could* rewrite,
+which is not the same as what should be rewritten. It currently suggests two things, neither of them
+wanted as they stand:
+
+- `ReadOnlyClassRector`, turning classes with readonly properties into readonly classes — including two
+  that have no properties at all, and one whose subclass would be dragged along with it.
+- `NewMethodCallWithoutParenthesesRector`, rewriting `(new Foo())->bar()` as `new Foo()->bar()`. Valid
+  on 8.4 and purely cosmetic, against a codebase that is consistent the other way.
+
+Read the diff before taking any of it. The script passes `--clear-cache`, because Rector's cache is
+keyed on file contents and a warm one reports only what it has not seen — fine for a gate that runs on
+every commit, wrong for a command whose entire output is meant to be read by a person. It is slower for
+that reason.
 
 Run PHPStan through the composer script rather than `vendor/bin/phpstan` directly: it carries
 `--memory-limit=512M`, and PHP's 128M default is not enough for PHPStan's parallel workers on this tree.

@@ -28,7 +28,10 @@ use LiveKit\Exceptions\WebhookVerificationException;
 use LiveKit\WebhookReceiver;
 
 $rawBody = file_get_contents('php://input');
-$authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+// $_SERVER carries no types, so narrow it before handing it over: a header that
+// is somehow not a string is the same as no header at all.
+$header = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+$authHeader = is_string($header) ? $header : null;
 
 if ($rawBody === false) {
     http_response_code(400);
