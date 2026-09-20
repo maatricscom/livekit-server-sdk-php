@@ -128,9 +128,14 @@ final class ServiceBaseTest extends TestCase
         putenv('LIVEKIT_API_KEY');
         putenv('LIVEKIT_API_SECRET');
 
-        $this->expectException(ConfigurationException::class);
+        try {
+            $this->expectException(ConfigurationException::class);
 
-        new ServiceBaseProbe('https://example.livekit.cloud');
+            new ServiceBaseProbe('https://example.livekit.cloud');
+        } finally {
+            putenv('LIVEKIT_API_KEY');
+            putenv('LIVEKIT_API_SECRET');
+        }
     }
 
     public function test_falls_back_to_environment_configuration(): void
