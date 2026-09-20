@@ -46,7 +46,7 @@ final class ReadmeExamplesTest extends TestCase
     public function test_the_dependency_injection_example_runs(): void
     {
         // createStub, not createMock: nothing here verifies an interaction, and
-        // PHPUnit 12 emits a notice for a mock with no configured expectations.
+        // PHPUnit emits a notice for a mock with no configured expectations.
         // The README says createStub for the same reason.
         $rooms = $this->createStub(RoomServiceClientInterface::class);
         $rooms->method('createRoom')->willReturn((new Room())->setSid('RM_test'));

@@ -1,0 +1,269 @@
+<?php
+
+declare(strict_types=1);
+
+namespace LiveKit\Tests;
+
+use LiveKit\LiveKitAPI;
+use LiveKit\Tests\Support\TestCase;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitorAbstract;
+use PhpParser\ParserFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+/**
+ * Every PHP example in README.md, checked against the code it describes.
+ *
+ * Documentation is the one part of a package nothing else verifies: a snippet can
+ * go on naming a class that was renamed, a parameter that was dropped, or a
+ * constant that never existed, and the whole suite stays green. Someone finds out
+ * by pasting it.
+ *
+ * This does not execute the examples -- most need a server. It parses each one and
+ * resolves what it can: that the block is valid PHP at all, that every imported and
+ * constructed class exists, that every named argument matches a real parameter, that
+ * every `Class::CONSTANT` is defined, and that a method called on a receiver whose
+ * type is knowable exists on it.
+ */
+final class ReadmeCodeBlocksTest extends TestCase
+{
+    /**
+     * Blocks that are deliberately fragments of a larger listing: a class body
+     * continued from the block above, or a test method that relies on the enclosing
+     * file's imports. `ReadmeExamplesTest` runs that example for real.
+     *
+     * Keyed by the first line, so a block moving in the file does not silently
+     * widen the exemption.
+     */
+    private const array FRAGMENTS = [
+        'use LiveKit\Contracts\RoomServiceClientInterface;',
+        '$rooms = $this->createStub(RoomServiceClientInterface::class);',
+    ];
+
+    /** @return iterable<string, array{string, int}> */
+    public static function phpBlocks(): iterable
+    {
+        $md = (string) file_get_contents(dirname(__DIR__) . '/README.md');
+
+        preg_match_all('/^```php\n(.*?)^```/sm', $md, $matches, PREG_OFFSET_CAPTURE);
+
+        foreach ($matches[1] as $i => [$code, $offset]) {
+            $line = substr_count(substr($md, 0, (int) $offset), "\n") + 1;
+            yield sprintf('block %d (README.md:%d)', $i + 1, $line) => [$code, $line];
+        }
+    }
+
+    #[DataProvider('phpBlocks')]
+    public function test_a_readme_example_is_valid_php(string $code, int $line): void
+    {
+        self::assertNotNull(
+            self::parse($code),
+            sprintf('README.md:%d is not parseable PHP, so it cannot be pasted anywhere.', $line)
+        );
+    }
+
+    #[DataProvider('phpBlocks')]
+    public function test_a_readme_example_names_things_that_exist(string $code, int $line): void
+    {
+        $ast = self::parse($code);
+        self::assertNotNull($ast);
+
+        $firstLine = trim(explode("\n", trim($code))[0]);
+        $problems = self::inspect($ast, in_array($firstLine, self::FRAGMENTS, true));
+
+        self::assertSame([], $problems, sprintf(
+            "README.md:%d refers to things that do not exist:\n  - %s",
+            $line,
+            implode("\n  - ", $problems)
+        ));
+    }
+
+    /** @return array<Node\Stmt>|null */
+    private static function parse(string $code): ?array
+    {
+        $src = str_starts_with(ltrim($code), '<?php') ? $code : "<?php\n" . $code;
+
+        try {
+            return (new ParserFactory())->createForNewestSupportedVersion()->parse($src);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @param  array<Node\Stmt> $ast
+     * @return list<string>
+     */
+    private static function inspect(array $ast, bool $isFragment): array
+    {
+        $facade = [];
+
+        foreach ((new \ReflectionClass(LiveKitAPI::class))->getProperties() as $property) {
+            $type = $property->getType();
+
+            if ($type instanceof \ReflectionNamedType) {
+                $facade[$property->getName()] = $type->getName();
+            }
+        }
+
+        $visitor = new class ($facade, $isFragment) extends NodeVisitorAbstract {
+            /** @var list<string> */
+            public array $problems = [];
+
+            /** @var array<string, string> */
+            private array $aliases = [];
+
+            /**
+             * README examples build on one another, and the facade is called $livekit
+             * throughout. Seeding it lets a method call be checked in the blocks that
+             * do not construct it themselves -- which is most of them.
+             *
+             * @var array<string, class-string>
+             */
+            private array $vars = ['livekit' => LiveKitAPI::class];
+
+            /** @param array<string, string> $facade */
+            public function __construct(private readonly array $facade, private readonly bool $isFragment)
+            {
+            }
+
+            private function resolve(string $name): string
+            {
+                $name = ltrim($name, '\\');
+                $head = explode('\\', $name)[0];
+
+                return isset($this->aliases[$head])
+                    ? $this->aliases[$head] . substr($name, strlen($head))
+                    : $name;
+            }
+
+            /** @param array<Node\Arg|Node\ArgPlaceholder|Node\VariadicPlaceholder> $args */
+            private function checkNamedArguments(?\ReflectionFunctionAbstract $fn, array $args, string $what): void
+            {
+                if ($fn === null) {
+                    return;
+                }
+
+                $valid = array_map(static fn (\ReflectionParameter $p): string => $p->getName(), $fn->getParameters());
+
+                foreach ($args as $arg) {
+                    if ($arg instanceof Node\Arg && $arg->name !== null
+                        && ! in_array($arg->name->toString(), $valid, true)) {
+                        $this->problems[] = sprintf(
+                            '%s has no parameter $%s (accepts: %s)',
+                            $what,
+                            $arg->name->toString(),
+                            implode(', ', $valid)
+                        );
+                    }
+                }
+            }
+
+            public function enterNode(Node $node): null
+            {
+                if ($node instanceof Node\Stmt\Use_) {
+                    foreach ($node->uses as $use) {
+                        $fqcn = $use->name->toString();
+                        $this->aliases[$use->getAlias()->toString()] = $fqcn;
+
+                        if (! class_exists($fqcn) && ! interface_exists($fqcn) && ! enum_exists($fqcn)) {
+                            $this->problems[] = sprintf('use %s — no such class', $fqcn);
+                        }
+                    }
+                }
+
+                if ($node instanceof Node\Stmt\Class_ && $node->name !== null) {
+                    // A class the example defines itself is not one it has to import.
+                    $this->aliases[$node->name->toString()] = $node->name->toString();
+                }
+
+                if ($node instanceof Node\Expr\New_ && $node->class instanceof Node\Name) {
+                    $written = $node->class->toString();
+                    $fqcn = $this->resolve($written);
+
+                    if (class_exists($fqcn)) {
+                        $this->checkNamedArguments(
+                            (new \ReflectionClass($fqcn))->getConstructor(),
+                            $node->args,
+                            sprintf('new %s()', $written)
+                        );
+                    } elseif (! $this->isFragment && ! isset($this->aliases[$written])) {
+                        $this->problems[] = sprintf('new %s — no such class, and the block does not import it', $written);
+                    }
+                }
+
+                if ($node instanceof Node\Expr\Assign
+                    && $node->var instanceof Node\Expr\Variable && is_string($node->var->name)
+                    && $node->expr instanceof Node\Expr\New_ && $node->expr->class instanceof Node\Name) {
+                    $fqcn = $this->resolve($node->expr->class->toString());
+
+                    if (class_exists($fqcn)) {
+                        $this->vars[$node->var->name] = $fqcn;
+                    }
+                }
+
+                if ($node instanceof Node\Expr\ClassConstFetch
+                    && $node->class instanceof Node\Name && $node->name instanceof Node\Identifier
+                    && $node->name->toString() !== 'class') {
+                    $fqcn = $this->resolve($node->class->toString());
+
+                    if (class_exists($fqcn) && ! defined($fqcn . '::' . $node->name->toString())) {
+                        $this->problems[] = sprintf(
+                            '%s::%s — no such constant',
+                            $node->class->toString(),
+                            $node->name->toString()
+                        );
+                    }
+                }
+
+                if ($node instanceof Node\Expr\MethodCall && $node->name instanceof Node\Identifier) {
+                    $receiver = $this->receiverType($node);
+
+                    if ($receiver !== null) {
+                        if (! method_exists($receiver, $node->name->toString())) {
+                            $this->problems[] = sprintf('%s::%s() — no such method', $receiver, $node->name->toString());
+                        } else {
+                            $this->checkNamedArguments(
+                                new \ReflectionMethod($receiver, $node->name->toString()),
+                                $node->args,
+                                sprintf('%s::%s()', $receiver, $node->name->toString())
+                            );
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            /** @return class-string|null */
+            private function receiverType(Node\Expr\MethodCall $call): ?string
+            {
+                if ($call->var instanceof Node\Expr\Variable && is_string($call->var->name)) {
+                    $type = $this->vars[$call->var->name] ?? null;
+
+                    return $type !== null && class_exists($type) ? $type : null;
+                }
+
+                // $livekit->room->createRoom(...)
+                if ($call->var instanceof Node\Expr\PropertyFetch
+                    && $call->var->var instanceof Node\Expr\Variable
+                    && is_string($call->var->var->name)
+                    && ($this->vars[$call->var->var->name] ?? null) === LiveKitAPI::class
+                    && $call->var->name instanceof Node\Identifier) {
+                    $type = $this->facade[$call->var->name->toString()] ?? null;
+
+                    return $type !== null && class_exists($type) ? $type : null;
+                }
+
+                return null;
+            }
+        };
+
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($visitor);
+        $traverser->traverse($ast);
+
+        return $visitor->problems;
+    }
+}

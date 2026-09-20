@@ -104,6 +104,9 @@ The host comes from the `host` argument or `LIVEKIT_URL`. For authentication you
 key and secret **or** a pre-signed token:
 
 ```php
+use LiveKit\LiveKitAPI;
+use LiveKit\Options\ClientOptions;
+
 // Key and secret — the usual choice for a backend. The host needs its scheme:
 // http(s), or ws(s), which is rewritten since the HTTP API shares the origin.
 new LiveKitAPI('https://my-project.livekit.cloud', 'API_KEY', 'API_SECRET');
@@ -112,7 +115,7 @@ new LiveKitAPI('https://my-project.livekit.cloud', 'API_KEY', 'API_SECRET');
 // to cover the calls you make with it.
 new LiveKitAPI(
     host: 'https://my-project.livekit.cloud',
-    options: new LiveKit\Options\ClientOptions(token: $token),
+    options: new ClientOptions(token: $token),
 );
 
 // Nothing passed: read from LIVEKIT_URL plus either LIVEKIT_TOKEN, or
@@ -405,6 +408,8 @@ status — `401` to `unauthenticated`, `404` to `bad_route`, `429` to `resource_
 to `unavailable` — and marks it, so you can tell the two apart when it matters:
 
 ```php
+try {
+    $livekit->room->deleteRoom('my-room');
 } catch (TwirpException $e) {
     if (($e->getMeta()[TwirpErrorCode::META_FROM_INTERMEDIARY] ?? null) === 'true') {
         // Something between you and LiveKit answered: the original status is in
@@ -461,6 +466,7 @@ signed with the same secret under HS384 or HS512 is rejected, and so is one clai
 A token can carry a `RoomConfiguration`, applied when its holder creates the room:
 
 ```php
+use LiveKit\AccessToken;
 use LiveKit\Options\AccessTokenOptions;
 use LiveKit\Proto\RoomConfiguration;
 

@@ -147,6 +147,10 @@ About the repository — none of this reaches an installed package, since `.gita
 keeps `bin/`, `.github/`, `tests/` and the analyser configuration out of the distributed
 tarball. It is recorded because it is why the package can be trusted to behave as described:
 
+- `ReadmeCodeBlocksTest` checks every PHP example in `README.md`: that it parses at all, and that every
+  class, named argument, constant and resolvable method call in it exists. Twenty-one examples, of which
+  one was executed by anything before. It found a block that opened with `} catch` and could not be
+  pasted anywhere, and a block that imported two of the three classes it used.
 - Assertions on protobuf maps sort before comparing. A map has no order: the pure-PHP runtime iterates
   one in insertion order and `ext-protobuf` in hash order, so an order-sensitive assertion passes
   reliably on one and intermittently on the other — the one this rule came from failed 22 times in 40.
