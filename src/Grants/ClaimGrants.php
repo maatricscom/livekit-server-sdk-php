@@ -184,9 +184,11 @@ final class ClaimGrants
 
             $serialized = $grant->toArray();
 
-            if ($serialized !== []) {
-                $claims[$key] = $serialized;
-            }
+            // Go's `json:"...,omitempty"` on a POINTER field tests nil, not emptiness:
+            // a grant that was explicitly set still serializes, as {} when it carries
+            // no permissions. json_encode([]) would emit `[]`, which Go cannot
+            // unmarshal into *VideoGrant, hence stdClass to force a JSON object.
+            $claims[$key] = $serialized === [] ? new \stdClass() : $serialized;
         }
 
         if ($this->sha256 !== null && $this->sha256 !== '') {

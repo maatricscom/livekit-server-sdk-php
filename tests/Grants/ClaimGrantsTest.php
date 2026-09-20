@@ -38,11 +38,29 @@ final class ClaimGrantsTest extends TestCase
         );
     }
 
-    public function test_omits_grant_objects_that_serialize_to_nothing(): void
+    public function test_omits_a_grant_that_was_never_set(): void
+    {
+        self::assertArrayNotHasKey('video', (new ClaimGrants())->toArray());
+    }
+
+    /**
+     * Go's `json:"video,omitempty"` is on a *pointer*, which tests nil rather than
+     * emptiness: a grant that was explicitly set still serializes, as `{}` when it
+     * carries no permissions. json_encode([]) would emit a JSON array (`[]`), which
+     * Go cannot unmarshal into *VideoGrant, so an empty grant must become an object.
+     */
+    public function test_a_grant_set_but_carrying_no_permissions_serializes_as_an_empty_object(): void
     {
         $grants = (new ClaimGrants())->setVideo(new VideoGrant())->setSip(new SIPGrant());
 
-        self::assertSame([], $grants->toArray());
+        $claims = $grants->toArray();
+
+        self::assertArrayHasKey('video', $claims);
+        self::assertArrayHasKey('sip', $claims);
+        self::assertEquals(new \stdClass(), $claims['video']);
+        self::assertEquals(new \stdClass(), $claims['sip']);
+
+        self::assertSame('{"video":{},"sip":{}}', json_encode($claims));
     }
 
     public function test_includes_sip_grant_when_set(): void

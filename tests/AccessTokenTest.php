@@ -226,8 +226,15 @@ final class AccessTokenTest extends TestCase
                 'iss' => 'devkey',
                 'video' => ['roomAdmin' => true, 'room' => 'my-room'],
             ]],
+            // `video` was set explicitly (SetVideoGrant(&auth.VideoGrant{})) but carries
+            // no permissions. Go's `json:"video,omitempty"` is on a *pointer*, which
+            // tests nil rather than emptiness, so the key stays present as `{}` (decoded
+            // here as `[]`, since json_decode(..., true) does not distinguish an empty
+            // JSON object from an empty JSON array). A key that went missing here would
+            // mean this SDK regressed to omitting an explicitly-set-but-empty grant.
             'sip_call' => ['sip_call', [
                 'iss' => 'devkey',
+                'video' => [],
                 'sip' => ['call' => true],
             ]],
         ];
