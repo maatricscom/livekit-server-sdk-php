@@ -147,7 +147,11 @@ final class TwirpClient
         $meta = $exception->getMeta();
 
         if (isset($meta['sip_status_code']) || isset($meta['sip_status'])) {
-            return SipCallError::fromResponse($status, $body);
+            // Built from the fields $exception already parsed out of $body, rather
+            // than parsing the same JSON envelope again via SipCallError::fromResponse().
+            // Equivalent result -- SipCallError adds no parsing of its own, only the
+            // getters above -- without decoding $body twice.
+            return new SipCallError($exception->getMessage(), $exception->getTwirpCode(), $status, $meta);
         }
 
         return $exception;
