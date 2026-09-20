@@ -15,6 +15,7 @@ use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\ParticipantInfo;
+use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
 
@@ -186,6 +187,25 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof ParticipantInfo);
+
+        return $response;
+    }
+
+    public function removeParticipant(string $room, string $identity): RemoveParticipantResponse
+    {
+        $request = new RoomParticipantIdentity();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'RemoveParticipant',
+            $request,
+            RemoveParticipantResponse::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof RemoveParticipantResponse);
 
         return $response;
     }

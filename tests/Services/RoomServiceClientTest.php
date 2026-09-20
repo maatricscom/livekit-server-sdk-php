@@ -15,6 +15,7 @@ use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\ParticipantInfo;
+use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
 use LiveKit\Services\RoomServiceClient;
@@ -209,6 +210,23 @@ final class RoomServiceClientTest extends TwirpTestCase
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
 
         self::assertSame('Alice', $participant->getName());
+    }
+
+    public function testRemoveParticipantPostsRoomParticipantIdentity(): void
+    {
+        $client = $this->client(new RemoveParticipantResponse());
+
+        $client->removeParticipant('my-room', 'alice');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'RemoveParticipant');
+
+        $sent = $this->decodeRequest(RoomParticipantIdentity::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame(0, $sent->getRevokeTokenTs());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }
 
     private function client(Message $response): RoomServiceClient
