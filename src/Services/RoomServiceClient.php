@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LiveKit\Services;
 
+use LiveKit\Contracts\RoomServiceClientInterface;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
@@ -36,7 +37,7 @@ use LiveKit\Proto\UpdateRoomMetadataRequest;
 use LiveKit\Proto\UpdateSubscriptionsRequest;
 use LiveKit\Proto\UpdateSubscriptionsResponse;
 
-final class RoomServiceClient extends ServiceBase
+final class RoomServiceClient extends ServiceBase implements RoomServiceClientInterface
 {
     private const SERVICE = 'RoomService';
 
@@ -134,6 +135,7 @@ final class RoomServiceClient extends ServiceBase
         $rooms = [];
 
         foreach ($response->getRooms() as $room) {
+            assert($room instanceof Room);
             $rooms[] = $room;
         }
 
@@ -183,6 +185,7 @@ final class RoomServiceClient extends ServiceBase
         $participants = [];
 
         foreach ($response->getParticipants() as $participant) {
+            assert($participant instanceof ParticipantInfo);
             $participants[] = $participant;
         }
 

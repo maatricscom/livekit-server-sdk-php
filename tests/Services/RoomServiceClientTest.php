@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Tests\Services;
 
 use Google\Protobuf\Internal\Message;
+use LiveKit\Contracts\RoomServiceClientInterface;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
 use LiveKit\Options\SendDataOptions;
@@ -544,6 +545,38 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertSame(0, $sent->getResponseTimeoutMs());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testClientImplementsTheContractWithAllFourteenRpcs(): void
+    {
+        $client = $this->client(new Room());
+
+        self::assertInstanceOf(RoomServiceClientInterface::class, $client);
+
+        $expected = [
+            'createRoom',
+            'listRooms',
+            'deleteRoom',
+            'listParticipants',
+            'getParticipant',
+            'removeParticipant',
+            'mutePublishedTrack',
+            'updateParticipant',
+            'updateSubscriptions',
+            'sendData',
+            'updateRoomMetadata',
+            'forwardParticipant',
+            'moveParticipant',
+            'performRpc',
+        ];
+
+        $declared = get_class_methods(RoomServiceClientInterface::class);
+        sort($declared);
+
+        $sorted = $expected;
+        sort($sorted);
+
+        self::assertSame($sorted, $declared);
     }
 
     private function client(Message $response): RoomServiceClient

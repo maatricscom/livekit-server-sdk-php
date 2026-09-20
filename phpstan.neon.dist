@@ -7,3 +7,5 @@ parameters:
         analyse:
             - src/Proto
     treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - phpstan-bootstrap.php
