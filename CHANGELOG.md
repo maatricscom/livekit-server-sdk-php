@@ -147,6 +147,12 @@ About the repository — none of this reaches an installed package, since `.gita
 keeps `bin/`, `.github/`, `tests/` and the analyser configuration out of the distributed
 tarball. It is recorded because it is why the package can be trusted to behave as described:
 
+- `CONTRIBUTING.md` documents commands that were run as written rather than typed from memory. The
+  drift check it gave used `git diff`, which never reports the added file a new upstream message type
+  arrives as; the forbidden-symbol grep and the analyser exclusions named only `src/Proto`; the
+  protocol-bump checklist omitted the two fixture generators that `check-protocol` fails on; and the
+  port-forwarding step for running the mock-server suite under `ext-protobuf` never said it runs inside
+  the container, which does not have `socat` installed.
 - `ReadmeCodeBlocksTest` checks every PHP example in `README.md`: that it parses at all, and that every
   class, named argument, constant and resolvable method call in it exists. Twenty-one examples, of which
   one was executed by anything before. It found a block that opened with `} catch` and could not be
