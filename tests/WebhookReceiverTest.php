@@ -35,10 +35,16 @@ final class WebhookReceiverTest extends TestCase
 
     /**
      * Real protojson bytes for a WebhookEvent{event: room_started, id: EV_abc123,
-     * createdAt: 1789891388, room: {sid: RM_xyz, name: my-room}}, produced by
-     * livekit/protocol's own utils/protojson.Marshal() -- the same call
-     * webhook/url_notifier.go makes before signing -- via
+     * createdAt: 1789891388, room: {sid: RM_xyz, name: "oda-ü", metadata: a URL}},
+     * produced by livekit/protocol's own utils/protojson.Marshal() -- the same
+     * call webhook/url_notifier.go makes before signing -- via
      * bin/generate-webhook-fixture.go. Not a hand-written approximation.
+     *
+     * The room name and metadata deliberately carry a non-ASCII character and a
+     * URL: both are ordinary content for a real LiveKit webhook (room names and
+     * metadata are arbitrary application-supplied strings), and both round-trip
+     * through Go's protojson unchanged while PHP's json_encode() re-escapes them
+     * by default. See test_rejects_a_reserialized_body().
      */
     private function goFixtureBody(): string
     {
@@ -57,7 +63,11 @@ final class WebhookReceiverTest extends TestCase
         self::assertInstanceOf(WebhookEvent::class, $event);
         self::assertSame('room_started', $event->getEvent());
         self::assertSame('EV_abc123', $event->getId());
-        self::assertSame('my-room', $event->getRoom()?->getName());
+
+        $room = $event->getRoom();
+        self::assertNotNull($room);
+        self::assertSame('oda-ü', $room->getName());
+        self::assertSame('https://example.com/rooms/my-room', $room->getMetadata());
     }
 
     /**
@@ -87,21 +97,24 @@ final class WebhookReceiverTest extends TestCase
     /**
      * Verification is byte-exact, not semantic-JSON-exact: the raw body must be
      * hashed as received, never a JSON structure reconstructed from it. This
-     * test pins that failure mode against real Go protojson bytes (see
-     * goFixtureBody()) so nobody "helpfully" adds a decode/re-encode round-trip
-     * before hashing.
+     * test pins the realistic version of that mistake -- a plain
+     * json_encode(json_decode($raw, true)) round-trip, the kind of "helpful"
+     * normalization someone adds without thinking -- against real Go protojson
+     * bytes (see goFixtureBody()).
      *
-     * Finding while writing this against the real fixture: for this event's
-     * shape (no forward slashes, no non-ASCII, no floats), a *compact* PHP
-     * json_decode()/json_encode() round-trip reproduces the Go bytes exactly --
-     * Go's protojson field order follows proto field numbers, and PHP preserves
-     * key order through decode/encode, so with nothing PHP escapes differently
-     * there is nothing left to diverge on. That would make a compact round-trip
-     * a vacuous precondition here. A pretty-printed re-encode is used instead:
-     * it is still exactly the "decode then re-encode" mistake this test exists
-     * to catch (plenty of frameworks and debug middleware pretty-print JSON by
-     * default), and its divergence from Go's compact output does not depend on
-     * the payload happening to contain characters PHP escapes differently.
+     * Earlier version of this test: a first attempt used a *plain-ASCII*
+     * fixture, and a compact round-trip of it reproduced the Go bytes exactly.
+     * That was real (Go's protojson field order follows proto field numbers,
+     * PHP preserves key order through decode/encode, and with nothing
+     * escaping-sensitive in the content there was nothing left to diverge on)
+     * but it meant the precondition below was vacuous, and a regression here
+     * would have gone undetected. It is exactly why "hash the raw bytes" is the
+     * rule rather than "a compact re-encode is usually safe": whether a given
+     * payload happens to survive re-encoding depends on its content. The
+     * fixture now carries a non-ASCII room name and a URL in its metadata --
+     * ordinary content for a real webhook -- which PHP's json_encode()
+     * re-escapes (\uXXXX, \/) by default, so the round-trip now diverges for a
+     * substantive, content-driven reason rather than by accident.
      */
     public function test_rejects_a_reserialized_body(): void
     {
@@ -109,7 +122,7 @@ final class WebhookReceiverTest extends TestCase
         [, $auth] = $this->signedWebhook($body);
 
         $decoded = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-        $reserialized = json_encode($decoded, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        $reserialized = json_encode($decoded, JSON_THROW_ON_ERROR);
         self::assertNotSame($body, $reserialized, 'Precondition: re-encoding must change the bytes');
 
         $this->expectException(WebhookVerificationException::class);
