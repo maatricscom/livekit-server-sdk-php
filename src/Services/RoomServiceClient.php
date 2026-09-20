@@ -26,6 +26,7 @@ use LiveKit\Proto\RoomParticipantIdentity;
 use LiveKit\Proto\SendDataRequest;
 use LiveKit\Proto\SendDataResponse;
 use LiveKit\Proto\UpdateParticipantRequest;
+use LiveKit\Proto\UpdateRoomMetadataRequest;
 use LiveKit\Proto\UpdateSubscriptionsRequest;
 use LiveKit\Proto\UpdateSubscriptionsResponse;
 
@@ -347,6 +348,25 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof SendDataResponse);
+
+        return $response;
+    }
+
+    public function updateRoomMetadata(string $room, string $metadata): Room
+    {
+        $request = new UpdateRoomMetadataRequest();
+        $request->setRoom($room);
+        $request->setMetadata($metadata);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateRoomMetadata',
+            $request,
+            Room::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof Room);
 
         return $response;
     }

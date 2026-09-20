@@ -29,6 +29,7 @@ use LiveKit\Proto\SendDataResponse;
 use LiveKit\Proto\TrackInfo;
 use LiveKit\Proto\TrackSource;
 use LiveKit\Proto\UpdateParticipantRequest;
+use LiveKit\Proto\UpdateRoomMetadataRequest;
 use LiveKit\Proto\UpdateSubscriptionsRequest;
 use LiveKit\Proto\UpdateSubscriptionsResponse;
 use LiveKit\Services\RoomServiceClient;
@@ -439,6 +440,24 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertSame('', $sent->getNonce());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testUpdateRoomMetadataSendsTheNewMetadata(): void
+    {
+        $client = $this->client((new Room())->setName('my-room')->setMetadata('{"v":2}'));
+
+        $room = $client->updateRoomMetadata('my-room', '{"v":2}');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'UpdateRoomMetadata');
+
+        $sent = $this->decodeRequest(UpdateRoomMetadataRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('{"v":2}', $sent->getMetadata());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+
+        self::assertSame('{"v":2}', $room->getMetadata());
     }
 
     private function client(Message $response): RoomServiceClient
