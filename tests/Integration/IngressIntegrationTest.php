@@ -64,7 +64,9 @@ final class IngressIntegrationTest extends IntegrationTestCase
             describe: sprintf('ingress "%s" (%s)', $name, $id),
         );
 
-        $remaining = $this->livekit->ingress->listIngress(new ListIngressOptions(ingressId: $id));
-        self::assertSame([], $remaining, 'deleteIngress actually removed it');
+        $this->assertGoneAfterDelete(
+            fn (): array => $this->livekit->ingress->listIngress(new ListIngressOptions(ingressId: $id)),
+            sprintf('ingress %s', $id),
+        );
     }
 }

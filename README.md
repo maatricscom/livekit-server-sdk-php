@@ -386,7 +386,10 @@ Dispatching a name no worker has registered is harmless — the request is recor
 
 `getDispatch()` is this package's own convenience: `livekit.AgentDispatchService` has no `GetDispatch`
 rpc, so it is `ListDispatch` filtered by id, returning the dispatch or `null` rather than an array to
-index. Note that it and `deleteDispatch()` take the dispatch id first while `listDispatch()` takes the
+index. A missing dispatch is `null` whichever way your deployment reports it — LiveKit Cloud answers
+`not_found` where the mock server returns an empty list, and both arrive here as `null`. This is a
+deliberate difference from the Node SDK, which checks only for the empty list and so throws in the
+case it documents. Note that it and `deleteDispatch()` take the dispatch id first while `listDispatch()` takes the
 room — the order mirrors the Node SDK and the proto's own field order, which is why named arguments are
 worth using here.
 

@@ -6,6 +6,8 @@ namespace LiveKit\Services;
 
 use LiveKit\Contracts\AgentDispatchClientInterface;
 use LiveKit\Enums\ProtoEnum;
+use LiveKit\Exceptions\TwirpErrorCode;
+use LiveKit\Exceptions\TwirpException;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Proto\AgentDispatch;
@@ -77,10 +79,25 @@ final class AgentDispatchClient extends ServiceBase implements AgentDispatchClie
      * dispatch_id is how the one-dispatch case is served, and this is the shape you
      * usually want it in. Delegates rather than issuing the rpc itself, so the two
      * cannot drift apart on the grant or on how the response is unwrapped.
+     *
+     * A real server answers a filter that matches nothing with not_found rather than
+     * with an empty list, so the catch — not the `?? null` — is what makes the null
+     * in this signature reachable. Only that one code is swallowed: an unknown room
+     * is still "no such dispatch", but a bad grant or an unreachable host is not, and
+     * those keep throwing. Node's getDispatch() returns undefined on the empty list
+     * alone and so throws in the case it documents; we diverge deliberately.
      */
     public function getDispatch(string $dispatchId, string $room): ?AgentDispatch
     {
-        return $this->listDispatch($room, $dispatchId)[0] ?? null;
+        try {
+            return $this->listDispatch($room, $dispatchId)[0] ?? null;
+        } catch (TwirpException $e) {
+            if ($e->getTwirpCode() === TwirpErrorCode::NOT_FOUND) {
+                return null;
+            }
+
+            throw $e;
+        }
     }
 
     /**

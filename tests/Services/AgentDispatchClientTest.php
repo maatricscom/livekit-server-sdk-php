@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Services;
 
+use LiveKit\Exceptions\TwirpErrorCode;
+use LiveKit\Exceptions\TwirpException;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Proto\AgentDispatch;
 use LiveKit\Proto\CreateAgentDispatchRequest;
@@ -154,14 +156,42 @@ final class AgentDispatchClientTest extends TwirpTestCase
         self::assertSame('AD_1', $sent->getDispatchId());
     }
 
-    public function testGetDispatchReturnsNullWhenTheRoomHasNoSuchDispatch(): void
+    public function testGetDispatchReturnsNullWhenTheServerAnswersWithAnEmptyList(): void
     {
-        // An unknown id is not an error on this rpc: the server answers with an
-        // empty list. Returning null is what makes that answerable with `??`
-        // rather than by checking an array the caller did not ask for.
+        // The mock server answers an id that matches nothing this way. Returning
+        // null is what makes that answerable with `??` rather than by checking an
+        // array the caller did not ask for.
         $this->http->pushResponse($this->protoResponse(new ListAgentDispatchResponse()));
 
         self::assertNull($this->dispatchClient()->getDispatch('AD_missing', 'my-room'));
+    }
+
+    public function testGetDispatchReturnsNullWhenTheServerAnswersNotFound(): void
+    {
+        // What a real deployment actually does -- measured against LiveKit Cloud,
+        // which answers "agent dispatch not found" rather than with an empty list.
+        // Without this branch the null in the signature is unreachable in
+        // production and every caller who wrote `?? default` gets an exception.
+        $this->http->pushResponse(
+            $this->errorResponse(404, TwirpErrorCode::NOT_FOUND, 'agent dispatch not found')
+        );
+
+        self::assertNull($this->dispatchClient()->getDispatch('AD_missing', 'my-room'));
+    }
+
+    public function testGetDispatchStillThrowsOnAnErrorThatIsNotNotFound(): void
+    {
+        // The catch is narrow on purpose: "no such dispatch" is a legitimate
+        // answer, a rejected token is not. Swallowing this one would turn a
+        // misconfigured key into a silent empty result.
+        $this->http->pushResponse(
+            $this->errorResponse(403, TwirpErrorCode::PERMISSION_DENIED, 'invalid token')
+        );
+
+        $this->expectException(TwirpException::class);
+        $this->expectExceptionMessage('invalid token');
+
+        $this->dispatchClient()->getDispatch('AD_1', 'my-room');
     }
 
     public function testGetDispatchTakesTheFirstWhenTheServerReturnsMoreThanOne(): void

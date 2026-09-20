@@ -17,7 +17,12 @@ interface AgentDispatchClientInterface
 
     public function deleteDispatch(string $dispatchId, string $room): AgentDispatch;
 
-    /** Fetches one dispatch, or null when the room has no dispatch with that id. */
+    /**
+     * Fetches one dispatch, or null when the room has no dispatch with that id.
+     *
+     * Null covers both ways a deployment reports that: an empty list, and a
+     * not_found error. Any other failure throws.
+     */
     public function getDispatch(string $dispatchId, string $room): ?AgentDispatch;
 
     /**

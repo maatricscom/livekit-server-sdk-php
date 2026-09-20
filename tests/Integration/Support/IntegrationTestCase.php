@@ -142,4 +142,35 @@ abstract class IntegrationTestCase extends TestCase
             throw $e;
         }
     }
+
+    /**
+     * Asserts that a list rpc filtered by the id of a just-deleted object reports
+     * that the object is gone.
+     *
+     * Deployments answer a filter that matches nothing in two different ways, and
+     * both were measured against a live server rather than assumed: LiveKit Cloud
+     * raises not_found for listIngress and listEgress but returns an empty list
+     * for listRooms, while the mock server returns an empty list throughout. Both
+     * answers mean the same thing, so this asserts the meaning instead of picking
+     * one deployment's dialect and making the suite red on the other.
+     *
+     * This stays strict where it matters: an object that survived its delete comes
+     * back in the list, which is neither outcome and still fails.
+     *
+     * @param callable(): array<mixed> $lookup
+     */
+    protected function assertGoneAfterDelete(callable $lookup, string $describe): void
+    {
+        try {
+            self::assertSame([], $lookup(), sprintf('%s is still listed after its delete', $describe));
+        } catch (TwirpException $e) {
+            if ($e->getTwirpCode() !== TwirpErrorCode::NOT_FOUND) {
+                throw $e;
+            }
+
+            // not_found is the other way "gone" is spelled, so this counts as the
+            // assertion having been met rather than as a test with none.
+            self::addToAssertionCount(1);
+        }
+    }
 }
