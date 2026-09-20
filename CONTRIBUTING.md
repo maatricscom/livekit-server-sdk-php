@@ -22,8 +22,16 @@ costs nobody anything. It also means the dev tooling can be pinned to one major 
 
 Root layout follows [`pds/skeleton`](https://github.com/php-pds/skeleton): `src/`, `tests/`, `bin/` and
 `docs/` are its standard names, and `CHANGELOG`, `CONTRIBUTING`, `LICENSE` and `README` its standard
-files. `examples/`, `metadata/` and `NOTICE` are outside that publication, which permits root-level
-directories and files it does not describe.
+files. `examples/`, `metadata/`, `NOTICE` and `SECURITY.md` are outside that publication, which permits
+root-level directories and files it does not describe.
+
+`docs/` holds one tracked document, `design.md`: the design spec, which records why the package is shaped
+the way it is and is kept current with the code rather than left as a dated snapshot. Anything else under
+`docs/` is a local working directory and gitignored.
+
+`CLAUDE.md` and `.claude/skills/` are for whoever works here with Claude Code — orientation in the first,
+and the three procedures that fail expensively in the second. Neither ships: `.gitattributes` keeps them
+out of the tarball alongside this file.
 
 Inside `tests/`, a test for a class in `src/` mirrors its path: `src/Grants/VideoGrant.php` is tested by
 `tests/Grants/VideoGrantTest.php`. Tests with no single class behind them — the README examples, the
@@ -265,13 +273,19 @@ It runs against someone's real project, which constrains what it may do:
 
 You can point this suite at `livekit/test-server` instead of a real project, and it is worth doing once
 after changing it — not as a pass, but to catch mistakes in the test code before spending a real
-deployment on them. Seven of the sixteen will fail, and all seven are the mock rather than the SDK:
+deployment on them. **Expect most of them to fail, and expect none of those failures to be the SDK.** No
+count is given here on purpose: it moved from seven-of-sixteen to most-of-sixty while nobody was looking,
+and a number in this paragraph rots the moment a test is added. The reasons do not:
 
 - the mock echoes same-named **scalar** fields, so nothing survives a repeated message. `listRooms()` and
   `listIngress()` come back as a canned entry with an empty name, and `createDispatch()` returns an empty
   id because `dispatch_id` is not a field of the request to echo.
 - it keeps no state, so a room it just created is not a room it knows about, and a room that never
-  existed is not one it will refuse.
+  existed is not one it will refuse. Every assertion that something is *gone* fails here, and
+  `ServiceMethodSweepIntegrationTest` fails almost entirely, because its whole design is to ask a real
+  deployment about objects that do not exist.
+- it enforces no permission table and implements none of LiveKit's own validation gates, so the token
+  tests and the connector tests — which turn on exactly those — cannot pass against it.
 
 What that run does prove is the part the mock-server suite cannot: it is the only place the credentials
 come from `LIVEKIT_URL`/`LIVEKIT_API_KEY`/`LIVEKIT_API_SECRET` and the HTTP client comes from
@@ -281,10 +295,12 @@ injects its own client, so that path is otherwise never exercised.
 Do not adjust these tests to pass against the mock. They exist to fail when a real deployment disagrees
 with the model, and the mock is the model.
 
-Also out of reach here, for a reason no amount of care fixes: `updateParticipant`, `mutePublishedTrack`,
-`removeParticipant`, `updateSubscriptions`, `forwardParticipant`, `moveParticipant` and `performRpc` all
-need a participant connected over WebRTC, which a server SDK cannot produce. The mock server answers
-them; a real deployment can only be asked once a client has joined.
+One limit no amount of care fixes: `updateParticipant`, `mutePublishedTrack`, `removeParticipant`,
+`updateSubscriptions`, `forwardParticipant`, `moveParticipant` and `performRpc` all act on a participant
+connected over WebRTC, which a server SDK cannot produce. They are not untested — `ServiceMethodSweepIntegrationTest`
+drives every one of them against a real deployment and asserts the code it answers with, which proves the
+route, the encoding and the grant. What cannot be proved without a client in the room is what they do when
+the participant is actually there.
 
 ### Running against `ext-protobuf`
 
