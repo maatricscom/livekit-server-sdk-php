@@ -8,16 +8,20 @@ is a fix for them to move to.
 
 Report it privately through GitHub instead, from the **Security** tab of this
 repository — *Report a vulnerability*. That opens a draft advisory only the
-maintainers can see, and it is the preferred route because the discussion, the
-fix and the published advisory all stay attached to one another.
+maintainers can see, and it is the only private channel this project has: the
+discussion, the fix and the published advisory all stay attached to one another.
 
-If you cannot use that, email **security@maatrics.com**.
+It needs a GitHub account. If you have none and cannot create one, open an
+ordinary issue saying that you have a security report and nothing else — no
+version, no reproduction, no hint at which part is affected — and we will reply
+there with a private way to reach us. An issue that describes the problem is the
+public disclosure this section exists to prevent.
 
 Please include enough to reproduce it: the package version, the PHP version, the
 protobuf runtime (the pure-PHP one or `ext-protobuf`), the `livekit/protocol` tag
 the package was generated against — `LiveKit\ProtocolVersion::TAG` reports it —
-and the smallest snippet that shows the problem. If you have a patch, attach it to the advisory rather
-than opening a pull request, for the same reason as above.
+and the smallest snippet that shows the problem. If you have a patch, attach it
+to the advisory rather than opening a pull request, for the same reason as above.
 
 You will get an acknowledgement within a few working days. We will tell you what
 we found, whether we agree it is a vulnerability, and when a fix is likely. You
