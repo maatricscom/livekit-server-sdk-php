@@ -49,7 +49,7 @@ class Trailer extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitModels::initOnce();
+        \GPBMetadata\LiveKit\LivekitModels::initOnce();
         parent::__construct($data);
     }
 

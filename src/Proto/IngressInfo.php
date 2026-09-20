@@ -122,7 +122,7 @@ class IngressInfo extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitIngress::initOnce();
+        \GPBMetadata\LiveKit\LivekitIngress::initOnce();
         parent::__construct($data);
     }
 

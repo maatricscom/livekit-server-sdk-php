@@ -49,7 +49,7 @@ class MoveParticipantRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitRoom::initOnce();
+        \GPBMetadata\LiveKit\LivekitRoom::initOnce();
         parent::__construct($data);
     }
 

@@ -107,6 +107,12 @@ starting out now has no reason to carry a version that only receives security fi
 - A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
   unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
   under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
+- Protobuf descriptors are generated as `GPBMetadata\LiveKit\` into `metadata/`, not `LiveKit\Proto\Meta\`
+  into `src/Proto/Meta/`. `GPBMetadata` is where a PHP consumer of protobuf expects descriptors, and
+  claiming a prefix beneath it rather than the bare root is what keeps two packages from colliding there
+  — `google-cloud-php` registers 238 prefixes under `GPBMetadata` and not one of them is the bare root.
+  `src/Proto/` now holds only message classes. Two PSR-4 prefixes, one generated file count: 361 messages
+  plus 16 descriptors, the same 377 as before.
 - `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
   whole run has succeeded. It used to delete `src/Proto` before invoking protoc, so a protoc failure or
   a Ctrl-C left 377 committed files gone and the package unloadable.

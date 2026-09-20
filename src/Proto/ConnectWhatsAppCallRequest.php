@@ -51,7 +51,7 @@ class ConnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitConnectorWhatsapp::initOnce();
+        \GPBMetadata\LiveKit\LivekitConnectorWhatsapp::initOnce();
         parent::__construct($data);
     }
 

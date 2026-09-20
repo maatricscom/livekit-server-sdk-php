@@ -91,7 +91,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitConnectorTwilio::initOnce();
+        \GPBMetadata\LiveKit\LivekitConnectorTwilio::initOnce();
         parent::__construct($data);
     }
 

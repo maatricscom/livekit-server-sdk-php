@@ -194,7 +194,7 @@ jobs:
       - run: bin/check-protocol-version.sh
 
   forbidden-symbols:
-    name: No Internal RepeatedField anywhere in src
+    name: No Internal RepeatedField in any shipped code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -210,7 +210,7 @@ jobs:
       # regeneration done with an older protoc.
       - name: Reject the non-autoloadable RepeatedField alias
         run: |
-          if grep -rn 'Internal\\RepeatedField' src; then
+          if grep -rn 'Internal\\RepeatedField' src metadata; then
             echo "::error::Use \\Google\\Protobuf\\RepeatedField - the Internal alias is not autoloadable"
             exit 1
           fi

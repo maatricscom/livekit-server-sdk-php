@@ -111,7 +111,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitSip::initOnce();
+        \GPBMetadata\LiveKit\LivekitSip::initOnce();
         parent::__construct($data);
     }
 

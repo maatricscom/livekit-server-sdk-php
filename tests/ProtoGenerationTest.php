@@ -169,4 +169,23 @@ final class ProtoGenerationTest extends TestCase
             'Generated code must not squat the global Livekit\ namespace'
         );
     }
+
+    /**
+     * Descriptors live under GPBMetadata, which is where a PHP consumer of protobuf
+     * looks for them -- but under this package's own prefix. The bare GPBMetadata
+     * root is a global name two packages can both claim, and Composer settles that
+     * by merging their directories and using whichever it happens to list first.
+     * google-cloud-php registers 238 prefixes beneath GPBMetadata and not one of
+     * them is the bare root.
+     */
+    public function test_descriptors_live_under_this_package_s_gpbmetadata_prefix(): void
+    {
+        $descriptor = new \ReflectionClass(\GPBMetadata\LiveKit\LivekitRoom::class);
+
+        self::assertSame('GPBMetadata\LiveKit', $descriptor->getNamespaceName());
+        self::assertFalse(
+            class_exists('GPBMetadata\LivekitRoom', false),
+            'Descriptors must not be generated at the bare GPBMetadata root'
+        );
+    }
 }

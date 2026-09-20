@@ -41,7 +41,7 @@ class ListAgentDispatchRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitAgentDispatch::initOnce();
+        \GPBMetadata\LiveKit\LivekitAgentDispatch::initOnce();
         parent::__construct($data);
     }
 

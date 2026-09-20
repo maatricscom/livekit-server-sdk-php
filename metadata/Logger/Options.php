@@ -3,7 +3,7 @@
 # NO CHECKED-IN PROTOBUF GENCODE
 # source: logger/options.proto
 
-namespace LiveKit\Proto\Meta\Logger;
+namespace GPBMetadata\LiveKit\Logger;
 
 class Options
 {
@@ -16,7 +16,7 @@ class Options
           return;
         }
         $pool->internalAddGeneratedFile(
-            "\x0A\xA4\x02\x0A\x14logger/options.proto\x12\x06logger\x1A google/protobuf/descriptor.proto*W\x0A\x0BSensitivity\x12\x1B\x0A\x17SENSITIVITY_UNSPECIFIED\x10\x00\x12\x13\x0A\x0FSENSITIVITY_PII\x10\x01\x12\x16\x0A\x12SENSITIVITY_SECRET\x10\x02B\x80\x01Z*github.com/livekit/protocol/livekit/logger\xAA\x02\x0DLiveKit.Proto\xCA\x02\x14LiveKit\\Proto\\Logger\xE2\x02\x19LiveKit\\Proto\\Meta\\Logger\xEA\x02\x0ELiveKit::Protob\x06proto3"
+            "\x0A\xA5\x02\x0A\x14logger/options.proto\x12\x06logger\x1A google/protobuf/descriptor.proto*W\x0A\x0BSensitivity\x12\x1B\x0A\x17SENSITIVITY_UNSPECIFIED\x10\x00\x12\x13\x0A\x0FSENSITIVITY_PII\x10\x01\x12\x16\x0A\x12SENSITIVITY_SECRET\x10\x02B\x81\x01Z*github.com/livekit/protocol/livekit/logger\xAA\x02\x0DLiveKit.Proto\xCA\x02\x14LiveKit\\Proto\\Logger\xE2\x02\x1AGPBMetadata\\LiveKit\\Logger\xEA\x02\x0ELiveKit::Protob\x06proto3"
         , true);
 
         static::$is_initialized = true;

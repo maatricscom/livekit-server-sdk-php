@@ -41,7 +41,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitRtc::initOnce();
+        \GPBMetadata\LiveKit\LivekitRtc::initOnce();
         parent::__construct($data);
     }
 

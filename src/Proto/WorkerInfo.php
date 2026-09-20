@@ -55,7 +55,7 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitAgentWorker::initOnce();
+        \GPBMetadata\LiveKit\LivekitAgentWorker::initOnce();
         parent::__construct($data);
     }
 

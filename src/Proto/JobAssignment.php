@@ -40,7 +40,7 @@ class JobAssignment extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitAgent::initOnce();
+        \GPBMetadata\LiveKit\LivekitAgent::initOnce();
         parent::__construct($data);
     }
 

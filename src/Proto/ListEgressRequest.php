@@ -57,7 +57,7 @@ class ListEgressRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitEgress::initOnce();
+        \GPBMetadata\LiveKit\LivekitEgress::initOnce();
         parent::__construct($data);
     }
 

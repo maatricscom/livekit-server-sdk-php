@@ -564,7 +564,8 @@ maps over fairly directly.
 
 | | `agence104/livekit-server-sdk` | `maatrics/livekit-server-sdk-php` (this package) |
 |---|---|---|
-| Generated protobuf classes | Global `Livekit\` namespace | `LiveKit\Proto\` |
+| Generated protobuf classes | Global `Livekit\` namespace | `LiveKit\Proto\` (`src/Proto/`) |
+| Protobuf descriptors | Bare `GPBMetadata\` root | `GPBMetadata\LiveKit\` (`metadata/`) |
 | Service clients | `Agence104\LiveKit\RoomServiceClient`, etc. | `LiveKit\Services\RoomServiceClient`, etc. |
 | SIP support | Not present | `LiveKit\Services\SipClient` (all 16 RPCs) |
 | Agent dispatch | Not present | `LiveKit\Services\AgentDispatchClient` (all 3 RPCs) |
@@ -572,9 +573,12 @@ maps over fairly directly.
 | Webhooks | `Agence104\LiveKit\WebhookReceiver` | `LiveKit\WebhookReceiver` |
 
 `agence104/livekit-server-sdk` puts its generated protobuf classes in the **global** `Livekit\` namespace
-and its descriptor metadata in the equally global `GPBMetadata\`; this package uses `LiveKit\Proto\` and
-`LiveKit\Proto\Meta\`. No PHP class name is claimed by both, so Composer can autoload both packages at
-once and an incremental migration — call site by call site, rather than one atomic cutover — works.
+and its descriptor metadata at the **bare `GPBMetadata\` root**. This package uses `LiveKit\Proto\` for
+messages and `GPBMetadata\LiveKit\` for descriptors — the conventional root, but claimed under a prefix
+of its own rather than at the top of it, which is what `google-cloud-php` does across its 238 metadata
+prefixes and what stops two packages from claiming the same name. No PHP class name is claimed by both
+packages, so Composer can autoload them together and an incremental migration — call site by call site,
+rather than one atomic cutover — works.
 
 **On the pure-PHP protobuf runtime.** Both packages generate the same protobuf *messages*, and
 `livekit.SendDataRequest` is `livekit.SendDataRequest` in either one, whatever the PHP class is called.

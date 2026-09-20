@@ -77,7 +77,7 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitTokenSource::initOnce();
+        \GPBMetadata\LiveKit\LivekitTokenSource::initOnce();
         parent::__construct($data);
     }
 

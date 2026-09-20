@@ -112,7 +112,7 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      */
     public function __construct($data = null)
     {
-        \LiveKit\Proto\Meta\LivekitWebhook::initOnce();
+        \GPBMetadata\LiveKit\LivekitWebhook::initOnce();
         parent::__construct($data);
     }
 
