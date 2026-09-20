@@ -127,6 +127,13 @@ final class AccessToken
     public function toJwt(): string
     {
         $grantClaims = $this->grants->toArray();
+
+        // ClaimGrants::toArray() mirrors Go's ClaimGrants struct faithfully, which
+        // includes a redundant `identity` field alongside the registered `sub` claim
+        // set below. The server takes identity from `sub` (see verifier.go), so this
+        // SDK deliberately does not send the duplicate.
+        unset($grantClaims['identity']);
+
         $video = $this->grants->getVideo();
         $identity = $this->grants->getIdentity();
 
@@ -160,29 +167,34 @@ final class AccessToken
     public static function parseTtl(int|string $ttl): int
     {
         if (is_int($ttl)) {
-            if ($ttl <= 0) {
-                throw new ConfigurationException('Token TTL must be a positive number of seconds.');
+            $seconds = $ttl;
+        } else {
+            if (preg_match('/^(\d+)([smhd])$/', trim($ttl), $matches) !== 1) {
+                throw new ConfigurationException(sprintf(
+                    'Could not parse the token TTL "%s". Use seconds as an integer, '
+                    . 'or a duration string such as "45s", "10m", "6h" or "2d".',
+                    $ttl
+                ));
             }
 
-            return $ttl;
+            $value = (int) $matches[1];
+
+            $seconds = match ($matches[2]) {
+                's' => $value,
+                'm' => $value * 60,
+                'h' => $value * 3600,
+                'd' => $value * 86400,
+            };
         }
 
-        if (preg_match('/^(\d+)([smhd])$/', trim($ttl), $matches) !== 1) {
-            throw new ConfigurationException(sprintf(
-                'Could not parse the token TTL "%s". Use seconds as an integer, '
-                . 'or a duration string such as "45s", "10m", "6h" or "2d".',
-                $ttl
-            ));
+        // A duration string parses to a well-formed integer even at zero (e.g. "0s",
+        // "0h"), which would otherwise mint a token with exp == nbf: instantly
+        // expired, with no error raised anywhere. Both input forms share this check.
+        if ($seconds <= 0) {
+            throw new ConfigurationException('Token TTL must be a positive number of seconds.');
         }
 
-        $value = (int) $matches[1];
-
-        return match ($matches[2]) {
-            's' => $value,
-            'm' => $value * 60,
-            'h' => $value * 3600,
-            'd' => $value * 86400,
-        };
+        return $seconds;
     }
 
     /**

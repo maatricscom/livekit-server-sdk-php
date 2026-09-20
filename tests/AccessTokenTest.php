@@ -102,6 +102,30 @@ final class AccessTokenTest extends TestCase
         AccessToken::parseTtl('a fortnight');
     }
 
+    /**
+     * A zero-second TTL mints exp == nbf: an instantly expired token, with no error
+     * raised anywhere else. Both the int and string-duration forms must reject it.
+     *
+     * @return array<string, array{int|string}>
+     */
+    public static function nonPositiveTtlProvider(): array
+    {
+        return [
+            'zero as int' => [0],
+            'zero seconds suffix' => ['0s'],
+            'zero hours suffix' => ['0h'],
+            'negative as int' => [-5],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('nonPositiveTtlProvider')]
+    public function test_rejects_a_non_positive_ttl(int|string $ttl): void
+    {
+        $this->expectException(ConfigurationException::class);
+
+        AccessToken::parseTtl($ttl);
+    }
+
     public function test_carries_sip_grants_alongside_video_grants(): void
     {
         $token = new AccessToken(self::API_KEY, self::API_SECRET);
@@ -155,9 +179,14 @@ final class AccessTokenTest extends TestCase
         putenv('LIVEKIT_API_KEY');
         putenv('LIVEKIT_API_SECRET');
 
-        $this->expectException(ConfigurationException::class);
+        try {
+            $this->expectException(ConfigurationException::class);
 
-        new AccessToken();
+            new AccessToken();
+        } finally {
+            putenv('LIVEKIT_API_KEY');
+            putenv('LIVEKIT_API_SECRET');
+        }
     }
 
     /**
@@ -202,49 +231,56 @@ final class AccessTokenTest extends TestCase
     }
 
     /**
-     * Asserts the LiveKit-specific claims match what the Go implementation emits
-     * for the same inputs. Registered claims that depend on wall-clock time
-     * (iat, nbf, exp) are compared as a duration, not as absolute values.
+     * Go-minted reference tokens, paired with the inputs that produced them in
+     * bin/generate-jwt-fixtures.go. The point is to compare THIS SDK's output
+     * against the implementation the LiveKit server actually runs — so each case
+     * must build a PHP token, not merely re-read the fixture. Inputs here must
+     * mirror the Go generator exactly (same key, secret, identity, name, TTL and
+     * grants per case), or the comparison proves nothing.
      *
-     * @return array<string, array{string, array<string, mixed>}>
+     * @return array<string, array{string, \Closure(): AccessToken}>
      */
     public static function goldenProvider(): array
     {
+        $key = 'devkey';
+        $secret = 'secret-that-is-long-enough-for-hs256';
+
         return [
-            'join_room' => ['join_room', [
-                'iss' => 'devkey',
-                'sub' => 'alice',
-                'name' => 'Alice',
-                'video' => ['roomJoin' => true, 'room' => 'my-room'],
-            ]],
-            'publish_denied' => ['publish_denied', [
-                'iss' => 'devkey',
-                'sub' => 'bob',
-                'video' => ['roomJoin' => true, 'room' => 'my-room', 'canPublish' => false],
-            ]],
-            'room_admin' => ['room_admin', [
-                'iss' => 'devkey',
-                'video' => ['roomAdmin' => true, 'room' => 'my-room'],
-            ]],
-            // `video` was set explicitly (SetVideoGrant(&auth.VideoGrant{})) but carries
-            // no permissions. Go's `json:"video,omitempty"` is on a *pointer*, which
-            // tests nil rather than emptiness, so the key stays present as `{}` (decoded
-            // here as `[]`, since json_decode(..., true) does not distinguish an empty
-            // JSON object from an empty JSON array). A key that went missing here would
-            // mean this SDK regressed to omitting an explicitly-set-but-empty grant.
-            'sip_call' => ['sip_call', [
-                'iss' => 'devkey',
-                'video' => [],
-                'sip' => ['call' => true],
-            ]],
+            'join_room' => ['join_room', static function () use ($key, $secret): AccessToken {
+                $token = new AccessToken($key, $secret, new AccessTokenOptions(
+                    identity: 'alice',
+                    name: 'Alice',
+                    ttl: 21600,
+                ));
+
+                return $token->addGrant(new VideoGrant(roomJoin: true, room: 'my-room'));
+            }],
+            'publish_denied' => ['publish_denied', static function () use ($key, $secret): AccessToken {
+                $token = new AccessToken($key, $secret, new AccessTokenOptions(
+                    identity: 'bob',
+                    ttl: 3600,
+                ));
+
+                return $token->addGrant(new VideoGrant(roomJoin: true, room: 'my-room', canPublish: false));
+            }],
+            'room_admin' => ['room_admin', static function () use ($key, $secret): AccessToken {
+                $token = new AccessToken($key, $secret, new AccessTokenOptions(ttl: 600));
+
+                return $token->addGrant(new VideoGrant(roomAdmin: true, room: 'my-room'));
+            }],
+            'sip_call' => ['sip_call', static function () use ($key, $secret): AccessToken {
+                $token = new AccessToken($key, $secret, new AccessTokenOptions(ttl: 600));
+
+                return $token->addGrant(new VideoGrant())->addSipGrant(new SIPGrant(call: true));
+            }],
         ];
     }
 
     /**
-     * @param array<string, mixed> $expected
+     * @param \Closure(): AccessToken $build
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('goldenProvider')]
-    public function test_matches_the_go_implementation(string $fixture, array $expected): void
+    public function test_matches_the_go_implementation(string $fixture, \Closure $build): void
     {
         $tokens = json_decode(
             (string) file_get_contents(__DIR__ . '/Fixtures/go-tokens.json'),
@@ -257,18 +293,55 @@ final class AccessTokenTest extends TestCase
         /** @var array<string, string> $tokens */
         self::assertArrayHasKey($fixture, $tokens, 'Regenerate with bin/generate-jwt-fixtures.go');
 
-        $claims = $this->decodeJwtPayload($tokens[$fixture]);
+        $goClaims = $this->decodeJwtPayload($tokens[$fixture]);
+        $phpJwt = $build()->toJwt();
+        $phpClaims = $this->decodeJwtPayload($phpJwt);
 
-        foreach ($expected as $key => $value) {
-            self::assertArrayHasKey($key, $claims, sprintf('Go token is missing "%s"', $key));
-            self::assertSame($value, $claims[$key], sprintf('claim "%s" differs from Go', $key));
+        // Timestamps differ by when each was minted; compare the lifetime instead.
+        $goExp = $goClaims['exp'];
+        $goNbf = $goClaims['nbf'];
+        $phpExp = $phpClaims['exp'];
+        $phpNbf = $phpClaims['nbf'];
+        self::assertIsInt($goExp);
+        self::assertIsInt($goNbf);
+        self::assertIsInt($phpExp);
+        self::assertIsInt($phpNbf);
+
+        /**
+         * @var int $goExp
+         * @var int $goNbf
+         * @var int $phpExp
+         * @var int $phpNbf
+         */
+        self::assertSame(
+            $goExp - $goNbf,
+            $phpExp - $phpNbf,
+            'token lifetime differs from Go'
+        );
+
+        foreach (['iat', 'nbf', 'exp'] as $timestamp) {
+            unset($goClaims[$timestamp], $phpClaims[$timestamp]);
         }
 
-        // The claim set itself must not be wider than what this SDK knows how to mint.
-        $known = ['iss', 'sub', 'iat', 'nbf', 'exp', 'name', 'kind', 'kindDetails', 'video', 'sip',
-            'agent', 'inference', 'observability', 'metadata', 'attributes', 'sha256', 'roomPreset',
-            'roomConfig', 'identity'];
+        // Go also emits a redundant `identity` claim; the server overwrites it from
+        // `sub` in verifier.go, so this SDK deliberately does not. Drop it before
+        // comparing, and assert its absence separately so the choice stays visible.
+        self::assertArrayNotHasKey('identity', $phpClaims);
+        unset($goClaims['identity']);
 
-        self::assertSame([], array_diff(array_keys($claims), $known), 'Go emits a claim this SDK does not model');
+        self::assertEquals($goClaims, $phpClaims, sprintf('claims differ from Go for "%s"', $fixture));
+
+        if ($fixture === 'sip_call') {
+            // decodeJwtPayload() round-trips through json_decode(..., true), which
+            // cannot distinguish an empty JSON object from an empty JSON array, so the
+            // assertEquals() above alone would not catch a regression back to omitting
+            // an explicitly-set-but-empty grant. Assert the raw encoded bytes too, so
+            // the stdClass-vs-[] distinction stays covered at the token level, not just
+            // inside ClaimGrantsTest.
+            $payload = explode('.', $phpJwt)[1];
+            $json = base64_decode(strtr($payload, '-_', '+/'), true);
+            self::assertIsString($json);
+            self::assertStringContainsString('"video":{}', $json);
+        }
     }
 }
