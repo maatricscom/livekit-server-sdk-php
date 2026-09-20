@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\CreateIngressOptions;
+use LiveKit\Options\ListIngressOptions;
 use LiveKit\Options\UpdateIngressOptions;
 use LiveKit\Proto\CreateIngressRequest;
 use LiveKit\Proto\IngressAudioEncodingPreset;
 use LiveKit\Proto\IngressAudioOptions;
 use LiveKit\Proto\IngressInfo;
 use LiveKit\Proto\IngressInput;
+use LiveKit\Proto\ListIngressRequest;
+use LiveKit\Proto\ListIngressResponse;
 use LiveKit\Proto\UpdateIngressRequest;
 use LiveKit\Services\IngressClient;
 use LiveKit\Tests\Support\TwirpTestCase;
@@ -149,6 +152,75 @@ final class IngressClientTest extends TwirpTestCase
         self::assertFalse($sent->hasEnableTranscoding());
         self::assertFalse($sent->hasEnabled());
         self::assertSame('', $sent->getRoomName());
+
+        $this->assertVideoGrant(['ingressAdmin' => true], $request);
+    }
+
+    public function testListIngressUnwrapsItems(): void
+    {
+        $first = new IngressInfo();
+        $first->setIngressId('IN_1');
+        $second = new IngressInfo();
+        $second->setIngressId('IN_2');
+
+        $listResponse = new ListIngressResponse();
+        $listResponse->setItems([$first, $second]);
+
+        $this->http->pushResponse($this->protoResponse($listResponse));
+
+        $client = new IngressClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $items = $client->listIngress(new ListIngressOptions(
+            roomName: 'my-room',
+            ingressId: 'IN_1',
+            pageToken: 'page-2',
+        ));
+
+        self::assertCount(2, $items);
+        self::assertContainsOnlyInstancesOf(IngressInfo::class, $items);
+        self::assertSame('IN_1', $items[0]->getIngressId());
+        self::assertSame('IN_2', $items[1]->getIngressId());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'Ingress', 'ListIngress');
+
+        $sent = $this->decodeRequest(ListIngressRequest::class);
+        self::assertSame('my-room', $sent->getRoomName());
+        self::assertSame('IN_1', $sent->getIngressId());
+        self::assertNotNull($sent->getPageToken());
+        self::assertSame('page-2', $sent->getPageToken()->getToken());
+
+        $this->assertVideoGrant(['ingressAdmin' => true], $request);
+    }
+
+    public function testListIngressWithoutOptionsSendsEmptyRequest(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new ListIngressResponse()));
+
+        $client = new IngressClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $items = $client->listIngress();
+
+        self::assertSame([], $items);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'Ingress', 'ListIngress');
+        self::assertSame('', $this->http->lastBody());
+
+        $sent = $this->decodeRequest(ListIngressRequest::class);
+        self::assertSame('', $sent->getRoomName());
+        self::assertSame('', $sent->getIngressId());
+        self::assertNull($sent->getPageToken());
 
         $this->assertVideoGrant(['ingressAdmin' => true], $request);
     }

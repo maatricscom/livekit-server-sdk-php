@@ -6,9 +6,13 @@ namespace LiveKit\Services;
 
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateIngressOptions;
+use LiveKit\Options\ListIngressOptions;
 use LiveKit\Options\UpdateIngressOptions;
 use LiveKit\Proto\CreateIngressRequest;
 use LiveKit\Proto\IngressInfo;
+use LiveKit\Proto\ListIngressRequest;
+use LiveKit\Proto\ListIngressResponse;
+use LiveKit\Proto\TokenPagination;
 use LiveKit\Proto\UpdateIngressRequest;
 
 final class IngressClient extends ServiceBase
@@ -117,5 +121,47 @@ final class IngressClient extends ServiceBase
             IngressInfo::class,
             $this->authHeader(new VideoGrant(ingressAdmin: true)),
         );
+    }
+
+    /** @return list<IngressInfo> */
+    public function listIngress(?ListIngressOptions $options = null): array
+    {
+        $request = new ListIngressRequest();
+
+        if ($options !== null) {
+            if ($options->roomName !== null) {
+                $request->setRoomName($options->roomName);
+            }
+
+            if ($options->ingressId !== null) {
+                $request->setIngressId($options->ingressId);
+            }
+
+            if ($options->pageToken !== null) {
+                $pagination = new TokenPagination();
+                $pagination->setToken($options->pageToken);
+                $request->setPageToken($pagination);
+            }
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListIngress',
+            $request,
+            ListIngressResponse::class,
+            $this->authHeader(new VideoGrant(ingressAdmin: true)),
+        );
+
+        /** @var list<IngressInfo> $items */
+        $items = [];
+
+        foreach ($response->getItems() as $item) {
+            // RepeatedField's iterator carries no generic value type, so this
+            // yields mixed — unlike the rpc() return, which the analyser infers.
+            assert($item instanceof IngressInfo);
+            $items[] = $item;
+        }
+
+        return $items;
     }
 }
