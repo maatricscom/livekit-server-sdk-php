@@ -36,10 +36,8 @@ use LiveKit\Proto\WebhookConfig;
 
 /**
  * Client for the livekit.Egress Twirp service. Every rpc authenticates with roomRecord.
- *
- * The `implements EgressClientInterface` clause is added in Step 54, after all ten methods exist.
  */
-final class EgressClient extends ServiceBase
+final class EgressClient extends ServiceBase implements EgressClientInterface
 {
     private const SERVICE = 'Egress';
 
