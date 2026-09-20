@@ -28,26 +28,30 @@ No official PHP SDK exists upstream; LiveKit's own ecosystem page points to a co
 
 - PHP 8.4 or later
 - A [PSR-18](https://www.php-fig.org/psr/psr-18/) HTTP client implementation and matching
-  [PSR-17](https://www.php-fig.org/psr/psr-17/) factories. This package does not bundle one — it discovers
-  whatever is installed via [`php-http/discovery`](https://github.com/php-http/discovery), or accepts one
-  you construct yourself.
+  [PSR-17](https://www.php-fig.org/psr/psr-17/) factories. This package does not bundle one. It names them as
+  virtual requirements instead, so Composer supplies one when your project has none and leaves the one you
+  already have alone.
 - Optionally, [`ext-protobuf`](https://pecl.php.net/package/protobuf) — see below. Without it the pure-PHP
   protobuf runtime that ships with `google/protobuf` is used, which is the supported default.
 
-Pick one when installing:
+```bash
+composer require maatrics/livekit-server-sdk-php
+```
+
+That is the whole install. A project that already has a PSR-18 client keeps it — Laravel ships
+`guzzlehttp/guzzle`, Symfony ships `symfony/http-client`, and either is used as it stands. A project with
+none is asked to allow the [`php-http/discovery`](https://github.com/php-http/discovery) plugin, which then
+installs `symfony/http-client` and `nyholm/psr7`.
+
+To pick the client yourself rather than take that default, name it and it is used instead:
 
 ```bash
 composer require maatrics/livekit-server-sdk-php guzzlehttp/guzzle
 ```
 
-```bash
-composer require maatrics/livekit-server-sdk-php symfony/http-client nyholm/psr7
-```
-
-If your application is already built on Laravel or Symfony, you can stop there and skip the second
-argument entirely — both frameworks ship a PSR-18 client (Laravel via `guzzlehttp/guzzle` in its default
-`composer.json`, Symfony via `symfony/http-client`) and discovery will find it automatically. Only install
-one of the lines above when starting from a bare PHP project.
+Declining the plugin is the one case worth knowing about. The install still succeeds, because
+`php-http/discovery` satisfies the requirement on paper, but nothing is left that can send a request and the
+first call raises `Http\Discovery\Exception\NotFoundException`. Installing any client clears it.
 
 ### The protobuf C extension
 

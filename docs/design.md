@@ -434,7 +434,8 @@ $rooms->deleteRoom('my-room');
 | `google/protobuf` | `^5.36` | the version this package is generated against and tested on. protoc 36's getters for `optional` int64 fields call `GPBUtil::compatibleInt64()`, which no 4.x runtime has |
 | `firebase/php-jwt` | `^7.1` | zero runtime dependencies, no ext-sodium; `lcobucci/jwt` pins exact PHP minors |
 | `psr/http-client`, `psr/http-factory`, `psr/http-message` | `^1.0.3`, `^1.1`, `^2.0` | transport interfaces |
-| `php-http/discovery` | `^1.20` | optional client resolution |
+| `psr/http-client-implementation`, `psr/http-factory-implementation` | `^1.0` | virtual: something real has to be behind the interfaces above. `php-http/discovery` satisfies them nominally, so they do not fail an install on their own — what they do is arm its Composer plugin |
+| `php-http/discovery` | `^1.20` | finds the client at run time, and at install time its plugin supplies one when the project has none. Declining the plugin leaves the install green and the first call raising `NotFoundException` |
 No UUID package is required. `X-Livekit-Request-Id` needs a UUID v4 only as an opaque identifier, which is
 a few lines over `random_bytes(16)` — not worth a dependency in a library that other packages will install.
 
