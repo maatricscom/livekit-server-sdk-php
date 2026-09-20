@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SIPCallInfo</code>
@@ -152,7 +152,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      *     @type int|string $created_at
      *     @type int|string $started_at
      *     @type int|string $ended_at
-     *     @type array<int>|\Google\Protobuf\RepeatedField $enabled_features
+     *     @type int[] $enabled_features
      *     @type int $call_direction
      *     @type int $call_status
      *     @type int|string $created_at_ns
@@ -164,7 +164,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      *     @type string $audio_codec
      *     @type string $media_encryption
      *     @type string $pcap_file_link
-     *     @type array<\Google\Protobuf\Any>|\Google\Protobuf\RepeatedField $call_context
+     *     @type \Google\Protobuf\Any[] $call_context
      *     @type \LiveKit\Proto\ProviderInfo $provider_info
      *     @type string $sip_call_id
      * }
@@ -504,7 +504,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPFeature enabled_features = 14;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getEnabledFeatures()
     {
@@ -513,7 +513,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPFeature enabled_features = 14;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setEnabledFeatures($var)
@@ -778,7 +778,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .google.protobuf.Any call_context = 26;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\Google\Protobuf\Any>
      */
     public function getCallContext()
     {
@@ -787,7 +787,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .google.protobuf.Any call_context = 26;</code>
-     * @param array<\Google\Protobuf\Any>|\Google\Protobuf\RepeatedField $var
+     * @param \Google\Protobuf\Any[] $var
      * @return $this
      */
     public function setCallContext($var)

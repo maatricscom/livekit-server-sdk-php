@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SubscriptionPermission</code>
@@ -30,7 +30,7 @@ class SubscriptionPermission extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type bool $all_participants
-     *     @type array<\LiveKit\Proto\TrackPermission>|\Google\Protobuf\RepeatedField $track_permissions
+     *     @type \LiveKit\Proto\TrackPermission[] $track_permissions
      * }
      */
     public function __construct($data = NULL) {
@@ -62,7 +62,7 @@ class SubscriptionPermission extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackPermission track_permissions = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\TrackPermission>
      */
     public function getTrackPermissions()
     {
@@ -71,7 +71,7 @@ class SubscriptionPermission extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackPermission track_permissions = 2;</code>
-     * @param array<\LiveKit\Proto\TrackPermission>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\TrackPermission[] $var
      * @return $this
      */
     public function setTrackPermissions($var)

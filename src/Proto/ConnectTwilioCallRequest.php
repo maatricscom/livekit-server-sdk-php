@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ConnectTwilioCallRequest</code>
@@ -74,7 +74,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      *           The Direction of the call
      *     @type string $room_name
      *           What LiveKit room should this call be connected to
-     *     @type array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $agents
+     *     @type \LiveKit\Proto\RoomAgentDispatch[] $agents
      *           Optional agents to dispatch the call to
      *     @type string $participant_identity
      *           Optional identity of the participant in LiveKit room
@@ -150,7 +150,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * Optional agents to dispatch the call to
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\RoomAgentDispatch>
      */
     public function getAgents()
     {
@@ -161,7 +161,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * Optional agents to dispatch the call to
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 3;</code>
-     * @param array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
     public function setAgents($var)

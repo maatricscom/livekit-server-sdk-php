@@ -210,7 +210,6 @@ final class EgressClient extends ServiceBase implements EgressClientInterface
         $items = [];
 
         foreach ($response->getItems() as $item) {
-            assert($item instanceof EgressInfo);
             $items[] = $item;
         }
 

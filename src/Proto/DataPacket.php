@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * new DataPacket API
@@ -56,7 +56,7 @@ class DataPacket extends \Google\Protobuf\Internal\Message
      *     @type int $kind
      *     @type string $participant_identity
      *           participant identity of user that sent the message
-     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_identities
+     *     @type string[] $destination_identities
      *           identities of participants who will receive the message (sent to all by default)
      *     @type \LiveKit\Proto\UserPacket $user
      *     @type \LiveKit\Proto\ActiveSpeakerUpdate $speaker
@@ -140,7 +140,7 @@ class DataPacket extends \Google\Protobuf\Internal\Message
      * identities of participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_identities = 5;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getDestinationIdentities()
     {
@@ -151,7 +151,7 @@ class DataPacket extends \Google\Protobuf\Internal\Message
      * identities of participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_identities = 5;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setDestinationIdentities($var)

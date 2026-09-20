@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * details about the client
@@ -101,7 +101,7 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      *           e.g. "components-js:1.2.3,track-processors-js:1.2.3"
      *     @type int $client_protocol
      *           client protocol version
-     *     @type array<int>|\Google\Protobuf\RepeatedField $capabilities
+     *     @type int[] $capabilities
      *           capabilities the client advertises. Populated automatically by each SDK;
      *           not a user-configurable setting.
      * }
@@ -394,7 +394,7 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * not a user-configurable setting.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 13;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getCapabilities()
     {
@@ -406,7 +406,7 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * not a user-configurable setting.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 13;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setCapabilities($var)

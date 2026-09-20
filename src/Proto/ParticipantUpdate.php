@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ParticipantUpdate</code>
@@ -25,7 +25,7 @@ class ParticipantUpdate extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $participants
+     *     @type \LiveKit\Proto\ParticipantInfo[] $participants
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class ParticipantUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo participants = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ParticipantInfo>
      */
     public function getParticipants()
     {
@@ -44,7 +44,7 @@ class ParticipantUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo participants = 1;</code>
-     * @param array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ParticipantInfo[] $var
      * @return $this
      */
     public function setParticipants($var)

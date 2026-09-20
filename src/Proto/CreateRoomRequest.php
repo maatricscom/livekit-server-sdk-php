@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.CreateRoomRequest</code>
@@ -130,7 +130,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      *           so not recommended for rooms with frequent subscription changes
      *     @type bool $replay_enabled
      *           replay
-     *     @type array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $agents
+     *     @type \LiveKit\Proto\RoomAgentDispatch[] $agents
      *           Define agents that should be dispatched to this room
      * }
      */
@@ -489,7 +489,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * Define agents that should be dispatched to this room
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 14;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\RoomAgentDispatch>
      */
     public function getAgents()
     {
@@ -500,7 +500,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * Define agents that should be dispatched to this room
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 14;</code>
-     * @param array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
     public function setAgents($var)

@@ -28,7 +28,7 @@ if ((BASH_VERSINFO[0] < 4)); then
 fi
 
 PROTOCOL_VERSION="v1.52.0"
-MIN_PROTOC_VERSION="29.3"
+MIN_PROTOC_VERSION="33.1"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="${REPO_ROOT}/build/protos"
@@ -158,23 +158,6 @@ if [ -d "${OUT_DIR}/LiveKit/Proto" ]; then
     mv "${OUT_DIR}/LiveKit/Proto"/* "$OUT_DIR"/
     rm -rf "${OUT_DIR}/LiveKit"
 fi
-
-# protoc emits docblocks and `use` statements naming
-# \Google\Protobuf\Internal\RepeatedField, which the PHP runtime has not declared
-# since v4: the class moved to \Google\Protobuf\RepeatedField and the old name
-# survives only as a class_alias, created when that file loads. Nothing fatals,
-# because a `use` statement and a docblock never trigger autoloading -- but a
-# static analyser cannot see a runtime alias, so every downstream project that
-# runs PHPStan or Psalm over code touching one of these getters is told the class
-# is unknown, and loses the type with it.
-#
-# Rewritten to the canonical name, which exists in the lowest protobuf version
-# composer.json accepts (4.33.6). Only this one symbol moved: Internal\MapField,
-# Internal\Message, Internal\GPBType, Internal\GPBUtil and
-# Internal\DescriptorPool are all still declared where protoc says they are.
-echo "==> Rewriting Internal\\RepeatedField to its canonical name"
-find "$OUT_DIR" -name '*.php' -exec \
-    perl -pi -e 's/Google\\Protobuf\\Internal\\RepeatedField/Google\\Protobuf\\RepeatedField/g' {} +
 
 # Record which upstream revision this tree came from, as generated code so the
 # proto-drift job catches a version bump the same way it catches any other change.

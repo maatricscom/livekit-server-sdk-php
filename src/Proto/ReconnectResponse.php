@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ReconnectResponse</code>
@@ -39,7 +39,7 @@ class ReconnectResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\RepeatedField $ice_servers
+     *     @type \LiveKit\Proto\ICEServer[] $ice_servers
      *     @type \LiveKit\Proto\ClientConfiguration $client_configuration
      *     @type \LiveKit\Proto\ServerInfo $server_info
      *     @type int $last_message_seq
@@ -53,7 +53,7 @@ class ReconnectResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ICEServer ice_servers = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ICEServer>
      */
     public function getIceServers()
     {
@@ -62,7 +62,7 @@ class ReconnectResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ICEServer ice_servers = 1;</code>
-     * @param array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ICEServer[] $var
      * @return $this
      */
     public function setIceServers($var)

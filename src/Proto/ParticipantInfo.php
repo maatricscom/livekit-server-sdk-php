@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ParticipantInfo</code>
@@ -112,7 +112,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      *     @type string $sid
      *     @type string $identity
      *     @type int $state
-     *     @type array<\LiveKit\Proto\TrackInfo>|\Google\Protobuf\RepeatedField $tracks
+     *     @type \LiveKit\Proto\TrackInfo[] $tracks
      *     @type string $metadata
      *     @type int|string $joined_at
      *           timestamp when participant joined room, in seconds
@@ -128,11 +128,11 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      *     @type int $kind
      *     @type array|\Google\Protobuf\Internal\MapField $attributes
      *     @type int $disconnect_reason
-     *     @type array<int>|\Google\Protobuf\RepeatedField $kind_details
-     *     @type array<\LiveKit\Proto\DataTrackInfo>|\Google\Protobuf\RepeatedField $data_tracks
+     *     @type int[] $kind_details
+     *     @type \LiveKit\Proto\DataTrackInfo[] $data_tracks
      *     @type int $client_protocol
      *           protocol version used for client feature compatibility
-     *     @type array<int>|\Google\Protobuf\RepeatedField $capabilities
+     *     @type int[] $capabilities
      *           capabilities the participant's client advertises, mirrored from ClientInfo.
      *           Lets other participants perform client-side feature detection.
      * }
@@ -210,7 +210,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackInfo tracks = 4;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\TrackInfo>
      */
     public function getTracks()
     {
@@ -219,7 +219,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackInfo tracks = 4;</code>
-     * @param array<\LiveKit\Proto\TrackInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\TrackInfo[] $var
      * @return $this
      */
     public function setTracks($var)
@@ -498,7 +498,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo.KindDetail kind_details = 18;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getKindDetails()
     {
@@ -507,7 +507,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo.KindDetail kind_details = 18;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setKindDetails($var)
@@ -520,7 +520,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataTrackInfo data_tracks = 19;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\DataTrackInfo>
      */
     public function getDataTracks()
     {
@@ -529,7 +529,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataTrackInfo data_tracks = 19;</code>
-     * @param array<\LiveKit\Proto\DataTrackInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\DataTrackInfo[] $var
      * @return $this
      */
     public function setDataTracks($var)
@@ -571,7 +571,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * Lets other participants perform client-side feature detection.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 21;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getCapabilities()
     {
@@ -583,7 +583,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * Lets other participants perform client-side feature detection.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 21;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setCapabilities($var)

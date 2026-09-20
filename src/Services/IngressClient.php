@@ -160,9 +160,6 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
         $items = [];
 
         foreach ($response->getItems() as $item) {
-            // RepeatedField's iterator carries no generic value type, so this
-            // yields mixed — unlike the rpc() return, which the analyser infers.
-            assert($item instanceof IngressInfo);
             $items[] = $item;
         }
 

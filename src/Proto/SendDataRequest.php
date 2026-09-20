@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SendDataRequest</code>
@@ -59,9 +59,9 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      *     @type string $room
      *     @type string $data
      *     @type int $kind
-     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_sids
+     *     @type string[] $destination_sids
      *           mark deprecated
-     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_identities
+     *     @type string[] $destination_identities
      *           when set, only forward to these identities
      *     @type string $topic
      *     @type string $nonce
@@ -143,12 +143,12 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * mark deprecated
      *
      * Generated from protobuf field <code>repeated string destination_sids = 4 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      * @deprecated
      */
     public function getDestinationSids()
     {
-        if ($this->destination_sids->count() !== 0) {
+        if (count($this->destination_sids) !== 0) {
             @trigger_error('destination_sids is deprecated.', E_USER_DEPRECATED);
         }
         return $this->destination_sids;
@@ -158,14 +158,14 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * mark deprecated
      *
      * Generated from protobuf field <code>repeated string destination_sids = 4 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      * @deprecated
      */
     public function setDestinationSids($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('destination_sids is deprecated.', E_USER_DEPRECATED);
         }
         $this->destination_sids = $arr;
@@ -177,7 +177,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * when set, only forward to these identities
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getDestinationIdentities()
     {
@@ -188,7 +188,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * when set, only forward to these identities
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setDestinationIdentities($var)

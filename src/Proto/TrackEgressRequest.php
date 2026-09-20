@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.TrackEgressRequest</code>
@@ -38,7 +38,7 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type string $track_id
      *     @type \LiveKit\Proto\DirectFileOutput $file
      *     @type string $websocket_url
-     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $webhooks
+     *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
     public function __construct($data = NULL) {
@@ -146,7 +146,7 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 5;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\WebhookConfig>
      */
     public function getWebhooks()
     {
@@ -155,7 +155,7 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 5;</code>
-     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
     public function setWebhooks($var)

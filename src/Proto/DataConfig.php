@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.DataConfig</code>
@@ -30,7 +30,7 @@ class DataConfig extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type bool $capture_all
-     *     @type array<\LiveKit\Proto\DataSelector>|\Google\Protobuf\RepeatedField $selectors
+     *     @type \LiveKit\Proto\DataSelector[] $selectors
      * }
      */
     public function __construct($data = NULL) {
@@ -62,7 +62,7 @@ class DataConfig extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataSelector selectors = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\DataSelector>
      */
     public function getSelectors()
     {
@@ -71,7 +71,7 @@ class DataConfig extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataSelector selectors = 2;</code>
-     * @param array<\LiveKit\Proto\DataSelector>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\DataSelector[] $var
      * @return $this
      */
     public function setSelectors($var)

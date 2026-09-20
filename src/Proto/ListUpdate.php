@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * ListUpdate is used for updated APIs where 'repeated string' field is modified.
@@ -47,11 +47,11 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<string>|\Google\Protobuf\RepeatedField $set
+     *     @type string[] $set
      *           set the field to a new list
-     *     @type array<string>|\Google\Protobuf\RepeatedField $add
+     *     @type string[] $add
      *           append items to a list, avoiding duplicates
-     *     @type array<string>|\Google\Protobuf\RepeatedField $remove
+     *     @type string[] $remove
      *           delete items from a list
      *     @type bool $clear
      *           sets the list to an empty list
@@ -66,7 +66,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * set the field to a new list
      *
      * Generated from protobuf field <code>repeated string set = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getSet()
     {
@@ -77,7 +77,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * set the field to a new list
      *
      * Generated from protobuf field <code>repeated string set = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setSet($var)
@@ -92,7 +92,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * append items to a list, avoiding duplicates
      *
      * Generated from protobuf field <code>repeated string add = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getAdd()
     {
@@ -103,7 +103,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * append items to a list, avoiding duplicates
      *
      * Generated from protobuf field <code>repeated string add = 2;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setAdd($var)
@@ -118,7 +118,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * delete items from a list
      *
      * Generated from protobuf field <code>repeated string remove = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getRemove()
     {
@@ -129,7 +129,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * delete items from a list
      *
      * Generated from protobuf field <code>repeated string remove = 3;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setRemove($var)

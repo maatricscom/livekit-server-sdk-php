@@ -6,8 +6,8 @@
 namespace LiveKit\Proto\DataStream;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * header properties specific to byte or file streams

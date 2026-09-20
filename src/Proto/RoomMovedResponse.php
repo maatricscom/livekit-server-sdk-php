@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.RoomMovedResponse</code>
@@ -46,7 +46,7 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
      *     @type string $token
      *           new reconnect token that can be used to reconnect to the new room
      *     @type \LiveKit\Proto\ParticipantInfo $participant
-     *     @type array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $other_participants
+     *     @type \LiveKit\Proto\ParticipantInfo[] $other_participants
      * }
      */
     public function __construct($data = NULL) {
@@ -150,7 +150,7 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo other_participants = 4;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ParticipantInfo>
      */
     public function getOtherParticipants()
     {
@@ -159,7 +159,7 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo other_participants = 4;</code>
-     * @param array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ParticipantInfo[] $var
      * @return $this
      */
     public function setOtherParticipants($var)

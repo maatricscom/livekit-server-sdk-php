@@ -6,8 +6,8 @@
 namespace LiveKit\Proto\DataStream;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * main DataStream.Header that contains a oneof for specific headers

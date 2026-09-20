@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * @deprecated
@@ -26,7 +26,7 @@ class ListSIPTrunkResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\SIPTrunkInfo>|\Google\Protobuf\RepeatedField $items
+     *     @type \LiveKit\Proto\SIPTrunkInfo[] $items
      * }
      */
     public function __construct($data = NULL) {
@@ -36,7 +36,7 @@ class ListSIPTrunkResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPTrunkInfo items = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SIPTrunkInfo>
      */
     public function getItems()
     {
@@ -45,7 +45,7 @@ class ListSIPTrunkResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPTrunkInfo items = 1;</code>
-     * @param array<\LiveKit\Proto\SIPTrunkInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SIPTrunkInfo[] $var
      * @return $this
      */
     public function setItems($var)

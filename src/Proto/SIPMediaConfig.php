@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SIPMediaConfig</code>
@@ -45,7 +45,7 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      *
      *     @type bool $only_listed_codecs
      *           if set, ignore the default codecs and use the list below.
-     *     @type array<\LiveKit\Proto\SIPCodec>|\Google\Protobuf\RepeatedField $codecs
+     *     @type \LiveKit\Proto\SIPCodec[] $codecs
      *           List of allowed codecs. If only_listed_codecs is not set, this list is added to default codecs.
      *     @type int $encryption
      *     @type \Google\Protobuf\Duration $media_timeout
@@ -87,7 +87,7 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      * List of allowed codecs. If only_listed_codecs is not set, this list is added to default codecs.
      *
      * Generated from protobuf field <code>repeated .livekit.SIPCodec codecs = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SIPCodec>
      */
     public function getCodecs()
     {
@@ -98,7 +98,7 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      * List of allowed codecs. If only_listed_codecs is not set, this list is added to default codecs.
      *
      * Generated from protobuf field <code>repeated .livekit.SIPCodec codecs = 2;</code>
-     * @param array<\LiveKit\Proto\SIPCodec>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SIPCodec[] $var
      * @return $this
      */
     public function setCodecs($var)

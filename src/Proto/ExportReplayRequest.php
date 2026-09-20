@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ExportReplayRequest</code>
@@ -55,9 +55,9 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\MediaSource $media
      *     @type int $preset
      *     @type \LiveKit\Proto\EncodingOptions $advanced
-     *     @type array<\LiveKit\Proto\Output>|\Google\Protobuf\RepeatedField $outputs
+     *     @type \LiveKit\Proto\Output[] $outputs
      *     @type \LiveKit\Proto\StorageConfig $storage
-     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $webhooks
+     *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
     public function __construct($data = NULL) {
@@ -268,7 +268,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Output outputs = 9;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\Output>
      */
     public function getOutputs()
     {
@@ -277,7 +277,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Output outputs = 9;</code>
-     * @param array<\LiveKit\Proto\Output>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\Output[] $var
      * @return $this
      */
     public function setOutputs($var)
@@ -322,7 +322,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 11;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\WebhookConfig>
      */
     public function getWebhooks()
     {
@@ -331,7 +331,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 11;</code>
-     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
     public function setWebhooks($var)

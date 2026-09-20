@@ -136,8 +136,9 @@ To regenerate:
 bin/generate-protos.sh
 ```
 
-Requirements: `protoc >= 29.3` (the script checks the version and refuses to run on anything older —
-protoc's reserved-word list grows between releases and can silently rename a generated class), and bash
+Requirements: `protoc >= 33.1` (the script checks the version and refuses to run on anything older:
+33.1 is the first release whose PHP output names the canonical `RepeatedField` and gives it a generic
+element type), and bash
 `>= 4` (macOS ships bash 3.2 at `/bin/bash`; `brew install bash` gets you a current one). The script clones
 `livekit/protocol` at the pinned tag, computes the transitive import closure of the public Twirp-facing
 protos, injects PHP namespace options so the output lands under `LiveKit\Proto\` instead of the global
@@ -176,16 +177,11 @@ them alone for the same reason.
 CI's `forbidden-symbols` job rejects any use of `\Google\Protobuf\Internal\RepeatedField` anywhere in
 `src`, generated code included. That class survives only as a `class_alias`, created when
 `\Google\Protobuf\RepeatedField` loads, so PSR-4 cannot autoload it and no static analyser can see it.
+In hand-written code, referencing it fatals on a cold autoloader; in generated code it does not fatal,
+but it costs every downstream project the types on any repeated field it touches.
 
-In hand-written code, referencing it fatals on a cold autoloader. In generated code it does not — protoc
-puts it in `use` statements and docblocks, neither of which triggers autoloading — but it is worse in a
-different way: every downstream project running PHPStan or Psalm over code that touches one of those
-getters is told the class is unknown, and loses the type along with it. `bin/generate-protos.sh` therefore
-rewrites it to the canonical name, which exists in the lowest `google/protobuf` version composer.json
-accepts. Only that one symbol moved; `Internal\MapField`, `Internal\Message`, `Internal\GPBType`,
-`Internal\GPBUtil` and `Internal\DescriptorPool` are all still declared where protoc says they are.
-
-You can check locally with:
+protoc has emitted the canonical name since 33.1, which is why the generator requires that version.
+This job is what catches a regeneration done with something older.
 
 ```bash
 grep -rn 'Internal\\RepeatedField' src

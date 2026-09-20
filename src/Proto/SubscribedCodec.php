@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SubscribedCodec</code>
@@ -30,7 +30,7 @@ class SubscribedCodec extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $codec
-     *     @type array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\RepeatedField $qualities
+     *     @type \LiveKit\Proto\SubscribedQuality[] $qualities
      * }
      */
     public function __construct($data = NULL) {
@@ -62,7 +62,7 @@ class SubscribedCodec extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedQuality qualities = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SubscribedQuality>
      */
     public function getQualities()
     {
@@ -71,7 +71,7 @@ class SubscribedCodec extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedQuality qualities = 2;</code>
-     * @param array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SubscribedQuality[] $var
      * @return $this
      */
     public function setQualities($var)

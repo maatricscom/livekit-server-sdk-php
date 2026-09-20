@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ListRoomsRequest</code>
@@ -27,7 +27,7 @@ class ListRoomsRequest extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<string>|\Google\Protobuf\RepeatedField $names
+     *     @type string[] $names
      *           when set, will only return rooms with name match
      * }
      */
@@ -40,7 +40,7 @@ class ListRoomsRequest extends \Google\Protobuf\Internal\Message
      * when set, will only return rooms with name match
      *
      * Generated from protobuf field <code>repeated string names = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getNames()
     {
@@ -51,7 +51,7 @@ class ListRoomsRequest extends \Google\Protobuf\Internal\Message
      * when set, will only return rooms with name match
      *
      * Generated from protobuf field <code>repeated string names = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setNames($var)

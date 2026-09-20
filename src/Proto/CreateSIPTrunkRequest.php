@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * @deprecated
@@ -85,15 +85,15 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<string>|\Google\Protobuf\RepeatedField $inbound_addresses
+     *     @type string[] $inbound_addresses
      *           CIDR or IPs that traffic is accepted from
      *           An empty list means all inbound traffic is accepted.
      *     @type string $outbound_address
      *           IP that SIP INVITE is sent too
      *     @type string $outbound_number
      *           Number used to make outbound calls
-     *     @type array<string>|\Google\Protobuf\RepeatedField $inbound_numbers_regex
-     *     @type array<string>|\Google\Protobuf\RepeatedField $inbound_numbers
+     *     @type string[] $inbound_numbers_regex
+     *     @type string[] $inbound_numbers
      *           Accepted `To` values. This Trunk will only accept a call made to
      *           these numbers. This allows you to have distinct Trunks for different phone
      *           numbers at the same provider.
@@ -119,7 +119,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * An empty list means all inbound traffic is accepted.
      *
      * Generated from protobuf field <code>repeated string inbound_addresses = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getInboundAddresses()
     {
@@ -131,7 +131,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * An empty list means all inbound traffic is accepted.
      *
      * Generated from protobuf field <code>repeated string inbound_addresses = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setInboundAddresses($var)
@@ -196,12 +196,12 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string inbound_numbers_regex = 4 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      * @deprecated
      */
     public function getInboundNumbersRegex()
     {
-        if ($this->inbound_numbers_regex->count() !== 0) {
+        if (count($this->inbound_numbers_regex) !== 0) {
             @trigger_error('inbound_numbers_regex is deprecated.', E_USER_DEPRECATED);
         }
         return $this->inbound_numbers_regex;
@@ -209,14 +209,14 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string inbound_numbers_regex = 4 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      * @deprecated
      */
     public function setInboundNumbersRegex($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('inbound_numbers_regex is deprecated.', E_USER_DEPRECATED);
         }
         $this->inbound_numbers_regex = $arr;
@@ -230,7 +230,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * numbers at the same provider.
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 9;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getInboundNumbers()
     {
@@ -243,7 +243,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * numbers at the same provider.
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 9;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setInboundNumbers($var)

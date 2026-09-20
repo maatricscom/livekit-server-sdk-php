@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * ListSIPInboundTrunkRequest lists inbound trunks for given filters. If no filters are set, all trunks are listed.
@@ -41,10 +41,10 @@ class ListSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type \LiveKit\Proto\Pagination $page
-     *     @type array<string>|\Google\Protobuf\RepeatedField $trunk_ids
+     *     @type string[] $trunk_ids
      *           Trunk IDs to list. If this option is set, the response will contains trunks in the same order.
      *           If any of the trunks is missing, a nil item in that position will be sent in the response.
-     *     @type array<string>|\Google\Protobuf\RepeatedField $numbers
+     *     @type string[] $numbers
      *           Only list trunks that contain one of the numbers, including wildcard trunks.
      * }
      */
@@ -90,7 +90,7 @@ class ListSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * If any of the trunks is missing, a nil item in that position will be sent in the response.
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getTrunkIds()
     {
@@ -102,7 +102,7 @@ class ListSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * If any of the trunks is missing, a nil item in that position will be sent in the response.
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setTrunkIds($var)
@@ -117,7 +117,7 @@ class ListSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * Only list trunks that contain one of the numbers, including wildcard trunks.
      *
      * Generated from protobuf field <code>repeated string numbers = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getNumbers()
     {
@@ -128,7 +128,7 @@ class ListSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * Only list trunks that contain one of the numbers, including wildcard trunks.
      *
      * Generated from protobuf field <code>repeated string numbers = 2;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setNumbers($var)

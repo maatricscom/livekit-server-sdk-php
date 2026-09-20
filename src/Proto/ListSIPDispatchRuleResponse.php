@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ListSIPDispatchRuleResponse</code>
@@ -25,7 +25,7 @@ class ListSIPDispatchRuleResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\SIPDispatchRuleInfo>|\Google\Protobuf\RepeatedField $items
+     *     @type \LiveKit\Proto\SIPDispatchRuleInfo[] $items
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class ListSIPDispatchRuleResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPDispatchRuleInfo items = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SIPDispatchRuleInfo>
      */
     public function getItems()
     {
@@ -44,7 +44,7 @@ class ListSIPDispatchRuleResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPDispatchRuleInfo items = 1;</code>
-     * @param array<\LiveKit\Proto\SIPDispatchRuleInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SIPDispatchRuleInfo[] $var
      * @return $this
      */
     public function setItems($var)

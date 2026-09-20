@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.FilterParams</code>
@@ -29,8 +29,8 @@ class FilterParams extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<string>|\Google\Protobuf\RepeatedField $include_events
-     *     @type array<string>|\Google\Protobuf\RepeatedField $exclude_events
+     *     @type string[] $include_events
+     *     @type string[] $exclude_events
      * }
      */
     public function __construct($data = NULL) {
@@ -40,7 +40,7 @@ class FilterParams extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string include_events = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getIncludeEvents()
     {
@@ -49,7 +49,7 @@ class FilterParams extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string include_events = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setIncludeEvents($var)
@@ -62,7 +62,7 @@ class FilterParams extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string exclude_events = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getExcludeEvents()
     {
@@ -71,7 +71,7 @@ class FilterParams extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string exclude_events = 2;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setExcludeEvents($var)

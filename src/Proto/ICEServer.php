@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ICEServer</code>
@@ -33,7 +33,7 @@ class ICEServer extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<string>|\Google\Protobuf\RepeatedField $urls
+     *     @type string[] $urls
      *     @type string $username
      *     @type string $credential
      * }
@@ -45,7 +45,7 @@ class ICEServer extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string urls = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getUrls()
     {
@@ -54,7 +54,7 @@ class ICEServer extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string urls = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setUrls($var)

@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SpeakersChanged</code>
@@ -25,7 +25,7 @@ class SpeakersChanged extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\SpeakerInfo>|\Google\Protobuf\RepeatedField $speakers
+     *     @type \LiveKit\Proto\SpeakerInfo[] $speakers
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class SpeakersChanged extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SpeakerInfo speakers = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SpeakerInfo>
      */
     public function getSpeakers()
     {
@@ -44,7 +44,7 @@ class SpeakersChanged extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SpeakerInfo speakers = 1;</code>
-     * @param array<\LiveKit\Proto\SpeakerInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SpeakerInfo[] $var
      * @return $this
      */
     public function setSpeakers($var)

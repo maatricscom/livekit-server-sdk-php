@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.DialWhatsAppCallRequest</code>
@@ -112,7 +112,7 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      *           Optional - An arbitrary string you can pass in that is useful for tracking and logging purposes.
      *     @type string $room_name
      *           Optional - What LiveKit room should this participant be connected too
-     *     @type array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $agents
+     *     @type \LiveKit\Proto\RoomAgentDispatch[] $agents
      *           Optional - Agents to dispatch the call to
      *     @type string $participant_identity
      *           Optional - Identity of the participant in LiveKit room
@@ -294,7 +294,7 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * Optional - Agents to dispatch the call to
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 6;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\RoomAgentDispatch>
      */
     public function getAgents()
     {
@@ -305,7 +305,7 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * Optional - Agents to dispatch the call to
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 6;</code>
-     * @param array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
     public function setAgents($var)

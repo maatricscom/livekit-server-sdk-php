@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.TrackInfo</code>
@@ -143,12 +143,12 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
      *           true if DTX (Discontinuous Transmission) is disabled for audio
      *     @type int $source
      *           source of media
-     *     @type array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $layers
+     *     @type \LiveKit\Proto\VideoLayer[] $layers
      *           see `codecs` for layers of individual codec
      *     @type string $mime_type
      *           mime type of codec
      *     @type string $mid
-     *     @type array<\LiveKit\Proto\SimulcastCodecInfo>|\Google\Protobuf\RepeatedField $codecs
+     *     @type \LiveKit\Proto\SimulcastCodecInfo[] $codecs
      *     @type bool $stereo
      *           deprecated in favor of `audio_features`
      *     @type bool $disable_red
@@ -156,9 +156,9 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
      *     @type int $encryption
      *     @type string $stream
      *     @type \LiveKit\Proto\TimedVersion $version
-     *     @type array<int>|\Google\Protobuf\RepeatedField $audio_features
+     *     @type int[] $audio_features
      *     @type int $backup_codec_policy
-     *     @type array<int>|\Google\Protobuf\RepeatedField $packet_trailer_features
+     *     @type int[] $packet_trailer_features
      * }
      */
     public function __construct($data = NULL) {
@@ -402,12 +402,12 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
      * see `codecs` for layers of individual codec
      *
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 10 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\VideoLayer>
      * @deprecated
      */
     public function getLayers()
     {
-        if ($this->layers->count() !== 0) {
+        if (count($this->layers) !== 0) {
             @trigger_error('layers is deprecated.', E_USER_DEPRECATED);
         }
         return $this->layers;
@@ -417,14 +417,14 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
      * see `codecs` for layers of individual codec
      *
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 10 [deprecated = true];</code>
-     * @param array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\VideoLayer[] $var
      * @return $this
      * @deprecated
      */
     public function setLayers($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\VideoLayer::class);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('layers is deprecated.', E_USER_DEPRECATED);
         }
         $this->layers = $arr;
@@ -482,7 +482,7 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SimulcastCodecInfo codecs = 13;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SimulcastCodecInfo>
      */
     public function getCodecs()
     {
@@ -491,7 +491,7 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SimulcastCodecInfo codecs = 13;</code>
-     * @param array<\LiveKit\Proto\SimulcastCodecInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SimulcastCodecInfo[] $var
      * @return $this
      */
     public function setCodecs($var)
@@ -638,7 +638,7 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature audio_features = 19;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getAudioFeatures()
     {
@@ -647,7 +647,7 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature audio_features = 19;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setAudioFeatures($var)
@@ -682,7 +682,7 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PacketTrailerFeature packet_trailer_features = 21;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getPacketTrailerFeatures()
     {
@@ -691,7 +691,7 @@ class TrackInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PacketTrailerFeature packet_trailer_features = 21;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setPacketTrailerFeatures($var)

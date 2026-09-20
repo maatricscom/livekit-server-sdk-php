@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SIPInboundTrunkInfo</code>
@@ -139,13 +139,13 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      *           Human-readable name for the Trunk.
      *     @type string $metadata
      *           User-defined metadata for the Trunk.
-     *     @type array<string>|\Google\Protobuf\RepeatedField $numbers
+     *     @type string[] $numbers
      *           Numbers associated with LiveKit SIP. The Trunk will only accept calls made to these numbers.
      *           Creating multiple Trunks with different phone numbers allows having different rules for a single provider.
-     *     @type array<string>|\Google\Protobuf\RepeatedField $allowed_addresses
+     *     @type string[] $allowed_addresses
      *           CIDR or IPs that traffic is accepted from.
      *           An empty list means all inbound traffic is accepted.
-     *     @type array<string>|\Google\Protobuf\RepeatedField $allowed_numbers
+     *     @type string[] $allowed_numbers
      *           Numbers that are allowed to make calls to this Trunk.
      *           An empty list means calls from any phone number is accepted.
      *     @type string $auth_username
@@ -260,7 +260,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * Creating multiple Trunks with different phone numbers allows having different rules for a single provider.
      *
      * Generated from protobuf field <code>repeated string numbers = 4;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getNumbers()
     {
@@ -272,7 +272,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * Creating multiple Trunks with different phone numbers allows having different rules for a single provider.
      *
      * Generated from protobuf field <code>repeated string numbers = 4;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setNumbers($var)
@@ -288,7 +288,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * An empty list means all inbound traffic is accepted.
      *
      * Generated from protobuf field <code>repeated string allowed_addresses = 5;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getAllowedAddresses()
     {
@@ -300,7 +300,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * An empty list means all inbound traffic is accepted.
      *
      * Generated from protobuf field <code>repeated string allowed_addresses = 5;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setAllowedAddresses($var)
@@ -316,7 +316,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * An empty list means calls from any phone number is accepted.
      *
      * Generated from protobuf field <code>repeated string allowed_numbers = 6;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getAllowedNumbers()
     {
@@ -328,7 +328,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * An empty list means calls from any phone number is accepted.
      *
      * Generated from protobuf field <code>repeated string allowed_numbers = 6;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setAllowedNumbers($var)

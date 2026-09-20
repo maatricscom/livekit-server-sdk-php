@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.IngressVideoEncodingOptions</code>
@@ -40,7 +40,7 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      *     @type int $video_codec
      *           desired codec to publish to room
      *     @type float $frame_rate
-     *     @type array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $layers
+     *     @type \LiveKit\Proto\VideoLayer[] $layers
      *           simulcast layers to publish, when empty, should usually be set to layers at 1/2 and 1/4 of the dimensions
      * }
      */
@@ -101,7 +101,7 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      * simulcast layers to publish, when empty, should usually be set to layers at 1/2 and 1/4 of the dimensions
      *
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\VideoLayer>
      */
     public function getLayers()
     {
@@ -112,7 +112,7 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      * simulcast layers to publish, when empty, should usually be set to layers at 1/2 and 1/4 of the dimensions
      *
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 3;</code>
-     * @param array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\VideoLayer[] $var
      * @return $this
      */
     public function setLayers($var)

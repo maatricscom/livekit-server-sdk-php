@@ -111,9 +111,6 @@ final class AgentDispatchClient extends ServiceBase implements AgentDispatchClie
         $dispatches = [];
 
         foreach ($response->getAgentDispatches() as $dispatch) {
-            // RepeatedField's iterator carries no generic value type, so this
-            // yields mixed — unlike the rpc() return, which the analyser infers.
-            assert($dispatch instanceof AgentDispatch);
             $dispatches[] = $dispatch;
         }
 

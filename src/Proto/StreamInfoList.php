@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.StreamInfoList</code>
@@ -25,7 +25,7 @@ class StreamInfoList extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\StreamInfo>|\Google\Protobuf\RepeatedField $info
+     *     @type \LiveKit\Proto\StreamInfo[] $info
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class StreamInfoList extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamInfo info = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\StreamInfo>
      */
     public function getInfo()
     {
@@ -44,7 +44,7 @@ class StreamInfoList extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamInfo info = 1;</code>
-     * @param array<\LiveKit\Proto\StreamInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\StreamInfo[] $var
      * @return $this
      */
     public function setInfo($var)

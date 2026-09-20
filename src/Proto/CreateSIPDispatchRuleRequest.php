@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.CreateSIPDispatchRuleRequest</code>
@@ -95,13 +95,13 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPDispatchRuleInfo $dispatch_rule
      *           Rule ID is ignored
      *     @type \LiveKit\Proto\SIPDispatchRule $rule
-     *     @type array<string>|\Google\Protobuf\RepeatedField $trunk_ids
+     *     @type string[] $trunk_ids
      *           What trunks are accepted for this dispatch rule
      *           If empty all trunks will match this dispatch rule
      *     @type bool $hide_phone_number
      *           By default the From value (Phone number) is used for participant name/identity and added to attributes.
      *           If true, a random value for identity will be used and numbers will be omitted from attributes.
-     *     @type array<string>|\Google\Protobuf\RepeatedField $inbound_numbers
+     *     @type string[] $inbound_numbers
      *           Dispatch Rule will only accept a call made to these numbers (if set).
      *     @type string $name
      *           Optional human-readable name for the Dispatch Rule.
@@ -205,12 +205,12 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * If empty all trunks will match this dispatch rule
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 2 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      * @deprecated
      */
     public function getTrunkIds()
     {
-        if ($this->trunk_ids->count() !== 0) {
+        if (count($this->trunk_ids) !== 0) {
             @trigger_error('trunk_ids is deprecated.', E_USER_DEPRECATED);
         }
         return $this->trunk_ids;
@@ -221,14 +221,14 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * If empty all trunks will match this dispatch rule
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 2 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      * @deprecated
      */
     public function setTrunkIds($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('trunk_ids is deprecated.', E_USER_DEPRECATED);
         }
         $this->trunk_ids = $arr;
@@ -274,12 +274,12 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made to these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 6 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      * @deprecated
      */
     public function getInboundNumbers()
     {
-        if ($this->inbound_numbers->count() !== 0) {
+        if (count($this->inbound_numbers) !== 0) {
             @trigger_error('inbound_numbers is deprecated.', E_USER_DEPRECATED);
         }
         return $this->inbound_numbers;
@@ -289,14 +289,14 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made to these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 6 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      * @deprecated
      */
     public function setInboundNumbers($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('inbound_numbers is deprecated.', E_USER_DEPRECATED);
         }
         $this->inbound_numbers = $arr;
@@ -380,7 +380,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      */
     public function getAttributes()
     {
-        if ($this->attributes->count() !== 0) {
+        if (count($this->attributes) !== 0) {
             @trigger_error('attributes is deprecated.', E_USER_DEPRECATED);
         }
         return $this->attributes;
@@ -398,7 +398,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
     public function setAttributes($var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('attributes is deprecated.', E_USER_DEPRECATED);
         }
         $this->attributes = $arr;

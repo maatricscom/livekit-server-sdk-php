@@ -425,22 +425,20 @@ $token = new AccessToken('API_KEY', 'API_SECRET', new AccessTokenOptions(
 
 ## Static analysis
 
-The generated `LiveKit\Proto\*` classes are analysed cleanly: protoc names
-`\Google\Protobuf\Internal\RepeatedField` in its docblocks, which the protobuf runtime has not declared
-since v4, and this package rewrites it to the canonical `\Google\Protobuf\RepeatedField` before shipping.
-Without that, PHPStan and Psalm report an unknown class on any code that touches a repeated field.
-
-One rough edge is upstream's and remains: `RepeatedField` is a non-generic `IteratorAggregate`, so
-iterating one directly yields `mixed`. This SDK's own list methods (`listRooms()`, `listEgress()`, and the
-rest) return plain PHP arrays precisely so you do not meet that; you only will when reaching into a nested
-repeated field on a generated message, where narrowing the element yourself is the usual answer:
+The generated `LiveKit\Proto\*` classes are analysed cleanly at PHPStan's max level, including from your
+own code. Repeated fields carry generic types — `getEnabledCodecs()` is documented as
+`RepeatedField<\LiveKit\Proto\Codec>` — so iterating one gives you the element type rather than `mixed`:
 
 ```php
 foreach ($room->getEnabledCodecs() as $codec) {
-    assert($codec instanceof LiveKit\Proto\Codec);
-    echo $codec->getMime(), PHP_EOL;
+    echo $codec->getMime(), PHP_EOL; // $codec is a Codec, not mixed
 }
 ```
+
+That depends on the protoc version the classes were generated with, which is why `bin/generate-protos.sh`
+requires 33.1 or newer. Older protoc emits `\Google\Protobuf\Internal\RepeatedField`, a name the
+protobuf runtime has not declared since v4 — it is a `class_alias` now, invisible to static analysis — and
+non-generic types with it.
 
 ## Dependency injection and testing
 

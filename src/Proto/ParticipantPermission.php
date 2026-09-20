@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ParticipantPermission</code>
@@ -91,7 +91,7 @@ class ParticipantPermission extends \Google\Protobuf\Internal\Message
      *           allow participant to publish new tracks to room
      *     @type bool $can_publish_data
      *           allow participant to publish data
-     *     @type array<int>|\Google\Protobuf\RepeatedField $can_publish_sources
+     *     @type int[] $can_publish_sources
      *           sources that are allowed to be published
      *     @type bool $hidden
      *           indicates that it's hidden to others
@@ -196,7 +196,7 @@ class ParticipantPermission extends \Google\Protobuf\Internal\Message
      * sources that are allowed to be published
      *
      * Generated from protobuf field <code>repeated .livekit.TrackSource can_publish_sources = 9;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getCanPublishSources()
     {
@@ -207,7 +207,7 @@ class ParticipantPermission extends \Google\Protobuf\Internal\Message
      * sources that are allowed to be published
      *
      * Generated from protobuf field <code>repeated .livekit.TrackSource can_publish_sources = 9;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setCanPublishSources($var)

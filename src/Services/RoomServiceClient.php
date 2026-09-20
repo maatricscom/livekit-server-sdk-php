@@ -130,9 +130,6 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $rooms = [];
 
         foreach ($response->getRooms() as $room) {
-            // RepeatedField's iterator has no generic value type, so foreach yields
-            // mixed here — unlike the rpc() return, which the analyser infers.
-            assert($room instanceof Room);
             $rooms[] = $room;
         }
 
@@ -176,9 +173,6 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
         $participants = [];
 
         foreach ($response->getParticipants() as $participant) {
-            // RepeatedField's iterator has no generic value type, so foreach yields
-            // mixed here — unlike the rpc() return, which the analyser infers.
-            assert($participant instanceof ParticipantInfo);
             $participants[] = $participant;
         }
 

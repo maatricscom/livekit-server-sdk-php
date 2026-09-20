@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.RoomAgent</code>
@@ -25,7 +25,7 @@ class RoomAgent extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $dispatches
+     *     @type \LiveKit\Proto\RoomAgentDispatch[] $dispatches
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class RoomAgent extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch dispatches = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\RoomAgentDispatch>
      */
     public function getDispatches()
     {
@@ -44,7 +44,7 @@ class RoomAgent extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch dispatches = 1;</code>
-     * @param array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
     public function setDispatches($var)

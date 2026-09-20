@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SIPDispatchRuleInfo</code>
@@ -104,11 +104,11 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      *
      *     @type string $sip_dispatch_rule_id
      *     @type \LiveKit\Proto\SIPDispatchRule $rule
-     *     @type array<string>|\Google\Protobuf\RepeatedField $trunk_ids
+     *     @type string[] $trunk_ids
      *     @type bool $hide_phone_number
-     *     @type array<string>|\Google\Protobuf\RepeatedField $inbound_numbers
+     *     @type string[] $inbound_numbers
      *           Dispatch Rule will only accept a call made from these numbers (if set).
-     *     @type array<string>|\Google\Protobuf\RepeatedField $numbers
+     *     @type string[] $numbers
      *           Dispatch Rule will only accept a call made to these numbers (if set).
      *     @type string $name
      *           Human-readable name for the Dispatch Rule.
@@ -190,7 +190,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string trunk_ids = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getTrunkIds()
     {
@@ -199,7 +199,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string trunk_ids = 3;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setTrunkIds($var)
@@ -236,7 +236,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made from these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 7;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getInboundNumbers()
     {
@@ -247,7 +247,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made from these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 7;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setInboundNumbers($var)
@@ -262,7 +262,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made to these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string numbers = 13;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getNumbers()
     {
@@ -273,7 +273,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made to these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string numbers = 13;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setNumbers($var)

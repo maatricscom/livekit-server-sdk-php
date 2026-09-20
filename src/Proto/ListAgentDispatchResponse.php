@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.ListAgentDispatchResponse</code>
@@ -25,7 +25,7 @@ class ListAgentDispatchResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\AgentDispatch>|\Google\Protobuf\RepeatedField $agent_dispatches
+     *     @type \LiveKit\Proto\AgentDispatch[] $agent_dispatches
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class ListAgentDispatchResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AgentDispatch agent_dispatches = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\AgentDispatch>
      */
     public function getAgentDispatches()
     {
@@ -44,7 +44,7 @@ class ListAgentDispatchResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AgentDispatch agent_dispatches = 1;</code>
-     * @param array<\LiveKit\Proto\AgentDispatch>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\AgentDispatch[] $var
      * @return $this
      */
     public function setAgentDispatches($var)

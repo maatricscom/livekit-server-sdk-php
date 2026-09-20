@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.UpdateDataSubscription</code>
@@ -25,7 +25,7 @@ class UpdateDataSubscription extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\UpdateDataSubscription\Update>|\Google\Protobuf\RepeatedField $updates
+     *     @type \LiveKit\Proto\UpdateDataSubscription\Update[] $updates
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class UpdateDataSubscription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.UpdateDataSubscription.Update updates = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\UpdateDataSubscription\Update>
      */
     public function getUpdates()
     {
@@ -44,7 +44,7 @@ class UpdateDataSubscription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.UpdateDataSubscription.Update updates = 1;</code>
-     * @param array<\LiveKit\Proto\UpdateDataSubscription\Update>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\UpdateDataSubscription\Update[] $var
      * @return $this
      */
     public function setUpdates($var)

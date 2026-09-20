@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SubscribedAudioCodecUpdate</code>
@@ -30,7 +30,7 @@ class SubscribedAudioCodecUpdate extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $track_sid
-     *     @type array<\LiveKit\Proto\SubscribedAudioCodec>|\Google\Protobuf\RepeatedField $subscribed_audio_codecs
+     *     @type \LiveKit\Proto\SubscribedAudioCodec[] $subscribed_audio_codecs
      * }
      */
     public function __construct($data = NULL) {
@@ -62,7 +62,7 @@ class SubscribedAudioCodecUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedAudioCodec subscribed_audio_codecs = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SubscribedAudioCodec>
      */
     public function getSubscribedAudioCodecs()
     {
@@ -71,7 +71,7 @@ class SubscribedAudioCodecUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedAudioCodec subscribed_audio_codecs = 2;</code>
-     * @param array<\LiveKit\Proto\SubscribedAudioCodec>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SubscribedAudioCodec[] $var
      * @return $this
      */
     public function setSubscribedAudioCodecs($var)

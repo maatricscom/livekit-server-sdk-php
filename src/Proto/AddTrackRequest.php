@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.AddTrackRequest</code>
@@ -121,8 +121,8 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      *     @type bool $disable_dtx
      *           true if DTX (Discontinuous Transmission) is disabled for audio
      *     @type int $source
-     *     @type array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $layers
-     *     @type array<\LiveKit\Proto\SimulcastCodec>|\Google\Protobuf\RepeatedField $simulcast_codecs
+     *     @type \LiveKit\Proto\VideoLayer[] $layers
+     *     @type \LiveKit\Proto\SimulcastCodec[] $simulcast_codecs
      *     @type string $sid
      *           server ID of track, publish new codec to exist track
      *     @type bool $stereo
@@ -134,8 +134,8 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      *           which stream the track belongs to, used to group tracks together.
      *           if not specified, server will infer it from track source to bundle camera/microphone, screenshare/audio together
      *     @type int $backup_codec_policy
-     *     @type array<int>|\Google\Protobuf\RepeatedField $audio_features
-     *     @type array<int>|\Google\Protobuf\RepeatedField $packet_trailer_features
+     *     @type int[] $audio_features
+     *     @type int[] $packet_trailer_features
      * }
      */
     public function __construct($data = NULL) {
@@ -339,7 +339,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 9;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\VideoLayer>
      */
     public function getLayers()
     {
@@ -348,7 +348,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 9;</code>
-     * @param array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\VideoLayer[] $var
      * @return $this
      */
     public function setLayers($var)
@@ -361,7 +361,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SimulcastCodec simulcast_codecs = 10;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SimulcastCodec>
      */
     public function getSimulcastCodecs()
     {
@@ -370,7 +370,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SimulcastCodec simulcast_codecs = 10;</code>
-     * @param array<\LiveKit\Proto\SimulcastCodec>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SimulcastCodec[] $var
      * @return $this
      */
     public function setSimulcastCodecs($var)
@@ -539,7 +539,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature audio_features = 17;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getAudioFeatures()
     {
@@ -548,7 +548,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature audio_features = 17;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setAudioFeatures($var)
@@ -561,7 +561,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PacketTrailerFeature packet_trailer_features = 18;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getPacketTrailerFeatures()
     {
@@ -570,7 +570,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PacketTrailerFeature packet_trailer_features = 18;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setPacketTrailerFeatures($var)

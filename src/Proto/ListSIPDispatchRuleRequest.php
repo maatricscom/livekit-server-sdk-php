@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * ListSIPDispatchRuleRequest lists dispatch rules for given filters. If no filters are set, all rules are listed.
@@ -41,10 +41,10 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type \LiveKit\Proto\Pagination $page
-     *     @type array<string>|\Google\Protobuf\RepeatedField $dispatch_rule_ids
+     *     @type string[] $dispatch_rule_ids
      *           Rule IDs to list. If this option is set, the response will contains rules in the same order.
      *           If any of the rules is missing, a nil item in that position will be sent in the response.
-     *     @type array<string>|\Google\Protobuf\RepeatedField $trunk_ids
+     *     @type string[] $trunk_ids
      *           Only list rules that contain one of the Trunk IDs, including wildcard rules.
      * }
      */
@@ -90,7 +90,7 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * If any of the rules is missing, a nil item in that position will be sent in the response.
      *
      * Generated from protobuf field <code>repeated string dispatch_rule_ids = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getDispatchRuleIds()
     {
@@ -102,7 +102,7 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * If any of the rules is missing, a nil item in that position will be sent in the response.
      *
      * Generated from protobuf field <code>repeated string dispatch_rule_ids = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setDispatchRuleIds($var)
@@ -117,7 +117,7 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * Only list rules that contain one of the Trunk IDs, including wildcard rules.
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getTrunkIds()
     {
@@ -128,7 +128,7 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * Only list rules that contain one of the Trunk IDs, including wildcard rules.
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 2;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setTrunkIds($var)

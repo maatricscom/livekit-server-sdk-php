@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.StreamOutput</code>
@@ -35,7 +35,7 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      *
      *     @type int $protocol
      *           required
-     *     @type array<string>|\Google\Protobuf\RepeatedField $urls
+     *     @type string[] $urls
      *           required
      * }
      */
@@ -74,7 +74,7 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      * required
      *
      * Generated from protobuf field <code>repeated string urls = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getUrls()
     {
@@ -85,7 +85,7 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      * required
      *
      * Generated from protobuf field <code>repeated string urls = 2;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setUrls($var)

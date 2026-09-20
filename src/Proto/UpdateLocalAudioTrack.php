@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.UpdateLocalAudioTrack</code>
@@ -30,7 +30,7 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $track_sid
-     *     @type array<int>|\Google\Protobuf\RepeatedField $features
+     *     @type int[] $features
      * }
      */
     public function __construct($data = NULL) {
@@ -62,7 +62,7 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature features = 2;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<int>
      */
     public function getFeatures()
     {
@@ -71,7 +71,7 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature features = 2;</code>
-     * @param array<int>|\Google\Protobuf\RepeatedField $var
+     * @param int[] $var
      * @return $this
      */
     public function setFeatures($var)

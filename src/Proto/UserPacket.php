@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.UserPacket</code>
@@ -86,9 +86,9 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      *     @type string $participant_identity
      *     @type string $payload
      *           user defined payload
-     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_sids
+     *     @type string[] $destination_sids
      *           the ID of the participants who will receive the message (sent to all by default)
-     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_identities
+     *     @type string[] $destination_identities
      *           identities of participants who will receive the message (sent to all by default)
      *     @type string $topic
      *           topic under which the message was published
@@ -196,12 +196,12 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * the ID of the participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_sids = 3 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      * @deprecated
      */
     public function getDestinationSids()
     {
-        if ($this->destination_sids->count() !== 0) {
+        if (count($this->destination_sids) !== 0) {
             @trigger_error('destination_sids is deprecated.', E_USER_DEPRECATED);
         }
         return $this->destination_sids;
@@ -211,14 +211,14 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * the ID of the participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_sids = 3 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      * @deprecated
      */
     public function setDestinationSids($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('destination_sids is deprecated.', E_USER_DEPRECATED);
         }
         $this->destination_sids = $arr;
@@ -230,12 +230,12 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * identities of participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      * @deprecated
      */
     public function getDestinationIdentities()
     {
-        if ($this->destination_identities->count() !== 0) {
+        if (count($this->destination_identities) !== 0) {
             @trigger_error('destination_identities is deprecated.', E_USER_DEPRECATED);
         }
         return $this->destination_identities;
@@ -245,14 +245,14 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * identities of participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      * @deprecated
      */
     public function setDestinationIdentities($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('destination_identities is deprecated.', E_USER_DEPRECATED);
         }
         $this->destination_identities = $arr;

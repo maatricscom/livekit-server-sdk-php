@@ -160,9 +160,10 @@ jobs:
       # docblock, but a downstream project running PHPStan over code that touches
       # one of these getters is told the class is unknown and loses the type.
       #
-      # src/Proto used to be excluded here, because protoc emits the old name.
-      # bin/generate-protos.sh now rewrites it, so the rule covers all of src --
-      # which also means this job fails if a regeneration ever loses that step.
+      # src/Proto used to be excluded here, because protoc 29.3 emitted the old
+      # name. The generator now requires protoc >= 33.1, which emits the canonical
+      # one, so the rule covers all of src -- and this job is what catches a
+      # regeneration done with an older protoc.
       - name: Reject the non-autoloadable RepeatedField alias
         run: |
           if grep -rn 'Internal\\RepeatedField' src; then
@@ -181,7 +182,7 @@ jobs:
           coverage: none
       - name: Install protoc
         run: |
-          PROTOC_VERSION=29.3
+          PROTOC_VERSION=33.1
           curl -sSLo /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip"
           unzip -q /tmp/protoc.zip -d /tmp/protoc
           echo "/tmp/protoc/bin" >> "$GITHUB_PATH"

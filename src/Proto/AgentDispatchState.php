@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.AgentDispatchState</code>
@@ -36,7 +36,7 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\Job>|\Google\Protobuf\RepeatedField $jobs
+     *     @type \LiveKit\Proto\Job[] $jobs
      *           For dispatches of tyoe JT_ROOM, there will be at most 1 job.
      *           For dispatches of type JT_PUBLISHER, there will be 1 per publisher.
      *     @type int|string $created_at
@@ -53,7 +53,7 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      * For dispatches of type JT_PUBLISHER, there will be 1 per publisher.
      *
      * Generated from protobuf field <code>repeated .livekit.Job jobs = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\Job>
      */
     public function getJobs()
     {
@@ -65,7 +65,7 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      * For dispatches of type JT_PUBLISHER, there will be 1 per publisher.
      *
      * Generated from protobuf field <code>repeated .livekit.Job jobs = 1;</code>
-     * @param array<\LiveKit\Proto\Job>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\Job[] $var
      * @return $this
      */
     public function setJobs($var)

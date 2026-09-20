@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.UpdateSubscription</code>
@@ -33,9 +33,9 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<string>|\Google\Protobuf\RepeatedField $track_sids
+     *     @type string[] $track_sids
      *     @type bool $subscribe
-     *     @type array<\LiveKit\Proto\ParticipantTracks>|\Google\Protobuf\RepeatedField $participant_tracks
+     *     @type \LiveKit\Proto\ParticipantTracks[] $participant_tracks
      * }
      */
     public function __construct($data = NULL) {
@@ -45,7 +45,7 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string track_sids = 1;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<string>
      */
     public function getTrackSids()
     {
@@ -54,7 +54,7 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string track_sids = 1;</code>
-     * @param array<string>|\Google\Protobuf\RepeatedField $var
+     * @param string[] $var
      * @return $this
      */
     public function setTrackSids($var)
@@ -89,7 +89,7 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantTracks participant_tracks = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ParticipantTracks>
      */
     public function getParticipantTracks()
     {
@@ -98,7 +98,7 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantTracks participant_tracks = 3;</code>
-     * @param array<\LiveKit\Proto\ParticipantTracks>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ParticipantTracks[] $var
      * @return $this
      */
     public function setParticipantTracks($var)

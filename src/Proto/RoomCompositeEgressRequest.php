@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.RoomCompositeEgressRequest</code>
@@ -78,11 +78,11 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SegmentedFileOutput $segments
      *     @type int $preset
      *     @type \LiveKit\Proto\EncodingOptions $advanced
-     *     @type array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\RepeatedField $file_outputs
-     *     @type array<\LiveKit\Proto\StreamOutput>|\Google\Protobuf\RepeatedField $stream_outputs
-     *     @type array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\RepeatedField $segment_outputs
-     *     @type array<\LiveKit\Proto\ImageOutput>|\Google\Protobuf\RepeatedField $image_outputs
-     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $webhooks
+     *     @type \LiveKit\Proto\EncodedFileOutput[] $file_outputs
+     *     @type \LiveKit\Proto\StreamOutput[] $stream_outputs
+     *     @type \LiveKit\Proto\SegmentedFileOutput[] $segment_outputs
+     *     @type \LiveKit\Proto\ImageOutput[] $image_outputs
+     *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
     public function __construct($data = NULL) {
@@ -386,7 +386,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EncodedFileOutput file_outputs = 11;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\EncodedFileOutput>
      */
     public function getFileOutputs()
     {
@@ -395,7 +395,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EncodedFileOutput file_outputs = 11;</code>
-     * @param array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\EncodedFileOutput[] $var
      * @return $this
      */
     public function setFileOutputs($var)
@@ -408,7 +408,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamOutput stream_outputs = 12;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\StreamOutput>
      */
     public function getStreamOutputs()
     {
@@ -417,7 +417,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamOutput stream_outputs = 12;</code>
-     * @param array<\LiveKit\Proto\StreamOutput>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\StreamOutput[] $var
      * @return $this
      */
     public function setStreamOutputs($var)
@@ -430,7 +430,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SegmentedFileOutput segment_outputs = 13;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SegmentedFileOutput>
      */
     public function getSegmentOutputs()
     {
@@ -439,7 +439,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SegmentedFileOutput segment_outputs = 13;</code>
-     * @param array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SegmentedFileOutput[] $var
      * @return $this
      */
     public function setSegmentOutputs($var)
@@ -452,7 +452,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ImageOutput image_outputs = 14;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ImageOutput>
      */
     public function getImageOutputs()
     {
@@ -461,7 +461,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ImageOutput image_outputs = 14;</code>
-     * @param array<\LiveKit\Proto\ImageOutput>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ImageOutput[] $var
      * @return $this
      */
     public function setImageOutputs($var)
@@ -474,7 +474,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 16;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\WebhookConfig>
      */
     public function getWebhooks()
     {
@@ -483,7 +483,7 @@ class RoomCompositeEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 16;</code>
-     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
     public function setWebhooks($var)

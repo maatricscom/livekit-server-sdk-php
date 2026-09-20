@@ -457,9 +457,6 @@ final class SipClient extends ServiceBase implements SipClientInterface
 
         $items = [];
         foreach ($response->getItems() as $item) {
-            // RepeatedField's iterator carries no generic value type, so this
-            // yields mixed — unlike the rpc() return, which the analyser infers.
-            assert($item instanceof SIPInboundTrunkInfo);
             $items[] = $item;
         }
 
@@ -497,9 +494,6 @@ final class SipClient extends ServiceBase implements SipClientInterface
 
         $items = [];
         foreach ($response->getItems() as $item) {
-            // RepeatedField's iterator carries no generic value type, so this
-            // yields mixed — unlike the rpc() return, which the analyser infers.
-            assert($item instanceof SIPOutboundTrunkInfo);
             $items[] = $item;
         }
 
@@ -526,9 +520,6 @@ final class SipClient extends ServiceBase implements SipClientInterface
 
         $items = [];
         foreach ($response->getItems() as $item) {
-            // RepeatedField's iterator carries no generic value type, so this
-            // yields mixed — unlike the rpc() return, which the analyser infers.
-            assert($item instanceof SIPTrunkInfo);
             $items[] = $item;
         }
 
@@ -715,9 +706,6 @@ final class SipClient extends ServiceBase implements SipClientInterface
 
         $items = [];
         foreach ($response->getItems() as $item) {
-            // RepeatedField's iterator carries no generic value type, so this
-            // yields mixed — unlike the rpc() return, which the analyser infers.
-            assert($item instanceof SIPDispatchRuleInfo);
             $items[] = $item;
         }
 

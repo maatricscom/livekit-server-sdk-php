@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.IngressState</code>
@@ -76,7 +76,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
      *     @type int|string $ended_at
      *     @type int|string $updated_at
      *     @type string $resource_id
-     *     @type array<\LiveKit\Proto\TrackInfo>|\Google\Protobuf\RepeatedField $tracks
+     *     @type \LiveKit\Proto\TrackInfo[] $tracks
      * }
      */
     public function __construct($data = NULL) {
@@ -312,7 +312,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackInfo tracks = 6;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\TrackInfo>
      */
     public function getTracks()
     {
@@ -321,7 +321,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackInfo tracks = 6;</code>
-     * @param array<\LiveKit\Proto\TrackInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\TrackInfo[] $var
      * @return $this
      */
     public function setTracks($var)

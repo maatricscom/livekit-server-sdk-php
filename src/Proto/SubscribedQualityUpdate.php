@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.SubscribedQualityUpdate</code>
@@ -35,8 +35,8 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $track_sid
-     *     @type array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\RepeatedField $subscribed_qualities
-     *     @type array<\LiveKit\Proto\SubscribedCodec>|\Google\Protobuf\RepeatedField $subscribed_codecs
+     *     @type \LiveKit\Proto\SubscribedQuality[] $subscribed_qualities
+     *     @type \LiveKit\Proto\SubscribedCodec[] $subscribed_codecs
      * }
      */
     public function __construct($data = NULL) {
@@ -68,12 +68,12 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedQuality subscribed_qualities = 2 [deprecated = true];</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SubscribedQuality>
      * @deprecated
      */
     public function getSubscribedQualities()
     {
-        if ($this->subscribed_qualities->count() !== 0) {
+        if (count($this->subscribed_qualities) !== 0) {
             @trigger_error('subscribed_qualities is deprecated.', E_USER_DEPRECATED);
         }
         return $this->subscribed_qualities;
@@ -81,14 +81,14 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedQuality subscribed_qualities = 2 [deprecated = true];</code>
-     * @param array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SubscribedQuality[] $var
      * @return $this
      * @deprecated
      */
     public function setSubscribedQualities($var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SubscribedQuality::class);
-        if ($arr->count() !== 0) {
+        if (count($arr) !== 0) {
             @trigger_error('subscribed_qualities is deprecated.', E_USER_DEPRECATED);
         }
         $this->subscribed_qualities = $arr;
@@ -98,7 +98,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedCodec subscribed_codecs = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\SubscribedCodec>
      */
     public function getSubscribedCodecs()
     {
@@ -107,7 +107,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedCodec subscribed_codecs = 3;</code>
-     * @param array<\LiveKit\Proto\SubscribedCodec>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\SubscribedCodec[] $var
      * @return $this
      */
     public function setSubscribedCodecs($var)

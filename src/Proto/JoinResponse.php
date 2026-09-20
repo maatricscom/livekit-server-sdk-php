@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.JoinResponse</code>
@@ -96,10 +96,10 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      *
      *     @type \LiveKit\Proto\Room $room
      *     @type \LiveKit\Proto\ParticipantInfo $participant
-     *     @type array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $other_participants
+     *     @type \LiveKit\Proto\ParticipantInfo[] $other_participants
      *     @type string $server_version
      *           deprecated. use server_info.version instead.
-     *     @type array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\RepeatedField $ice_servers
+     *     @type \LiveKit\Proto\ICEServer[] $ice_servers
      *     @type bool $subscriber_primary
      *           use subscriber as the primary PeerConnection
      *     @type string $alternative_url
@@ -113,7 +113,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ServerInfo $server_info
      *     @type string $sif_trailer
      *           Server-Injected-Frame byte trailer, used to identify unencrypted frames when e2ee is enabled
-     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $enabled_publish_codecs
+     *     @type \LiveKit\Proto\Codec[] $enabled_publish_codecs
      *     @type bool $fast_publish
      *           when set, client should attempt to establish publish peer connection when joining room to speed up publishing
      * }
@@ -189,7 +189,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo other_participants = 3;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ParticipantInfo>
      */
     public function getOtherParticipants()
     {
@@ -198,7 +198,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo other_participants = 3;</code>
-     * @param array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ParticipantInfo[] $var
      * @return $this
      */
     public function setOtherParticipants($var)
@@ -237,7 +237,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ICEServer ice_servers = 5;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\ICEServer>
      */
     public function getIceServers()
     {
@@ -246,7 +246,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ICEServer ice_servers = 5;</code>
-     * @param array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\ICEServer[] $var
      * @return $this
      */
     public function setIceServers($var)
@@ -473,7 +473,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Codec enabled_publish_codecs = 14;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\Codec>
      */
     public function getEnabledPublishCodecs()
     {
@@ -482,7 +482,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Codec enabled_publish_codecs = 14;</code>
-     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\Codec[] $var
      * @return $this
      */
     public function setEnabledPublishCodecs($var)

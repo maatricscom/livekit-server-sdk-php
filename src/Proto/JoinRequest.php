@@ -6,8 +6,8 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
  * Generated from protobuf message <code>livekit.JoinRequest</code>
@@ -75,7 +75,7 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      *           will set keys provided via this
      *           will overwrite if the same key is in the token
      *           will not delete keys from token if there is a key collision and this sets that key to empty value
-     *     @type array<\LiveKit\Proto\AddTrackRequest>|\Google\Protobuf\RepeatedField $add_track_requests
+     *     @type \LiveKit\Proto\AddTrackRequest[] $add_track_requests
      *     @type \LiveKit\Proto\SessionDescription $publisher_offer
      *     @type bool $reconnect
      *     @type int $reconnect_reason
@@ -210,7 +210,7 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AddTrackRequest add_track_requests = 5;</code>
-     * @return \Google\Protobuf\RepeatedField
+     * @return RepeatedField<\LiveKit\Proto\AddTrackRequest>
      */
     public function getAddTrackRequests()
     {
@@ -219,7 +219,7 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AddTrackRequest add_track_requests = 5;</code>
-     * @param array<\LiveKit\Proto\AddTrackRequest>|\Google\Protobuf\RepeatedField $var
+     * @param \LiveKit\Proto\AddTrackRequest[] $var
      * @return $this
      */
     public function setAddTrackRequests($var)
