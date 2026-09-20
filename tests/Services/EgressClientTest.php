@@ -7,6 +7,7 @@ namespace LiveKit\Tests\Services;
 use LiveKit\Options\EncodedOutputs;
 use LiveKit\Options\ParticipantEgressOptions;
 use LiveKit\Options\RoomCompositeOptions;
+use LiveKit\Options\TrackCompositeOptions;
 use LiveKit\Options\WebOptions;
 use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EgressStatus;
@@ -20,6 +21,7 @@ use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\StreamProtocol;
+use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\WebEgressRequest;
 use LiveKit\Proto\WebhookConfig;
 use LiveKit\Services\EgressClient;
@@ -292,6 +294,83 @@ final class EgressClientTest extends TwirpTestCase
         self::assertFalse($request->getScreenShare());
         self::assertSame('', $request->getOptions());
         self::assertCount(0, $this->messagesIn($request->getWebhooks(), WebhookConfig::class));
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartTrackCompositeEgressWithEncodedOutputsSetsOnlyPluralArrays(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_track_composite')));
+        $client = $this->egressClient();
+
+        $stream = new StreamOutput();
+        $stream->setProtocol(StreamProtocol::SRT);
+        $stream->setUrls(['srt://stream.example:9000']);
+
+        $info = $client->startTrackCompositeEgress(
+            'my-room',
+            new EncodedOutputs(stream: $stream),
+            new TrackCompositeOptions(
+                audioTrackId: 'TR_audio',
+                videoTrackId: 'TR_video',
+                encodingOptions: EncodingOptionsPreset::H264_720P_60,
+            ),
+        );
+
+        self::assertSame('EG_track_composite', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartTrackCompositeEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartTrackCompositeEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(TrackCompositeEgressRequest::class);
+
+        self::assertSame('my-room', $request->getRoomName());
+        self::assertSame('TR_audio', $request->getAudioTrackId());
+        self::assertSame('TR_video', $request->getVideoTrackId());
+
+        self::assertSame('', $request->getOutput());
+
+        $streamOutputs = $this->messagesIn($request->getStreamOutputs(), StreamOutput::class);
+        self::assertCount(1, $streamOutputs);
+        self::assertSame(['srt://stream.example:9000'], $this->stringsIn($streamOutputs[0]->getUrls()));
+
+        self::assertSame('preset', $request->getOptions());
+        self::assertSame(EncodingOptionsPreset::H264_720P_60, $request->getPreset());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartTrackCompositeEgressWithBareStreamOutputAlsoSetsLegacyOneof(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_track_composite_legacy')));
+        $client = $this->egressClient();
+
+        $stream = new StreamOutput();
+        $stream->setProtocol(StreamProtocol::RTMP);
+        $stream->setUrls(['rtmp://legacy.example/live']);
+
+        $client->startTrackCompositeEgress('my-room', $stream);
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartTrackCompositeEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartTrackCompositeEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(TrackCompositeEgressRequest::class);
+
+        self::assertSame('stream', $request->getOutput());
+        self::assertSame(
+            ['rtmp://legacy.example/live'],
+            $this->stringsIn($this->messageOf($request->getStream(), StreamOutput::class)->getUrls()),
+        );
+
+        $streamOutputs = $this->messagesIn($request->getStreamOutputs(), StreamOutput::class);
+        self::assertCount(1, $streamOutputs);
+        self::assertSame(StreamProtocol::RTMP, $streamOutputs[0]->getProtocol());
+
+        self::assertSame('', $request->getAudioTrackId());
+        self::assertSame('', $request->getVideoTrackId());
+        self::assertSame('', $request->getOptions());
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }
