@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Integration;
 
-use LiveKit\LiveKitClient;
+use LiveKit\LiveKitAPI;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Proto\Room;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class RoomServiceIntegrationTest extends TestCase
 {
-    private LiveKitClient $livekit;
+    private LiveKitAPI $livekit;
 
     protected function setUp(): void
     {
@@ -36,7 +36,7 @@ final class RoomServiceIntegrationTest extends TestCase
             }
         }
 
-        $this->livekit = new LiveKitClient();
+        $this->livekit = new LiveKitAPI();
     }
 
     public function test_creates_lists_and_deletes_a_room_over_binary_protobuf(): void

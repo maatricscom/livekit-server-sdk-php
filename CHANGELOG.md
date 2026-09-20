@@ -21,7 +21,7 @@ Initial release.
   CRUD and partial field updates, dispatch rule CRUD and partial field updates, and SIP participant
   creation/transfer with `SipCallError` exposing the SIP-level status code and reason on failure.
 - `AgentDispatchClient` covering all 3 RPCs of `livekit.AgentDispatchService`: create, delete and list.
-- `LiveKitClient`, a facade constructing all five service clients from one set of credentials and one
+- `LiveKitAPI`, a facade constructing all five service clients from one set of credentials and one
   shared HTTP client.
 - `AccessToken` / `AccessTokenOptions` for minting HS256 JWTs, and `TokenVerifier` for verifying and
   decoding them, with grant types `VideoGrant`, `SIPGrant`, `AgentGrant`, `InferenceGrant` and

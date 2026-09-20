@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Tests;
 
 use LiveKit\Exceptions\ConfigurationException;
-use LiveKit\LiveKitClient;
+use LiveKit\LiveKitAPI;
 use LiveKit\Services\AgentDispatchClient;
 use LiveKit\Services\EgressClient;
 use LiveKit\Services\IngressClient;
@@ -15,13 +15,13 @@ use LiveKit\Tests\Support\MockHttpClient;
 use LiveKit\Tests\Support\TestCase;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
-final class LiveKitClientTest extends TestCase
+final class LiveKitAPITest extends TestCase
 {
-    private function client(?MockHttpClient $http = null): LiveKitClient
+    private function client(?MockHttpClient $http = null): LiveKitAPI
     {
         $factory = new Psr17Factory();
 
-        return new LiveKitClient(
+        return new LiveKitAPI(
             'https://example.livekit.cloud',
             self::API_KEY,
             self::API_SECRET,
@@ -69,7 +69,7 @@ final class LiveKitClientTest extends TestCase
             'LIVEKIT_API_SECRET' => 'env-secret-that-is-long-enough-yes',
         ], function (): void {
             $factory = new Psr17Factory();
-            $client = new LiveKitClient(null, null, null, null, new MockHttpClient(), $factory, $factory);
+            $client = new LiveKitAPI(null, null, null, null, new MockHttpClient(), $factory, $factory);
 
             self::assertInstanceOf(RoomServiceClient::class, $client->room);
         });
@@ -80,7 +80,7 @@ final class LiveKitClientTest extends TestCase
         $this->withEnv(['LIVEKIT_URL' => null], function (): void {
             $this->expectException(ConfigurationException::class);
 
-            new LiveKitClient(null, self::API_KEY, self::API_SECRET);
+            new LiveKitAPI(null, self::API_KEY, self::API_SECRET);
         });
     }
 }

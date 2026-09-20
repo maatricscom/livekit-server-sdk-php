@@ -15,13 +15,16 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 
 /**
- * Convenience facade over the individual service clients, equivalent to the
- * Node SDK's LiveKitAPI.
+ * Convenience facade over the individual service clients.
+ *
+ * Named to match LiveKit's other server SDKs, which all expose this entry point
+ * under the same name — LiveKitAPI in Node, LiveKit::API in Ruby, livekit-api in
+ * Python — so the documentation reads the same whichever language you arrive from.
  *
  * Every service client can also be constructed on its own; this exists so a
  * single set of credentials and one HTTP client serve all of them.
  */
-final class LiveKitClient
+final class LiveKitAPI
 {
     public readonly RoomServiceClient $room;
 

@@ -47,15 +47,15 @@ one of the lines above when starting from a bare PHP project.
 
 ## Quickstart
 
-`LiveKitClient` is a facade over the five service clients, sharing one set of credentials and one HTTP
+`LiveKitAPI` is a facade over the five service clients, sharing one set of credentials and one HTTP
 client across all of them. Each service client also works standalone with the identical constructor
 signature, in case you only need one of them:
 
 ```php
-use LiveKit\LiveKitClient;
+use LiveKit\LiveKitAPI;
 use LiveKit\Options\CreateRoomOptions;
 
-$livekit = new LiveKitClient('https://my-project.livekit.cloud', 'API_KEY', 'API_SECRET');
+$livekit = new LiveKitAPI('https://my-project.livekit.cloud', 'API_KEY', 'API_SECRET');
 
 $room = $livekit->room->createRoom(new CreateRoomOptions(name: 'my-room', emptyTimeout: 300));
 
@@ -66,7 +66,7 @@ foreach ($livekit->room->listRooms() as $existing) {
 
 Every constructor argument is optional and falls back to the `LIVEKIT_URL`, `LIVEKIT_API_KEY` and
 `LIVEKIT_API_SECRET` environment variables, so in most deployments you can simply write
-`new LiveKitClient()`. List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on)
+`new LiveKitAPI()`. List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on)
 return plain PHP arrays rather than a generated protobuf `RepeatedField`; every other method returns the
 generated `LiveKit\Proto\*` message for that RPC's response.
 
@@ -157,7 +157,7 @@ hang indefinitely, not throw. Configure a client-side timeout yourself on whatev
 ```php
 use GuzzleHttp\Client;
 
-$livekit = new LiveKit\LiveKitClient(
+$livekit = new LiveKit\LiveKitAPI(
     host: 'https://my-project.livekit.cloud',
     apiKey: 'API_KEY',
     apiSecret: 'API_SECRET',

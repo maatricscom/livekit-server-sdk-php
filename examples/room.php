@@ -12,20 +12,20 @@ declare(strict_types=1);
  *   LIVEKIT_API_SECRET=... \
  *   php examples/room.php
  *
- * LiveKitClient() with no arguments reads all three from the environment.
+ * LiveKitAPI() with no arguments reads all three from the environment.
  */
 
 require __DIR__ . '/../vendor/autoload.php';
 
 use LiveKit\Exceptions\LiveKitException;
-use LiveKit\LiveKitClient;
+use LiveKit\LiveKitAPI;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Proto\Room;
 
 $roomName = 'php-sdk-example-' . bin2hex(random_bytes(4));
 
 try {
-    $livekit = new LiveKitClient();
+    $livekit = new LiveKitAPI();
 
     echo "Creating room \"{$roomName}\"..." . PHP_EOL;
     $room = $livekit->room->createRoom(new CreateRoomOptions(
