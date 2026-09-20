@@ -8,6 +8,7 @@ use LiveKit\Options\CreateIngressOptions;
 use LiveKit\Options\ListIngressOptions;
 use LiveKit\Options\UpdateIngressOptions;
 use LiveKit\Proto\CreateIngressRequest;
+use LiveKit\Proto\DeleteIngressRequest;
 use LiveKit\Proto\IngressAudioEncodingPreset;
 use LiveKit\Proto\IngressAudioOptions;
 use LiveKit\Proto\IngressInfo;
@@ -221,6 +222,33 @@ final class IngressClientTest extends TwirpTestCase
         self::assertSame('', $sent->getRoomName());
         self::assertSame('', $sent->getIngressId());
         self::assertNull($sent->getPageToken());
+
+        $this->assertVideoGrant(['ingressAdmin' => true], $request);
+    }
+
+    public function testDeleteIngressSendsIngressIdOnly(): void
+    {
+        $expected = new IngressInfo();
+        $expected->setIngressId('IN_abc123');
+
+        $this->http->pushResponse($this->protoResponse($expected));
+
+        $client = new IngressClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $info = $client->deleteIngress('IN_abc123');
+
+        self::assertSame('IN_abc123', $info->getIngressId());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'Ingress', 'DeleteIngress');
+
+        $sent = $this->decodeRequest(DeleteIngressRequest::class);
+        self::assertSame('IN_abc123', $sent->getIngressId());
 
         $this->assertVideoGrant(['ingressAdmin' => true], $request);
     }

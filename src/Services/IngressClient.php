@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace LiveKit\Services;
 
+use LiveKit\Contracts\IngressClientInterface;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateIngressOptions;
 use LiveKit\Options\ListIngressOptions;
 use LiveKit\Options\UpdateIngressOptions;
 use LiveKit\Proto\CreateIngressRequest;
+use LiveKit\Proto\DeleteIngressRequest;
 use LiveKit\Proto\IngressInfo;
 use LiveKit\Proto\ListIngressRequest;
 use LiveKit\Proto\ListIngressResponse;
 use LiveKit\Proto\TokenPagination;
 use LiveKit\Proto\UpdateIngressRequest;
 
-final class IngressClient extends ServiceBase
+final class IngressClient extends ServiceBase implements IngressClientInterface
 {
     private const SERVICE = 'Ingress';
 
@@ -163,5 +165,19 @@ final class IngressClient extends ServiceBase
         }
 
         return $items;
+    }
+
+    public function deleteIngress(string $ingressId): IngressInfo
+    {
+        $request = new DeleteIngressRequest();
+        $request->setIngressId($ingressId);
+
+        return $this->rpc(
+            self::SERVICE,
+            'DeleteIngress',
+            $request,
+            IngressInfo::class,
+            $this->authHeader(new VideoGrant(ingressAdmin: true)),
+        );
     }
 }

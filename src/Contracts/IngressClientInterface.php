@@ -17,4 +17,6 @@ interface IngressClientInterface
 
     /** @return list<IngressInfo> */
     public function listIngress(?ListIngressOptions $options = null): array;
+
+    public function deleteIngress(string $ingressId): IngressInfo;
 }
