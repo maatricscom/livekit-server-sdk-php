@@ -13,6 +13,7 @@ use LiveKit\Options\RoomCompositeOptions;
 use LiveKit\Options\TrackCompositeOptions;
 use LiveKit\Options\WebOptions;
 use LiveKit\Proto\AudioMixing;
+use LiveKit\Proto\DirectFileOutput;
 use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EncodedFileOutput;
 use LiveKit\Proto\EncodingOptions;
@@ -22,7 +23,9 @@ use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\TrackCompositeEgressRequest;
+use LiveKit\Proto\TrackEgressRequest;
 use LiveKit\Proto\WebEgressRequest;
+use LiveKit\Proto\WebhookConfig;
 
 /**
  * Client for the livekit.Egress Twirp service. Every rpc authenticates with roomRecord.
@@ -116,6 +119,29 @@ final class EgressClient extends ServiceBase
         $this->applyEncoding($request, $options?->encodingOptions);
 
         return $this->egressInfoRpc('StartTrackCompositeEgress', $request);
+    }
+
+    /**
+     * @param list<WebhookConfig>|null $webhooks
+     */
+    public function startTrackEgress(
+        string $roomName,
+        DirectFileOutput|string $output,
+        string $trackId,
+        ?array $webhooks = null,
+    ): EgressInfo {
+        $request = new TrackEgressRequest();
+        $request->setRoomName($roomName);
+        $request->setTrackId($trackId);
+        $request->setWebhooks($webhooks ?? []);
+
+        if ($output instanceof DirectFileOutput) {
+            $request->setFile($output);
+        } else {
+            $request->setWebsocketUrl($output);
+        }
+
+        return $this->egressInfoRpc('StartTrackEgress', $request);
     }
 
     /**

@@ -9,6 +9,7 @@ use LiveKit\Options\ParticipantEgressOptions;
 use LiveKit\Options\RoomCompositeOptions;
 use LiveKit\Options\TrackCompositeOptions;
 use LiveKit\Options\WebOptions;
+use LiveKit\Proto\DirectFileOutput;
 use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EgressStatus;
 use LiveKit\Proto\EncodedFileOutput;
@@ -18,10 +19,12 @@ use LiveKit\Proto\EncodingOptionsPreset;
 use LiveKit\Proto\ImageOutput;
 use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
+use LiveKit\Proto\S3Upload;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\StreamProtocol;
 use LiveKit\Proto\TrackCompositeEgressRequest;
+use LiveKit\Proto\TrackEgressRequest;
 use LiveKit\Proto\WebEgressRequest;
 use LiveKit\Proto\WebhookConfig;
 use LiveKit\Services\EgressClient;
@@ -371,6 +374,71 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame('', $request->getAudioTrackId());
         self::assertSame('', $request->getVideoTrackId());
         self::assertSame('', $request->getOptions());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartTrackEgressWithDirectFileOutput(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_track_file')));
+        $client = $this->egressClient();
+
+        $s3 = new S3Upload();
+        $s3->setBucket('my-bucket');
+        $s3->setRegion('eu-central-1');
+
+        $file = new DirectFileOutput();
+        $file->setFilepath('tracks/{track_id}.ogg');
+        $file->setDisableManifest(true);
+        $file->setS3($s3);
+
+        $webhook = new WebhookConfig();
+        $webhook->setUrl('https://hooks.example/track');
+
+        $info = $client->startTrackEgress('my-room', $file, 'TR_audio', [$webhook]);
+
+        self::assertSame('EG_track_file', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartTrackEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartTrackEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(TrackEgressRequest::class);
+
+        self::assertSame('my-room', $request->getRoomName());
+        self::assertSame('TR_audio', $request->getTrackId());
+        self::assertSame('file', $request->getOutput());
+
+        $directFile = $this->messageOf($request->getFile(), DirectFileOutput::class);
+        self::assertSame('tracks/{track_id}.ogg', $directFile->getFilepath());
+        self::assertTrue($directFile->getDisableManifest());
+        self::assertSame('my-bucket', $this->messageOf($directFile->getS3(), S3Upload::class)->getBucket());
+
+        $webhooks = $this->messagesIn($request->getWebhooks(), WebhookConfig::class);
+        self::assertCount(1, $webhooks);
+        self::assertSame('https://hooks.example/track', $webhooks[0]->getUrl());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartTrackEgressWithWebsocketUrl(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_track_ws')));
+        $client = $this->egressClient();
+
+        $client->startTrackEgress('my-room', 'wss://relay.example/track', 'TR_audio');
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartTrackEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartTrackEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(TrackEgressRequest::class);
+
+        self::assertSame('my-room', $request->getRoomName());
+        self::assertSame('TR_audio', $request->getTrackId());
+        self::assertSame('websocket_url', $request->getOutput());
+        self::assertSame('wss://relay.example/track', $request->getWebsocketUrl());
+        self::assertCount(0, $this->messagesIn($request->getWebhooks(), WebhookConfig::class));
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }
