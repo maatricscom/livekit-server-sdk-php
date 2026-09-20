@@ -1,9 +1,9 @@
 # LiveKit PHP Server SDK — Design
 
 > **This document is a record of how the SDK was built, not a description of what it is now.**
-> It is left as it was written. Names, scope and decisions have moved on since — `README.md` and
-> `CHANGELOG.md` are the current truth, and this file is kept for the reasoning behind the choices,
-> not for the code it shows.
+> It is left as it was written, with one exception marked inline in §4. Names, scope and decisions have
+> moved on since — `README.md` and `CHANGELOG.md` are the current truth, and this file is kept for the
+> reasoning behind the choices, not for the code it shows.
 
 **Date:** 2026-09-20
 **Package:** `maatrics/livekit-server-sdk-php`
@@ -142,13 +142,24 @@ package:
 
 | proto package | `php_namespace` | `php_metadata_namespace` |
 |---|---|---|
-| `livekit` | `LiveKit\Proto` | `LiveKit\Proto\Meta` |
-| `livekit.agent` | `LiveKit\Proto\Agent` | `LiveKit\Proto\Meta\Agent` |
-| `logger` | `LiveKit\Proto\Logger` | `LiveKit\Proto\Meta\Logger` |
+| `livekit` | `LiveKit\Proto` | `GPBMetadata\LiveKit` |
+| `livekit.agent` | `LiveKit\Proto\Agent` | `GPBMetadata\LiveKit\Agent` |
+| `logger` | `LiveKit\Proto\Logger` | `GPBMetadata\LiveKit\Logger` |
 
-Rationale: stock output squats the global `GPBMetadata\` and `Logger\` roots and collides with
-`agence104/livekit-server-sdk` if both are installed. Injection puts all generated code under the single
-`LiveKit\` PSR-4 root. Verified working during research (285 files, one root).
+Rationale: stock output squats the **global** `Livekit\`, `GPBMetadata\` and `Logger\` roots, and collides
+with `agence104/livekit-server-sdk` if both are installed — Composer resolves a doubly-claimed PSR-4 prefix
+by merging the directories and using whichever it lists first, silently.
+
+Messages move under this package's own root. Descriptors stay under `GPBMetadata`, which is where a PHP
+consumer of protobuf expects them, but beneath a prefix of this package's own rather than at the bare root.
+That is the distinction the collision actually turns on, and it is what large generated-protobuf PHP
+codebases do: `google-cloud-php` registers 238 PSR-4 prefixes under `GPBMetadata` and not one of them is
+the bare root; Temporal's PHP SDK does the same.
+
+> **Updated 2026-09-20**, after the rest of this document was written. As first specified, descriptors went
+> to `LiveKit\Proto\Meta` — everything under one root, which avoided the collision but put them somewhere
+> no PHP developer would look. This table and the two paragraphs above it track the generator; the rest of
+> this document does not.
 
 ### Import closure
 
@@ -174,7 +185,7 @@ working form would be `aggregate_metadata=livekit#logger`, but the flag buys not
 
 ### Shipping
 
-Generated code is committed under `src/Proto/`. Composer has no build step and end users must not need
+Generated code is committed: messages under `src/Proto/`, descriptors under `metadata/`. Composer has no build step and end users must not need
 protoc. A CI job regenerates and asserts `git diff --exit-code`, so committed output cannot drift from
 the pinned upstream tag. The generation script pins a minimum protoc version (>= 29.3, the version verified
 during research) and aborts if the local protoc is older, because protoc's reserved-word list grows between
