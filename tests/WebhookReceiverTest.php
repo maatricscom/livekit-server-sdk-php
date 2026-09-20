@@ -33,9 +33,24 @@ final class WebhookReceiverTest extends TestCase
         return '{"event":"room_started","id":"EV_abc123","createdAt":"1789891388","room":{"sid":"RM_xyz","name":"my-room"}}';
     }
 
+    /**
+     * Real protojson bytes for a WebhookEvent{event: room_started, id: EV_abc123,
+     * createdAt: 1789891388, room: {sid: RM_xyz, name: my-room}}, produced by
+     * livekit/protocol's own utils/protojson.Marshal() -- the same call
+     * webhook/url_notifier.go makes before signing -- via
+     * bin/generate-webhook-fixture.go. Not a hand-written approximation.
+     */
+    private function goFixtureBody(): string
+    {
+        $body = file_get_contents(__DIR__ . '/Fixtures/webhook-event.json');
+        self::assertIsString($body, 'Regenerate with bin/generate-webhook-fixture.go');
+
+        return $body;
+    }
+
     public function test_verifies_and_parses_a_well_formed_webhook(): void
     {
-        [$body, $auth] = $this->signedWebhook($this->sampleBody());
+        [$body, $auth] = $this->signedWebhook($this->goFixtureBody());
 
         $event = (new WebhookReceiver(self::API_KEY, self::API_SECRET))->receive($body, $auth);
 
@@ -70,22 +85,31 @@ final class WebhookReceiverTest extends TestCase
     }
 
     /**
-     * Go's protojson output is not byte-reproducible, so hashing a re-encoded
-     * body fails verification. This test pins that failure mode so nobody
-     * "helpfully" adds a json_encode() round-trip later.
+     * Verification is byte-exact, not semantic-JSON-exact: the raw body must be
+     * hashed as received, never a JSON structure reconstructed from it. This
+     * test pins that failure mode against real Go protojson bytes (see
+     * goFixtureBody()) so nobody "helpfully" adds a decode/re-encode round-trip
+     * before hashing.
      *
-     * Uses a body containing an unescaped "/" rather than sampleBody(): PHP's
-     * json_encode() escapes forward slashes to "\/" by default, which is
-     * enough to change the bytes on round-trip. sampleBody() is plain ASCII
-     * with no slashes, so decoding and re-encoding it is a no-op in PHP and
-     * would not actually exercise this failure mode.
+     * Finding while writing this against the real fixture: for this event's
+     * shape (no forward slashes, no non-ASCII, no floats), a *compact* PHP
+     * json_decode()/json_encode() round-trip reproduces the Go bytes exactly --
+     * Go's protojson field order follows proto field numbers, and PHP preserves
+     * key order through decode/encode, so with nothing PHP escapes differently
+     * there is nothing left to diverge on. That would make a compact round-trip
+     * a vacuous precondition here. A pretty-printed re-encode is used instead:
+     * it is still exactly the "decode then re-encode" mistake this test exists
+     * to catch (plenty of frameworks and debug middleware pretty-print JSON by
+     * default), and its divergence from Go's compact output does not depend on
+     * the payload happening to contain characters PHP escapes differently.
      */
     public function test_rejects_a_reserialized_body(): void
     {
-        $body = '{"event":"room_started","id":"EV_abc123","room":{"sid":"RM_xyz","name":"my-room","metadata":"a/b"}}';
+        $body = $this->goFixtureBody();
         [, $auth] = $this->signedWebhook($body);
 
-        $reserialized = json_encode(json_decode($body, true, 512, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR);
+        $decoded = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+        $reserialized = json_encode($decoded, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
         self::assertNotSame($body, $reserialized, 'Precondition: re-encoding must change the bytes');
 
         $this->expectException(WebhookVerificationException::class);
