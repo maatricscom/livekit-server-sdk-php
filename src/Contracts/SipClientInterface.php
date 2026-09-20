@@ -13,6 +13,7 @@ use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
+use LiveKit\Options\TransferSipParticipantOptions;
 use LiveKit\Proto\SIPDispatchRule;
 use LiveKit\Proto\SIPDispatchRuleInfo;
 use LiveKit\Proto\SIPInboundTrunkInfo;
@@ -20,6 +21,7 @@ use LiveKit\Proto\SIPOutboundConfig;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPParticipantInfo;
 use LiveKit\Proto\SIPTrunkInfo;
+use LiveKit\Proto\TransferSIPParticipantResponse;
 
 /**
  * The LiveKit SIP service: trunks, dispatch rules and SIP participants.
@@ -177,4 +179,19 @@ interface SipClientInterface
         ?CreateSipParticipantOptions $opts = null,
         ?SIPOutboundConfig $outboundTrunkConfig = null,
     ): SIPParticipantInfo;
+
+    /**
+     * Transfers a SIP participant to another destination with a SIP REFER.
+     *
+     * @param string $transferTo SIP URI or tel: URI of the destination
+     *
+     * @throws \LiveKit\Exceptions\SipCallError when the failure carries a SIP status
+     * @throws \LiveKit\Exceptions\TwirpException
+     */
+    public function transferSipParticipant(
+        string $roomName,
+        string $participantIdentity,
+        string $transferTo,
+        ?TransferSipParticipantOptions $opts = null,
+    ): TransferSIPParticipantResponse;
 }

@@ -16,6 +16,7 @@ use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
+use LiveKit\Options\TransferSipParticipantOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
@@ -44,6 +45,8 @@ use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkUpdate;
 use LiveKit\Proto\SIPParticipantInfo;
 use LiveKit\Proto\SIPTrunkInfo;
+use LiveKit\Proto\TransferSIPParticipantRequest;
+use LiveKit\Proto\TransferSIPParticipantResponse;
 use LiveKit\Proto\UpdateSIPDispatchRuleRequest;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
@@ -852,6 +855,59 @@ final class SipClient extends ServiceBase
             $request,
             SIPParticipantInfo::class,
             $this->authHeader(new VideoGrant(), new SIPGrant(call: true)),
+            $requestTimeout,
+        );
+
+        return $response;
+    }
+
+    /**
+     * Transfers a SIP participant to another destination with a SIP REFER.
+     *
+     * Needs two grants: roomAdmin scoped to $roomName, because the transfer acts on a
+     * participant in that room, and sip.call, because it dials the destination. Verified
+     * against the Node SDK.
+     *
+     * @param string $transferTo SIP URI or tel: URI of the destination
+     *
+     * @throws \LiveKit\Exceptions\SipCallError when the failure carries a SIP status
+     * @throws \LiveKit\Exceptions\TwirpException
+     */
+    public function transferSipParticipant(
+        string $roomName,
+        string $participantIdentity,
+        string $transferTo,
+        ?TransferSipParticipantOptions $opts = null,
+    ): TransferSIPParticipantResponse {
+        $opts ??= new TransferSipParticipantOptions();
+
+        // A transfer always dials and waits, so the ring window is always pinned and the
+        // request timeout always derived from it.
+        $ringingTimeout = $opts->ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS;
+        $requestTimeout = self::dialRequestTimeout($opts->timeout, $ringingTimeout);
+
+        $request = new TransferSIPParticipantRequest();
+        $request->setRoomName($roomName);
+        $request->setParticipantIdentity($participantIdentity);
+        $request->setTransferTo($transferTo);
+        $request->setRingingTimeout((new Duration())->setSeconds($ringingTimeout));
+
+        if ($opts->playDialtone !== null) {
+            $request->setPlayDialtone($opts->playDialtone);
+        }
+        if ($opts->headers !== null) {
+            $request->setHeaders($opts->headers);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'TransferSIPParticipant',
+            $request,
+            TransferSIPParticipantResponse::class,
+            $this->authHeader(
+                new VideoGrant(roomAdmin: true, room: $roomName),
+                new SIPGrant(call: true),
+            ),
             $requestTimeout,
         );
 

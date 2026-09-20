@@ -13,6 +13,7 @@ use LiveKit\Options\ListSipTrunkOptions;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
+use LiveKit\Options\TransferSipParticipantOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
@@ -43,8 +44,11 @@ use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundConfig;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPParticipantInfo;
+use LiveKit\Proto\SIPTransferStatus;
 use LiveKit\Proto\SIPTransport;
 use LiveKit\Proto\SIPTrunkInfo;
+use LiveKit\Proto\TransferSIPParticipantRequest;
+use LiveKit\Proto\TransferSIPParticipantResponse;
 use LiveKit\Proto\UpdateSIPDispatchRuleRequest;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
@@ -1082,6 +1086,98 @@ final class SipClientTest extends TwirpTestCase
         // No override is passed, so the deadline is whatever ClientOptions holds - not the
         // dialing floor. Only the absence of '32000' is this test's business.
         self::assertNotSame(
+            '32000',
+            $this->http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'),
+        );
+    }
+
+    public function testTransferSipParticipantNeedsBothRoomAdminAndSipCall(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new TransferSIPParticipantResponse()));
+
+        $this->client->transferSipParticipant('my-room', 'caller-7', 'tel:+15105550199');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'TransferSIPParticipant');
+
+        // VERIFIED against node-sdks SipClient.ts: transferSipParticipant calls
+        // this.authHeader({ roomAdmin: true, room: roomName }, { call: true }). It is the
+        // only SIP method that needs a video grant at all, and the room must be named in
+        // the grant because roomAdmin is room-scoped server-side.
+        $claims = $this->claims($request);
+        self::assertEquals(['roomAdmin' => true, 'room' => 'my-room'], $claims['video']);
+        self::assertEquals(['call' => true], $claims['sip']);
+        self::assertArrayNotHasKey('admin', (array) $claims['sip']);
+        self::assertSame(self::API_KEY, $claims['iss']);
+
+        $sent = $this->decodeRequest(TransferSIPParticipantRequest::class);
+        self::assertSame('my-room', $sent->getRoomName());
+        self::assertSame('caller-7', $sent->getParticipantIdentity());
+        self::assertSame('tel:+15105550199', $sent->getTransferTo());
+    }
+
+    public function testTransferSipParticipantMapsItsOptions(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new TransferSIPParticipantResponse())
+                ->setTransferId('TR_1')
+                ->setStatus(SIPTransferStatus::STS_TRANSFER_SUCCESSFUL),
+        ));
+
+        $response = $this->client->transferSipParticipant(
+            'my-room',
+            'caller-7',
+            'tel:+15105550199',
+            new TransferSipParticipantOptions(
+                playDialtone: true,
+                headers: ['X-Ref' => 'abc'],
+                ringingTimeout: 45,
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'TransferSIPParticipant');
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+        $this->assertSipGrant(['call' => true], $request);
+
+        $sent = $this->decodeRequest(TransferSIPParticipantRequest::class);
+        self::assertSame('my-room', $sent->getRoomName());
+        self::assertSame('caller-7', $sent->getParticipantIdentity());
+        self::assertSame('tel:+15105550199', $sent->getTransferTo());
+        self::assertTrue($sent->getPlayDialtone());
+        self::assertSame(['X-Ref' => 'abc'], iterator_to_array($sent->getHeaders()));
+        self::assertSame(45, (int) $sent->getRingingTimeout()?->getSeconds());
+
+        // A caller-set ring window moves the derived deadline with it: 45s + 2s margin.
+        self::assertSame(
+            '47000',
+            $this->http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'),
+        );
+
+        self::assertSame('TR_1', $response->getTransferId());
+        self::assertSame(SIPTransferStatus::STS_TRANSFER_SUCCESSFUL, $response->getStatus());
+    }
+
+    public function testTransferSipParticipantAlwaysPinsTheRingingWindow(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new TransferSIPParticipantResponse()));
+
+        $this->client->transferSipParticipant('my-room', 'caller-7', 'tel:+15105550199');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'TransferSIPParticipant');
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+        $this->assertSipGrant(['call' => true], $request);
+
+        $sent = $this->decodeRequest(TransferSIPParticipantRequest::class);
+        // Unlike createSipParticipant, a transfer always waits for an answer, so the ring
+        // window is pinned even when the caller passed no options at all.
+        self::assertSame(30, (int) $sent->getRingingTimeout()?->getSeconds());
+        self::assertFalse($sent->getPlayDialtone());
+        self::assertCount(0, $sent->getHeaders());
+
+        // And the derived deadline rides along on every transfer, options or not.
+        self::assertSame(
             '32000',
             $this->http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'),
         );
