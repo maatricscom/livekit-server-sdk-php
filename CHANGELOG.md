@@ -107,6 +107,11 @@ starting out now has no reason to carry a version that only receives security fi
 - A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
   unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
   under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
+- PHPStan analyses against the whole supported PHP range (`phpVersion: min 80400, max 80599`) rather
+  than against whichever PHP happens to run it. Unset, it assumed 8.5 on a machine running 8.5 and 8.4
+  in CI, so a function that exists only in 8.5 — `array_first()`, say — passed locally and would have
+  broken for a user on 8.4. `ToolingConfigTest` ties the lower bound to the `php` constraint in
+  composer.json so the two cannot drift apart.
 - CI runs the unit suite against `ext-protobuf` as well as the pure-PHP runtime, on 8.4 and 8.5. It
   previously tested only the runtime Composer installs, which is how the two items above went unnoticed.
 - `ext-protobuf` is constrained to **5.34 or newer** via a `conflict` entry, not just named in `suggest`.

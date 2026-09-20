@@ -1,5 +1,12 @@
 parameters:
     level: max
+    # composer.json says ^8.4, so both 8.4 and 8.5 are supported and both have to
+    # be analysed. Left unset, PHPStan assumes whichever PHP happens to run it --
+    # 8.4 in CI, whatever a contributor has locally -- and the other one is never
+    # checked. Raise these together with the floor in composer.json.
+    phpVersion:
+        min: 80400
+        max: 80599
     paths:
         - src
         - tests
