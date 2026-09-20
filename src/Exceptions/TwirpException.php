@@ -58,7 +58,9 @@ class TwirpException extends \RuntimeException implements LiveKitException
         }
 
         return new static(
-            is_string($decoded['msg'] ?? null) ? $decoded['msg'] : 'LiveKit request failed',
+            is_string($decoded['msg'] ?? null)
+                ? $decoded['msg']
+                : sprintf('LiveKit request failed with HTTP %d', $status),
             is_string($decoded['code']) ? $decoded['code'] : 'unknown',
             $status,
             $meta,

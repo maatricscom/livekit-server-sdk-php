@@ -64,6 +64,20 @@ final class TwirpExceptionTest extends TestCase
         self::assertStringContainsString('bad gateway', $exception->getMessage());
     }
 
+    /**
+     * A `{"code":...}` body with no `msg` must not lose the HTTP status the way the
+     * no-`code` branch above already preserves it -- both fall back to a message
+     * that still names the status, rather than a bare, context-free string.
+     */
+    public function test_a_missing_message_still_carries_the_http_status(): void
+    {
+        $exception = TwirpException::fromResponse(503, '{"code":"unavailable"}');
+
+        self::assertSame('unavailable', $exception->getTwirpCode());
+        self::assertSame(503, $exception->getHttpStatus());
+        self::assertStringContainsString('503', $exception->getMessage());
+    }
+
     public function test_builds_a_sip_call_error_when_meta_carries_sip_status(): void
     {
         $exception = SipCallError::fromResponse(
@@ -82,5 +96,20 @@ final class TwirpExceptionTest extends TestCase
 
         self::assertNull($exception->getSipStatusCode());
         self::assertNull($exception->getSipStatus());
+    }
+
+    /**
+     * getMeta() values are always strings; a non-numeric sip_status_code must
+     * come back as null (absent), never silently coerced to 0 by (int) casting.
+     */
+    public function test_sip_call_error_with_a_non_numeric_status_code_returns_null(): void
+    {
+        $exception = SipCallError::fromResponse(
+            500,
+            '{"code":"internal","msg":"call failed","meta":{"sip_status_code":"not-a-number","sip_status":"Unknown"}}'
+        );
+
+        self::assertNull($exception->getSipStatusCode());
+        self::assertSame('Unknown', $exception->getSipStatus());
     }
 }

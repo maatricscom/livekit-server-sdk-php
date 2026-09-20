@@ -14,7 +14,10 @@ final class SipCallError extends TwirpException
     {
         $code = $this->getMeta()['sip_status_code'] ?? null;
 
-        return is_string($code) && $code !== '' ? (int) $code : null;
+        // getMeta() values are always strings (Twirp meta is a string map), so a
+        // malformed or unexpected non-numeric value must not silently become 0 --
+        // that would be indistinguishable from a real (if invalid) status of 0.
+        return is_string($code) && ctype_digit($code) ? (int) $code : null;
     }
 
     public function getSipStatus(): ?string
