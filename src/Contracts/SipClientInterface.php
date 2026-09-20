@@ -154,4 +154,7 @@ interface SipClientInterface
      * @return list<SIPDispatchRuleInfo>
      */
     public function listSipDispatchRule(?ListSipDispatchRuleOptions $opts = null): array;
+
+    /** Deletes a SIP dispatch rule and returns the rule as it was. */
+    public function deleteSipDispatchRule(string $sipDispatchRuleId): SIPDispatchRuleInfo;
 }

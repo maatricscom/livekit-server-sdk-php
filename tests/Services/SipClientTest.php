@@ -15,6 +15,7 @@ use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\DeleteSIPDispatchRuleRequest;
 use LiveKit\Proto\DeleteSIPTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
@@ -838,5 +839,24 @@ final class SipClientTest extends TwirpTestCase
         self::assertNull($sent->getPage());
         self::assertCount(0, $sent->getDispatchRuleIds());
         self::assertCount(0, $sent->getTrunkIds());
+    }
+
+    public function testDeleteSipDispatchRule(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPDispatchRuleInfo())->setSipDispatchRuleId('SDR_direct'),
+        ));
+
+        $deleted = $this->client->deleteSipDispatchRule('SDR_direct');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'DeleteSIPDispatchRule');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(DeleteSIPDispatchRuleRequest::class);
+        self::assertSame('SDR_direct', $sent->getSipDispatchRuleId());
+
+        self::assertSame('SDR_direct', $deleted->getSipDispatchRuleId());
     }
 }

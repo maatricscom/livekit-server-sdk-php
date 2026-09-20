@@ -18,6 +18,7 @@ use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPDispatchRuleRequest;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\DeleteSIPDispatchRuleRequest;
 use LiveKit\Proto\DeleteSIPTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkRequest;
 use LiveKit\Proto\GetSIPInboundTrunkResponse;
@@ -700,5 +701,22 @@ final class SipClient extends ServiceBase
         }
 
         return $items;
+    }
+
+    /** Deletes a SIP dispatch rule and returns the rule as it was. */
+    public function deleteSipDispatchRule(string $sipDispatchRuleId): SIPDispatchRuleInfo
+    {
+        $request = new DeleteSIPDispatchRuleRequest();
+        $request->setSipDispatchRuleId($sipDispatchRuleId);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'DeleteSIPDispatchRule',
+            $request,
+            SIPDispatchRuleInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
     }
 }
