@@ -21,6 +21,12 @@
 
 set -euo pipefail
 
+if ((BASH_VERSINFO[0] < 4)); then
+    echo "error: bash >= 4 required (found ${BASH_VERSION}); the import-closure pass needs associative arrays." >&2
+    echo "       macOS ships bash 3.2 at /bin/bash — install a newer one with: brew install bash" >&2
+    exit 1
+fi
+
 PROTOCOL_VERSION="v1.52.0"
 MIN_PROTOC_VERSION="29.3"
 
