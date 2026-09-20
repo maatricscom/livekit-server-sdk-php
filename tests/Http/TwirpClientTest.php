@@ -6,6 +6,7 @@ namespace LiveKit\Tests\Http;
 
 use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
+use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Http\TwirpClient;
@@ -15,6 +16,7 @@ use LiveKit\Tests\Support\MockHttpClient;
 use LiveKit\Tests\Support\TestCase;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
+use Psr\Http\Client\ClientExceptionInterface;
 
 final class TwirpClientTest extends TestCase
 {
@@ -113,6 +115,43 @@ final class TwirpClientTest extends TestCase
 
         self::assertInstanceOf(Room::class, $room);
         self::assertSame('my-room', $room->getName());
+    }
+
+    /**
+     * mergeFromJsonString('', true) throws GPBDecodeException on empty input.
+     * Binary mode's mergeFromString('') does not — it yields an all-defaults
+     * message — so a 204, or a proxy that strips the body, must behave the
+     * same way in JSON mode rather than leaking a non-SDK exception.
+     */
+    public function test_json_mode_treats_an_empty_2xx_body_as_a_default_message(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(200, ['Content-Type' => 'application/json'], ''));
+
+        $room = $this->transport($http, new ClientOptions(wireFormat: WireFormat::Json))
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt-token');
+
+        self::assertInstanceOf(Room::class, $room);
+        self::assertSame('', $room->getName());
+    }
+
+    /**
+     * A malformed JSON body must still surface as TwirpException — the type the
+     * method's contract promises — not as a raw GPBDecodeException that a
+     * caller catching LiveKitException would miss entirely.
+     */
+    public function test_json_mode_wraps_malformed_json_in_a_twirp_exception(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(200, ['Content-Type' => 'application/json'], '{not valid json'));
+
+        try {
+            $this->transport($http, new ClientOptions(wireFormat: WireFormat::Json))
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt-token');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertNotInstanceOf(SipCallError::class, $e);
+        }
     }
 
     public function test_sends_the_authorization_user_agent_and_request_id_headers(): void
@@ -251,7 +290,13 @@ final class TwirpClientTest extends TestCase
         }
     }
 
-    public function test_uses_the_pre_signed_token_path_transparently(): void
+    /**
+     * This exercises the ordinary $jwt parameter, not ClientOptions::$token —
+     * wiring a pre-signed token in place of minting one per call is a
+     * service-client-layer concern for a later task; there is nothing to
+     * verify about it here.
+     */
+    public function test_sends_the_supplied_jwt_as_a_bearer_token(): void
     {
         $http = new MockHttpClient();
         $http->pushResponse($this->roomResponse('my-room'));
@@ -259,6 +304,36 @@ final class TwirpClientTest extends TestCase
         $this->transport($http)->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'pre-signed');
 
         self::assertSame('Bearer pre-signed', $http->lastRequest()->getHeaderLine('Authorization'));
+    }
+
+    public function test_wraps_a_transport_failure_in_a_twirp_exception(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushException(new class ('connection refused') extends \RuntimeException implements ClientExceptionInterface {});
+
+        try {
+            $this->transport($http)->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertSame('unavailable', $e->getTwirpCode());
+            self::assertSame(0, $e->getHttpStatus());
+            self::assertStringContainsString('connection refused', $e->getMessage());
+            self::assertInstanceOf(ClientExceptionInterface::class, $e->getPrevious());
+        }
+    }
+
+    public function test_an_empty_host_throws_a_configuration_exception(): void
+    {
+        $this->expectException(ConfigurationException::class);
+
+        $this->transport(new MockHttpClient(), null, '');
+    }
+
+    public function test_a_whitespace_only_host_throws_a_configuration_exception(): void
+    {
+        $this->expectException(ConfigurationException::class);
+
+        $this->transport(new MockHttpClient(), null, '   ');
     }
 
     public function test_generates_a_distinct_request_id_per_call(): void

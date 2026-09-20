@@ -107,9 +107,24 @@ final class TwirpClient
         $message = new $responseClass();
 
         if ($this->options->wireFormat === WireFormat::Json) {
-            // The second argument is ignore_unknown. Without it, any field LiveKit
-            // adds to a response throws GPBDecodeException and breaks the SDK.
-            $message->mergeFromJsonString($responseBody, true);
+            // A 204, or a proxy that strips the body, leaves nothing to decode.
+            // Binary mode yields an all-defaults message for empty input, so match
+            // that rather than throwing for a response the server considered a success.
+            if (trim($responseBody) !== '') {
+                try {
+                    // The second argument is ignore_unknown. Without it, any field
+                    // LiveKit adds to a response throws and breaks the SDK.
+                    $message->mergeFromJsonString($responseBody, true);
+                } catch (\Throwable $e) {
+                    throw new TwirpException(
+                        sprintf('Could not decode the JSON response from %s: %s', $uri, $e->getMessage()),
+                        'internal',
+                        $status,
+                        [],
+                        $e,
+                    );
+                }
+            }
         } else {
             $message->mergeFromString($responseBody);
         }
