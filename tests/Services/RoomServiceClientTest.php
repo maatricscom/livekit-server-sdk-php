@@ -25,6 +25,8 @@ use LiveKit\Proto\MuteRoomTrackRequest;
 use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\ParticipantPermission;
+use LiveKit\Proto\PerformRpcRequest;
+use LiveKit\Proto\PerformRpcResponse;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
@@ -502,6 +504,46 @@ final class RoomServiceClientTest extends TwirpTestCase
             ['roomAdmin' => true, 'room' => 'my-room', 'destinationRoom' => 'breakout-1'],
             $request,
         );
+    }
+
+    public function testPerformRpcSendsMethodPayloadAndTimeout(): void
+    {
+        $client = $this->client((new PerformRpcResponse())->setPayload('{"ok":true}'));
+
+        $result = $client->performRpc('my-room', 'alice', 'greet', '{"name":"bob"}', 5000);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'PerformRpc');
+
+        $sent = $this->decodeRequest(PerformRpcRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getDestinationIdentity());
+        self::assertSame('greet', $sent->getMethod());
+        self::assertSame('{"name":"bob"}', $sent->getPayload());
+        self::assertSame(5000, $sent->getResponseTimeoutMs());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+
+        self::assertSame('{"ok":true}', $result->getPayload());
+    }
+
+    public function testPerformRpcOmitsTheTimeoutWhenNotGiven(): void
+    {
+        $client = $this->client(new PerformRpcResponse());
+
+        $client->performRpc('my-room', 'alice', 'greet', '{}');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'PerformRpc');
+
+        $sent = $this->decodeRequest(PerformRpcRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getDestinationIdentity());
+        self::assertSame('greet', $sent->getMethod());
+        self::assertSame('{}', $sent->getPayload());
+        self::assertSame(0, $sent->getResponseTimeoutMs());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }
 
     private function client(Message $response): RoomServiceClient

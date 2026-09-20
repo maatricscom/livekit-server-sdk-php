@@ -24,6 +24,8 @@ use LiveKit\Proto\MoveParticipantResponse;
 use LiveKit\Proto\MuteRoomTrackRequest;
 use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
+use LiveKit\Proto\PerformRpcRequest;
+use LiveKit\Proto\PerformRpcResponse;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
@@ -431,6 +433,36 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof MoveParticipantResponse);
+
+        return $response;
+    }
+
+    public function performRpc(
+        string $room,
+        string $destinationIdentity,
+        string $method,
+        string $payload,
+        ?int $responseTimeoutMs = null,
+    ): PerformRpcResponse {
+        $request = new PerformRpcRequest();
+        $request->setRoom($room);
+        $request->setDestinationIdentity($destinationIdentity);
+        $request->setMethod($method);
+        $request->setPayload($payload);
+
+        if ($responseTimeoutMs !== null) {
+            $request->setResponseTimeoutMs($responseTimeoutMs);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'PerformRpc',
+            $request,
+            PerformRpcResponse::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof PerformRpcResponse);
 
         return $response;
     }
