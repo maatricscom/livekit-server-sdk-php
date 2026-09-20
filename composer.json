@@ -1,0 +1,55 @@
+{
+    "name": "maatrics/livekit-server-sdk",
+    "description": "LiveKit server SDK for PHP — room management, egress, ingress, SIP, agent dispatch, access tokens and webhooks",
+    "keywords": ["livekit", "webrtc", "sdk", "video", "sip", "egress"],
+    "type": "library",
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.3",
+        "ext-json": "*",
+        "google/protobuf": "^4.33.6 || ^5.36",
+        "firebase/php-jwt": "^7.1",
+        "psr/http-client": "^1.0.3",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0",
+        "php-http/discovery": "^1.20"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0",
+        "phpstan/phpstan": "^2.1",
+        "laravel/pint": "^1.24",
+        "rector/rector": "^2.1",
+        "guzzlehttp/guzzle": "^7.9",
+        "guzzlehttp/psr7": "^2.7",
+        "nyholm/psr7": "^1.8"
+    },
+    "suggest": {
+        "ext-protobuf": "Significantly faster protobuf serialization; the pure-PHP runtime is used otherwise",
+        "ext-bcmath": "Required by the pure-PHP protobuf runtime for JSON deserialization of 64-bit values"
+    },
+    "autoload": {
+        "psr-4": {
+            "LiveKit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LiveKit\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse",
+        "lint": "pint --test",
+        "fix": "pint",
+        "generate-protos": "bin/generate-protos.sh"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,2 +1,7 @@
+/vendor
+/composer.lock
+/.phpunit.cache
+/.phpstan.cache
 .DS_Store
+/build
 /.superpowers
