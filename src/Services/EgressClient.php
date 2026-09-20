@@ -8,6 +8,7 @@ use Google\Protobuf\Internal\Message;
 use LiveKit\Contracts\EgressClientInterface;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\EncodedOutputs;
+use LiveKit\Options\ParticipantEgressOptions;
 use LiveKit\Options\RoomCompositeOptions;
 use LiveKit\Options\WebOptions;
 use LiveKit\Proto\AudioMixing;
@@ -73,6 +74,27 @@ final class EgressClient extends ServiceBase
         $this->applyEncoding($request, $options?->encodingOptions);
 
         return $this->egressInfoRpc('StartWebEgress', $request);
+    }
+
+    public function startParticipantEgress(
+        string $roomName,
+        string $identity,
+        EncodedOutputs $output,
+        ?ParticipantEgressOptions $options = null,
+    ): EgressInfo {
+        $resolved = $this->resolveOutputs($output);
+
+        $request = new ParticipantEgressRequest();
+        $request->setRoomName($roomName);
+        $request->setIdentity($identity);
+        $request->setScreenShare($options->screenShare ?? false);
+        $request->setWebhooks($options->webhooks ?? []);
+
+        // ParticipantEgressRequest has no legacy `output` oneof, so only the plural arrays are set.
+        $this->applyOutputArrays($request, $resolved);
+        $this->applyEncoding($request, $options?->encodingOptions);
+
+        return $this->egressInfoRpc('StartParticipantEgress', $request);
     }
 
     /**

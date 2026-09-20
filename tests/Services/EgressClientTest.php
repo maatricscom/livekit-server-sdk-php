@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\EncodedOutputs;
+use LiveKit\Options\ParticipantEgressOptions;
 use LiveKit\Options\RoomCompositeOptions;
 use LiveKit\Options\WebOptions;
 use LiveKit\Proto\EgressInfo;
@@ -14,6 +15,7 @@ use LiveKit\Proto\EncodedFileType;
 use LiveKit\Proto\EncodingOptions;
 use LiveKit\Proto\EncodingOptionsPreset;
 use LiveKit\Proto\ImageOutput;
+use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StreamOutput;
@@ -214,6 +216,80 @@ final class EgressClientTest extends TwirpTestCase
         self::assertCount(1, $segmentOutputs);
         self::assertSame('hls/segment', $segmentOutputs[0]->getFilenamePrefix());
 
+        self::assertSame('', $request->getOptions());
+        self::assertCount(0, $this->messagesIn($request->getWebhooks(), WebhookConfig::class));
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartParticipantEgressSetsOnlyPluralArrays(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_participant')));
+        $client = $this->egressClient();
+
+        $file = new EncodedFileOutput();
+        $file->setFilepath('participants/{publisher_identity}.mp4');
+
+        $segments = new SegmentedFileOutput();
+        $segments->setFilenamePrefix('participants/seg');
+
+        $info = $client->startParticipantEgress(
+            'my-room',
+            'alice',
+            new EncodedOutputs(file: $file, segments: $segments),
+            new ParticipantEgressOptions(
+                screenShare: true,
+                encodingOptions: EncodingOptionsPreset::PORTRAIT_H264_720P_30,
+            ),
+        );
+
+        self::assertSame('EG_participant', $info->getEgressId());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartParticipantEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartParticipantEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(ParticipantEgressRequest::class);
+
+        self::assertSame('my-room', $request->getRoomName());
+        self::assertSame('alice', $request->getIdentity());
+        self::assertTrue($request->getScreenShare());
+
+        $fileOutputs = $this->messagesIn($request->getFileOutputs(), EncodedFileOutput::class);
+        self::assertCount(1, $fileOutputs);
+        self::assertSame('participants/{publisher_identity}.mp4', $fileOutputs[0]->getFilepath());
+
+        $segmentOutputs = $this->messagesIn($request->getSegmentOutputs(), SegmentedFileOutput::class);
+        self::assertCount(1, $segmentOutputs);
+        self::assertSame('participants/seg', $segmentOutputs[0]->getFilenamePrefix());
+
+        self::assertCount(0, $this->messagesIn($request->getStreamOutputs(), StreamOutput::class));
+        self::assertCount(0, $this->messagesIn($request->getImageOutputs(), ImageOutput::class));
+
+        self::assertSame('preset', $request->getOptions());
+        self::assertSame(EncodingOptionsPreset::PORTRAIT_H264_720P_30, $request->getPreset());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testStartParticipantEgressDefaultsScreenShareToFalseAndOmitsEncoding(): void
+    {
+        $this->http->pushResponse($this->protoResponse($this->egressInfo('EG_participant_defaults')));
+        $client = $this->egressClient();
+
+        $file = new EncodedFileOutput();
+        $file->setFilepath('participants/bob.mp4');
+
+        $client->startParticipantEgress('my-room', 'bob', new EncodedOutputs(file: $file));
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'StartParticipantEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/StartParticipantEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(ParticipantEgressRequest::class);
+
+        self::assertSame('bob', $request->getIdentity());
+        self::assertFalse($request->getScreenShare());
         self::assertSame('', $request->getOptions());
         self::assertCount(0, $this->messagesIn($request->getWebhooks(), WebhookConfig::class));
 
