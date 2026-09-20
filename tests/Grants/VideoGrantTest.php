@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Grants;
 
+use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Tests\Support\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class VideoGrantTest extends TestCase
 {
@@ -96,5 +98,70 @@ final class VideoGrantTest extends TestCase
         $json = json_encode((new VideoGrant(roomJoin: true, room: 'r', canPublish: false))->toArray());
 
         self::assertSame('{"roomJoin":true,"room":"r","canPublish":false}', $json);
+    }
+
+    // ---------------------------------------------------------------------
+    // Track sources
+    //
+    // The server does TrackSource_value[ToUpper(s)] and falls back to UNKNOWN, so
+    // a misspelt source is not an error there -- it is a token that grants nothing
+    // and says nothing about why.
+    // ---------------------------------------------------------------------
+
+    /** @return iterable<string, array{list<string|int>, list<string>}> */
+    public static function acceptedTrackSources(): iterable
+    {
+        yield 'the documented names' => [['camera', 'screen_share'], ['camera', 'screen_share']];
+        yield 'proto enum constants' => [
+            [\LiveKit\Proto\TrackSource::CAMERA, \LiveKit\Proto\TrackSource::SCREEN_SHARE_AUDIO],
+            ['camera', 'screen_share_audio'],
+        ];
+        yield 'names in any case' => [['CAMERA', 'Microphone'], ['camera', 'microphone']];
+        yield 'the two mixed' => [['camera', \LiveKit\Proto\TrackSource::MICROPHONE], ['camera', 'microphone']];
+    }
+
+    /**
+     * @param list<string|int> $given
+     * @param list<string>     $expected
+     */
+    #[DataProvider('acceptedTrackSources')]
+    public function test_track_sources_are_normalized_to_the_names_livekit_reads(array $given, array $expected): void
+    {
+        self::assertSame($expected, (new VideoGrant(canPublishSources: $given))->toArray()['canPublishSources']);
+    }
+
+    /** @return iterable<string, array{string|int}> */
+    public static function rejectedTrackSources(): iterable
+    {
+        yield 'a plausible typo' => ['screenshare'];
+        yield 'an invented source' => ['webcam'];
+        yield 'an empty string' => [''];
+        yield 'UNKNOWN itself' => [\LiveKit\Proto\TrackSource::UNKNOWN];
+        yield 'an integer the enum does not define' => [99];
+        yield 'a negative integer' => [-1];
+    }
+
+    #[DataProvider('rejectedTrackSources')]
+    public function test_a_source_livekit_would_read_as_unknown_is_refused(string|int $source): void
+    {
+        $this->expectException(ConfigurationException::class);
+
+        (new VideoGrant(canPublishSources: [$source]))->toArray();
+    }
+
+    public function test_the_accepted_set_comes_from_the_generated_enum(): void
+    {
+        // Written out here it would drift from the pinned protocol; derived from the
+        // enum it cannot. If LiveKit adds a source, regenerating is all it takes.
+        $names = array_keys((new \ReflectionClass(\LiveKit\Proto\TrackSource::class))->getConstants());
+
+        foreach ($names as $name) {
+            if ($name === 'UNKNOWN') {
+                continue;
+            }
+
+            $grant = new VideoGrant(canPublishSources: [strtolower($name)]);
+            self::assertSame([strtolower($name)], $grant->toArray()['canPublishSources']);
+        }
     }
 }

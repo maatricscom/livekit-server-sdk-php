@@ -44,7 +44,12 @@ Initial release.
   decoding them, with grant types `VideoGrant`, `SIPGrant`, `AgentGrant`, `InferenceGrant` and
   `ObservabilityGrant`. Tri-state permission fields (`canPublish`, `canSubscribe`, `canPublishData`,
   `canUpdateOwnMetadata`, `canSubscribeMetrics`, `canManageAgentSession`) are modeled as nullable booleans
-  so that "unset" (server default applies) and "explicitly denied" cannot be conflated.
+  so that "unset" (server default applies) and "explicitly denied" cannot be conflated. A token can carry
+  a `RoomConfiguration`, and `toJwt()` refuses to sign one whose egress holds storage credentials or a
+  stream output — a JWT is readable by its holder, so those would be published to the participant. Track
+  sources for `canPublishSources` are validated against the generated `TrackSource` enum, because the
+  server maps an unrecognised one to `UNKNOWN` rather than rejecting it: an unchecked typo mints a token
+  that silently grants nothing.
 - `WebhookReceiver` for verifying LiveKit's webhook signatures against the exact raw request body and
   parsing the result into the generated `WebhookEvent` message, plus `WebhookEventType` for the known
   event names.

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LiveKit\Grants;
 
+use LiveKit\Proto\RoomConfiguration;
+
 /**
  * Assembles the LiveKit-specific half of an access token payload.
  *
@@ -33,6 +35,8 @@ final class ClaimGrants
     private ?ObservabilityGrant $observability = null;
 
     private ?string $roomPreset = null;
+
+    private ?RoomConfiguration $roomConfig = null;
 
     private ?string $sha256 = null;
 
@@ -124,6 +128,18 @@ final class ClaimGrants
         return $this;
     }
 
+    public function setRoomConfig(?RoomConfiguration $roomConfig): self
+    {
+        $this->roomConfig = $roomConfig;
+
+        return $this;
+    }
+
+    public function getRoomConfig(): ?RoomConfiguration
+    {
+        return $this->roomConfig;
+    }
+
     public function setSha256(?string $sha256): self
     {
         $this->sha256 = $sha256;
@@ -201,6 +217,16 @@ final class ClaimGrants
 
         if ($this->roomPreset !== null && $this->roomPreset !== '') {
             $claims['roomPreset'] = $this->roomPreset;
+        }
+
+        if ($this->roomConfig !== null) {
+            // Go marshals this field with protojson, not encoding/json, so the shape
+            // has to come from the protobuf runtime rather than from a hand-rolled
+            // array -- field names, enum spellings and well-known types all differ.
+            $encoded = json_decode($this->roomConfig->serializeToJsonString(), true, 512, JSON_THROW_ON_ERROR);
+
+            // Set but empty is still set: a pointer field, so it serializes as {}.
+            $claims['roomConfig'] = is_array($encoded) && $encoded !== [] ? $encoded : new \stdClass();
         }
 
         // Omitted when empty: json_encode([]) would emit a JSON array, but the

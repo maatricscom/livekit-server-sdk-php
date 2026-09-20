@@ -18,6 +18,28 @@ final class ConfigurationException extends \InvalidArgumentException implements 
         );
     }
 
+    /** @param list<string> $known */
+    public static function unknownTrackSource(string $source, array $known): self
+    {
+        return new self(sprintf(
+            '"%s" is not a track source LiveKit knows. Use one of: %s. The server maps an '
+            . 'unrecognised source to UNKNOWN rather than rejecting it, so an unchecked typo '
+            . 'would mint a token that silently grants nothing.',
+            $source,
+            implode(', ', $known)
+        ));
+    }
+
+    public static function sensitiveCredentialsInRoomConfig(): self
+    {
+        return new self(
+            'The room configuration on this token carries storage credentials or a stream key. '
+            . 'A JWT is signed, not encrypted, so everything in it is readable by whoever holds '
+            . 'the token — these would be published to that participant. Remove them, or call '
+            . 'AccessToken::allowSensitiveCredentials() if the token really does stay private.'
+        );
+    }
+
     public static function missingHost(): self
     {
         return new self(

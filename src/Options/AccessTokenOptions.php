@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Options;
 
 use LiveKit\AccessToken;
+use LiveKit\Proto\RoomConfiguration;
 
 /**
  * Participant-level options carried in an access token.
@@ -18,7 +19,10 @@ final readonly class AccessTokenOptions
     /**
      * @param int|string        $ttl         Seconds as an int, or a duration string such as '6h', '10m', '45s', '2d'
      * @param array<string,string> $attributes
-     * @param list<string>|null $kindDetails
+     * @param list<string>|null      $kindDetails
+     * @param RoomConfiguration|null $roomConfig Applied when the token's holder creates the room.
+     *                                           It travels inside the token, so a token holder can
+     *                                           read it — see AccessToken::allowSensitiveCredentials().
      */
     public function __construct(
         public ?string $identity = null,
@@ -29,6 +33,7 @@ final readonly class AccessTokenOptions
         public ?string $kind = null,
         public ?array $kindDetails = null,
         public ?string $roomPreset = null,
+        public ?RoomConfiguration $roomConfig = null,
     ) {
     }
 }

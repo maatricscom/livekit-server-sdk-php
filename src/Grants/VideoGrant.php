@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LiveKit\Grants;
 
+use LiveKit\Exceptions\ConfigurationException;
+use LiveKit\Proto\TrackSource;
+
 /**
  * The `video` claim of a LiveKit access token.
  *
@@ -17,8 +20,11 @@ namespace LiveKit\Grants;
 final readonly class VideoGrant
 {
     /**
-     * @param list<string>|null $canPublishSources One or more of:
-     *                                             camera, microphone, screen_share, screen_share_audio
+     * @param list<string|int>|null $canPublishSources Track sources this participant may publish, which
+     *                                                  supersedes $canPublish when set. Either the names
+     *                                                  — camera, microphone, screen_share,
+     *                                                  screen_share_audio — or LiveKit\Proto\TrackSource
+     *                                                  constants. Validated on serialization.
      */
     public function __construct(
         public bool $roomCreate = false,
@@ -40,6 +46,40 @@ final readonly class VideoGrant
         public ?bool $canManageAgentSession = null,
         public ?string $destinationRoom = null,
     ) {
+    }
+
+    /**
+     * Normalizes one track source to the name LiveKit expects.
+     *
+     * The server does TrackSource_value[strings.ToUpper(s)] and falls back to
+     * UNKNOWN, which is the failure worth preventing here: a typo like
+     * "screenshare" is not rejected anywhere, it simply grants nothing, and the
+     * participant discovers it when publishing fails for no stated reason.
+     *
+     * The accepted set comes from the generated enum rather than a list written
+     * here, so it follows the pinned protocol instead of drifting from it.
+     */
+    private static function trackSource(string|int $source): string
+    {
+        // TrackSource::name() throws for a value the enum does not define, and that
+        // exception is the protobuf runtime's, not ours.
+        try {
+            $name = is_int($source) ? TrackSource::name($source) : strtoupper($source);
+        } catch (\Throwable) {
+            $name = null;
+        }
+
+        /** @var array<string, int> $known */
+        $known = (new \ReflectionClass(TrackSource::class))->getConstants();
+
+        if (!is_string($name) || !isset($known[$name]) || $name === 'UNKNOWN') {
+            throw ConfigurationException::unknownTrackSource(
+                is_int($source) ? (string) $source : $source,
+                array_map(strtolower(...), array_keys(array_diff_key($known, ['UNKNOWN' => 0])))
+            );
+        }
+
+        return strtolower($name);
     }
 
     /**
@@ -78,7 +118,7 @@ final readonly class VideoGrant
         }
 
         if ($this->canPublishSources !== null && $this->canPublishSources !== []) {
-            $grant['canPublishSources'] = array_values($this->canPublishSources);
+            $grant['canPublishSources'] = array_map(self::trackSource(...), array_values($this->canPublishSources));
         }
 
         if ($this->canUpdateOwnMetadata !== null) {

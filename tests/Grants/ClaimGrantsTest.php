@@ -108,4 +108,38 @@ final class ClaimGrantsTest extends TestCase
 
         self::assertSame('{"attributes":{"seat":"3A"}}', json_encode($grants->toArray()));
     }
+
+    public function test_a_room_configuration_is_serialized_the_way_the_server_reads_it(): void
+    {
+        $config = (new \LiveKit\Proto\RoomConfiguration())
+            ->setName('my-room')
+            ->setEmptyTimeout(300)
+            ->setMetadata('{"tier":"gold"}');
+
+        $claims = (new ClaimGrants())->setRoomConfig($config)->toArray();
+
+        // Go marshals this field with protojson, not encoding/json. That means
+        // camelCase field names from the proto's json_name, which a hand-built
+        // array would get wrong for anything multi-word.
+        self::assertSame(
+            ['name' => 'my-room', 'emptyTimeout' => 300, 'metadata' => '{"tier":"gold"}'],
+            $claims['roomConfig']
+        );
+    }
+
+    public function test_a_room_configuration_set_but_empty_stays_an_object(): void
+    {
+        $claims = (new ClaimGrants())->setRoomConfig(new \LiveKit\Proto\RoomConfiguration())->toArray();
+
+        // Same reason as the grants: Go's omitempty on a pointer tests nil, so a
+        // config that was set serializes even when it carries nothing -- and it has
+        // to be {} rather than [], which is what json_encode makes of an empty array.
+        self::assertInstanceOf(\stdClass::class, $claims['roomConfig']);
+        self::assertSame('{"roomConfig":{}}', json_encode($claims, JSON_THROW_ON_ERROR));
+    }
+
+    public function test_no_room_configuration_means_no_claim(): void
+    {
+        self::assertArrayNotHasKey('roomConfig', (new ClaimGrants())->toArray());
+    }
 }

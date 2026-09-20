@@ -10,9 +10,11 @@ use LiveKit\Grants\AgentGrant;
 use LiveKit\Grants\ClaimGrants;
 use LiveKit\Grants\InferenceGrant;
 use LiveKit\Grants\ObservabilityGrant;
+use LiveKit\Grants\SensitiveCredentials;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\AccessTokenOptions;
+use LiveKit\Proto\RoomConfiguration;
 
 /**
  * Mints the HS256 access tokens LiveKit accepts.
@@ -36,6 +38,8 @@ final class AccessToken
     private readonly ClaimGrants $grants;
 
     private int|string $ttl;
+
+    private bool $allowSensitiveCredentials = false;
 
     public function __construct(
         ?string $apiKey = null,
@@ -66,7 +70,30 @@ final class AccessToken
             ->setKindDetails($options->kindDetails)
             ->setMetadata($options->metadata)
             ->setAttributes($options->attributes)
-            ->setRoomPreset($options->roomPreset);
+            ->setRoomPreset($options->roomPreset)
+            ->setRoomConfig($options->roomConfig);
+    }
+
+    /**
+     * Allows this token to carry storage credentials in its room configuration.
+     *
+     * Off by default, and worth leaving off. A JWT is signed, not encrypted, so
+     * everything in it is readable by whoever holds it: an S3 secret or a stream
+     * key in the room configuration is published to that participant. LiveKit's Go
+     * SDK refuses such a token the same way, and for the same reason.
+     */
+    public function allowSensitiveCredentials(bool $allow = true): self
+    {
+        $this->allowSensitiveCredentials = $allow;
+
+        return $this;
+    }
+
+    public function setRoomConfig(?RoomConfiguration $roomConfig): self
+    {
+        $this->grants->setRoomConfig($roomConfig);
+
+        return $this;
     }
 
     public function addGrant(VideoGrant $grant): self
@@ -143,6 +170,10 @@ final class AccessToken
                 'A token granting roomJoin must carry an identity. '
                 . 'Pass it via AccessTokenOptions(identity: ...) or setIdentity().'
             );
+        }
+
+        if (!$this->allowSensitiveCredentials && SensitiveCredentials::presentIn($this->grants->getRoomConfig())) {
+            throw ConfigurationException::sensitiveCredentialsInRoomConfig();
         }
 
         $now = time();

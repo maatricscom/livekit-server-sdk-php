@@ -343,8 +343,10 @@ long-running process (a queue worker, Swoole, RoadRunner) it is reused for its f
 
 ## Error handling
 
-Every exception this SDK throws implements `LiveKit\Exceptions\LiveKitException`, so catching that alone
-handles anything the SDK can raise. RPC failures specifically throw `TwirpException`, which carries the
+Every failure this SDK reports — a rejected request, an unreachable server, a response it cannot decode,
+a configuration it will not sign — implements `LiveKit\Exceptions\LiveKitException`, so catching that alone
+covers them all. (Passing an argument of the wrong type still raises PHP's own `TypeError`, as anywhere
+else.) RPC failures specifically throw `TwirpException`, which carries the
 Twirp error code, the HTTP status and any metadata LiveKit attached:
 
 ```php
@@ -378,6 +380,27 @@ try {
 
 Configuration mistakes (a missing host, a missing or too-short API secret) throw
 `LiveKit\Exceptions\ConfigurationException` at construction time, before any network call is made.
+
+## Room configuration in a token
+
+A token can carry a `RoomConfiguration`, applied when its holder creates the room:
+
+```php
+use LiveKit\Options\AccessTokenOptions;
+use LiveKit\Proto\RoomConfiguration;
+
+$token = new AccessToken('API_KEY', 'API_SECRET', new AccessTokenOptions(
+    identity: 'alice',
+    roomConfig: (new RoomConfiguration())->setEmptyTimeout(300),
+));
+```
+
+> [!WARNING]
+> A JWT is signed, not encrypted, so everything in it is readable by whoever holds it. If the room
+> configuration's egress carries an S3 secret, a GCP service account, an Azure account key or a stream
+> output, `toJwt()` refuses to sign rather than publish those to the participant — the same rule LiveKit's
+> Go SDK applies. `AccessToken::allowSensitiveCredentials()` opts out, for a token that genuinely stays
+> server-side.
 
 ## Dependency injection and testing
 
