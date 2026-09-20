@@ -6,12 +6,12 @@ namespace LiveKit\Services;
 
 use Google\Protobuf\Internal\Message;
 use LiveKit\AccessToken;
-use LiveKit\AccessTokenOptions;
-use LiveKit\ClientOptions;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Http\TwirpClient;
+use LiveKit\Options\AccessTokenOptions;
+use LiveKit\Options\ClientOptions;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;

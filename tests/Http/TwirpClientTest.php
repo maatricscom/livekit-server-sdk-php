@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\Http;
 
-use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
@@ -12,6 +11,7 @@ use LiveKit\Exceptions\TwirpException;
 use LiveKit\Http\Failover;
 use LiveKit\Http\RegionCache;
 use LiveKit\Http\TwirpClient;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\ProtocolVersion;
 use LiveKit\Proto\Room;

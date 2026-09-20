@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\MockServer;
 
-use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Options\CreateIngressOptions;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\CreateSipParticipantOptions;

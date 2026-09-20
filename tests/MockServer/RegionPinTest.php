@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\MockServer;
 
-use LiveKit\ClientOptions;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Http\Failover;
 use LiveKit\LiveKitAPI;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Tests\MockServer\Support\MockServerTestCase;
 

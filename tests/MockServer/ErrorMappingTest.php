@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\MockServer;
 
-use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\CreateSipParticipantOptions;
 use LiveKit\Tests\MockServer\Support\MockServerTestCase;

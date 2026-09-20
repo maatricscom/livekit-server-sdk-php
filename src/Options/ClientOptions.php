@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LiveKit;
+namespace LiveKit\Options;
 
 use LiveKit\Enums\WireFormat;
 use LiveKit\Http\Failover;
@@ -10,9 +10,9 @@ use LiveKit\Http\Failover;
 /**
  * Transport-level options shared by every service client.
  *
- * This configures the SDK itself and is passed once, when a client is built. The
- * per-call option objects — CreateRoomOptions, SendDataOptions and the rest — live
- * in the LiveKit\Options namespace and are passed to individual methods.
+ * Unlike its neighbours here, this is passed once when a client is built rather
+ * than to an individual call — it configures how the SDK talks to LiveKit, not
+ * what any one request asks for.
  */
 final readonly class ClientOptions
 {

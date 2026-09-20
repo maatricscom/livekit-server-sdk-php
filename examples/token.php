@@ -19,9 +19,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use LiveKit\AccessToken;
-use LiveKit\AccessTokenOptions;
 use LiveKit\Exceptions\LiveKitException;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\AccessTokenOptions;
 
 $roomName = getenv('ROOM_NAME') ?: 'my-room';
 $identity = getenv('PARTICIPANT_IDENTITY') ?: 'alice';

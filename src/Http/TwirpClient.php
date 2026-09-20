@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace LiveKit\Http;
 
 use Google\Protobuf\Internal\Message;
-use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Proto\ProtocolVersion;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;

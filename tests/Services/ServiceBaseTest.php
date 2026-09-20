@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LiveKit\Tests\Services;
 
 use Google\Protobuf\Internal\Message;
-use LiveKit\ClientOptions;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\Room;
 use LiveKit\Services\ServiceBase;

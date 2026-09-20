@@ -12,6 +12,7 @@ use LiveKit\Grants\InferenceGrant;
 use LiveKit\Grants\ObservabilityGrant;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\AccessTokenOptions;
 
 /**
  * Mints the HS256 access tokens LiveKit accepts.

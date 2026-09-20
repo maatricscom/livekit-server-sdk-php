@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LiveKit;
+namespace LiveKit\Options;
+
+use LiveKit\AccessToken;
 
 /**
  * Participant-level options carried in an access token.
  *
- * Sits beside AccessToken because the two are always used together. This is not a
- * per-call option object; those live in the LiveKit\Options namespace.
+ * Passed to AccessToken's constructor rather than to a service method, but it is
+ * an option object like any other here: this namespace holds all of them, so
+ * there is one place to look for anything configurable.
  */
 final readonly class AccessTokenOptions
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\MockServer;
 
-use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
 use LiveKit\LiveKitAPI;
 use LiveKit\Options\AcceptWhatsAppCallOptions;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Options\ConnectTwilioCallOptions;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Options\CreateIngressOptions;

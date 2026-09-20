@@ -78,7 +78,7 @@ one with `AccessToken` and a `VideoGrant`:
 
 ```php
 use LiveKit\AccessToken;
-use LiveKit\AccessTokenOptions;
+use LiveKit\Options\AccessTokenOptions;
 use LiveKit\Grants\VideoGrant;
 
 $token = new AccessToken('API_KEY', 'API_SECRET', new AccessTokenOptions(
@@ -244,7 +244,7 @@ $livekit = new LiveKit\LiveKitAPI(
     host: 'https://my-project.livekit.cloud',
     apiKey: 'API_KEY',
     apiSecret: 'API_SECRET',
-    options: new LiveKit\ClientOptions(failover: false), // opt out
+    options: new LiveKit\Options\ClientOptions(failover: false), // opt out
 );
 ```
 

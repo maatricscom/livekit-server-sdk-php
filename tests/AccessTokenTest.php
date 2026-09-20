@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LiveKit\Tests;
 
 use LiveKit\AccessToken;
-use LiveKit\AccessTokenOptions;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\AccessTokenOptions;
 use LiveKit\Tests\Support\TestCase;
 
 final class AccessTokenTest extends TestCase

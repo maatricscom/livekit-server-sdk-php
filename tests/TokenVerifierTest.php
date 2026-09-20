@@ -6,8 +6,8 @@ namespace LiveKit\Tests;
 
 use Firebase\JWT\JWT;
 use LiveKit\AccessToken;
-use LiveKit\AccessTokenOptions;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Options\AccessTokenOptions;
 use LiveKit\Tests\Support\TestCase;
 use LiveKit\TokenVerifier;
 

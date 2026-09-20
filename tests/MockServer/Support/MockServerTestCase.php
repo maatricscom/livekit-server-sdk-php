@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LiveKit\Tests\MockServer\Support;
 
-use LiveKit\ClientOptions;
 use LiveKit\Http\HttpClientResolver;
 use LiveKit\Http\RegionCache;
 use LiveKit\LiveKitAPI;
+use LiveKit\Options\ClientOptions;
 use PHPUnit\Framework\TestCase;
 
 /**

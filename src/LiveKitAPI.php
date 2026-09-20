@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit;
 
 use LiveKit\Http\HttpClientResolver;
+use LiveKit\Options\ClientOptions;
 use LiveKit\Services\AgentDispatchClient;
 use LiveKit\Services\ConnectorClient;
 use LiveKit\Services\EgressClient;
