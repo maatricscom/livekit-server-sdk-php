@@ -10,8 +10,11 @@ use LiveKit\Options\ListRoomsOptions;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
+use LiveKit\Proto\ListParticipantsRequest;
+use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
+use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\Room;
 
 final class RoomServiceClient extends ServiceBase
@@ -138,5 +141,32 @@ final class RoomServiceClient extends ServiceBase
         assert($response instanceof DeleteRoomResponse);
 
         return $response;
+    }
+
+    /**
+     * @return list<ParticipantInfo>
+     */
+    public function listParticipants(string $room): array
+    {
+        $request = new ListParticipantsRequest();
+        $request->setRoom($room);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListParticipants',
+            $request,
+            ListParticipantsResponse::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof ListParticipantsResponse);
+
+        $participants = [];
+
+        foreach ($response->getParticipants() as $participant) {
+            $participants[] = $participant;
+        }
+
+        return $participants;
     }
 }

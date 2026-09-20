@@ -10,8 +10,11 @@ use LiveKit\Options\ListRoomsOptions;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
+use LiveKit\Proto\ListParticipantsRequest;
+use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
+use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\Room;
 use LiveKit\Services\RoomServiceClient;
 use LiveKit\Tests\Support\TwirpTestCase;
@@ -160,6 +163,31 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertArrayNotHasKey('roomAdmin', $video);
         self::assertArrayNotHasKey('room', $video);
         self::assertCount(1, $video);
+    }
+
+    public function testListParticipantsUnwrapsTheResponse(): void
+    {
+        $client = $this->client(
+            (new ListParticipantsResponse())->setParticipants([
+                (new ParticipantInfo())->setSid('PA_1')->setIdentity('alice'),
+                (new ParticipantInfo())->setSid('PA_2')->setIdentity('bob'),
+            ]),
+        );
+
+        $participants = $client->listParticipants('my-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'ListParticipants');
+
+        $sent = $this->decodeRequest(ListParticipantsRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+
+        self::assertCount(2, $participants);
+        self::assertContainsOnlyInstancesOf(ParticipantInfo::class, $participants);
+        self::assertSame('alice', $participants[0]->getIdentity());
+        self::assertSame('bob', $participants[1]->getIdentity());
     }
 
     private function client(Message $response): RoomServiceClient
