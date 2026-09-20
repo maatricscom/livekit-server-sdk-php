@@ -9,6 +9,8 @@ use LiveKit\Proto\AgentDispatch;
 use LiveKit\Proto\CreateAgentDispatchRequest;
 use LiveKit\Proto\DeleteAgentDispatchRequest;
 use LiveKit\Proto\JobRestartPolicy;
+use LiveKit\Proto\ListAgentDispatchRequest;
+use LiveKit\Proto\ListAgentDispatchResponse;
 use LiveKit\Services\AgentDispatchClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -116,5 +118,97 @@ final class AgentDispatchClientTest extends TwirpTestCase
         self::assertSame('my-room', $sent->getRoom());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testListDispatchReturnsEveryDispatchInTheRoom(): void
+    {
+        $first = new AgentDispatch();
+        $first->setId('AD_1');
+        $second = new AgentDispatch();
+        $second->setId('AD_2');
+
+        $listResponse = new ListAgentDispatchResponse();
+        $listResponse->setAgentDispatches([$first, $second]);
+
+        $this->http->pushResponse($this->protoResponse($listResponse));
+
+        $client = new AgentDispatchClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $dispatches = $client->listDispatch('my-room');
+
+        self::assertCount(2, $dispatches);
+        self::assertContainsOnlyInstancesOf(AgentDispatch::class, $dispatches);
+        self::assertSame('AD_1', $dispatches[0]->getId());
+        self::assertSame('AD_2', $dispatches[1]->getId());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'AgentDispatchService', 'ListDispatch');
+
+        $sent = $this->decodeRequest(ListAgentDispatchRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('', $sent->getDispatchId());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testListDispatchFiltersByDispatchId(): void
+    {
+        $only = new AgentDispatch();
+        $only->setId('AD_1');
+        $only->setRoom('my-room');
+
+        $listResponse = new ListAgentDispatchResponse();
+        $listResponse->setAgentDispatches([$only]);
+
+        $this->http->pushResponse($this->protoResponse($listResponse));
+
+        $client = new AgentDispatchClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $dispatches = $client->listDispatch('my-room', 'AD_1');
+
+        self::assertCount(1, $dispatches);
+        self::assertSame('AD_1', $dispatches[0]->getId());
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'AgentDispatchService', 'ListDispatch');
+
+        $sent = $this->decodeRequest(ListAgentDispatchRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('AD_1', $sent->getDispatchId());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testListDispatchReturnsEmptyArrayWhenRoomHasNoDispatches(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new ListAgentDispatchResponse()));
+
+        $client = new AgentDispatchClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        self::assertSame([], $client->listDispatch('empty-room'));
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'AgentDispatchService', 'ListDispatch');
+
+        $sent = $this->decodeRequest(ListAgentDispatchRequest::class);
+        self::assertSame('empty-room', $sent->getRoom());
+        self::assertSame('', $sent->getDispatchId());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'empty-room'], $request);
     }
 }
