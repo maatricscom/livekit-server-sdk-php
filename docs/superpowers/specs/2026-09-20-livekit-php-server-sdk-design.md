@@ -2,8 +2,9 @@
 
 > **This document records the reasoning behind the SDK's design, and is kept current with it.**
 > It was written before the code existed and has since been corrected where the code moved: the
-> architecture in §3, the namespace mapping and protoc floor in §4, the dependency table in §9, the
-> tooling and CI in §11, and §12. `README.md` and `CHANGELOG.md` remain the reference for *how to use*
+> component table in §1, the architecture in §3, the namespace mapping and protoc floor in §4, the
+> transport signature in §5, the API notes in §8, the dependency table in §9, the testing section in §10,
+> the tooling and CI in §11, §12, and the risk table in §13. `README.md` and `CHANGELOG.md` remain the reference for *how to use*
 > the package; this file is for *why it is shaped this way*.
 >
 > §2 is the exception and is deliberately not updated. It records which facts were verified and on what
@@ -33,7 +34,7 @@ Packagist as an open-source library.
 | `AgentDispatchClient` | 3 RPCs (+1 convenience wrapper) | full `livekit.AgentDispatchService`; `getDispatch()` is `ListDispatch` filtered by id, since the service has no GetDispatch |
 | `AccessToken` / `TokenVerifier` | — | JWT minting and verification |
 | `WebhookReceiver` | — | signature + body-hash verification |
-| `LiveKitClient` facade | — | equivalent of Node's `LiveKitAPI` |
+| `LiveKitAPI` facade | — | one object owning the six clients, named after Node's `LiveKitAPI` |
 
 **Deferred to phase 2 when this was written, and since shipped**
 
@@ -83,6 +84,7 @@ LiveKit\                            PSR-4 root -> src/
 ├─ AccessToken
 ├─ TokenVerifier
 ├─ WebhookReceiver
+├─ ProtocolVersion                  GENERATED: the livekit/protocol tag src/Proto was built from
 ├─ Grants\
 │   ├─ VideoGrant  SIPGrant  AgentGrant  InferenceGrant  ObservabilityGrant
 │   ├─ ClaimGrants                  assembles the flat JWT payload
@@ -97,6 +99,8 @@ LiveKit\                            PSR-4 root -> src/
 │   ├─ HttpClientResolver           PSR-18/PSR-17 injection with discovery fallback
 │   └─ Failover  RegionCache  DialTimeout
 ├─ Options\                         final readonly DTOs, including AccessTokenOptions and ClientOptions
+│                                   (EgressBaseOptions is the one abstract readonly base, shared by
+│                                    the four egress request shapes)
 ├─ Enums\                           ProtoEnum  WebhookEventType  WireFormat
 ├─ Exceptions\
 │   ├─ LiveKitException             base (interface + base class)
@@ -208,7 +212,7 @@ drift check would then report a diff nobody caused.
 ### Interface
 
 ```php
-final class TwirpClient
+final readonly class TwirpClient
 {
     public function request(
         string $service,      // 'RoomService'
@@ -415,11 +419,17 @@ $rooms->deleteRoom('my-room');
   (`updateSipDispatchRuleFields`, `updateSipInboundTrunkFields`, `updateSipOutboundTrunkFields`).
   **`CreateSIPTrunk` is not implemented** — it is commented out and marked DELETED in the proto at v1.52.0,
   so a PHP method for it would 404.
+- `AgentDispatchClient::getDispatch()` is this package's own convenience over `ListDispatch` filtered by
+  id, since `livekit.AgentDispatchService` has no `GetDispatch` rpc. It returns `null` for a dispatch that
+  does not exist whether the deployment reports that as an empty list or as a `not_found` error — a
+  deliberate divergence from the Node SDK, which checks only for the empty list and therefore throws in
+  the case its own docblock documents.
 
 ## 9. Dependencies
 
 | Package | Constraint | Why |
 |---|---|---|
+| `ext-json` | `*` | error bodies are JSON even in binary mode, and the JSON wire format needs it |
 | `php` | `^8.4` | enums, readonly classes, promotion, named args, first-class callables, `#[\Override]`, typed class constants. 8.3 left active support at the end of 2025 |
 | `google/protobuf` | `^5.36` | the version this package is generated against and tested on. protoc 36's getters for `optional` int64 fields call `GPBUtil::compatibleInt64()`, which no 4.x runtime has |
 | `firebase/php-jwt` | `^7.1` | zero runtime dependencies, no ext-sodium; `lcobucci/jwt` pins exact PHP minors |
@@ -466,7 +476,11 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   server can read, in both wire formats, and that the grant minted for each RPC satisfies the server's
   permission table. A unit test with a fake HTTP client cannot prove either.
 - **Integration tests** against a real LiveKit server are opt-in, gated behind environment variables, and
-  never required for CI to pass.
+  never required for CI to pass. Sixteen of them now exist, covering room lifecycle, ingress, agent
+  dispatch, the read-only RPCs and the shape of a server error; they have been run green against a live
+  LiveKit Cloud project in both wire formats. Anything they create is deleted even when an assertion
+  fails, and a deployment without SIP or egress provisioned skips rather than fails — a suite that goes
+  red on a valid deployment teaches people to ignore it.
 
 ## 11. Tooling and CI
 
@@ -477,7 +491,9 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   than to whichever PHP runs it. `src/Proto` is in `excludePaths.analyse` — not `analyseAndScan`, so
   generated classes still resolve when checking hand-written code. `examples/` is analysed too.
 - **Laravel Pint** for formatting; `src/Proto` and `metadata/` excluded (files carry a DO NOT EDIT banner)
-- **Rector**, advisory rather than a gate, with `src/Proto` skipped
+- **Rector**, advisory rather than a gate, with `src/Proto` skipped. Currently clean:
+  `ReadOnlyClassRector` and `NewMethodCallWithoutParenthesesRector` have been applied across the
+  hand-written tree, so `composer refactor` exits 0
 - **GitHub Actions:** matrix PHP 8.4 / 8.5 × `prefer-lowest` / `prefer-stable`, `fail-fast: false`.
   The `prefer-lowest` leg is what catches a too-loose constraint. Separate jobs for PHPStan, Pint
   `--test`, `composer validate --strict`, the pinned-protocol-version check, the forbidden-symbol check,
@@ -501,7 +517,7 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
 - `CONTRIBUTING.md` covering proto regeneration.
 - The pinned `livekit/protocol` version is stated by hand in the README, NOTICE, CHANGELOG and
   CONTRIBUTING, in the `go get` line of each fixture generator, and generated into
-  `src/Proto/ProtocolVersion.php`. `bin/check-protocol-version.sh` treats the generation script as the
+  `src/ProtocolVersion.php`. `bin/check-protocol-version.sh` treats the generation script as the
   source of truth and fails if any of them has been left behind.
 
 ## 13. Risks
@@ -513,5 +529,5 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
 | LiveKit adds a proto field | Binary transport preserves unknown fields; JSON mode always passes `ignore_unknown = true` |
 | `google/protobuf` v4/v5 behavioural break (`RepeatedField`) | Never reference `Internal\RepeatedField`; CI tests both ends of the constraint |
 | Upstream proto drift | CI regenerates and fails on `git diff` |
-| Binary content type less exercised than JSON on LiveKit Cloud | Verify against a real deployment before release; JSON mode is one flag away |
+| Binary content type less exercised than JSON on LiveKit Cloud | Closed: the opt-in suite passes against a live LiveKit Cloud project and exercises both wire formats; JSON mode is one flag away |
 | Namespace choice diverges from the community SDK | Documented migration note; the tradeoff was accepted deliberately to avoid global namespace squatting |
