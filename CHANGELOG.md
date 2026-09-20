@@ -20,7 +20,9 @@ Initial release.
 - `SipClient` covering all 16 RPCs of `livekit.SIP` plus 3 convenience wrappers: inbound/outbound trunk
   CRUD and partial field updates, dispatch rule CRUD and partial field updates, and SIP participant
   creation/transfer with `SipCallError` exposing the SIP-level status code and reason on failure.
-- `AgentDispatchClient` covering all 3 RPCs of `livekit.AgentDispatchService`: create, delete and list.
+- `AgentDispatchClient` covering all 3 RPCs of `livekit.AgentDispatchService`: create, delete and list,
+  plus `getDispatch()` — `livekit.AgentDispatchService` has no GetDispatch rpc, so this is ListDispatch
+  filtered by dispatch id, returning the dispatch or null rather than an array to index.
 - `ConnectorClient` covering all 5 RPCs of `livekit.Connector`, bridging WhatsApp and Twilio calls into
   rooms: dial, accept, connect and disconnect a WhatsApp call, and connect a Twilio one. A LiveKit Cloud
   service — the open-source server does not implement it. `acceptWhatsAppCall()` and

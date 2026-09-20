@@ -17,6 +17,9 @@ interface AgentDispatchClientInterface
 
     public function deleteDispatch(string $dispatchId, string $room): AgentDispatch;
 
+    /** Fetches one dispatch, or null when the room has no dispatch with that id. */
+    public function getDispatch(string $dispatchId, string $room): ?AgentDispatch;
+
     /**
      * Lists the dispatches of a room. When $dispatchId is given, the server
      * returns only that dispatch — this is the second shape the Node SDK

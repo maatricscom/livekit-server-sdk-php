@@ -69,8 +69,22 @@ final class AgentDispatchClient extends ServiceBase implements AgentDispatchClie
     }
 
     /**
+     * Fetches one dispatch, or null when the room has no dispatch with that id.
+     *
+     * livekit.AgentDispatchService has no GetDispatch rpc; ListDispatch filtered by
+     * dispatch_id is how the one-dispatch case is served, and this is the shape you
+     * usually want it in. Delegates rather than issuing the rpc itself, so the two
+     * cannot drift apart on the grant or on how the response is unwrapped.
+     */
+    public function getDispatch(string $dispatchId, string $room): ?AgentDispatch
+    {
+        return $this->listDispatch($room, $dispatchId)[0] ?? null;
+    }
+
+    /**
      * Lists the dispatches of a room. When $dispatchId is given, the server
-     * returns only that dispatch.
+     * returns only that dispatch — though getDispatch() is the friendlier way to
+     * ask for exactly one.
      *
      * @return list<AgentDispatch>
      */

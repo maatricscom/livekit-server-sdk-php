@@ -168,6 +168,9 @@ final class RpcSweepTest extends MockServerTestCase
         // -- AgentDispatch -------------------------------------------------
         yield 'agentDispatch.createDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->createDispatch('sweep', 'agent', new CreateDispatchOptions(metadata: 'm'))];
         yield 'agentDispatch.deleteDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->deleteDispatch('AD_abc', 'sweep')];
+        // Nullable here for the same reason the SIP trunk getters are: the mock does
+        // not populate AgentDispatchService responses, so the list comes back empty.
+        yield 'agentDispatch.getDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->getDispatch('AD_abc', 'sweep'), true];
         yield 'agentDispatch.listDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->listDispatch('sweep')];
     }
 
