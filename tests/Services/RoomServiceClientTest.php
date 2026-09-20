@@ -14,10 +14,13 @@ use LiveKit\Proto\ListParticipantsRequest;
 use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
+use LiveKit\Proto\MuteRoomTrackRequest;
+use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
+use LiveKit\Proto\TrackInfo;
 use LiveKit\Services\RoomServiceClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -225,6 +228,52 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertSame('my-room', $sent->getRoom());
         self::assertSame('alice', $sent->getIdentity());
         self::assertSame(0, $sent->getRevokeTokenTs());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testMutePublishedTrackSendsTheMutedFlag(): void
+    {
+        $client = $this->client(
+            (new MuteRoomTrackResponse())->setTrack(
+                (new TrackInfo())->setSid('TR_1')->setMuted(true),
+            ),
+        );
+
+        $result = $client->mutePublishedTrack('my-room', 'alice', 'TR_1', true);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'MutePublishedTrack');
+
+        $sent = $this->decodeRequest(MuteRoomTrackRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame('TR_1', $sent->getTrackSid());
+        self::assertTrue($sent->getMuted());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+
+        $track = $result->getTrack();
+        self::assertInstanceOf(TrackInfo::class, $track);
+        self::assertTrue($track->getMuted());
+    }
+
+    public function testMutePublishedTrackCanUnmute(): void
+    {
+        $client = $this->client(
+            (new MuteRoomTrackResponse())->setTrack((new TrackInfo())->setSid('TR_1')->setMuted(false)),
+        );
+
+        $client->mutePublishedTrack('my-room', 'alice', 'TR_1', false);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'MutePublishedTrack');
+
+        $sent = $this->decodeRequest(MuteRoomTrackRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame('TR_1', $sent->getTrackSid());
+        self::assertFalse($sent->getMuted());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }

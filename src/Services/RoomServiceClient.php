@@ -14,6 +14,8 @@ use LiveKit\Proto\ListParticipantsRequest;
 use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
+use LiveKit\Proto\MuteRoomTrackRequest;
+use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
@@ -206,6 +208,31 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof RemoveParticipantResponse);
+
+        return $response;
+    }
+
+    public function mutePublishedTrack(
+        string $room,
+        string $identity,
+        string $trackSid,
+        bool $muted,
+    ): MuteRoomTrackResponse {
+        $request = new MuteRoomTrackRequest();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+        $request->setTrackSid($trackSid);
+        $request->setMuted($muted);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'MutePublishedTrack',
+            $request,
+            MuteRoomTrackResponse::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof MuteRoomTrackResponse);
 
         return $response;
     }
