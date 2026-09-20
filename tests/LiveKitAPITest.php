@@ -7,6 +7,7 @@ namespace LiveKit\Tests;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\LiveKitAPI;
 use LiveKit\Services\AgentDispatchClient;
+use LiveKit\Services\ConnectorClient;
 use LiveKit\Services\EgressClient;
 use LiveKit\Services\IngressClient;
 use LiveKit\Services\RoomServiceClient;
@@ -41,6 +42,7 @@ final class LiveKitAPITest extends TestCase
         self::assertInstanceOf(IngressClient::class, $client->ingress);
         self::assertInstanceOf(SipClient::class, $client->sip);
         self::assertInstanceOf(AgentDispatchClient::class, $client->agentDispatch);
+        self::assertInstanceOf(ConnectorClient::class, $client->connector);
     }
 
     public function test_service_clients_are_stable_across_accesses(): void

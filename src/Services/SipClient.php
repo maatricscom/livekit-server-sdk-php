@@ -8,6 +8,7 @@ use Google\Protobuf\Duration;
 use LiveKit\Contracts\SipClientInterface;
 use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
+use LiveKit\Http\DialTimeout;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
@@ -75,14 +76,16 @@ final class SipClient extends ServiceBase implements SipClientInterface
     private const SERVICE = 'SIP';
 
     /**
-     * Ring window assumed when a dialing request does not set one; matches the server
-     * default. Pinned explicitly so our request timeout does not silently change if the
-     * server default does.
+     * Ring window assumed when a dialing request does not set one.
+     *
+     * Kept here as well as on DialTimeout because it is part of this client's
+     * documented surface; the Connector client rings the same way, so the value
+     * itself lives in one shared place.
      */
-    public const DEFAULT_RINGING_TIMEOUT_SECONDS = 30;
+    public const DEFAULT_RINGING_TIMEOUT_SECONDS = DialTimeout::DEFAULT_RINGING_TIMEOUT_SECONDS;
 
     /** Margin kept between the ring window and the HTTP request timeout. */
-    public const RINGING_TIMEOUT_MARGIN_SECONDS = 2;
+    public const RINGING_TIMEOUT_MARGIN_SECONDS = DialTimeout::RINGING_TIMEOUT_MARGIN_SECONDS;
 
     /**
      * Creates a SIP inbound trunk.
@@ -726,10 +729,7 @@ final class SipClient extends ServiceBase implements SipClientInterface
      */
     public static function dialRequestTimeout(?int $timeout, ?int $ringingTimeout): int
     {
-        $ring = $ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS;
-        $floor = $ring + self::RINGING_TIMEOUT_MARGIN_SECONDS;
-
-        return max($timeout ?? $floor, $floor);
+        return DialTimeout::requestTimeout($timeout, $ringingTimeout);
     }
 
     /** Deletes a SIP dispatch rule and returns the rule as it was. */

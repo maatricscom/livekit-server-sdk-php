@@ -39,8 +39,10 @@ trip to a real Twirp server, and it is what proves three things a unit test cann
   copies same-named scalar fields from the *decoded* request onto its response, so a value that comes back
   is a value that survived our encoder, the wire, and the server's decoder.
 - **The `VideoGrant` we mint for each RPC satisfies the server's permission table.** The mock enforces the
-  same table as the real server, so `RpcSweepTest` — which calls all 47 RPCs, twice, once per wire format
-  — fails with `permission_denied` on any method whose grant is too narrow.
+  same table as the real server, so `RpcSweepTest` — which calls every RPC, twice, once per wire format —
+  fails with `permission_denied` on any method whose grant is too narrow. `RpcCoverageTest`, in the unit
+  suite, fails if a service client grows a method that sweep does not call, so the coverage cannot quietly
+  fall behind.
 - **A real Twirp error envelope maps onto our exception types**, including the SIP-specific
   `sip_status_code` metadata that only a dialing failure produces.
 

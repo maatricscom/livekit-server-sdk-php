@@ -9,6 +9,7 @@ use LiveKit\Enums\WireFormat;
 use LiveKit\Options\CreateIngressOptions;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\CreateSipParticipantOptions;
+use LiveKit\Options\DialWhatsAppCallOptions;
 use LiveKit\Options\EncodedOutputs;
 use LiveKit\Proto\EncodedFileOutput;
 use LiveKit\Tests\MockServer\Support\MockServerTestCase;
@@ -106,6 +107,20 @@ final class EchoRoundTripTest extends MockServerTestCase
 
         self::assertSame('echo-sip-room', $info->getRoomName());
         self::assertSame('echo-caller', $info->getParticipantIdentity());
+    }
+
+    #[DataProvider('wireFormats')]
+    public function test_connector_fields_survive_the_round_trip(WireFormat $format): void
+    {
+        $response = $this->apiFor($format)->connector->dialWhatsAppCall(
+            'PN_echo',
+            '+15551234567',
+            'meta-api-key',
+            '23.0',
+            new DialWhatsAppCallOptions(roomName: 'echo-whatsapp-room'),
+        );
+
+        self::assertSame('echo-whatsapp-room', $response->getRoomName());
     }
 
     // AgentDispatchService has no echo test on purpose. The mock registers

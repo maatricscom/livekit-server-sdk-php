@@ -60,7 +60,15 @@ mkdir -p "$WORK"
 # Public, Twirp-facing protos only. Excluded on purpose:
 #   rpc/*, infra/, roomrpc/   -> psrpc & gRPC internals; they do not even compile
 #                                without psrpc's options.proto, which is not vendored
-#   livekit_internal, livekit_analytics, livekit_rtc -> server internals
+#   livekit_internal, livekit_analytics       -> server internals
+#
+# livekit_rtc.proto is NOT a root but arrives through the closure anyway:
+# livekit_connector_whatsapp.proto imports it for SessionDescription, which
+# AcceptWhatsAppCall carries. That pulls in the signalling messages (JoinRequest,
+# Ping, AddTrackRequest and friends) -- about 430K of generated code this SDK
+# never calls. There is no way to generate one message from a file, and dropping
+# AcceptWhatsAppCall to avoid it would leave the Connector client incomplete, so
+# the size is accepted deliberately rather than by oversight.
 ROOTS=(
     livekit_room.proto
     livekit_models.proto
@@ -73,6 +81,9 @@ ROOTS=(
     livekit_agent_worker.proto
     livekit_webhook.proto
     livekit_token_source.proto
+    # Pulls in livekit_connector_whatsapp.proto and livekit_connector_twilio.proto
+    # through the import closure below.
+    livekit_connector.proto
 )
 
 echo "==> Resolving transitive import closure"

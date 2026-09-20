@@ -15,6 +15,7 @@ and webhooks.
 - **`IngressClient`** — configure inbound RTMP/WHIP/SRT feeds (all 4 `livekit.Ingress` RPCs)
 - **`SipClient`** — SIP trunks, dispatch rules and call control (all 16 `livekit.SIP` RPCs)
 - **`AgentDispatchClient`** — dispatch and manage agent jobs (all 3 `livekit.AgentDispatchService` RPCs)
+- **`ConnectorClient`** — bridge WhatsApp and Twilio calls into rooms (all 5 `livekit.Connector` RPCs, LiveKit Cloud only)
 - **`AccessToken`** / **`TokenVerifier`** — mint and verify the HS256 JWTs LiveKit uses for room access
 - **`WebhookReceiver`** — verify and parse LiveKit's server-to-server webhooks
 
@@ -47,7 +48,7 @@ one of the lines above when starting from a bare PHP project.
 
 ## Quickstart
 
-`LiveKitAPI` is a facade over the five service clients, sharing one set of credentials and one HTTP
+`LiveKitAPI` is a facade over the six service clients, sharing one set of credentials and one HTTP
 client across all of them. Each service client also works standalone with the identical constructor
 signature, in case you only need one of them:
 
@@ -175,6 +176,61 @@ need a bounded worst case.
 > its floor is the ringing timeout plus a margin (32 seconds for the defaults) — a client-side timeout
 > shorter than that aborts the request while the phone is still ringing, before LiveKit's own deadline
 > ever has a chance to fire.
+
+## WhatsApp and Twilio calls
+
+`ConnectorClient` bridges a call from WhatsApp or Twilio into a LiveKit room. It is a **LiveKit Cloud**
+service — `livekit.Connector` has no implementation in the open-source server, so these five RPCs only
+answer on a Cloud project.
+
+LiveKit does not store your Meta credentials, so every WhatsApp request carries them:
+
+```php
+use LiveKit\Options\DialWhatsAppCallOptions;
+
+$call = $livekit->connector->dialWhatsAppCall(
+    whatsappPhoneNumberId: 'PHONE_NUMBER_ID',
+    whatsappToPhoneNumber: '+15551234567',
+    whatsappApiKey: 'META_API_KEY',
+    whatsappCloudApiVersion: '23.0',
+    opts: new DialWhatsAppCallOptions(roomName: 'support-call', ringingTimeout: 45),
+);
+
+echo $call->getWhatsappCallId(), ' in ', $call->getRoomName(), PHP_EOL;
+```
+
+An inbound call arrives on Meta's webhook with an SDP offer, which you hand to `acceptWhatsAppCall()`:
+
+```php
+use LiveKit\Options\AcceptWhatsAppCallOptions;
+
+$accepted = $livekit->connector->acceptWhatsAppCall(
+    whatsappPhoneNumberId: 'PHONE_NUMBER_ID',
+    whatsappApiKey: 'META_API_KEY',
+    whatsappCloudApiVersion: '23.0',
+    whatsappCallId: $event['call_id'],
+    sdp: $sdpFromWebhook,
+    opts: new AcceptWhatsAppCallOptions(roomName: 'support-call', waitUntilAnswered: true),
+);
+```
+
+Twilio needs only the direction and a room, and gives you back the URL to point a media stream at:
+
+```php
+use LiveKit\Proto\ConnectTwilioCallRequest\TwilioCallDirection;
+
+$twilio = $livekit->connector->connectTwilioCall(
+    TwilioCallDirection::TWILIO_CALL_DIRECTION_INBOUND,
+    'support-call',
+);
+
+echo $twilio->getConnectUrl(), PHP_EOL; // wss://...
+```
+
+> [!NOTE]
+> `waitUntilAnswered` holds the request open while the call rings, so — exactly as with
+> `SipClient::createSipParticipant()` — the SDK raises the request timeout to the ring window plus a
+> margin, and your HTTP client needs a socket timeout longer than that. See [Timeouts](#timeouts).
 
 ## Region failover
 

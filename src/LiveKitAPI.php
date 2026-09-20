@@ -6,6 +6,7 @@ namespace LiveKit;
 
 use LiveKit\Http\HttpClientResolver;
 use LiveKit\Services\AgentDispatchClient;
+use LiveKit\Services\ConnectorClient;
 use LiveKit\Services\EgressClient;
 use LiveKit\Services\IngressClient;
 use LiveKit\Services\RoomServiceClient;
@@ -36,6 +37,9 @@ final class LiveKitAPI
 
     public readonly AgentDispatchClient $agentDispatch;
 
+    /** LiveKit Cloud only: the open-source server does not implement livekit.Connector. */
+    public readonly ConnectorClient $connector;
+
     public function __construct(
         ?string $host = null,
         ?string $apiKey = null,
@@ -45,8 +49,8 @@ final class LiveKitAPI
         ?RequestFactoryInterface $requestFactory = null,
         ?StreamFactoryInterface $streamFactory = null,
     ) {
-        // Resolve once so all five clients share one HTTP client and factory pair
-        // instead of running discovery five times.
+        // Resolve once so every client shares one HTTP client and factory pair
+        // instead of running discovery per client.
         $httpClient = HttpClientResolver::client($httpClient);
         $requestFactory = HttpClientResolver::requestFactory($requestFactory);
         $streamFactory = HttpClientResolver::streamFactory($streamFactory);
@@ -58,5 +62,6 @@ final class LiveKitAPI
         $this->ingress = new IngressClient(...$args);
         $this->sip = new SipClient(...$args);
         $this->agentDispatch = new AgentDispatchClient(...$args);
+        $this->connector = new ConnectorClient(...$args);
     }
 }

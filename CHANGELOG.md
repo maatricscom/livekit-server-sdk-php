@@ -21,7 +21,12 @@ Initial release.
   CRUD and partial field updates, dispatch rule CRUD and partial field updates, and SIP participant
   creation/transfer with `SipCallError` exposing the SIP-level status code and reason on failure.
 - `AgentDispatchClient` covering all 3 RPCs of `livekit.AgentDispatchService`: create, delete and list.
-- `LiveKitAPI`, a facade constructing all five service clients from one set of credentials and one
+- `ConnectorClient` covering all 5 RPCs of `livekit.Connector`, bridging WhatsApp and Twilio calls into
+  rooms: dial, accept, connect and disconnect a WhatsApp call, and connect a Twilio one. A LiveKit Cloud
+  service — the open-source server does not implement it. `acceptWhatsAppCall()` and
+  `connectWhatsAppCall()` raise the request timeout past the ring window when `waitUntilAnswered` is set,
+  the same way `SipClient::createSipParticipant()` does.
+- `LiveKitAPI`, a facade constructing all six service clients from one set of credentials and one
   shared HTTP client.
 - `AccessToken` / `AccessTokenOptions` for minting HS256 JWTs, and `TokenVerifier` for verifying and
   decoding them, with grant types `VideoGrant`, `SIPGrant`, `AgentGrant`, `InferenceGrant` and
@@ -42,17 +47,17 @@ Initial release.
   metadata means the callee answered, so retrying elsewhere would only dial the number again.
 - Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**.
 - `tests/MockServer/`, run in CI against `livekit/test-server` — the programmable mock of the LiveKit HTTP
-  API that every official server SDK tests against. It covers all 47 RPCs in both wire formats, proving
+  API that every official server SDK tests against. It covers every RPC in both wire formats, proving
   the grants this SDK mints satisfy the server's own permission table and that the server can decode what
-  the SDK encodes.
+  the SDK encodes. `RpcCoverageTest` fails if a service client grows a method the sweep does not call.
 - `tests/Integration/`, an opt-in test suite that runs against a real LiveKit deployment when
   `LIVEKIT_URL`, `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` are all set, to serve as a release gate.
 
-### Not included in this release
+### Notes
 
-- `ConnectorClient` (LiveKit Cloud's connector management API) is not implemented.
-
-It is deferred to a later release and does not affect the service clients, access tokens or webhooks
-listed above.
+- `src/Proto/` carries the LiveKit signalling messages (`JoinRequest`, `Ping`, `AddTrackRequest` and the
+  rest of `livekit_rtc.proto`) even though no client here calls them. They arrive through the import
+  closure: `AcceptWhatsAppCall` carries a `SessionDescription`, which lives in that file. protoc cannot
+  generate one message from a file, so the alternative would be dropping `acceptWhatsAppCall()`.
 
 [0.1.0]: https://github.com/maatrics/livekit-server-sdk-php/releases/tag/v0.1.0

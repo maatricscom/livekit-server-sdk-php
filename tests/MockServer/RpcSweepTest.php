@@ -7,11 +7,14 @@ namespace LiveKit\Tests\MockServer;
 use LiveKit\ClientOptions;
 use LiveKit\Enums\WireFormat;
 use LiveKit\LiveKitAPI;
+use LiveKit\Options\AcceptWhatsAppCallOptions;
+use LiveKit\Options\ConnectTwilioCallOptions;
 use LiveKit\Options\CreateDispatchOptions;
 use LiveKit\Options\CreateIngressOptions;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\CreateSipDispatchRuleOptions;
 use LiveKit\Options\CreateSipParticipantOptions;
+use LiveKit\Options\DialWhatsAppCallOptions;
 use LiveKit\Options\EncodedOutputs;
 use LiveKit\Options\SipDispatchRuleUpdateOptions;
 use LiveKit\Options\SipInboundTrunkUpdateOptions;
@@ -19,8 +22,10 @@ use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Options\TransferSipParticipantOptions;
 use LiveKit\Options\UpdateIngressOptions;
 use LiveKit\Options\UpdateParticipantOptions;
+use LiveKit\Proto\ConnectTwilioCallRequest\TwilioCallDirection;
 use LiveKit\Proto\DirectFileOutput;
 use LiveKit\Proto\EncodedFileOutput;
+use LiveKit\Proto\SessionDescription;
 use LiveKit\Proto\SIPDispatchRule;
 use LiveKit\Proto\SIPDispatchRuleDirect;
 use LiveKit\Proto\SIPDispatchRuleInfo;
@@ -32,6 +37,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Calls every RPC this SDK exposes against the mock, once per wire format.
+ *
+ * RpcCoverageTest holds this list to that promise: it fails if a service client
+ * grows a method with no entry here.
  *
  * What this proves, and what it does not, is worth being precise about.
  *
@@ -108,6 +116,9 @@ final class RpcSweepTest extends MockServerTestCase
         yield 'sip.getSipOutboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->getSipOutboundTrunk('ST_abc'), true];
         yield 'sip.listSipInboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->listSipInboundTrunk()];
         yield 'sip.listSipOutboundTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->listSipOutboundTrunk()];
+        // Deprecated upstream (the rpc carries option deprecated = true) but still
+        // served, and still ours to keep working.
+        yield 'sip.listSipTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->listSipTrunk()];
         yield 'sip.deleteSipTrunk' => [static fn (LiveKitAPI $a): mixed => $a->sip->deleteSipTrunk('ST_abc')];
         yield 'sip.createSipDispatchRule' => [static fn (LiveKitAPI $a): mixed => $a->sip->createSipDispatchRule(
             (new SIPDispatchRule())->setDispatchRuleDirect((new SIPDispatchRuleDirect())->setRoomName('sweep')),
@@ -130,10 +141,39 @@ final class RpcSweepTest extends MockServerTestCase
             new TransferSipParticipantOptions(playDialtone: true)
         )];
 
+        // -- Connector -----------------------------------------------------
+        yield 'connector.dialWhatsAppCall' => [static fn (LiveKitAPI $a): mixed => $a->connector->dialWhatsAppCall(
+            'PN_sweep',
+            '+15551234567',
+            'meta-api-key',
+            '23.0',
+            new DialWhatsAppCallOptions(roomName: 'sweep')
+        )];
+        yield 'connector.acceptWhatsAppCall' => [static fn (LiveKitAPI $a): mixed => $a->connector->acceptWhatsAppCall(
+            'PN_sweep',
+            'meta-api-key',
+            '23.0',
+            'WACID_sweep',
+            self::sdp(),
+            new AcceptWhatsAppCallOptions(roomName: 'sweep')
+        )];
+        yield 'connector.connectWhatsAppCall' => [static fn (LiveKitAPI $a): mixed => $a->connector->connectWhatsAppCall('WACID_sweep', self::sdp())];
+        yield 'connector.disconnectWhatsAppCall' => [static fn (LiveKitAPI $a): mixed => $a->connector->disconnectWhatsAppCall('WACID_sweep', 'meta-api-key')];
+        yield 'connector.connectTwilioCall' => [static fn (LiveKitAPI $a): mixed => $a->connector->connectTwilioCall(
+            TwilioCallDirection::TWILIO_CALL_DIRECTION_INBOUND,
+            'sweep',
+            new ConnectTwilioCallOptions(participantIdentity: 'twilio-caller')
+        )];
+
         // -- AgentDispatch -------------------------------------------------
         yield 'agentDispatch.createDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->createDispatch('sweep', 'agent', new CreateDispatchOptions(metadata: 'm'))];
         yield 'agentDispatch.deleteDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->deleteDispatch('AD_abc', 'sweep')];
         yield 'agentDispatch.listDispatch' => [static fn (LiveKitAPI $a): mixed => $a->agentDispatch->listDispatch('sweep')];
+    }
+
+    private static function sdp(): SessionDescription
+    {
+        return (new SessionDescription())->setType('offer')->setSdp('v=0');
     }
 
     private static function encodedOutputs(): EncodedOutputs
