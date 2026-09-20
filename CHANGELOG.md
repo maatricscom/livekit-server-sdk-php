@@ -164,6 +164,13 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   protocol-bump checklist omitted the two fixture generators that `check-protocol` fails on; and the
   port-forwarding step for running the mock-server suite under `ext-protobuf` never said it runs inside
   the container, which does not have `socat` installed.
+- `ProtoGenerationTest` fails if a file in `src/Proto/` or `metadata/` was not written by protoc. A
+  hand-written class placed in either is deleted by the next generation run and is excluded from Pint and
+  PHPStan until then, with nothing announcing either — which had already happened once, to
+  `ProtocolVersion`.
+- `examples/` covers egress and SIP. Those are the two most involved APIs and the two most likely to be
+  copied, and the directory ships. The SIP example deliberately stops short of `createSipParticipant()`,
+  which dials a real number, and says so rather than leaving the absence to be guessed at.
 - `ToolingConfigTest` asserts that `ZzEnvLeakProbeTest` still sorts last among the unit suite's files.
   It can only check for leaked environment variables from last place, and it holds that place by its
   name alone — a test file added under a path sorting after it would take the slot silently.
