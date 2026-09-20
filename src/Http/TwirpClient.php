@@ -119,7 +119,15 @@ final class TwirpClient
         /** @var list<string>|null $regions */
         $regions = null;
 
-        for ($attempt = 0; $attempt < $maxAttempts; ++$attempt) {
+        $attempt = 0;
+        $pinRedirects = 0;
+
+        // Asked once: may this call's token travel to a host we learn at runtime?
+        // Both the failover retry and the region-pin redirect need the answer, and
+        // the pin redirect needs it even when failover is switched off.
+        $mayRedirect = Failover::allowsRedirect(self::hostnameOf($this->host), $this->options->failoverForce);
+
+        while (true) {
             $uri = $current . $path;
 
             // Rebuilt per attempt rather than reused: a body stream that has been
@@ -145,6 +153,35 @@ final class TwirpClient
                     return $this->decode($response, $responseClass, $uri);
                 }
 
+                // A region pin is a redirect, not a failure: the project is pinned
+                // to regions this one is not among, and the request was turned away
+                // before it was served. Handled before the error is built, because
+                // the body is the middleware's plain text rather than a Twirp
+                // envelope -- there is no error here to report, only somewhere else
+                // to go.
+                if ($status === Failover::REGION_PIN_STATUS
+                    && $mayRedirect
+                    && $pinRedirects < Failover::MAX_PIN_REDIRECTS
+                ) {
+                    // The 451 names no destination. A pinned project's
+                    // /settings/regions lists only the regions it is allowed, so
+                    // rediscovering is what turns the rejection into a destination
+                    // -- and anything cached from before the pin took effect is
+                    // wrong by definition, hence the forced refresh.
+                    $regions = $this->discoverRegions($jwtHeader, $requestId, refresh: true);
+                    $next = Failover::pickNext($regions, $attempted);
+
+                    if ($next !== null) {
+                        ++$pinRedirects;
+                        $attempted[Failover::hostKey($next)] = true;
+                        $current = $next;
+
+                        // No backoff. Nothing failed and nothing is overloaded; the
+                        // server answered immediately and deterministically.
+                        continue;
+                    }
+                }
+
                 $error = self::errorFromResponse($status, (string) $response->getBody());
             }
 
@@ -164,6 +201,8 @@ final class TwirpClient
             $next = null;
 
             if ($retryable && $attempt + 1 < $maxAttempts) {
+                // ??= on purpose: under a pin, $regions already holds the allowed
+                // list, and those are the only regions that will answer at all.
                 $regions ??= $this->discoverRegions($jwtHeader, $requestId);
                 $next = Failover::pickNext($regions, $attempted);
             }
@@ -185,13 +224,10 @@ final class TwirpClient
 
             usleep(Failover::backoffMicroseconds($attempt, $this->options->failoverBackoffMs));
 
+            ++$attempt;
             $attempted[Failover::hostKey($next)] = true;
             $current = $next;
         }
-
-        // Unreachable: the loop either returns, throws, or has a $next to continue
-        // with, and $attempted grows every iteration so it cannot cycle.
-        throw new \LogicException('The failover loop ended without a result.');
     }
 
     /**
@@ -261,11 +297,12 @@ final class TwirpClient
      * Anything short of a usable list returns empty, which makes the caller throw
      * the failure the user actually cares about.
      *
-     * The response is cached per host for the lifetime Cache-Control allows.
+     * The response is cached per host for the lifetime Cache-Control allows;
+     * $refresh discards that entry first, for a caller that knows it is stale.
      *
      * @return list<string>
      */
-    private function discoverRegions(string $jwtHeader, string $requestId): array
+    private function discoverRegions(string $jwtHeader, string $requestId, bool $refresh = false): array
     {
         $origin = Failover::origin($this->host);
 
@@ -274,10 +311,17 @@ final class TwirpClient
         }
 
         $hostKey = Failover::hostKey($origin);
-        $cached = $this->regionCache->get($hostKey);
 
-        if ($cached !== null) {
-            return $cached;
+        if ($refresh) {
+            // Dropped rather than merely bypassed, so a later call in this process
+            // does not go on using a list the server has already contradicted.
+            $this->regionCache->forget($hostKey);
+        } else {
+            $cached = $this->regionCache->get($hostKey);
+
+            if ($cached !== null) {
+                return $cached;
+            }
         }
 
         try {

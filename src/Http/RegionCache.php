@@ -86,6 +86,16 @@ final class RegionCache
         ];
     }
 
+    /**
+     * Drops one host's entry. Used when the server has said, in effect, that the
+     * list we hold is wrong -- a region-pin redirect means the project's allowed
+     * regions are not what we last discovered.
+     */
+    public function forget(string $hostKey): void
+    {
+        unset($this->entries[$hostKey]);
+    }
+
     public function clear(): void
     {
         $this->entries = [];

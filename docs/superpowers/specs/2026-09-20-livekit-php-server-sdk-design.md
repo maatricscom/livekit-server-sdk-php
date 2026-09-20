@@ -29,9 +29,10 @@ Packagist as an open-source library.
 **Deferred to phase 2**
 
 > **Later note.** Region failover was built after this spec was written and is no longer deferred — see
-> the "Region failover" section of `README.md` for what shipped, including one deliberate divergence from
-> the Node SDK (a `SipCallError` is not replayed). This spec is left as it was written; it records the
-> decision taken at the time, not the current state of the package.
+> the "Region failover" section of `README.md` for what shipped, including two deliberate divergences from
+> the Node SDK: a `SipCallError` is not replayed, and an HTTP 451 region-pin redirect is followed. Neither
+> is in any official SDK. `ConnectorClient` shipped too. This spec is left as it was written; it records
+> the decisions taken at the time, not the current state of the package.
 
 - `ConnectorClient` (5 methods, LiveKit Cloud only)
 - Region failover against `*.livekit.cloud` (`/settings/regions`, exponential backoff)

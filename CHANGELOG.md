@@ -45,6 +45,11 @@ Initial release.
   can deduplicate. It engages only for `*.livekit.cloud` hosts, because a replay sends the caller's token
   to an origin learned at runtime. A 4xx is never replayed, and neither is a `SipCallError` — SIP status
   metadata means the callee answered, so retrying elsewhere would only dial the number again.
+- Region-pin redirects. A project pinned to particular regions is turned away from any other with an HTTP
+  451; the SDK rediscovers regions and sends the request to one the project is allowed. Bounded at two
+  redirects per call, charged separately from the failover attempts, and — unlike failover — not disabled
+  by `failover: false`, since a pinned project has no other region that would answer. No official LiveKit
+  SDK implements this yet; it follows the specification in LiveKit's own SDK test server.
 - Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**.
 - `tests/MockServer/`, run in CI against `livekit/test-server` — the programmable mock of the LiveKit HTTP
   API that every official server SDK tests against. It covers every RPC in both wire formats, proving

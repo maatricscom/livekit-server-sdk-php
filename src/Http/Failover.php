@@ -41,6 +41,26 @@ final class Failover
     public const CLOUD_SUFFIX = '.livekit.cloud';
 
     /**
+     * HTTP 451, which LiveKit Cloud middleware returns when a project pinned to
+     * particular regions reaches one it is not pinned to.
+     *
+     * It is not an error to report: it is a redirect. The body is the middleware's
+     * plain text rather than a Twirp envelope, and it names no destination, so the
+     * client rediscovers regions -- a pinned project's /settings/regions lists only
+     * the ones it is allowed -- and goes to one of those.
+     */
+    public const REGION_PIN_STATUS = 451;
+
+    /**
+     * How many times one call may be redirected by a region pin.
+     *
+     * One is enough in practice, since a project's allowed regions all accept it.
+     * The second is slack for a list that changes mid-call; past that, something is
+     * wrong and looping is worse than surfacing the 451.
+     */
+    public const MAX_PIN_REDIRECTS = 2;
+
+    /**
      * How many attempts a request to $hostname gets; 1 means no failover.
      *
      * @param bool $force bypasses the cloud-host check. Test-only: it is what lets
@@ -49,7 +69,7 @@ final class Failover
      */
     public static function attempts(bool $enabled, string $hostname, bool $force = false, int $timeoutSeconds = 0): int
     {
-        if (!$enabled || !($force || self::isCloudHost($hostname))) {
+        if (!$enabled || !self::allowsRedirect($hostname, $force)) {
             return 1;
         }
 
@@ -58,6 +78,23 @@ final class Failover
         }
 
         return self::MAX_ATTEMPTS;
+    }
+
+    /**
+     * Whether a request to $hostname may be sent on to a host discovered at
+     * runtime -- the single question behind both failover and a region-pin
+     * redirect, since both hand the caller's bearer token to an origin named by a
+     * server response.
+     *
+     * Unlike failover, a pin redirect is not something an application opts out of:
+     * a pinned project has no other region that will answer, so declining to follow
+     * the redirect only turns a working call into a 451.
+     *
+     * @param bool $force test-only; see attempts()
+     */
+    public static function allowsRedirect(string $hostname, bool $force = false): bool
+    {
+        return $force || self::isCloudHost($hostname);
     }
 
     /**

@@ -9,6 +9,7 @@ use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
+use LiveKit\Http\Failover;
 use LiveKit\Http\RegionCache;
 use LiveKit\Http\TwirpClient;
 use LiveKit\Proto\CreateRoomRequest;
@@ -624,6 +625,165 @@ final class TwirpClientTest extends TestCase
         );
 
         self::assertCount(1, $discoveries, 'Cache-Control allowed 60s; the second failover reused the list.');
+    }
+
+    // ---------------------------------------------------------------------
+    // Region pinning (HTTP 451)
+    //
+    // A pinned project reaching a region it is not pinned to is turned away by
+    // middleware before the request is served. That is a redirect, not a failure,
+    // so it is followed even when failover is off -- but it still sends the
+    // caller's token to a host named by a server response, so it obeys the same
+    // domain guard.
+    // ---------------------------------------------------------------------
+
+    private function regionPinResponse(): Response
+    {
+        // Plain text, as the middleware writes it: not a Twirp error envelope.
+        return new Response(
+            Failover::REGION_PIN_STATUS,
+            ['Content-Type' => 'text/plain; charset=utf-8'],
+            'project not allowed in this region.'
+        );
+    }
+
+    public function test_a_region_pin_redirects_to_an_allowed_region(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->regionPinResponse());
+        $http->pushResponse($this->regionsResponse('https://allowed.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $room = $this->transport($http, $this->noBackoff())
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        self::assertSame('my-room', $room->getName());
+
+        self::assertSame([
+            'https://example.livekit.cloud/twirp/livekit.RoomService/CreateRoom',
+            'https://example.livekit.cloud/settings/regions',
+            'https://allowed.livekit.cloud/twirp/livekit.RoomService/CreateRoom',
+        ], array_map(static fn ($r): string => (string) $r->getUri(), $http->requests()));
+    }
+
+    public function test_a_region_pin_redirects_even_with_failover_disabled(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->regionPinResponse());
+        $http->pushResponse($this->regionsResponse('https://allowed.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $room = $this->transport($http, new ClientOptions(failover: false, failoverBackoffMs: 0))
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        // failover:false means "do not retry my failed requests elsewhere". Nothing
+        // failed here: a pinned project has no other region that would answer, so
+        // refusing to follow the redirect would only turn a working call into a 451.
+        self::assertSame('my-room', $room->getName());
+        self::assertSame(3, $http->requestCount());
+    }
+
+    public function test_a_region_pin_is_not_followed_off_livekit_cloud(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->regionPinResponse());
+
+        try {
+            $this->transport($http, $this->noBackoff(), 'https://livekit.example.com')
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertSame(Failover::REGION_PIN_STATUS, $e->getHttpStatus());
+        }
+
+        // Region pinning is a LiveKit Cloud mechanism, so a 451 from anywhere else
+        // is something other than a redirect. Following it would send the token to
+        // a host named by whatever produced it.
+        self::assertSame(1, $http->requestCount());
+    }
+
+    public function test_a_region_pin_discards_the_cached_region_list(): void
+    {
+        $cache = new RegionCache();
+
+        $http = new MockHttpClient();
+        // A failover fills the cache with a 60-second list...
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->regionsResponse('https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('first'));
+        // ...then a pin says that list is wrong, whatever its lifetime claimed.
+        $http->pushResponse($this->regionPinResponse());
+        $http->pushResponse($this->regionsResponse('https://pinned.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('second'));
+
+        $transport = $this->transport($http, $this->noBackoff(), 'https://example.livekit.cloud', $cache);
+
+        $transport->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+        $second = $transport->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        self::assertSame('second', $second->getName());
+
+        $uris = array_map(static fn ($r): string => (string) $r->getUri(), $http->requests());
+
+        self::assertSame(
+            2,
+            count(array_filter($uris, static fn (string $u): bool => str_ends_with($u, '/settings/regions'))),
+            'The pin forced a fresh discovery rather than reusing the cached list.'
+        );
+
+        self::assertStringStartsWith('https://pinned.livekit.cloud/', $uris[5]);
+    }
+
+    public function test_the_cached_list_is_replaced_rather_than_merely_bypassed(): void
+    {
+        $cache = new RegionCache();
+
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable'));
+        $http->pushResponse($this->regionsResponse('https://fallback.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('first'));
+        $http->pushResponse($this->regionPinResponse());
+        $http->pushResponse($this->regionsResponse('https://pinned.livekit.cloud'));
+        $http->pushResponse($this->roomResponse('second'));
+
+        $transport = $this->transport($http, $this->noBackoff(), 'https://example.livekit.cloud', $cache);
+        $transport->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+        $transport->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        // The stale entry is dropped, not stepped around, so nothing later in the
+        // process goes on using a list the server has already contradicted.
+        self::assertSame(
+            ['https://pinned.livekit.cloud'],
+            $cache->get(Failover::hostKey('https://example.livekit.cloud'))
+        );
+    }
+
+    public function test_redirects_are_bounded(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->regionPinResponse());
+        $http->pushResponse($this->regionsResponse('https://a.livekit.cloud', 'https://b.livekit.cloud'));
+        $http->pushResponse($this->regionPinResponse());
+        $http->pushResponse($this->regionsResponse('https://a.livekit.cloud', 'https://b.livekit.cloud'));
+        $http->pushResponse($this->regionPinResponse());
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertSame(Failover::REGION_PIN_STATUS, $e->getHttpStatus());
+        }
+
+        // A server that keeps redirecting is a server something is wrong with;
+        // looping is worse than surfacing the 451.
+        self::assertSame(
+            1 + Failover::MAX_PIN_REDIRECTS,
+            count(array_filter(
+                $http->requests(),
+                static fn ($r): bool => str_contains((string) $r->getUri(), '/twirp/')
+            ))
+        );
     }
 
     public function test_an_empty_host_throws_a_configuration_exception(): void

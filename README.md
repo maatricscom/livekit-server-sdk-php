@@ -255,6 +255,7 @@ What counts as retryable is deliberately narrow:
 | Transport error (connection refused, reset, timeout) | yes | the region may be unreachable |
 | HTTP 5xx | yes | the region may be unhealthy |
 | HTTP 4xx | no | the request is what is wrong; another region answers the same |
+| HTTP 451 | **redirected** | a region pin, not a failure — see below |
 | `SipCallError` | **no** | see below |
 
 A `SipCallError` arrives as an HTTP 500, so nothing but its metadata distinguishes it from a server fault.
@@ -274,6 +275,31 @@ Two limits are worth knowing about:
 
 Every attempt carries the same `X-Livekit-Request-Id`, so LiveKit can recognise a replay as the same
 request rather than a new one.
+
+### Region pinning
+
+A LiveKit Cloud project can be pinned to a set of regions. A request that reaches a region the project is
+*not* pinned to is turned away by middleware with an **HTTP 451**, before it is served — the body is plain
+text rather than a Twirp error, and it names no destination.
+
+That is a redirect, not a failure, and the SDK follows it: it rediscovers regions (a pinned project's
+`/settings/regions` lists only the ones it is allowed) and sends the request to one of those. You do not
+need to configure anything, and unlike failover it is **not disabled by `failover: false`** — a pinned
+project has no other region that would answer, so declining to follow the redirect would turn a working
+call into an error with nothing gained.
+
+It is bounded: at most two redirects per call, and a host is never tried twice. If rediscovery turns up no
+region the project can reach — a project pinned to a region that is down, say — the 451 is raised as a
+`TwirpException` with LiveKit's own message. A redirect does not consume the failover attempts, so a call
+can be redirected by a pin and still retried if the region it lands on is unhealthy.
+
+The same domain restriction applies: a 451 from anything that is not a `*.livekit.cloud` host is treated
+as an ordinary error, because region pinning is a LiveKit Cloud mechanism and following it would send your
+token to a host named by whatever produced the response.
+
+> [!NOTE]
+> No official LiveKit SDK implements this yet — LiveKit's own SDK test server specifies the behaviour, and
+> this implementation is written and tested against that specification.
 
 The region list is cached for as long as its `Cache-Control: max-age` allows, and shared by the five
 clients behind one `LiveKitAPI`. Under PHP-FPM each request is a fresh process, so that cache starts cold

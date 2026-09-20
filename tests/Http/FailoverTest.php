@@ -39,6 +39,20 @@ final class FailoverTest extends TestCase
         self::assertSame($expected ? Failover::MAX_ATTEMPTS : 1, Failover::attempts(true, $hostname));
     }
 
+    #[DataProvider('hostnames')]
+    public function test_a_region_pin_redirect_obeys_the_same_domain_rule(string $hostname, bool $expected): void
+    {
+        // A pin redirect is not gated by the failover switch, but it hands the
+        // caller's token to a host named by a server response exactly as failover
+        // does, so the set of hosts that may receive it is the same.
+        self::assertSame($expected, Failover::allowsRedirect($hostname));
+    }
+
+    public function test_force_bypasses_the_domain_rule_for_redirects_too(): void
+    {
+        self::assertTrue(Failover::allowsRedirect('127.0.0.1', true));
+    }
+
     public function test_disabling_failover_leaves_a_single_attempt(): void
     {
         self::assertSame(1, Failover::attempts(false, 'my-project.livekit.cloud'));
