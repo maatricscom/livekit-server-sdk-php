@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -57,7 +57,7 @@ class TimeSeriesMetric extends \Google\Protobuf\Internal\Message
      *           index into `str_data`
      *     @type int $track_sid
      *           index into `str_data`
-     *     @type array<\LiveKit\Proto\MetricSample>|\Google\Protobuf\Internal\RepeatedField $samples
+     *     @type array<\LiveKit\Proto\MetricSample>|\Google\Protobuf\RepeatedField $samples
      *     @type int $rid
      *           index into 'str_data'
      * }
@@ -149,7 +149,7 @@ class TimeSeriesMetric extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.MetricSample samples = 4;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getSamples()
     {
@@ -158,7 +158,7 @@ class TimeSeriesMetric extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.MetricSample samples = 4;</code>
-     * @param array<\LiveKit\Proto\MetricSample>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\MetricSample>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setSamples($var)

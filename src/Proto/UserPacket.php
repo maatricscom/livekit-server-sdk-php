@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -86,9 +86,9 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      *     @type string $participant_identity
      *     @type string $payload
      *           user defined payload
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $destination_sids
+     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_sids
      *           the ID of the participants who will receive the message (sent to all by default)
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $destination_identities
+     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_identities
      *           identities of participants who will receive the message (sent to all by default)
      *     @type string $topic
      *           topic under which the message was published
@@ -196,7 +196,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * the ID of the participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_sids = 3 [deprecated = true];</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      * @deprecated
      */
     public function getDestinationSids()
@@ -211,7 +211,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * the ID of the participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_sids = 3 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      * @deprecated
      */
@@ -230,7 +230,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * identities of participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6 [deprecated = true];</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      * @deprecated
      */
     public function getDestinationIdentities()
@@ -245,7 +245,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * identities of participants who will receive the message (sent to all by default)
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      * @deprecated
      */

@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -140,7 +140,7 @@ class SIPOutboundTrunkInfo extends \Google\Protobuf\Internal\Message
      *           country where the call terminates as ISO 3166-1 alpha-2 (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). This will be used by the livekit infrastructure to route calls.
      *     @type int $transport
      *           SIP Transport used for outbound call.
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $numbers
+     *     @type array<string>|\Google\Protobuf\RepeatedField $numbers
      *           Numbers used to make the calls. Random one from this list will be selected.
      *     @type string $auth_username
      *           Username and password used to authenticate with SIP server.
@@ -333,7 +333,7 @@ class SIPOutboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * Numbers used to make the calls. Random one from this list will be selected.
      *
      * Generated from protobuf field <code>repeated string numbers = 6;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getNumbers()
     {
@@ -344,7 +344,7 @@ class SIPOutboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * Numbers used to make the calls. Random one from this list will be selected.
      *
      * Generated from protobuf field <code>repeated string numbers = 6;</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setNumbers($var)

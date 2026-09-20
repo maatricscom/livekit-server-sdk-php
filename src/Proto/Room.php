@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -85,7 +85,7 @@ class Room extends \Google\Protobuf\Internal\Message
      *     @type int|string $creation_time
      *     @type int|string $creation_time_ms
      *     @type string $turn_password
-     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $enabled_codecs
+     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $enabled_codecs
      *     @type string $metadata
      *     @type int $num_participants
      *     @type int $num_publishers
@@ -276,7 +276,7 @@ class Room extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Codec enabled_codecs = 7;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getEnabledCodecs()
     {
@@ -285,7 +285,7 @@ class Room extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Codec enabled_codecs = 7;</code>
-     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setEnabledCodecs($var)

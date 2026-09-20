@@ -81,7 +81,11 @@ Initial release.
   redirects per call, charged separately from the failover attempts, and — unlike failover — not disabled
   by `failover: false`, since a pinned project has no other region that would answer. No official LiveKit
   SDK implements this yet; it follows the specification in LiveKit's own SDK test server.
-- Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**.
+- Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**. protoc
+  names `\Google\Protobuf\Internal\RepeatedField` in its docblocks, which the runtime has not declared
+  since v4 — it is a `class_alias` now, invisible to static analysis. The generator rewrites it to the
+  canonical name, so a project running PHPStan against code that touches these getters is not told the
+  class is unknown.
 - One naming rule across every client: the per-call option object is always `$options`, a room is `$room`
   or `$roomName` following the proto field, and `$output` / `$fields` keep their own meanings. Named
   arguments make a parameter name part of the API, so a name that changes between clients is a trap.

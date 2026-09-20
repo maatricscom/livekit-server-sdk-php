@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -25,7 +25,7 @@ class StreamStateUpdate extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\StreamStateInfo>|\Google\Protobuf\Internal\RepeatedField $stream_states
+     *     @type array<\LiveKit\Proto\StreamStateInfo>|\Google\Protobuf\RepeatedField $stream_states
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class StreamStateUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamStateInfo stream_states = 1;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getStreamStates()
     {
@@ -44,7 +44,7 @@ class StreamStateUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamStateInfo stream_states = 1;</code>
-     * @param array<\LiveKit\Proto\StreamStateInfo>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\StreamStateInfo>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setStreamStates($var)

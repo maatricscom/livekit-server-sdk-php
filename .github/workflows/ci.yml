@@ -150,16 +150,22 @@ jobs:
       - run: bin/check-protocol-version.sh
 
   forbidden-symbols:
-    name: No Internal RepeatedField in hand-written code
+    name: No Internal RepeatedField anywhere in src
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      # Internal\RepeatedField survives only as a class_alias in protobuf v5, and
-      # PSR-4 cannot autoload an alias, so a reference fatals on a cold autoloader.
-      # Prose in a plan does not prevent one; this does.
+      # Internal\RepeatedField survives only as a class_alias, created when
+      # Google\Protobuf\RepeatedField loads, so no static analyser can see it and
+      # PSR-4 cannot autoload it. Nothing fatals from a `use` statement or a
+      # docblock, but a downstream project running PHPStan over code that touches
+      # one of these getters is told the class is unknown and loses the type.
+      #
+      # src/Proto used to be excluded here, because protoc emits the old name.
+      # bin/generate-protos.sh now rewrites it, so the rule covers all of src --
+      # which also means this job fails if a regeneration ever loses that step.
       - name: Reject the non-autoloadable RepeatedField alias
         run: |
-          if grep -rn 'Internal\\RepeatedField' src --exclude-dir=Proto; then
+          if grep -rn 'Internal\\RepeatedField' src; then
             echo "::error::Use \\Google\\Protobuf\\RepeatedField - the Internal alias is not autoloadable"
             exit 1
           fi

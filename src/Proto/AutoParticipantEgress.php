@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -34,8 +34,8 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      *           (default H264_720P_30)
      *     @type \LiveKit\Proto\EncodingOptions $advanced
      *           (optional)
-     *     @type array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\Internal\RepeatedField $file_outputs
-     *     @type array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\Internal\RepeatedField $segment_outputs
+     *     @type array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\RepeatedField $file_outputs
+     *     @type array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\RepeatedField $segment_outputs
      * }
      */
     public function __construct($data = NULL) {
@@ -107,7 +107,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EncodedFileOutput file_outputs = 3;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getFileOutputs()
     {
@@ -116,7 +116,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EncodedFileOutput file_outputs = 3;</code>
-     * @param array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setFileOutputs($var)
@@ -129,7 +129,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SegmentedFileOutput segment_outputs = 4;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getSegmentOutputs()
     {
@@ -138,7 +138,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SegmentedFileOutput segment_outputs = 4;</code>
-     * @param array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setSegmentOutputs($var)

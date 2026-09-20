@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -33,7 +33,7 @@ class ParticipantTracks extends \Google\Protobuf\Internal\Message
      *
      *     @type string $participant_sid
      *           participant ID of participant to whom the tracks belong
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $track_sids
+     *     @type array<string>|\Google\Protobuf\RepeatedField $track_sids
      * }
      */
     public function __construct($data = NULL) {
@@ -69,7 +69,7 @@ class ParticipantTracks extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string track_sids = 2;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getTrackSids()
     {
@@ -78,7 +78,7 @@ class ParticipantTracks extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string track_sids = 2;</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setTrackSids($var)

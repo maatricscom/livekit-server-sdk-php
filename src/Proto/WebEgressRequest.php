@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -68,11 +68,11 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SegmentedFileOutput $segments
      *     @type int $preset
      *     @type \LiveKit\Proto\EncodingOptions $advanced
-     *     @type array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\Internal\RepeatedField $file_outputs
-     *     @type array<\LiveKit\Proto\StreamOutput>|\Google\Protobuf\Internal\RepeatedField $stream_outputs
-     *     @type array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\Internal\RepeatedField $segment_outputs
-     *     @type array<\LiveKit\Proto\ImageOutput>|\Google\Protobuf\Internal\RepeatedField $image_outputs
-     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\Internal\RepeatedField $webhooks
+     *     @type array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\RepeatedField $file_outputs
+     *     @type array<\LiveKit\Proto\StreamOutput>|\Google\Protobuf\RepeatedField $stream_outputs
+     *     @type array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\RepeatedField $segment_outputs
+     *     @type array<\LiveKit\Proto\ImageOutput>|\Google\Protobuf\RepeatedField $image_outputs
+     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $webhooks
      * }
      */
     public function __construct($data = NULL) {
@@ -332,7 +332,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EncodedFileOutput file_outputs = 9;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getFileOutputs()
     {
@@ -341,7 +341,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EncodedFileOutput file_outputs = 9;</code>
-     * @param array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\EncodedFileOutput>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setFileOutputs($var)
@@ -354,7 +354,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamOutput stream_outputs = 10;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getStreamOutputs()
     {
@@ -363,7 +363,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.StreamOutput stream_outputs = 10;</code>
-     * @param array<\LiveKit\Proto\StreamOutput>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\StreamOutput>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setStreamOutputs($var)
@@ -376,7 +376,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SegmentedFileOutput segment_outputs = 11;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getSegmentOutputs()
     {
@@ -385,7 +385,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SegmentedFileOutput segment_outputs = 11;</code>
-     * @param array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\SegmentedFileOutput>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setSegmentOutputs($var)
@@ -398,7 +398,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ImageOutput image_outputs = 13;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getImageOutputs()
     {
@@ -407,7 +407,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ImageOutput image_outputs = 13;</code>
-     * @param array<\LiveKit\Proto\ImageOutput>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\ImageOutput>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setImageOutputs($var)
@@ -420,7 +420,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 14;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getWebhooks()
     {
@@ -429,7 +429,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 14;</code>
-     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setWebhooks($var)

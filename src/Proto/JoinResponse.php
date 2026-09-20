@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -96,10 +96,10 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      *
      *     @type \LiveKit\Proto\Room $room
      *     @type \LiveKit\Proto\ParticipantInfo $participant
-     *     @type array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\Internal\RepeatedField $other_participants
+     *     @type array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $other_participants
      *     @type string $server_version
      *           deprecated. use server_info.version instead.
-     *     @type array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\Internal\RepeatedField $ice_servers
+     *     @type array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\RepeatedField $ice_servers
      *     @type bool $subscriber_primary
      *           use subscriber as the primary PeerConnection
      *     @type string $alternative_url
@@ -113,7 +113,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ServerInfo $server_info
      *     @type string $sif_trailer
      *           Server-Injected-Frame byte trailer, used to identify unencrypted frames when e2ee is enabled
-     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $enabled_publish_codecs
+     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $enabled_publish_codecs
      *     @type bool $fast_publish
      *           when set, client should attempt to establish publish peer connection when joining room to speed up publishing
      * }
@@ -189,7 +189,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo other_participants = 3;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getOtherParticipants()
     {
@@ -198,7 +198,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo other_participants = 3;</code>
-     * @param array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\ParticipantInfo>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setOtherParticipants($var)
@@ -237,7 +237,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ICEServer ice_servers = 5;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getIceServers()
     {
@@ -246,7 +246,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ICEServer ice_servers = 5;</code>
-     * @param array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\ICEServer>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setIceServers($var)
@@ -473,7 +473,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Codec enabled_publish_codecs = 14;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getEnabledPublishCodecs()
     {
@@ -482,7 +482,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.Codec enabled_publish_codecs = 14;</code>
-     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setEnabledPublishCodecs($var)

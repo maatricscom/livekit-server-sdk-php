@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -53,7 +53,7 @@ class SimulcastCodecInfo extends \Google\Protobuf\Internal\Message
      *     @type string $mime_type
      *     @type string $mid
      *     @type string $cid
-     *     @type array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\Internal\RepeatedField $layers
+     *     @type array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $layers
      *     @type int $video_layer_mode
      *     @type string $sdp_cid
      *           cid (client side id for track) could be different between
@@ -135,7 +135,7 @@ class SimulcastCodecInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 4;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getLayers()
     {
@@ -144,7 +144,7 @@ class SimulcastCodecInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.VideoLayer layers = 4;</code>
-     * @param array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\VideoLayer>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setLayers($var)

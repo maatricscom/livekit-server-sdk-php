@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -53,15 +53,15 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
      *     @type int|string $timestamp_ms
      *           time at which this batch is sent based on a monotonic clock (millisecond resolution)
      *     @type \Google\Protobuf\Timestamp $normalized_timestamp
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $str_data
+     *     @type array<string>|\Google\Protobuf\RepeatedField $str_data
      *           To avoid repeating string values, we store them in a separate list and reference them by index
      *           This is useful for storing participant identities, track names, etc.
      *           There is also a predefined list of labels that can be used to reference common metrics.
      *           They have reserved indices from 0 to (METRIC_LABEL_PREDEFINED_MAX_VALUE - 1).
      *           Indexes pointing at str_data should start from METRIC_LABEL_PREDEFINED_MAX_VALUE,
      *           such that str_data[0] == index of METRIC_LABEL_PREDEFINED_MAX_VALUE.
-     *     @type array<\LiveKit\Proto\TimeSeriesMetric>|\Google\Protobuf\Internal\RepeatedField $time_series
-     *     @type array<\LiveKit\Proto\EventMetric>|\Google\Protobuf\Internal\RepeatedField $events
+     *     @type array<\LiveKit\Proto\TimeSeriesMetric>|\Google\Protobuf\RepeatedField $time_series
+     *     @type array<\LiveKit\Proto\EventMetric>|\Google\Protobuf\RepeatedField $events
      * }
      */
     public function __construct($data = NULL) {
@@ -136,7 +136,7 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
      * such that str_data[0] == index of METRIC_LABEL_PREDEFINED_MAX_VALUE.
      *
      * Generated from protobuf field <code>repeated string str_data = 3;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getStrData()
     {
@@ -152,7 +152,7 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
      * such that str_data[0] == index of METRIC_LABEL_PREDEFINED_MAX_VALUE.
      *
      * Generated from protobuf field <code>repeated string str_data = 3;</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setStrData($var)
@@ -165,7 +165,7 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TimeSeriesMetric time_series = 4;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getTimeSeries()
     {
@@ -174,7 +174,7 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TimeSeriesMetric time_series = 4;</code>
-     * @param array<\LiveKit\Proto\TimeSeriesMetric>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\TimeSeriesMetric>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setTimeSeries($var)
@@ -187,7 +187,7 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EventMetric events = 5;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getEvents()
     {
@@ -196,7 +196,7 @@ class MetricsBatch extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EventMetric events = 5;</code>
-     * @param array<\LiveKit\Proto\EventMetric>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\EventMetric>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setEvents($var)

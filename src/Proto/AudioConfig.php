@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -36,7 +36,7 @@ class AudioConfig extends \Google\Protobuf\Internal\Message
      *
      *     @type bool $capture_all
      *           If true, all unmatched audio is recorded to both channels
-     *     @type array<\LiveKit\Proto\AudioRoute>|\Google\Protobuf\Internal\RepeatedField $routes
+     *     @type array<\LiveKit\Proto\AudioRoute>|\Google\Protobuf\RepeatedField $routes
      * }
      */
     public function __construct($data = NULL) {
@@ -72,7 +72,7 @@ class AudioConfig extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioRoute routes = 2;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getRoutes()
     {
@@ -81,7 +81,7 @@ class AudioConfig extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioRoute routes = 2;</code>
-     * @param array<\LiveKit\Proto\AudioRoute>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\AudioRoute>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setRoutes($var)

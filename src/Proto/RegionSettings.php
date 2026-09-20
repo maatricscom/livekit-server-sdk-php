@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -25,7 +25,7 @@ class RegionSettings extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\RegionInfo>|\Google\Protobuf\Internal\RepeatedField $regions
+     *     @type array<\LiveKit\Proto\RegionInfo>|\Google\Protobuf\RepeatedField $regions
      * }
      */
     public function __construct($data = NULL) {
@@ -35,7 +35,7 @@ class RegionSettings extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.RegionInfo regions = 1;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getRegions()
     {
@@ -44,7 +44,7 @@ class RegionSettings extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.RegionInfo regions = 1;</code>
-     * @param array<\LiveKit\Proto\RegionInfo>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\RegionInfo>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setRegions($var)

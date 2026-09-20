@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -70,15 +70,15 @@ class SyncState extends \Google\Protobuf\Internal\Message
      *           subscribe answer if using dual peer connection
      *           publish answer if using single peer connection
      *     @type \LiveKit\Proto\UpdateSubscription $subscription
-     *     @type array<\LiveKit\Proto\TrackPublishedResponse>|\Google\Protobuf\Internal\RepeatedField $publish_tracks
-     *     @type array<\LiveKit\Proto\DataChannelInfo>|\Google\Protobuf\Internal\RepeatedField $data_channels
+     *     @type array<\LiveKit\Proto\TrackPublishedResponse>|\Google\Protobuf\RepeatedField $publish_tracks
+     *     @type array<\LiveKit\Proto\DataChannelInfo>|\Google\Protobuf\RepeatedField $data_channels
      *     @type \LiveKit\Proto\SessionDescription $offer
      *           last received server side offer/sent client side offer before reconnecting
      *           received server side offer if using dual peer connection
      *           sent client side offer if using single peer connection
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $track_sids_disabled
-     *     @type array<\LiveKit\Proto\DataChannelReceiveState>|\Google\Protobuf\Internal\RepeatedField $datachannel_receive_states
-     *     @type array<\LiveKit\Proto\PublishDataTrackResponse>|\Google\Protobuf\Internal\RepeatedField $publish_data_tracks
+     *     @type array<string>|\Google\Protobuf\RepeatedField $track_sids_disabled
+     *     @type array<\LiveKit\Proto\DataChannelReceiveState>|\Google\Protobuf\RepeatedField $datachannel_receive_states
+     *     @type array<\LiveKit\Proto\PublishDataTrackResponse>|\Google\Protobuf\RepeatedField $publish_data_tracks
      *     @type \LiveKit\Proto\UpdateDataSubscription $data_subscription
      * }
      */
@@ -161,7 +161,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackPublishedResponse publish_tracks = 3;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getPublishTracks()
     {
@@ -170,7 +170,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TrackPublishedResponse publish_tracks = 3;</code>
-     * @param array<\LiveKit\Proto\TrackPublishedResponse>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\TrackPublishedResponse>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setPublishTracks($var)
@@ -183,7 +183,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataChannelInfo data_channels = 4;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getDataChannels()
     {
@@ -192,7 +192,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataChannelInfo data_channels = 4;</code>
-     * @param array<\LiveKit\Proto\DataChannelInfo>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\DataChannelInfo>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setDataChannels($var)
@@ -245,7 +245,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string track_sids_disabled = 6;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getTrackSidsDisabled()
     {
@@ -254,7 +254,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string track_sids_disabled = 6;</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setTrackSidsDisabled($var)
@@ -267,7 +267,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataChannelReceiveState datachannel_receive_states = 7;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getDatachannelReceiveStates()
     {
@@ -276,7 +276,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.DataChannelReceiveState datachannel_receive_states = 7;</code>
-     * @param array<\LiveKit\Proto\DataChannelReceiveState>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\DataChannelReceiveState>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setDatachannelReceiveStates($var)
@@ -289,7 +289,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PublishDataTrackResponse publish_data_tracks = 8;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getPublishDataTracks()
     {
@@ -298,7 +298,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PublishDataTrackResponse publish_data_tracks = 8;</code>
-     * @param array<\LiveKit\Proto\PublishDataTrackResponse>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\PublishDataTrackResponse>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setPublishDataTracks($var)

@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -38,7 +38,7 @@ class Transcription extends \Google\Protobuf\Internal\Message
      *     @type string $transcribed_participant_identity
      *           Participant that got its speech transcribed
      *     @type string $track_id
-     *     @type array<\LiveKit\Proto\TranscriptionSegment>|\Google\Protobuf\Internal\RepeatedField $segments
+     *     @type array<\LiveKit\Proto\TranscriptionSegment>|\Google\Protobuf\RepeatedField $segments
      * }
      */
     public function __construct($data = NULL) {
@@ -96,7 +96,7 @@ class Transcription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TranscriptionSegment segments = 4;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getSegments()
     {
@@ -105,7 +105,7 @@ class Transcription extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.TranscriptionSegment segments = 4;</code>
-     * @param array<\LiveKit\Proto\TranscriptionSegment>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\TranscriptionSegment>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setSegments($var)

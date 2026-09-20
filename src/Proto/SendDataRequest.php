@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -59,9 +59,9 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      *     @type string $room
      *     @type string $data
      *     @type int $kind
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $destination_sids
+     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_sids
      *           mark deprecated
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $destination_identities
+     *     @type array<string>|\Google\Protobuf\RepeatedField $destination_identities
      *           when set, only forward to these identities
      *     @type string $topic
      *     @type string $nonce
@@ -143,7 +143,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * mark deprecated
      *
      * Generated from protobuf field <code>repeated string destination_sids = 4 [deprecated = true];</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      * @deprecated
      */
     public function getDestinationSids()
@@ -158,7 +158,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * mark deprecated
      *
      * Generated from protobuf field <code>repeated string destination_sids = 4 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      * @deprecated
      */
@@ -177,7 +177,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * when set, only forward to these identities
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getDestinationIdentities()
     {
@@ -188,7 +188,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * when set, only forward to these identities
      *
      * Generated from protobuf field <code>repeated string destination_identities = 6;</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setDestinationIdentities($var)

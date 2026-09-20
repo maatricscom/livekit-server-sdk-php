@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -33,9 +33,9 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $codecs
+     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $codecs
      *           disabled for both publish and subscribe
-     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $publish
+     *     @type array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $publish
      *           only disable for publish
      * }
      */
@@ -48,7 +48,7 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * disabled for both publish and subscribe
      *
      * Generated from protobuf field <code>repeated .livekit.Codec codecs = 1;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getCodecs()
     {
@@ -59,7 +59,7 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * disabled for both publish and subscribe
      *
      * Generated from protobuf field <code>repeated .livekit.Codec codecs = 1;</code>
-     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setCodecs($var)
@@ -74,7 +74,7 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * only disable for publish
      *
      * Generated from protobuf field <code>repeated .livekit.Codec publish = 2;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getPublish()
     {
@@ -85,7 +85,7 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * only disable for publish
      *
      * Generated from protobuf field <code>repeated .livekit.Codec publish = 2;</code>
-     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\Codec>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setPublish($var)

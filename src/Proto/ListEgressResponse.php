@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -31,7 +31,7 @@ class ListEgressResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type array<\LiveKit\Proto\EgressInfo>|\Google\Protobuf\Internal\RepeatedField $items
+     *     @type array<\LiveKit\Proto\EgressInfo>|\Google\Protobuf\RepeatedField $items
      *     @type \LiveKit\Proto\TokenPagination $next_page_token
      *           next field id: 3
      * }
@@ -43,7 +43,7 @@ class ListEgressResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EgressInfo items = 1;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getItems()
     {
@@ -52,7 +52,7 @@ class ListEgressResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.EgressInfo items = 1;</code>
-     * @param array<\LiveKit\Proto\EgressInfo>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\EgressInfo>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setItems($var)

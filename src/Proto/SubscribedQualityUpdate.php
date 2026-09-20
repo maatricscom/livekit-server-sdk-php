@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -35,8 +35,8 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $track_sid
-     *     @type array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\Internal\RepeatedField $subscribed_qualities
-     *     @type array<\LiveKit\Proto\SubscribedCodec>|\Google\Protobuf\Internal\RepeatedField $subscribed_codecs
+     *     @type array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\RepeatedField $subscribed_qualities
+     *     @type array<\LiveKit\Proto\SubscribedCodec>|\Google\Protobuf\RepeatedField $subscribed_codecs
      * }
      */
     public function __construct($data = NULL) {
@@ -68,7 +68,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedQuality subscribed_qualities = 2 [deprecated = true];</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      * @deprecated
      */
     public function getSubscribedQualities()
@@ -81,7 +81,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedQuality subscribed_qualities = 2 [deprecated = true];</code>
-     * @param array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\SubscribedQuality>|\Google\Protobuf\RepeatedField $var
      * @return $this
      * @deprecated
      */
@@ -98,7 +98,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedCodec subscribed_codecs = 3;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getSubscribedCodecs()
     {
@@ -107,7 +107,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SubscribedCodec subscribed_codecs = 3;</code>
-     * @param array<\LiveKit\Proto\SubscribedCodec>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\SubscribedCodec>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setSubscribedCodecs($var)

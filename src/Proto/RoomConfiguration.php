@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -104,7 +104,7 @@ class RoomConfiguration extends \Google\Protobuf\Internal\Message
      *     @type bool $sync_streams
      *           improves A/V sync when playout_delay set to a value larger than 200ms. It will disables transceiver re-use
      *           so not recommended for rooms with frequent subscription changes
-     *     @type array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\Internal\RepeatedField $agents
+     *     @type array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $agents
      *           Define agents that should be dispatched to this room
      *     @type array|\Google\Protobuf\Internal\MapField $tags
      *           Tags to attach to the room
@@ -361,7 +361,7 @@ class RoomConfiguration extends \Google\Protobuf\Internal\Message
      * Define agents that should be dispatched to this room
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 10;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getAgents()
     {
@@ -372,7 +372,7 @@ class RoomConfiguration extends \Google\Protobuf\Internal\Message
      * Define agents that should be dispatched to this room
      *
      * Generated from protobuf field <code>repeated .livekit.RoomAgentDispatch agents = 10;</code>
-     * @param array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\RoomAgentDispatch>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setAgents($var)

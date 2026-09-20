@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -51,11 +51,11 @@ class StartEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\MediaSource $media
      *     @type int $preset
      *     @type \LiveKit\Proto\EncodingOptions $advanced
-     *     @type array<\LiveKit\Proto\Output>|\Google\Protobuf\Internal\RepeatedField $outputs
+     *     @type array<\LiveKit\Proto\Output>|\Google\Protobuf\RepeatedField $outputs
      *           At least one required
      *     @type \LiveKit\Proto\StorageConfig $storage
      *           Request-level storage default
-     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\Internal\RepeatedField $webhooks
+     *     @type array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $webhooks
      *           Optional additional webhook config
      * }
      */
@@ -225,7 +225,7 @@ class StartEgressRequest extends \Google\Protobuf\Internal\Message
      * At least one required
      *
      * Generated from protobuf field <code>repeated .livekit.Output outputs = 7;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getOutputs()
     {
@@ -236,7 +236,7 @@ class StartEgressRequest extends \Google\Protobuf\Internal\Message
      * At least one required
      *
      * Generated from protobuf field <code>repeated .livekit.Output outputs = 7;</code>
-     * @param array<\LiveKit\Proto\Output>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\Output>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setOutputs($var)
@@ -287,7 +287,7 @@ class StartEgressRequest extends \Google\Protobuf\Internal\Message
      * Optional additional webhook config
      *
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 9;</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      */
     public function getWebhooks()
     {
@@ -298,7 +298,7 @@ class StartEgressRequest extends \Google\Protobuf\Internal\Message
      * Optional additional webhook config
      *
      * Generated from protobuf field <code>repeated .livekit.WebhookConfig webhooks = 9;</code>
-     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\LiveKit\Proto\WebhookConfig>|\Google\Protobuf\RepeatedField $var
      * @return $this
      */
     public function setWebhooks($var)

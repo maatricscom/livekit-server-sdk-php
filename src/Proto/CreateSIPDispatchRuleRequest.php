@@ -6,7 +6,7 @@
 namespace LiveKit\Proto;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Google\Protobuf\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
@@ -95,13 +95,13 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPDispatchRuleInfo $dispatch_rule
      *           Rule ID is ignored
      *     @type \LiveKit\Proto\SIPDispatchRule $rule
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $trunk_ids
+     *     @type array<string>|\Google\Protobuf\RepeatedField $trunk_ids
      *           What trunks are accepted for this dispatch rule
      *           If empty all trunks will match this dispatch rule
      *     @type bool $hide_phone_number
      *           By default the From value (Phone number) is used for participant name/identity and added to attributes.
      *           If true, a random value for identity will be used and numbers will be omitted from attributes.
-     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $inbound_numbers
+     *     @type array<string>|\Google\Protobuf\RepeatedField $inbound_numbers
      *           Dispatch Rule will only accept a call made to these numbers (if set).
      *     @type string $name
      *           Optional human-readable name for the Dispatch Rule.
@@ -205,7 +205,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * If empty all trunks will match this dispatch rule
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 2 [deprecated = true];</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      * @deprecated
      */
     public function getTrunkIds()
@@ -221,7 +221,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * If empty all trunks will match this dispatch rule
      *
      * Generated from protobuf field <code>repeated string trunk_ids = 2 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      * @deprecated
      */
@@ -274,7 +274,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made to these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 6 [deprecated = true];</code>
-     * @return \Google\Protobuf\Internal\RepeatedField
+     * @return \Google\Protobuf\RepeatedField
      * @deprecated
      */
     public function getInboundNumbers()
@@ -289,7 +289,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * Dispatch Rule will only accept a call made to these numbers (if set).
      *
      * Generated from protobuf field <code>repeated string inbound_numbers = 6 [deprecated = true];</code>
-     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\RepeatedField $var
      * @return $this
      * @deprecated
      */
