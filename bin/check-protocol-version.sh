@@ -43,10 +43,9 @@ failed=0
 # "pinned to a tag (currently vX)" -- and says of itself that it is kept current
 # with the code, so a bump leaves it wrong in exactly the way this check exists to
 # prevent. It is globbed rather than named: the filename carries a date, and a
-# rename should not quietly drop it from the list. A missing file is reported as
-# missing rather than as "does not mention", which is what an unmatched glob or a
-# moved spec would otherwise look like.
-for file in README.md NOTICE CHANGELOG.md CONTRIBUTING.md docs/superpowers/specs/*.md; do
+# A missing file is reported as missing rather than as "does not mention", which is
+# what a moved or renamed spec would otherwise look like.
+for file in README.md NOTICE CHANGELOG.md CONTRIBUTING.md docs/design.md; do
     if [ ! -f "$file" ]; then
         echo "  FAIL ${file} is missing" >&2
         failed=1

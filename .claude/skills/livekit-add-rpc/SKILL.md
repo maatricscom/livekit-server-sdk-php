@@ -15,7 +15,7 @@ name. `deleteRoom` needs `roomCreate`, not `roomAdmin`. The two SIP call methods
 `sip.call`, not `sip.admin`. `roomAdmin` is room-scoped server-side, so the room name
 goes into the grant and not only into the request body.
 
-The mapping lives in §6 of the design spec under `docs/superpowers/specs/`. Read it
+The mapping lives in §6 of the design spec, `docs/design.md`. Read it
 there rather than inferring from a neighbouring method.
 
 A grant that is too narrow fails only against a deployment that enforces it, which

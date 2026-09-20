@@ -143,5 +143,6 @@ Documented across `README.md` and `CHANGELOG.md`, and not bugs to fix:
 - A `SipCallError` is never replayed by failover — SIP status metadata means the callee answered.
 - An HTTP 451 region-pin redirect is followed; no official SDK implements this yet.
 
-`docs/superpowers/specs/` holds the design spec, which records *why* the package is shaped this way and is
-kept current with the code. `docs/superpowers/plans/` is gitignored.
+`docs/design.md` is the design spec: it records *why* the package is shaped this way, and is kept current
+with the code rather than left as a snapshot. `docs/superpowers/` is a local working directory and is
+gitignored.
