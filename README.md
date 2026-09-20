@@ -98,6 +98,72 @@ List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on)
 rather than a generated protobuf `RepeatedField`; every other method returns the generated
 `LiveKit\Proto\*` message for that RPC's response.
 
+## The other services
+
+The quickstart uses rooms. The shape is the same for the rest — an option object per call, and the
+generated response message back:
+
+```php
+use LiveKit\Options\CreateDispatchOptions;
+use LiveKit\Options\CreateIngressOptions;
+use LiveKit\Options\EncodedOutputs;
+use LiveKit\Options\RoomCompositeOptions;
+use LiveKit\Proto\EncodedFileOutput;
+use LiveKit\Proto\IngressInput;
+use LiveKit\Proto\S3Upload;
+
+// Record a room. The storage credentials travel inside this request; they are
+// never put in an access token, and AccessToken refuses to sign one carrying them.
+$egress = $livekit->egress->startRoomCompositeEgress(
+    'my-room',
+    new EncodedOutputs(file: (new EncodedFileOutput())
+        ->setFilepath('my-room-{time}.mp4')
+        ->setS3((new S3Upload())->setBucket('recordings')->setRegion('eu-central-1'))),
+    new RoomCompositeOptions(layout: 'speaker'),
+);
+
+$livekit->egress->stopEgress($egress->getEgressId());
+
+// Take an RTMP feed into a room. The response carries the url and stream key to
+// point an encoder at.
+$ingress = $livekit->ingress->createIngress(new CreateIngressOptions(
+    inputType: IngressInput::RTMP_INPUT,
+    roomName: 'my-room',
+    participantIdentity: 'rtmp-source',
+));
+
+// Send a named agent into a room. Its metadata reaches the agent as job metadata.
+$dispatch = $livekit->agentDispatch->createDispatch(
+    'my-room',
+    'my-agent',
+    new CreateDispatchOptions(metadata: '{"locale":"tr"}'),
+);
+```
+
+SIP is in [Error handling](#failures-that-did-not-come-from-livekit), because its failures carry more than
+a Twirp code; WhatsApp and Twilio are in
+[WhatsApp and Twilio calls](#whatsapp-and-twilio-calls).
+
+## Runnable examples
+
+`examples/` ships with the package. Each one runs against a real deployment, reads its credentials from
+the environment, and prints what it did:
+
+| | shows |
+|---|---|
+| `examples/token.php` | minting an access token with a video grant |
+| `examples/room.php` | create, list, delete |
+| `examples/egress.php` | recording a room to S3, then stopping it |
+| `examples/ingress.php` | an RTMP endpoint, a partial update, and deleting it |
+| `examples/sip.php` | an outbound trunk and a dispatch rule |
+| `examples/agent-dispatch.php` | dispatching a named agent and finding it again |
+| `examples/connector.php` | bridging a WhatsApp call into a room |
+| `examples/webhook.php` | verifying an inbound webhook against the raw body |
+
+Two of them could ring a telephone, and neither does so by accident. `sip.php` describes
+`createSipParticipant()` without calling it, and `connector.php` prints what it would dial and exits
+unless `PLACE_A_REAL_WHATSAPP_CALL=yes` is set.
+
 ## Credentials
 
 The host comes from the `host` argument or `LIVEKIT_URL`. For authentication you need **either** an API
