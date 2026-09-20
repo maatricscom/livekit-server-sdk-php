@@ -17,7 +17,7 @@ use LiveKit\Proto\ListAgentDispatchResponse;
 
 final class AgentDispatchClient extends ServiceBase implements AgentDispatchClientInterface
 {
-    private const SERVICE = 'AgentDispatchService';
+    private const string SERVICE = 'AgentDispatchService';
 
     public function createDispatch(
         string $room,

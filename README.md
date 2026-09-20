@@ -25,7 +25,7 @@ No official PHP SDK exists upstream; LiveKit's own ecosystem page points to a co
 
 ## Requirements
 
-- PHP 8.3 or later
+- PHP 8.4 or later
 - A [PSR-18](https://www.php-fig.org/psr/psr-18/) HTTP client implementation and matching
   [PSR-17](https://www.php-fig.org/psr/psr-17/) factories. This package does not bundle one — it discovers
   whatever is installed via [`php-http/discovery`](https://github.com/php-http/discovery), or accepts one

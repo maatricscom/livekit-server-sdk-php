@@ -25,20 +25,20 @@ final class Failover
      * fallbacks. Fixed rather than configurable, so retries cannot be tuned into
      * something that would overwhelm the server.
      */
-    public const MAX_ATTEMPTS = 3;
+    public const int MAX_ATTEMPTS = 3;
 
     /** Base for the exponential backoff between attempts, in milliseconds. */
-    public const BACKOFF_BASE_MS = 200;
+    public const int BACKOFF_BASE_MS = 200;
 
     /**
      * Below this per-request timeout a retry is unlikely to complete, and many
      * clients would retry in lockstep across regions. A short request gets one
      * attempt instead — a thundering-herd guard.
      */
-    public const MIN_TIMEOUT_SECONDS = 5;
+    public const int MIN_TIMEOUT_SECONDS = 5;
 
     /** The only domain suffix whose hosts may receive a replayed request. */
-    public const CLOUD_SUFFIX = '.livekit.cloud';
+    public const string CLOUD_SUFFIX = '.livekit.cloud';
 
     /**
      * HTTP 451, which LiveKit Cloud middleware returns when a project pinned to
@@ -49,7 +49,7 @@ final class Failover
      * client rediscovers regions -- a pinned project's /settings/regions lists only
      * the ones it is allowed -- and goes to one of those.
      */
-    public const REGION_PIN_STATUS = 451;
+    public const int REGION_PIN_STATUS = 451;
 
     /**
      * How many times one call may be redirected by a region pin.
@@ -58,7 +58,7 @@ final class Failover
      * The second is slack for a list that changes mid-call; past that, something is
      * wrong and looping is worse than surfacing the 451.
      */
-    public const MAX_PIN_REDIRECTS = 2;
+    public const int MAX_PIN_REDIRECTS = 2;
 
     /**
      * How many attempts a request to $hostname gets; 1 means no failover.
@@ -220,7 +220,7 @@ final class Failover
      * and an expiry that far out is indistinguishable from never expiring -- a
      * process would keep failing over to a region list it can no longer refresh.
      */
-    public const MAX_REGION_TTL_SECONDS = 86400;
+    public const int MAX_REGION_TTL_SECONDS = 86400;
 
     /**
      * The max-age of a Cache-Control header, in seconds, capped at

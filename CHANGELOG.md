@@ -7,7 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.1.0] - 2026-09-20
 
-Initial release.
+Initial release. Requires PHP 8.4 or later: 8.3 left active support at the end of 2025, and a package
+starting out now has no reason to carry a version that only receives security fixes.
 
 ### Added
 

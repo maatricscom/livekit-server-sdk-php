@@ -12,10 +12,9 @@ composer install
 This installs both runtime and development dependencies, including `guzzlehttp/guzzle` and
 `nyholm/psr7`, which the dev environment uses as its PSR-18/PSR-17 implementation.
 
-PHPUnit is constrained to `^12.0 || ^13.3` rather than the newest alone, because 13 requires PHP 8.4.1
-and this package supports 8.3. Composer resolves 13 on PHP 8.4 and newer and 12 on 8.3, so every PHP
-version in the CI matrix gets the newest PHPUnit it can run. Both were checked against this suite,
-including that `--fail-on-skipped` and the risky-test detection still exit non-zero.
+The PHP floor is 8.4. PHP 8.3 left active support at the end of 2025 and keeps only security fixes; a
+package starting out now is better off not carrying it, and this is the one moment where setting the floor
+costs nobody anything. It also means the dev tooling can be pinned to one major each rather than a range.
 
 ## Running the test suite
 

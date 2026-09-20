@@ -25,7 +25,7 @@ final class WebhookReceiver
      * LiveKit uses a custom media type deliberately, so that frameworks do not
      * silently parse the body before the signature has been checked.
      */
-    public const CONTENT_TYPE = 'application/webhook+json';
+    public const string CONTENT_TYPE = 'application/webhook+json';
 
     private readonly TokenVerifier $verifier;
 

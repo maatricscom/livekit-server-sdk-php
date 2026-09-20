@@ -40,7 +40,7 @@ use LiveKit\Proto\UpdateSubscriptionsResponse;
 
 final class RoomServiceClient extends ServiceBase implements RoomServiceClientInterface
 {
-    private const SERVICE = 'RoomService';
+    private const string SERVICE = 'RoomService';
 
     public function createRoom(CreateRoomOptions $options): Room
     {

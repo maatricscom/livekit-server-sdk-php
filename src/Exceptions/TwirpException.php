@@ -43,7 +43,7 @@ class TwirpException extends \RuntimeException implements LiveKitException
      * what explains the failure, but not at whatever length the other end chose:
      * the message ends up in logs and in bug reports.
      */
-    private const BODY_EXCERPT_BYTES = 1024;
+    private const int BODY_EXCERPT_BYTES = 1024;
 
     /** Trims and shortens a response body for use in an exception message. */
     private static function excerpt(string $body): string

@@ -26,10 +26,10 @@ use LiveKit\Proto\RoomConfiguration;
 final class AccessToken
 {
     /** Matches Go's defaultValidDuration of 6 hours. */
-    public const DEFAULT_TTL_SECONDS = 21600;
+    public const int DEFAULT_TTL_SECONDS = 21600;
 
     /** firebase/php-jwt rejects HMAC keys shorter than this. */
-    private const MIN_SECRET_BYTES = 32;
+    private const int MIN_SECRET_BYTES = 32;
 
     private readonly string $apiKey;
 

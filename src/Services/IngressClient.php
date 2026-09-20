@@ -21,7 +21,7 @@ use LiveKit\Proto\UpdateIngressRequest;
 
 final class IngressClient extends ServiceBase implements IngressClientInterface
 {
-    private const SERVICE = 'Ingress';
+    private const string SERVICE = 'Ingress';
 
     public function createIngress(CreateIngressOptions $options): IngressInfo
     {

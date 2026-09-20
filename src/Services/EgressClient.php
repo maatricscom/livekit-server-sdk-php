@@ -39,7 +39,7 @@ use LiveKit\Proto\WebhookConfig;
  */
 final class EgressClient extends ServiceBase implements EgressClientInterface
 {
-    private const SERVICE = 'Egress';
+    private const string SERVICE = 'Egress';
 
     public function startRoomCompositeEgress(
         string $roomName,

@@ -24,10 +24,10 @@ final class DialTimeout
      * server default. Pinned explicitly so our request timeout does not silently
      * change if the server default does.
      */
-    public const DEFAULT_RINGING_TIMEOUT_SECONDS = 30;
+    public const int DEFAULT_RINGING_TIMEOUT_SECONDS = 30;
 
     /** Margin kept between the ring window and the HTTP request timeout. */
-    public const RINGING_TIMEOUT_MARGIN_SECONDS = 2;
+    public const int RINGING_TIMEOUT_MARGIN_SECONDS = 2;
 
     /**
      * The request timeout, in seconds, for a call that waits on an answer.

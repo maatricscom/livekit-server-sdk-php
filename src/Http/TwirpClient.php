@@ -30,14 +30,14 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 final class TwirpClient
 {
-    public const VERSION = '0.1.0';
+    public const string VERSION = '0.1.0';
 
-    public const REQUEST_ID_HEADER = 'X-Livekit-Request-Id';
+    public const string REQUEST_ID_HEADER = 'X-Livekit-Request-Id';
 
-    public const USER_AGENT_PREFIX = 'livekit-server-sdk-php/';
+    public const string USER_AGENT_PREFIX = 'livekit-server-sdk-php/';
 
     /** Origin-rooted, never relative to the configured host's path. */
-    private const REGIONS_PATH = '/settings/regions';
+    private const string REGIONS_PATH = '/settings/regions';
 
     /**
      * Identifies both the SDK and the protocol revision its generated classes came

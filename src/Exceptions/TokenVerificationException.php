@@ -16,7 +16,7 @@ namespace LiveKit\Exceptions;
 final class TokenVerificationException extends \RuntimeException implements LiveKitException
 {
     /** Longest issuer echoed back into a message; it is data from the token. */
-    private const ISSUER_EXCERPT = 128;
+    private const int ISSUER_EXCERPT = 128;
 
     public static function rejected(\Throwable $previous): self
     {

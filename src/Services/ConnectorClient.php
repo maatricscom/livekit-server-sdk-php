@@ -46,7 +46,7 @@ use LiveKit\Proto\SessionDescription;
  */
 final class ConnectorClient extends ServiceBase implements ConnectorClientInterface
 {
-    private const SERVICE = 'Connector';
+    private const string SERVICE = 'Connector';
 
     /**
      * Places an outbound WhatsApp call.

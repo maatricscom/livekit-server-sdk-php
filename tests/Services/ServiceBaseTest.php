@@ -146,7 +146,7 @@ final class ServiceBaseTest extends TestCase
     // something nobody chose.
     // ---------------------------------------------------------------------
 
-    private const ENV_SECRET = 'env-secret-that-is-long-enough-ok';
+    private const string ENV_SECRET = 'env-secret-that-is-long-enough-ok';
 
     public function test_a_token_in_the_environment_is_a_complete_credential(): void
     {

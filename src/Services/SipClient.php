@@ -77,7 +77,7 @@ use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 final class SipClient extends ServiceBase implements SipClientInterface
 {
     /** Twirp service name as it appears in the URL: /twirp/livekit.SIP/<Method>. */
-    private const SERVICE = 'SIP';
+    private const string SERVICE = 'SIP';
 
     /**
      * Ring window assumed when a dialing request does not set one.
@@ -86,10 +86,10 @@ final class SipClient extends ServiceBase implements SipClientInterface
      * documented surface; the Connector client rings the same way, so the value
      * itself lives in one shared place.
      */
-    public const DEFAULT_RINGING_TIMEOUT_SECONDS = DialTimeout::DEFAULT_RINGING_TIMEOUT_SECONDS;
+    public const int DEFAULT_RINGING_TIMEOUT_SECONDS = DialTimeout::DEFAULT_RINGING_TIMEOUT_SECONDS;
 
     /** Margin kept between the ring window and the HTTP request timeout. */
-    public const RINGING_TIMEOUT_MARGIN_SECONDS = DialTimeout::RINGING_TIMEOUT_MARGIN_SECONDS;
+    public const int RINGING_TIMEOUT_MARGIN_SECONDS = DialTimeout::RINGING_TIMEOUT_MARGIN_SECONDS;
 
     /**
      * Creates a SIP inbound trunk.
