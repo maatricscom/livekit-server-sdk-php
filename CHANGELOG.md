@@ -99,6 +99,9 @@ starting out now has no reason to carry a version that only receives security fi
   The two disagree in opposite directions: the pure-PHP parser accepts `[1,2,3]` and returns a default
   message, `ext-protobuf` accepts an empty body and does the same. Measured by running the suite under
   both; the tests had recorded the pure-PHP answer as though it were the specification.
+- A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
+  unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
+  under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
 - CI runs the unit suite against `ext-protobuf` as well as the pure-PHP runtime, on 8.4 and 8.5. It
   previously tested only the runtime Composer installs, which is how the two items above went unnoticed.
 - `ext-protobuf` is constrained to **5.34 or newer** via a `conflict` entry, not just named in `suggest`.

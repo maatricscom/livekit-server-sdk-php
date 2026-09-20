@@ -53,10 +53,11 @@ final class AgentDispatchClientTest extends TwirpTestCase
         self::assertSame('{"user":"42"}', $sent->getMetadata());
         self::assertSame('prod', $sent->getDeployment());
         self::assertSame(JobRestartPolicy::JRP_NEVER, $sent->getRestartPolicy());
-        self::assertSame(
-            ['tier' => 'gold', 'locale' => 'tr'],
-            iterator_to_array($sent->getAttributes()),
-        );
+        $attributes = iterator_to_array($sent->getAttributes());
+        // A protobuf map is unordered. ext-protobuf iterates it in hash order, which
+        // differs between processes, so the pairs are the assertion -- not the order.
+        ksort($attributes);
+        self::assertSame(['locale' => 'tr', 'tier' => 'gold'], $attributes);
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
 
