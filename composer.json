@@ -40,8 +40,11 @@
         "phpunit/phpunit": "^13.3",
         "rector/rector": "^2.1"
     },
+    "conflict": {
+        "ext-protobuf": "<5.34"
+    },
     "suggest": {
-        "ext-protobuf": "Significantly faster protobuf serialization; the pure-PHP runtime is used otherwise",
+        "ext-protobuf": "Significantly faster protobuf serialization; the pure-PHP runtime is used otherwise. Must be 5.34 or newer — the extension shadows google/protobuf's classes, and before 5.34 its GPBUtil has no compatibleInt64()",
         "ext-bcmath": "Required by the pure-PHP protobuf runtime for JSON deserialization of 64-bit values"
     },
     "autoload": {

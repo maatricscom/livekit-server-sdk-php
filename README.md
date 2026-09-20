@@ -545,10 +545,22 @@ maps over fairly directly.
 | Access tokens | `Agence104\LiveKit\AccessToken` | `LiveKit\AccessToken` |
 | Webhooks | `Agence104\LiveKit\WebhookReceiver` | `LiveKit\WebhookReceiver` |
 
-Because `agence104/livekit-server-sdk` puts its generated protobuf classes in the **global** `Livekit\`
-namespace and this package generates into `LiveKit\Proto\`, the two do not collide. That means you can
-require both packages in the same project and migrate incrementally, call site by call site, rather than
-in one atomic cutover.
+`agence104/livekit-server-sdk` puts its generated protobuf classes in the **global** `Livekit\` namespace
+and its descriptor metadata in the equally global `GPBMetadata\`; this package uses `LiveKit\Proto\` and
+`LiveKit\Proto\Meta\`. No PHP class name is claimed by both, so Composer can autoload both packages at
+once and an incremental migration — call site by call site, rather than one atomic cutover — works.
+
+**On the pure-PHP protobuf runtime.** Both packages generate the same protobuf *messages*, and
+`livekit.SendDataRequest` is `livekit.SendDataRequest` in either one, whatever the PHP class is called.
+The pure-PHP `DescriptorPool` keys its registry by PHP class name, so the two sets coexist: measured on
+PHP 8.4 with both packages loaded, each still round-trips, and this package's `kind` field still resolves
+to `LiveKit\Proto\DataPacket\Kind` rather than the other package's enum.
+
+**`ext-protobuf` is different.** Its pool keys by the protobuf full name, so the second package to call
+`initOnce()` is dropped — silently, with no error from the registration itself. Every message class in
+the losing package then throws `Couldn't find descriptor` for the rest of the process. Which package
+loses depends only on which one happens to construct a message first, so it is not something you can
+arrange for. If you have the extension enabled, migrate in one cutover, or disable it until you have.
 
 ## Supported LiveKit protocol version
 

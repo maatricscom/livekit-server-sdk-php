@@ -94,6 +94,13 @@ starting out now has no reason to carry a version that only receives security fi
   every setter is natively typed, so both iterating a repeated field and passing the wrong type to a
   setter are things your own static analysis can see. This is why `google/protobuf` is constrained to
   `^5.36`: protoc 36's output calls `GPBUtil::compatibleInt64`, which the 4.x runtime does not have.
+- `ext-protobuf` is constrained to **5.34 or newer** via a `conflict` entry, not just named in `suggest`.
+  The extension shadows `google/protobuf`'s classes, so the `^5.36` requirement on the Composer package
+  buys nothing once the extension is loaded — and before 5.34 its `GPBUtil` has no `compatibleInt64()`,
+  which protoc 36's generated getters for `optional` int64 fields call. Measured: with ext-protobuf
+  4.32.1 (what Alpine ships today), `EventMetric::getEndTimestampMs()`, `ChatMessage::getEditTimestamp()`
+  and `DataStream\Header::getTotalLength()` all raise `Call to undefined method`. Composer now refuses to
+  install instead.
 - `sendData()` puts a fresh 16-byte nonce on every packet, which is what `livekit_room.proto` asks the
   SDK to do ("added by SDK to enable de-duping of messages") and what the Node SDK does. A packet
   without one cannot be de-duplicated. `SendDataOptions::$nonce` overrides it, for the one case that
