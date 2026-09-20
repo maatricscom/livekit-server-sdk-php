@@ -48,6 +48,14 @@ Initial release.
 - `WebhookReceiver` for verifying LiveKit's webhook signatures against the exact raw request body and
   parsing the result into the generated `WebhookEvent` message, plus `WebhookEventType` for the known
   event names.
+- Hardening across the transport: a host is required to be an absolute `http(s)` URL and rejected with a
+  message saying so rather than failing later on a nonsense URI; a malformed protobuf response raises a
+  `TwirpException` like a malformed JSON one, instead of letting the protobuf runtime's own exception
+  escape; a non-positive `requestTimeout` sends no deadline header; a region list can never redirect a
+  request to a host outside `*.livekit.cloud`; a default port in that list no longer makes a host look
+  unvisited; the region-list lifetime is capped at a day; a negative ringing timeout cannot produce a
+  negative request timeout; and an unparseable error body is excerpted rather than echoed whole into the
+  exception message.
 - A Twirp transport (`TwirpClient`) speaking binary protobuf by default (`ClientOptions::$wireFormat` can
   switch to JSON), with `ClientOptions::$requestTimeout` driving the server-side `X-Twirp-Timeout-Ms`
   deadline.

@@ -112,4 +112,24 @@ final class TwirpExceptionTest extends TestCase
         self::assertNull($exception->getSipStatusCode());
         self::assertSame('Unknown', $exception->getSipStatus());
     }
+
+    public function test_an_unparseable_body_is_shown_but_not_at_any_length(): void
+    {
+        $e = TwirpException::fromResponse(502, str_repeat('A', 100_000));
+
+        // The body usually explains the failure, so it is worth showing -- but the
+        // other end chooses its length, and this message ends up in logs.
+        self::assertLessThan(2_000, strlen($e->getMessage()));
+        self::assertStringContainsString('100000 bytes total', $e->getMessage());
+        self::assertSame('unknown', $e->getTwirpCode());
+        self::assertSame(502, $e->getHttpStatus());
+    }
+
+    public function test_a_short_unparseable_body_is_shown_whole(): void
+    {
+        $e = TwirpException::fromResponse(502, "  <html>Bad Gateway</html>\n");
+
+        self::assertStringContainsString('<html>Bad Gateway</html>', $e->getMessage());
+        self::assertStringNotContainsString('bytes total', $e->getMessage());
+    }
 }

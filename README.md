@@ -78,7 +78,8 @@ The host comes from the `host` argument or `LIVEKIT_URL`. For authentication you
 key and secret **or** a pre-signed token:
 
 ```php
-// Key and secret — the usual choice for a backend.
+// Key and secret — the usual choice for a backend. The host needs its scheme:
+// http(s), or ws(s), which is rewritten since the HTTP API shares the origin.
 new LiveKitAPI('https://my-project.livekit.cloud', 'API_KEY', 'API_SECRET');
 
 // A pre-signed token, for somewhere the API secret must not go. Its grants have
@@ -200,6 +201,9 @@ $livekit = new LiveKit\LiveKitAPI(
 If you let `php-http/discovery` find a client for you (the default when you don't pass `httpClient`), it
 uses that client's own defaults, which may have no timeout either — pass an explicit client whenever you
 need a bounded worst case.
+
+A `requestTimeout` of zero or less sends no header at all, leaving the server to apply its own default:
+`0` would otherwise tell it that it has no time, and a negative number is not a deadline.
 
 > [!WARNING]
 > An application that dials with `waitUntilAnswered` must give its HTTP client a socket timeout longer

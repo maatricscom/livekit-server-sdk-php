@@ -109,7 +109,7 @@ final class TwirpClient
 
         $maxAttempts = Failover::attempts(
             $this->options->failover,
-            self::hostnameOf($this->host),
+            Failover::hostnameOf($this->host),
             $this->options->failoverForce,
             $timeout,
         );
@@ -125,7 +125,7 @@ final class TwirpClient
         // Asked once: may this call's token travel to a host we learn at runtime?
         // Both the failover retry and the region-pin redirect need the answer, and
         // the pin redirect needs it even when failover is switched off.
-        $mayRedirect = Failover::allowsRedirect(self::hostnameOf($this->host), $this->options->failoverForce);
+        $mayRedirect = Failover::allowsRedirect(Failover::hostnameOf($this->host), $this->options->failoverForce);
 
         while (true) {
             $uri = $current . $path;
@@ -169,7 +169,7 @@ final class TwirpClient
                     // -- and anything cached from before the pin took effect is
                     // wrong by definition, hence the forced refresh.
                     $regions = $this->discoverRegions($jwtHeader, $requestId, refresh: true);
-                    $next = Failover::pickNext($regions, $attempted);
+                    $next = Failover::pickNext($regions, $attempted, $this->options->failoverForce);
 
                     if ($next !== null) {
                         ++$pinRedirects;
@@ -204,7 +204,7 @@ final class TwirpClient
                 // ??= on purpose: under a pin, $regions already holds the allowed
                 // list, and those are the only regions that will answer at all.
                 $regions ??= $this->discoverRegions($jwtHeader, $requestId);
-                $next = Failover::pickNext($regions, $attempted);
+                $next = Failover::pickNext($regions, $attempted, $this->options->failoverForce);
             }
 
             if ($next === null) {
@@ -241,14 +241,20 @@ final class TwirpClient
         string $requestId,
         int $timeoutSeconds,
     ): RequestInterface {
-        return $this->requestFactory->createRequest('POST', $uri)
+        $httpRequest = $this->requestFactory->createRequest('POST', $uri)
             ->withHeader('Content-Type', $this->options->wireFormat->contentType())
             ->withHeader('Accept', $this->options->wireFormat->contentType())
             ->withHeader('Authorization', $jwtHeader)
             ->withHeader('User-Agent', self::userAgent())
             ->withHeader(self::REQUEST_ID_HEADER, $requestId)
-            ->withHeader('X-Twirp-Timeout-Ms', (string) ($timeoutSeconds * 1000))
             ->withBody($this->streamFactory->createStream($body));
+
+        // Only a positive deadline says anything. Zero would tell the server it has
+        // no time at all, and a negative one is not a deadline; either way, saying
+        // nothing and letting the server apply its own is the honest request.
+        return $timeoutSeconds > 0
+            ? $httpRequest->withHeader('X-Twirp-Timeout-Ms', (string) ($timeoutSeconds * 1000))
+            : $httpRequest;
     }
 
     /**
@@ -283,7 +289,21 @@ final class TwirpClient
                 }
             }
         } else {
-            $message->mergeFromString($responseBody);
+            try {
+                $message->mergeFromString($responseBody);
+            } catch (\Throwable $e) {
+                // The protobuf runtime throws GPBDecodeException, which is not one
+                // of ours. Letting it out would break the promise that everything
+                // this SDK throws is a LiveKitException -- and this is the default
+                // wire format, so it is the likeliest path, not an exotic one.
+                throw new TwirpException(
+                    sprintf('Could not decode the protobuf response from %s: %s', $uri, $e->getMessage()),
+                    'internal',
+                    $response->getStatusCode(),
+                    [],
+                    $e,
+                );
+            }
         }
 
         return $message;
@@ -412,6 +432,11 @@ final class TwirpClient
     /**
      * LiveKit accepts ws:// and wss:// hosts for convenience because that is what
      * client SDKs are configured with; the HTTP API lives on the same origin.
+     *
+     * A path on the host is kept for the request itself but not carried onto a
+     * failover replay, which is built from the origin a region list advertises.
+     * Failover only engages for LiveKit Cloud, where a project host has no path,
+     * so the two cannot meet in practice -- noted here rather than guarded.
      */
     private static function normalizeHost(string $host): string
     {
@@ -427,18 +452,19 @@ final class TwirpClient
             $host = 'http://' . substr($host, 5);
         }
 
-        return rtrim($host, '/');
-    }
+        $host = rtrim($host, '/');
 
-    /**
-     * The bare hostname of a normalized host URL, for the cloud-domain check.
-     * A host we cannot parse is not one we will fail over from.
-     */
-    private static function hostnameOf(string $host): string
-    {
-        $parts = parse_url($host);
+        // Both halves matter. Without a host, "https://" survives and every request
+        // goes to a nonsense URI. Without a scheme, "localhost:7880" parses as a
+        // host and a port -- and then the request is sent with "localhost" as its
+        // scheme. Either way the failure lands far from its cause.
+        $scheme = strtolower((string) parse_url($host, PHP_URL_SCHEME));
 
-        return is_array($parts) && isset($parts['host']) ? $parts['host'] : '';
+        if (Failover::hostnameOf($host) === '' || !in_array($scheme, ['http', 'https'], true)) {
+            throw ConfigurationException::invalidHost($host);
+        }
+
+        return $host;
     }
 
     /**

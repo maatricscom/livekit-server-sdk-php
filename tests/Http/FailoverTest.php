@@ -103,6 +103,52 @@ final class FailoverTest extends TestCase
         self::assertNotSame(Failover::hostKey('http://127.0.0.1:9999'), Failover::hostKey('http://127.0.0.1:10000'));
     }
 
+    public function test_a_default_port_does_not_make_a_host_look_like_a_different_one(): void
+    {
+        // A region list may spell the primary with its default port while the client
+        // was configured without it. Keying those separately would spend a failover
+        // attempt re-asking the host that just failed.
+        self::assertSame(
+            Failover::hostKey('https://x.livekit.cloud'),
+            Failover::hostKey('https://x.livekit.cloud:443')
+        );
+        self::assertSame(
+            Failover::hostKey('http://x.livekit.cloud'),
+            Failover::hostKey('http://x.livekit.cloud:80')
+        );
+
+        // A non-default port is still meaningful, and http/https do not share one.
+        self::assertNotSame(
+            Failover::hostKey('https://x.livekit.cloud'),
+            Failover::hostKey('https://x.livekit.cloud:8443')
+        );
+        self::assertNotSame(
+            Failover::hostKey('https://x.livekit.cloud:80'),
+            Failover::hostKey('http://x.livekit.cloud:80')
+        );
+    }
+
+    public function test_pick_next_refuses_a_region_outside_livekit_cloud(): void
+    {
+        // The region list is a server response, and the next request carries the
+        // caller's bearer token. Checking only the configured host would make the
+        // domain guarantee hold for the first request and nothing after it.
+        self::assertNull(Failover::pickNext(['https://attacker.example.com'], []));
+
+        self::assertSame(
+            'https://good.livekit.cloud',
+            Failover::pickNext(['https://attacker.example.com', 'https://good.livekit.cloud'], [])
+        );
+
+        // ...and the lookalike is no more acceptable here than it is as a host.
+        self::assertNull(Failover::pickNext(['https://evil-livekit.cloud'], []));
+    }
+
+    public function test_force_lets_the_suite_point_at_a_local_mock(): void
+    {
+        self::assertSame('http://127.0.0.1:10000', Failover::pickNext(['http://127.0.0.1:10000'], [], true));
+    }
+
     public function test_pick_next_skips_hosts_already_attempted(): void
     {
         $regions = ['https://a.livekit.cloud', 'https://b.livekit.cloud', 'https://c.livekit.cloud'];
@@ -143,6 +189,11 @@ final class FailoverTest extends TestCase
         // s-maxage is for shared proxies, not for this client; honouring it would
         // cache the region list for a lifetime that was never meant for us.
         yield 's-maxage is ignored' => ['s-maxage=600', 0];
+        // Saturating to PHP_INT_MAX would put the expiry so far out that the entry
+        // never refreshes again.
+        yield 'absurd max-age is capped' => ['max-age=99999999999999999999', Failover::MAX_REGION_TTL_SECONDS];
+        yield 'a day and a half is capped' => ['max-age=129600', Failover::MAX_REGION_TTL_SECONDS];
+        yield 'just under the cap is kept' => ['max-age=86399', 86399];
     }
 
     #[DataProvider('cacheControlHeaders')]

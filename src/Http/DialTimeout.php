@@ -38,7 +38,10 @@ final class DialTimeout
      */
     public static function requestTimeout(?int $timeout, ?int $ringingTimeout): int
     {
-        $ring = $ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS;
+        // A ring window is a duration; a negative one is a caller mistake, and
+        // passing it through would produce a negative request timeout that says
+        // something false to the server. Treated as "no wait" instead.
+        $ring = max(0, $ringingTimeout ?? self::DEFAULT_RINGING_TIMEOUT_SECONDS);
         $floor = $ring + self::RINGING_TIMEOUT_MARGIN_SECONDS;
 
         return max($timeout ?? $floor, $floor);

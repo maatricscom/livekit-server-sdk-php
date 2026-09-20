@@ -6,6 +6,7 @@ namespace LiveKit\Tests\Http;
 
 use LiveKit\Enums\WireFormat;
 use LiveKit\Exceptions\ConfigurationException;
+use LiveKit\Exceptions\LiveKitException;
 use LiveKit\Exceptions\SipCallError;
 use LiveKit\Exceptions\TwirpException;
 use LiveKit\Http\Failover;
@@ -19,6 +20,7 @@ use LiveKit\Tests\Support\MockHttpClient;
 use LiveKit\Tests\Support\TestCase;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Client\ClientExceptionInterface;
 
 final class TwirpClientTest extends TestCase
@@ -784,6 +786,148 @@ final class TwirpClientTest extends TestCase
                 static fn ($r): bool => str_contains((string) $r->getUri(), '/twirp/')
             ))
         );
+    }
+
+    // ---------------------------------------------------------------------
+    // Hardening: things that must not escape, and inputs that must not be
+    // passed on to the server as if they meant something.
+    // ---------------------------------------------------------------------
+
+    public function test_a_malformed_protobuf_response_is_still_a_livekit_exception(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(200, ['Content-Type' => 'application/protobuf'], "\x01\x02\x03bogus"));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected the decode to fail');
+        } catch (\Throwable $e) {
+            // The protobuf runtime throws GPBDecodeException. Letting that out would
+            // break the promise that catching LiveKitException catches everything --
+            // on the default wire format, which makes it the likeliest path of all.
+            self::assertInstanceOf(LiveKitException::class, $e);
+            self::assertInstanceOf(TwirpException::class, $e);
+            self::assertSame('internal', $e->getTwirpCode());
+            self::assertNotNull($e->getPrevious());
+        }
+    }
+
+    public function test_a_malformed_json_response_is_still_a_livekit_exception(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse(new Response(200, ['Content-Type' => 'application/json'], '{"not json'));
+
+        try {
+            $this->transport($http, new ClientOptions(wireFormat: WireFormat::Json, failoverBackoffMs: 0))
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected the decode to fail');
+        } catch (\Throwable $e) {
+            self::assertInstanceOf(LiveKitException::class, $e);
+        }
+    }
+
+    public function test_the_token_never_reaches_a_region_outside_livekit_cloud(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->twirpErrorResponse(503, 'unavailable', 'primary is down'));
+        // /settings/regions is a server response like any other. If it names a host
+        // that is not LiveKit's, replaying there would hand over the caller's token.
+        $http->pushResponse($this->regionsResponse('https://attacker.example.com'));
+
+        try {
+            $this->transport($http, $this->noBackoff())
+                ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+            self::fail('Expected a TwirpException');
+        } catch (TwirpException $e) {
+            self::assertStringContainsString('primary is down', $e->getMessage());
+        }
+
+        foreach ($http->requests() as $request) {
+            self::assertStringContainsString(
+                '.livekit.cloud',
+                $request->getUri()->getHost(),
+                'A request left for a host outside LiveKit Cloud.'
+            );
+        }
+    }
+
+    /** @return iterable<string, array{int}> */
+    public static function meaninglessTimeouts(): iterable
+    {
+        yield 'zero' => [0];
+        yield 'negative' => [-5];
+    }
+
+    #[DataProvider('meaninglessTimeouts')]
+    public function test_a_non_positive_timeout_is_not_sent_as_a_deadline(int $timeout): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $this->transport($http, new ClientOptions(requestTimeout: $timeout, failoverBackoffMs: 0))
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        // "0" would tell the server it has no time at all, and a negative value is
+        // not a deadline. Saying nothing lets the server apply its own.
+        self::assertFalse($http->lastRequest()->hasHeader('X-Twirp-Timeout-Ms'));
+    }
+
+    public function test_a_positive_timeout_is_still_sent(): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $this->transport($http, new ClientOptions(requestTimeout: 7, failoverBackoffMs: 0))
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        self::assertSame('7000', $http->lastRequest()->getHeaderLine('X-Twirp-Timeout-Ms'));
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function unusableHosts(): iterable
+    {
+        yield 'scheme but no host' => ['https://'];
+        yield 'scheme only, no slashes' => ['https:'];
+        yield 'a bare path' => ['/twirp'];
+        // parse_url reads this as host + port, so an authority check alone lets it
+        // through -- and the request then goes out with "localhost" as its scheme.
+        yield 'host and port, no scheme' => ['localhost:7880'];
+        yield 'a bare hostname' => ['my-project.livekit.cloud'];
+        yield 'a scheme we cannot speak' => ['ftp://x.livekit.cloud'];
+    }
+
+    #[DataProvider('unusableHosts')]
+    public function test_a_host_that_cannot_address_a_server_is_rejected_at_construction(string $host): void
+    {
+        // Left alone, these produce a nonsense URI and fail somewhere far from the
+        // cause -- "https://" would post to "https:/twirp/livekit.RoomService/...".
+        $this->expectException(ConfigurationException::class);
+
+        $this->transport(new MockHttpClient(), null, $host);
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function usableHosts(): iterable
+    {
+        yield 'https' => ['https://x.livekit.cloud'];
+        yield 'http with a port' => ['http://127.0.0.1:7880'];
+        yield 'wss, rewritten' => ['wss://x.livekit.cloud'];
+        yield 'ws, rewritten' => ['ws://127.0.0.1:7880'];
+        yield 'uppercase scheme' => ['HTTPS://x.livekit.cloud'];
+    }
+
+    #[DataProvider('usableHosts')]
+    public function test_a_usable_host_is_accepted(string $host): void
+    {
+        $http = new MockHttpClient();
+        $http->pushResponse($this->roomResponse('my-room'));
+
+        $this->transport($http, $this->noBackoff(), $host)
+            ->request('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
+
+        $uri = $http->lastRequest()->getUri();
+        self::assertContains($uri->getScheme(), ['http', 'https'], 'ws(s) must be rewritten to http(s).');
     }
 
     public function test_an_empty_host_throws_a_configuration_exception(): void

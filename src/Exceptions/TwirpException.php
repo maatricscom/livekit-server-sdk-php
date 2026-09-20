@@ -35,6 +35,28 @@ class TwirpException extends \RuntimeException implements LiveKitException
         parent::__construct($message, 0, $previous);
     }
 
+    /**
+     * Longest slice of an unparseable response body repeated in the message.
+     *
+     * A body that is not a Twirp envelope can be anything -- an HTML error page
+     * from a proxy, a megabyte of it. It is worth showing, because it is usually
+     * what explains the failure, but not at whatever length the other end chose:
+     * the message ends up in logs and in bug reports.
+     */
+    private const BODY_EXCERPT_BYTES = 1024;
+
+    /** Trims and shortens a response body for use in an exception message. */
+    private static function excerpt(string $body): string
+    {
+        $body = trim($body);
+
+        if (strlen($body) <= self::BODY_EXCERPT_BYTES) {
+            return $body;
+        }
+
+        return substr($body, 0, self::BODY_EXCERPT_BYTES) . sprintf('... (%d bytes total)', strlen($body));
+    }
+
     public static function fromResponse(int $status, string $body): static
     {
         /** @var array{code?: mixed, msg?: mixed, meta?: mixed}|null $decoded */
@@ -42,7 +64,7 @@ class TwirpException extends \RuntimeException implements LiveKitException
 
         if (! is_array($decoded) || ! isset($decoded['code'])) {
             return new static(
-                sprintf('LiveKit returned HTTP %d: %s', $status, trim($body)),
+                sprintf('LiveKit returned HTTP %d: %s', $status, self::excerpt($body)),
                 'unknown',
                 $status,
             );

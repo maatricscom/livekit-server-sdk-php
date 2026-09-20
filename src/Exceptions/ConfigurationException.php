@@ -27,6 +27,20 @@ final class ConfigurationException extends \InvalidArgumentException implements 
     }
 
     /**
+     * Raised for a host that was given but cannot address a server, which is a
+     * different mistake from not giving one at all and deserves to say so.
+     */
+    public static function invalidHost(string $host): self
+    {
+        return new self(sprintf(
+            'The LiveKit host "%s" is not a usable URL. It needs a scheme and a host, '
+            . 'as in https://my-project.livekit.cloud — ws:// and wss:// are accepted too '
+            . 'and are rewritten to http(s), since the HTTP API lives on the same origin.',
+            $host
+        ));
+    }
+
+    /**
      * firebase/php-jwt v7 rejects HMAC keys shorter than 32 bytes with a bare
      * DomainException. We surface that as an SDK error naming the requirement.
      */

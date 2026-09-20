@@ -110,9 +110,21 @@ final class Failover
         return str_ends_with(strtolower($hostname), self::CLOUD_SUFFIX);
     }
 
+    /** The bare hostname of a URL, or '' when it has none. */
+    public static function hostnameOf(string $url): string
+    {
+        $parts = parse_url($url);
+
+        return is_array($parts) && isset($parts['host']) ? $parts['host'] : '';
+    }
+
     /**
-     * A stable key for a host, including its port, used to avoid retrying an
-     * origin that has already been attempted.
+     * A stable key for a host, used to avoid retrying an origin already attempted.
+     *
+     * The port is part of the key, but a default port is dropped first: a region
+     * list is free to spell the primary as https://host:443 while it was configured
+     * as https://host, and treating those as two hosts would spend an attempt
+     * re-asking the one that just failed.
      */
     public static function hostKey(string $url): string
     {
@@ -123,8 +135,14 @@ final class Failover
         }
 
         $key = strtolower($parts['host']);
+        $scheme = strtolower($parts['scheme'] ?? '');
+        $port = $parts['port'] ?? null;
 
-        return isset($parts['port']) ? $key . ':' . $parts['port'] : $key;
+        if (($scheme === 'https' && $port === 443) || ($scheme === 'http' && $port === 80)) {
+            $port = null;
+        }
+
+        return $port === null ? $key : $key . ':' . $port;
     }
 
     /**
@@ -165,15 +183,25 @@ final class Failover
      * they all have. Malformed entries are skipped rather than thrown on: the list
      * comes from a server response, and one bad URL should not fail the retry.
      *
-     * @param list<string>         $regionUrls
-     * @param array<string, true>  $attempted keyed by hostKey()
+     * Candidates are held to the same domain rule as the configured host. That is
+     * the whole guarantee: this list arrives in a server response, so checking only
+     * the host we were configured with would mean the promise held for the first
+     * request and for nothing after it.
+     *
+     * @param list<string>        $regionUrls
+     * @param array<string, true> $attempted keyed by hostKey()
+     * @param bool                $force     test-only; see attempts()
      */
-    public static function pickNext(array $regionUrls, array $attempted): ?string
+    public static function pickNext(array $regionUrls, array $attempted, bool $force = false): ?string
     {
         foreach ($regionUrls as $url) {
             $origin = self::origin($url);
 
             if ($origin === null) {
+                continue;
+            }
+
+            if (!self::allowsRedirect(self::hostnameOf($origin), $force)) {
                 continue;
             }
 
@@ -186,8 +214,18 @@ final class Failover
     }
 
     /**
-     * The max-age of a Cache-Control header, in seconds; 0 when absent,
-     * non-positive or unparseable, which means "do not cache".
+     * Longest region-list lifetime honoured, whatever Cache-Control asks for.
+     *
+     * Without a ceiling, `max-age=99999999999999999999` saturates to PHP_INT_MAX,
+     * and an expiry that far out is indistinguishable from never expiring -- a
+     * process would keep failing over to a region list it can no longer refresh.
+     */
+    public const MAX_REGION_TTL_SECONDS = 86400;
+
+    /**
+     * The max-age of a Cache-Control header, in seconds, capped at
+     * MAX_REGION_TTL_SECONDS; 0 when absent, non-positive or unparseable, which
+     * means "do not cache".
      *
      * Only max-age is honoured. s-maxage targets shared proxies, not this client,
      * so treating it as our TTL would cache a region list for the wrong lifetime.
@@ -213,7 +251,7 @@ final class Failover
 
             $seconds = (int) $value;
 
-            return $seconds > 0 ? $seconds : 0;
+            return $seconds > 0 ? min($seconds, self::MAX_REGION_TTL_SECONDS) : 0;
         }
 
         return 0;
