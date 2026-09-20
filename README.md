@@ -30,6 +30,8 @@ No official PHP SDK exists upstream; LiveKit's own ecosystem page points to a co
   [PSR-17](https://www.php-fig.org/psr/psr-17/) factories. This package does not bundle one — it discovers
   whatever is installed via [`php-http/discovery`](https://github.com/php-http/discovery), or accepts one
   you construct yourself.
+- Optionally, [`ext-protobuf`](https://pecl.php.net/package/protobuf) — see below. Without it the pure-PHP
+  protobuf runtime that ships with `google/protobuf` is used, which is the supported default.
 
 Pick one when installing:
 
@@ -45,6 +47,29 @@ If your application is already built on Laravel or Symfony, you can stop there a
 argument entirely — both frameworks ship a PSR-18 client (Laravel via `guzzlehttp/guzzle` in its default
 `composer.json`, Symfony via `symfony/http-client`) and discovery will find it automatically. Only install
 one of the lines above when starting from a bare PHP project.
+
+### The protobuf C extension
+
+`ext-protobuf` replaces the pure-PHP protobuf runtime with a C one, and is worth installing if you send a
+lot of traffic. Nothing about this package's API changes.
+
+**It must be 5.34 or newer**, and `composer.json` declares a conflict below that so you find out at install
+time rather than at a call site. The reason is that the extension *shadows* `google/protobuf`: once it is
+loaded, its own `Google\Protobuf\Internal\*` classes are used and the Composer package's are never
+autoloaded, so the `^5.36` requirement on the package constrains nothing. Generated code here is produced
+by protoc 36, whose getters for `optional` int64 fields call `GPBUtil::compatibleInt64()` — a method the
+extension gained in 5.34.0. Against an older one (4.32.1 is what Alpine ships today) those getters raise
+`Call to undefined method`.
+
+The two runtimes are not identical below the API, and where they differ this package decides rather than
+letting the installed runtime decide. The clearest case is a malformed webhook body: the pure-PHP parser
+accepts a JSON array and hands back a default message, `ext-protobuf` accepts an empty body and does the
+same. `WebhookReceiver` rejects both, on both runtimes. The test suite runs against the extension as well
+as the pure-PHP runtime on every push, so this stays true.
+
+One thing to know before enabling it: if you also have `agence104/livekit-server-sdk` installed, the two
+packages cannot coexist under the extension. See
+[Migrating from `agence104/livekit-server-sdk`](#migrating-from-agence104livekit-server-sdk).
 
 ## Quickstart
 

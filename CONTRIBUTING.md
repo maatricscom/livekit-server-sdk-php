@@ -97,6 +97,50 @@ Run this, against your own project, before every release. A green unit suite say
 self-consistent; a green mock-server run says LiveKit's own mock accepts what this SDK puts on the wire;
 only a green integration run says a real deployment does.
 
+### Running against `ext-protobuf`
+
+Every suite above runs on whichever protobuf runtime is installed, and there are two: the pure-PHP one in
+`google/protobuf`, and the C extension. They are not identical below the API, so a suite that has only
+ever run on one of them has only ever tested half the installed base. CI runs the unit suite against both;
+run it against the extension yourself before changing anything that encodes, decodes or validates a
+message.
+
+The extension must be **5.34 or newer** — `composer.json` conflicts below that, and the README explains
+why. Building it from PECL needs a full toolchain; Alpine's `edge` branch has it prebuilt, which is
+considerably less to download:
+
+```bash
+docker run --rm -v "$PWD":/project:ro -w /project alpine:edge sh -c '
+  apk add --no-cache php85 php85-pecl-protobuf php85-mbstring php85-ctype \
+    php85-dom php85-xml php85-xmlwriter php85-simplexml php85-tokenizer \
+    php85-fileinfo php85-phar php85-openssl php85-curl php85-iconv php85-bcmath >/dev/null
+  php85 -r "printf(\"ext-protobuf %s\n\", phpversion(\"protobuf\"));"
+  php85 vendor/bin/phpunit --testsuite unit --cache-directory /tmp/pu'
+```
+
+`vendor/` is mounted from the host, so install dependencies first with your normal PHP. For the
+mock-server suite the container also has to reach the mock on the host *at the addresses the mock
+advertises*, or the region-failover tests will follow URLs that resolve to the container itself. Forward
+the ports rather than passing `--advertise-host`, so the container sees exactly what the host sees:
+
+```bash
+for p in 9999 10000 10001 10002; do
+  socat TCP-LISTEN:$p,bind=127.0.0.1,fork,reuseaddr TCP:host.docker.internal:$p &
+done
+```
+
+Two things to know when writing tests that have to hold on both runtimes:
+
+- **They disagree about malformed input, in opposite directions.** The pure-PHP parser accepts a JSON
+  array where a message belongs and returns a default message; `ext-protobuf` accepts an empty body and
+  does the same. Never pin one runtime's answer as though it were the specification — decide in `src/`
+  and assert the decision.
+- **A protobuf map has no order.** The pure-PHP runtime iterates one in insertion order and the extension
+  in hash order, so `assertSame(['a' => 1, 'b' => 2], iterator_to_array($msg->getSomeMap()))` passes
+  reliably on one and intermittently on the other. `ksort()` first, then assert. A single green run under
+  the extension does not mean an order-dependent assertion is safe — the one this rule came from failed
+  22 times in 40.
+
 ## Static analysis and style
 
 ```bash
@@ -198,6 +242,8 @@ An empty result is correct.
 
 - `vendor/bin/phpunit` (unit suite) passes
 - `vendor/bin/phpunit --testsuite mock-server` passes against a local `livekit/test-server`
+- If you changed how a message is encoded, decoded or validated: the unit suite passes under
+  [`ext-protobuf`](#running-against-ext-protobuf) too
 - `composer analyse` is clean
 - `vendor/bin/pint --test` is clean
 - `composer validate --strict` is clean
