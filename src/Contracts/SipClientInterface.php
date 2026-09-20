@@ -57,4 +57,10 @@ interface SipClientInterface
         string $sipTrunkId,
         SipInboundTrunkUpdateOptions $fields,
     ): SIPInboundTrunkInfo;
+
+    /**
+     * Replaces a SIP outbound trunk wholesale. Fields left unset on $trunk are cleared.
+     * Use updateSipOutboundTrunkFields() to change only some fields.
+     */
+    public function updateSipOutboundTrunk(string $sipTrunkId, SIPOutboundTrunkInfo $trunk): SIPOutboundTrunkInfo;
 }

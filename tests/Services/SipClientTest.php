@@ -15,6 +15,7 @@ use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPTransport;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
+use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 use LiveKit\Services\SipClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -278,5 +279,36 @@ final class SipClientTest extends TwirpTestCase
         self::assertNull($update->getNumbers());
         self::assertNull($update->getAllowedAddresses());
         self::assertNull($update->getAllowedNumbers());
+    }
+
+    public function testUpdateSipOutboundTrunkSendsTheReplaceArm(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPOutboundTrunkInfo())->setSipTrunkId('ST_outbound')->setAddress('new.example'),
+        ));
+
+        $replacement = (new SIPOutboundTrunkInfo())
+            ->setName('carrier')
+            ->setAddress('new.example')
+            ->setTransport(SIPTransport::SIP_TRANSPORT_TLS);
+
+        $trunk = $this->client->updateSipOutboundTrunk('ST_outbound', $replacement);
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPOutboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPOutboundTrunkRequest::class);
+        self::assertSame('ST_outbound', $sent->getSipTrunkId());
+        self::assertSame('replace', $sent->getAction());
+        self::assertNull($sent->getUpdate());
+
+        $sentTrunk = $sent->getReplace();
+        self::assertInstanceOf(SIPOutboundTrunkInfo::class, $sentTrunk);
+        self::assertSame('new.example', $sentTrunk->getAddress());
+        self::assertSame(SIPTransport::SIP_TRANSPORT_TLS, $sentTrunk->getTransport());
+
+        self::assertSame('new.example', $trunk->getAddress());
     }
 }
