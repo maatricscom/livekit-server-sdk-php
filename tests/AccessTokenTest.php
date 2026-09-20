@@ -160,33 +160,27 @@ final class AccessTokenTest extends TestCase
 
     public function test_falls_back_to_environment_credentials(): void
     {
-        putenv('LIVEKIT_API_KEY=env-key');
-        putenv('LIVEKIT_API_SECRET=env-secret-that-is-long-enough-yes');
-
-        try {
+        $this->withEnv([
+            'LIVEKIT_API_KEY' => 'env-key',
+            'LIVEKIT_API_SECRET' => 'env-secret-that-is-long-enough-yes',
+        ], function (): void {
             $token = new AccessToken();
             $token->addGrant(new VideoGrant(roomList: true));
 
             self::assertSame('env-key', $this->decodeJwtPayload($token->toJwt())['iss']);
-        } finally {
-            putenv('LIVEKIT_API_KEY');
-            putenv('LIVEKIT_API_SECRET');
-        }
+        });
     }
 
     public function test_rejects_missing_credentials(): void
     {
-        putenv('LIVEKIT_API_KEY');
-        putenv('LIVEKIT_API_SECRET');
-
-        try {
+        $this->withEnv([
+            'LIVEKIT_API_KEY' => null,
+            'LIVEKIT_API_SECRET' => null,
+        ], function (): void {
             $this->expectException(ConfigurationException::class);
 
             new AccessToken();
-        } finally {
-            putenv('LIVEKIT_API_KEY');
-            putenv('LIVEKIT_API_SECRET');
-        }
+        });
     }
 
     /**

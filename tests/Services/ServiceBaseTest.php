@@ -125,26 +125,23 @@ final class ServiceBaseTest extends TestCase
 
     public function test_requires_credentials_when_no_pre_signed_token_is_supplied(): void
     {
-        putenv('LIVEKIT_API_KEY');
-        putenv('LIVEKIT_API_SECRET');
-
-        try {
+        $this->withEnv([
+            'LIVEKIT_API_KEY' => null,
+            'LIVEKIT_API_SECRET' => null,
+        ], function (): void {
             $this->expectException(ConfigurationException::class);
 
             new ServiceBaseProbe('https://example.livekit.cloud');
-        } finally {
-            putenv('LIVEKIT_API_KEY');
-            putenv('LIVEKIT_API_SECRET');
-        }
+        });
     }
 
     public function test_falls_back_to_environment_configuration(): void
     {
-        putenv('LIVEKIT_URL=https://env.livekit.cloud');
-        putenv('LIVEKIT_API_KEY=env-key');
-        putenv('LIVEKIT_API_SECRET=env-secret-that-is-long-enough-yes');
-
-        try {
+        $this->withEnv([
+            'LIVEKIT_URL' => 'https://env.livekit.cloud',
+            'LIVEKIT_API_KEY' => 'env-key',
+            'LIVEKIT_API_SECRET' => 'env-secret-that-is-long-enough-yes',
+        ], function (): void {
             $http = new MockHttpClient();
             $room = new Room();
             $room->setName('r');
@@ -156,11 +153,7 @@ final class ServiceBaseTest extends TestCase
             $probe->callRpc('RoomService', 'CreateRoom', new CreateRoomRequest(), Room::class, 'jwt');
 
             self::assertStringStartsWith('https://env.livekit.cloud/', (string) $http->lastRequest()->getUri());
-        } finally {
-            putenv('LIVEKIT_URL');
-            putenv('LIVEKIT_API_KEY');
-            putenv('LIVEKIT_API_SECRET');
-        }
+        });
     }
 
     public function test_rpc_delegates_to_the_transport(): void

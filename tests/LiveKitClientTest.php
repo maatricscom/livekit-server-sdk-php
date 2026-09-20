@@ -63,37 +63,24 @@ final class LiveKitClientTest extends TestCase
 
     public function test_falls_back_to_environment_configuration(): void
     {
-        putenv('LIVEKIT_URL=https://env.livekit.cloud');
-        putenv('LIVEKIT_API_KEY=env-key');
-        putenv('LIVEKIT_API_SECRET=env-secret-that-is-long-enough-yes');
-
-        try {
+        $this->withEnv([
+            'LIVEKIT_URL' => 'https://env.livekit.cloud',
+            'LIVEKIT_API_KEY' => 'env-key',
+            'LIVEKIT_API_SECRET' => 'env-secret-that-is-long-enough-yes',
+        ], function (): void {
             $factory = new Psr17Factory();
             $client = new LiveKitClient(null, null, null, null, new MockHttpClient(), $factory, $factory);
 
             self::assertInstanceOf(RoomServiceClient::class, $client->room);
-        } finally {
-            putenv('LIVEKIT_URL');
-            putenv('LIVEKIT_API_KEY');
-            putenv('LIVEKIT_API_SECRET');
-        }
+        });
     }
 
     public function test_requires_a_host(): void
     {
-        $original = getenv('LIVEKIT_URL');
-        putenv('LIVEKIT_URL');
-
-        try {
+        $this->withEnv(['LIVEKIT_URL' => null], function (): void {
             $this->expectException(ConfigurationException::class);
 
             new LiveKitClient(null, self::API_KEY, self::API_SECRET);
-        } finally {
-            if ($original !== false) {
-                putenv('LIVEKIT_URL=' . $original);
-            } else {
-                putenv('LIVEKIT_URL');
-            }
-        }
+        });
     }
 }
