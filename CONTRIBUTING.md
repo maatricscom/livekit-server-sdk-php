@@ -333,6 +333,13 @@ Two things to know when writing tests that have to hold on both runtimes:
   the extension does not mean an order-dependent assertion is safe — the one this rule came from failed
   22 times in 40.
 
+## Reporting a security problem
+
+Not here, and not in an issue. `SECURITY.md` has the process: report it privately
+through the repository's Security tab, which opens a draft advisory only the
+maintainers can see. A public report is readable by everyone running the affected
+version before there is a release for them to move to.
+
 ## Static analysis and style
 
 ```bash

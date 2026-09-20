@@ -984,6 +984,12 @@ This package is generated from `livekit/protocol` **`v1.52.0`**. To regenerate a
 Bug reports and pull requests are welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to run the
 test suite, regenerate the protobuf classes, and what the release checklist looks like.
 
+## Security
+
+Found a way to mint a token that grants more than it was built from, or to get a
+webhook accepted that LiveKit did not sign? Please report it privately rather than
+in an issue — [SECURITY.md](SECURITY.md) says how, and what is in scope.
+
 ## License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).

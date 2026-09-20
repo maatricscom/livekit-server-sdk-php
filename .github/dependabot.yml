@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # GitHub Actions only. This repository commits no composer.lock -- a library
+  # resolves against its consumer's tree, not its own -- so there is no dependency
+  # graph here for Dependabot to bump, and the constraints in composer.json are
+  # deliberately wide. CI's prefer-lowest leg is what proves those stay honest.
+  #
+  # Actions are the opposite case: they are pinned to an exact major and nothing
+  # in the repository notices when that major is superseded. It happened --
+  # actions/checkout sat at v5 while v7 was current, found by hand rather than by
+  # any check. This is the check.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+    labels:
+      - dependencies

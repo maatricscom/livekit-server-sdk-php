@@ -21,7 +21,8 @@
     "homepage": "https://github.com/maatrics/livekit-server-sdk-php",
     "support": {
         "issues": "https://github.com/maatrics/livekit-server-sdk-php/issues",
-        "source": "https://github.com/maatrics/livekit-server-sdk-php"
+        "source": "https://github.com/maatrics/livekit-server-sdk-php",
+        "security": "https://github.com/maatrics/livekit-server-sdk-php/security/policy"
     },
     "require": {
         "php": "^8.4",

@@ -514,7 +514,7 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
 - **PSR-18 matrix:** the suite runs against both `guzzlehttp/guzzle` and `symfony/http-client` as a
   dev-dependency axis, since discovery behaviour differs per implementation.
 - `.gitattributes` with `export-ignore` for `/tests`, `/.github`, `/bin`, `/docs`, config files, keeping
-  the dist tarball to `src/`, `metadata/`, `examples/` and the four documents. `metadata/` is not
+  the dist tarball to `src/`, `metadata/`, `examples/` and the five documents a consumer might read: README, CHANGELOG, SECURITY, LICENSE and NOTICE. `metadata/` is not
   export-ignored: the package does not load without it.
 - `declare(strict_types=1)` everywhere; PSR-12.
 

@@ -1,0 +1,9 @@
+# Review is requested from this team on every pull request. A team rather than a
+# person so that it survives someone changing roles, which a username does not.
+*   @maatrics/maintainers
+
+# The generated trees are protoc's output, regenerated wholesale by
+# bin/generate-protos.sh. A pull request that edits them by hand is a mistake
+# worth a second pair of eyes, and the proto-drift job will already be failing.
+/src/Proto/    @maatrics/maintainers
+/metadata/     @maatrics/maintainers
