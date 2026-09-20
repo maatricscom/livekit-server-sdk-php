@@ -8,7 +8,9 @@
          failOnDeprecation="true"
          failOnNotice="true"
          failOnPhpunitDeprecation="true"
+         failOnPhpunitNotice="true"
          failOnEmptyTestSuite="true"
+         displayDetailsOnAllIssues="true"
          beStrictAboutOutputDuringTests="true"
          cacheDirectory=".phpunit.cache"
          defaultTestSuite="unit">
@@ -34,6 +36,18 @@
         drives almost no vendor code; if a dependency ever does start raising one,
         narrow to failOnDirectDeprecation and failOnSelfDeprecation rather than
         turning the check off.
+
+        displayDetailsOnAllIssues: every displayDetailsOn* attribute defaults to
+        false, so a suite configured to fail on deprecations and notices reports a
+        count and withholds what caused it: the information the failure exists to
+        deliver, costing a second run to see. It also prints why a test skipped,
+        which this suite is built around: the integration and mock-server suites
+        skip themselves per missing feature, and "SIP is not available on this
+        deployment" is the answer, not noise.
+
+        failOnPhpunitNotice: PHPUnit's own notices fail the run for the same reason
+        its deprecations do (failOnPhpunitDeprecation above). failOnPhpunitWarning
+        is already true by default, so this closes the last of the three.
 
         defaultTestSuite keeps a bare `vendor/bin/phpunit` on the unit suite, which
         is the only one that runs with no external dependency. Both others need a

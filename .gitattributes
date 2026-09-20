@@ -2,6 +2,13 @@
 # changes nothing now -- it stops a CRLF file from being committed later.
 * text=auto
 
+# Mark the generated trees as generated. GitHub collapses them in a pull request
+# instead of expanding 376 files, and leaves them out of the language statistics.
+# A protocol bump rewrites every one of these, and a diff nobody can read is a
+# diff nobody reads -- including the handful of hand-written files beside them.
+/src/Proto/**     linguist-generated=true
+/metadata/**      linguist-generated=true
+
 # Keep the distributed package to what a consumer runs: no test suite, no CI
 # definition, no tooling configuration. examples/ is deliberately not here.
 /tests            export-ignore
