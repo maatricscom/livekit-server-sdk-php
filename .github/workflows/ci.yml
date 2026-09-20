@@ -40,6 +40,69 @@ jobs:
       - name: Run tests
         run: vendor/bin/phpunit --testsuite unit
 
+  mock-server:
+    name: Against livekit/test-server / ${{ matrix.psr18 }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        psr18: ['guzzle', 'symfony']
+    services:
+      # The programmable mock every official LiveKit server SDK tests against.
+      # It binds one listener per simulated region; 9999 is the primary and the
+      # rest are failover targets advertised by GET /settings/regions.
+      test-server:
+        image: livekit/test-server:latest
+        ports:
+          - 9999:9999
+          - 10000:10000
+          - 10001:10001
+          - 10002:10002
+        env:
+          # Our AccessToken refuses to sign with anything shorter than 32 bytes,
+          # so the mock cannot run on its own `livekit-server --dev` default of
+          # "secret". Not a credential: the mock accepts whatever it is given.
+          LK_TEST_SERVER_API_SECRET: test-server-secret-not-a-real-credential
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: json, mbstring, bcmath
+          coverage: none
+
+      - name: Select PSR-18 implementation
+        run: |
+          if [ "${{ matrix.psr18 }}" = "symfony" ]; then
+            composer remove --dev --no-update guzzlehttp/guzzle guzzlehttp/psr7
+            composer require --dev --no-update symfony/http-client:^7.1 nyholm/psr7:^1.8
+          fi
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Wait for the mock server
+        run: |
+          for _ in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:9999/settings/regions >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::the mock server never became ready"
+          exit 1
+
+      # --fail-on-skipped is the point of this step, not a detail. Every test in
+      # this suite skips itself when the environment is missing, so without it a
+      # job that lost its env vars would report success having asserted nothing
+      # -- a green check for a suite that ran zero tests.
+      - name: Run the mock-server suite
+        run: vendor/bin/phpunit --testsuite mock-server --fail-on-skipped
+        env:
+          LIVEKIT_TEST_SERVER_URL: http://127.0.0.1:9999
+          LIVEKIT_TEST_SERVER_SECRET: test-server-secret-not-a-real-credential
+
   phpstan:
     runs-on: ubuntu-latest
     steps:

@@ -14,11 +14,12 @@ This installs both runtime and development dependencies, including `guzzlehttp/g
 
 ## Running the test suite
 
-There are two PHPUnit test suites, declared in `phpunit.xml.dist`:
+There are three PHPUnit test suites, declared in `phpunit.xml.dist`:
 
 ```bash
 vendor/bin/phpunit                          # unit suite (the default; no network access)
 vendor/bin/phpunit --testsuite unit         # same, explicit
+vendor/bin/phpunit --testsuite mock-server  # exercises livekit/test-server
 vendor/bin/phpunit --testsuite integration  # exercises a real LiveKit deployment
 ```
 
@@ -27,11 +28,50 @@ never needs a live LiveKit project — HTTP interactions are tested against a fa
 must stay green and must stay free of any requirement on external state; if you find yourself wanting to
 assert something that needs a real server, it belongs in the integration suite instead.
 
-The **integration suite** (`tests/Integration/`) is a release gate, not a CI gate. It is the *only* place
-that exercises this SDK's binary-protobuf Twirp requests (`Content-Type: application/protobuf`) against an
-actual LiveKit server — no official LiveKit SDK sends that content type, so nothing else in the wild
-proves the server accepts it from this codebase. It is skipped entirely, test by test, unless all three of
-these environment variables are set:
+The **mock-server suite** (`tests/MockServer/`) runs in CI against
+[`livekit/test-server`](https://github.com/livekit/livekit/tree/master/cmd/test-server), the programmable
+mock of the LiveKit HTTP API that every official LiveKit server SDK tests against. It is a real HTTP round
+trip to a real Twirp server, and it is what proves three things a unit test cannot:
+
+- **Our request encoding is one the server can read**, in both wire formats. This is the only coverage the
+  binary `application/protobuf` path has; no official LiveKit SDK sends that content type, so nothing
+  upstream would catch us getting it wrong. `EchoRoundTripTest` is the test that proves it: the mock
+  copies same-named scalar fields from the *decoded* request onto its response, so a value that comes back
+  is a value that survived our encoder, the wire, and the server's decoder.
+- **The `VideoGrant` we mint for each RPC satisfies the server's permission table.** The mock enforces the
+  same table as the real server, so `RpcSweepTest` — which calls all 47 RPCs, twice, once per wire format
+  — fails with `permission_denied` on any method whose grant is too narrow.
+- **A real Twirp error envelope maps onto our exception types**, including the SIP-specific
+  `sip_status_code` metadata that only a dialing failure produces.
+
+Run it locally with Docker:
+
+```bash
+docker run --rm -p 9999-10002:9999-10002 \
+  -e LK_TEST_SERVER_API_SECRET=test-server-secret-not-a-real-credential \
+  livekit/test-server:latest
+```
+
+```bash
+LIVEKIT_TEST_SERVER_URL=http://127.0.0.1:9999 \
+LIVEKIT_TEST_SERVER_SECRET=test-server-secret-not-a-real-credential \
+vendor/bin/phpunit --testsuite mock-server
+```
+
+The secret must be **at least 32 bytes** and must match the server's. `AccessToken` refuses to sign with
+anything shorter, which rules out the mock's own default of `secret` (the `livekit-server --dev` value) —
+so the mock has to be started with a longer one. It is not a credential; the mock accepts whatever it is
+given.
+
+Both variables are required, and each test skips itself if either is missing. CI therefore runs this suite
+with `--fail-on-skipped`: without it, a job that lost its environment would report success having asserted
+nothing. Keep that flag.
+
+The **integration suite** (`tests/Integration/`) is a release gate, not a CI gate. Where the mock-server
+suite proves the SDK behaves correctly against LiveKit's *model* of its API, this one proves the model is
+faithful — it is the only thing that touches a real deployment, with real state, real latency and real
+region behaviour. It is skipped entirely, test by test, unless all three of these environment variables
+are set:
 
 - `LIVEKIT_URL`
 - `LIVEKIT_API_KEY`
@@ -48,8 +88,8 @@ vendor/bin/phpunit --testsuite integration
 ```
 
 Run this, against your own project, before every release. A green unit suite says the SDK's logic is
-correct; only a green integration run says LiveKit's server actually accepts what this SDK puts on the
-wire.
+self-consistent; a green mock-server run says LiveKit's own mock accepts what this SDK puts on the wire;
+only a green integration run says a real deployment does.
 
 ## Static analysis and style
 
@@ -133,6 +173,7 @@ An empty result is correct.
 ## Before opening a pull request
 
 - `vendor/bin/phpunit` (unit suite) passes
+- `vendor/bin/phpunit --testsuite mock-server` passes against a local `livekit/test-server`
 - `vendor/bin/phpstan analyse` is clean
 - `vendor/bin/pint --test` is clean
 - `composer validate --strict` is clean

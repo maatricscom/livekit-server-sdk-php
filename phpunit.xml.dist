@@ -9,18 +9,27 @@
          cacheDirectory=".phpunit.cache"
          defaultTestSuite="unit">
     <!--
-        defaultTestSuite keeps a bare `vendor/bin/phpunit` on the unit suite. The
-        integration suite's directory does not exist until Task 17 of the plan, and
-        without this a bare run fails on the missing path. Run it explicitly with
-        the testsuite flag: `vendor/bin/phpunit` with `testsuite=integration`.
+        defaultTestSuite keeps a bare `vendor/bin/phpunit` on the unit suite, which
+        is the only one that runs with no external dependency. Both others need a
+        server and skip themselves without one, so run them explicitly:
+
+          testsuite=integration   against a real LiveKit deployment (LIVEKIT_URL)
+          testsuite=mock-server   against livekit/test-server (LIVEKIT_TEST_SERVER_URL)
+
+        XML comments cannot contain a double hyphen, hence the flags are written
+        without their leading dashes here.
     -->
     <testsuites>
         <testsuite name="unit">
             <directory>tests</directory>
             <exclude>tests/Integration</exclude>
+            <exclude>tests/MockServer</exclude>
         </testsuite>
         <testsuite name="integration">
             <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="mock-server">
+            <directory>tests/MockServer</directory>
         </testsuite>
     </testsuites>
     <source>
