@@ -182,6 +182,24 @@ It runs against someone's real project, which constrains what it may do:
   `IntegrationTestCase::skipIfUnavailable()` handles that; a genuine bad-request or bad-auth error still
   fails.
 
+You can point this suite at `livekit/test-server` instead of a real project, and it is worth doing once
+after changing it — not as a pass, but to catch mistakes in the test code before spending a real
+deployment on them. Seven of the sixteen will fail, and all seven are the mock rather than the SDK:
+
+- the mock echoes same-named **scalar** fields, so nothing survives a repeated message. `listRooms()` and
+  `listIngress()` come back as a canned entry with an empty name, and `createDispatch()` returns an empty
+  id because `dispatch_id` is not a field of the request to echo.
+- it keeps no state, so a room it just created is not a room it knows about, and a room that never
+  existed is not one it will refuse.
+
+What that run does prove is the part the mock-server suite cannot: it is the only place the credentials
+come from `LIVEKIT_URL`/`LIVEKIT_API_KEY`/`LIVEKIT_API_SECRET` and the HTTP client comes from
+`php-http/discovery`, over a real socket. `tests/MockServer/` passes a host and secret explicitly and
+injects its own client, so that path is otherwise never exercised.
+
+Do not adjust these tests to pass against the mock. They exist to fail when a real deployment disagrees
+with the model, and the mock is the model.
+
 Also out of reach here, for a reason no amount of care fixes: `updateParticipant`, `mutePublishedTrack`,
 `removeParticipant`, `updateSubscriptions`, `forwardParticipant`, `moveParticipant` and `performRpc` all
 need a participant connected over WebRTC, which a server SDK cannot produce. The mock server answers
