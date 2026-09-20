@@ -7,6 +7,7 @@ namespace LiveKit\Tests\Services;
 use Google\Protobuf\Internal\Message;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
+use LiveKit\Options\UpdateParticipantOptions;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
@@ -17,10 +18,13 @@ use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\MuteRoomTrackRequest;
 use LiveKit\Proto\MuteRoomTrackResponse;
 use LiveKit\Proto\ParticipantInfo;
+use LiveKit\Proto\ParticipantPermission;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
 use LiveKit\Proto\TrackInfo;
+use LiveKit\Proto\TrackSource;
+use LiveKit\Proto\UpdateParticipantRequest;
 use LiveKit\Services\RoomServiceClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -274,6 +278,69 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertSame('alice', $sent->getIdentity());
         self::assertSame('TR_1', $sent->getTrackSid());
         self::assertFalse($sent->getMuted());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testUpdateParticipantMapsMetadataNameAttributesAndPermission(): void
+    {
+        $client = $this->client((new ParticipantInfo())->setIdentity('alice')->setName('Alice B'));
+
+        $permission = (new ParticipantPermission())
+            ->setCanSubscribe(true)
+            ->setCanPublish(false)
+            ->setCanPublishData(true)
+            ->setCanPublishSources([TrackSource::MICROPHONE]);
+
+        $participant = $client->updateParticipant('my-room', 'alice', new UpdateParticipantOptions(
+            metadata: '{"role":"host"}',
+            permission: $permission,
+            name: 'Alice B',
+            attributes: ['seat' => '3', 'stale' => ''],
+        ));
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'UpdateParticipant');
+
+        $sent = $this->decodeRequest(UpdateParticipantRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame('{"role":"host"}', $sent->getMetadata());
+        self::assertSame('Alice B', $sent->getName());
+        self::assertSame('3', $sent->getAttributes()['seat']);
+        self::assertSame('', $sent->getAttributes()['stale']);
+
+        $sentPermission = $sent->getPermission();
+        self::assertInstanceOf(ParticipantPermission::class, $sentPermission);
+        self::assertTrue($sentPermission->getCanSubscribe());
+        self::assertFalse($sentPermission->getCanPublish());
+        self::assertTrue($sentPermission->getCanPublishData());
+        self::assertSame(
+            [TrackSource::MICROPHONE],
+            iterator_to_array($sentPermission->getCanPublishSources()),
+        );
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+
+        self::assertSame('Alice B', $participant->getName());
+    }
+
+    public function testUpdateParticipantWithoutOptionsSendsOnlyRoomAndIdentity(): void
+    {
+        $client = $this->client((new ParticipantInfo())->setIdentity('alice'));
+
+        $client->updateParticipant('my-room', 'alice');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'UpdateParticipant');
+
+        $sent = $this->decodeRequest(UpdateParticipantRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame('', $sent->getMetadata());
+        self::assertSame('', $sent->getName());
+        self::assertNull($sent->getPermission());
+        self::assertCount(0, $sent->getAttributes());
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
     }

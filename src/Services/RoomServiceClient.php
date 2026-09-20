@@ -7,6 +7,7 @@ namespace LiveKit\Services;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
+use LiveKit\Options\UpdateParticipantOptions;
 use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
@@ -20,6 +21,7 @@ use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\RemoveParticipantResponse;
 use LiveKit\Proto\Room;
 use LiveKit\Proto\RoomParticipantIdentity;
+use LiveKit\Proto\UpdateParticipantRequest;
 
 final class RoomServiceClient extends ServiceBase
 {
@@ -233,6 +235,44 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof MuteRoomTrackResponse);
+
+        return $response;
+    }
+
+    public function updateParticipant(
+        string $room,
+        string $identity,
+        ?UpdateParticipantOptions $options = null,
+    ): ParticipantInfo {
+        $request = new UpdateParticipantRequest();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+
+        if ($options?->metadata !== null) {
+            $request->setMetadata($options->metadata);
+        }
+
+        if ($options?->permission !== null) {
+            $request->setPermission($options->permission);
+        }
+
+        if ($options?->name !== null) {
+            $request->setName($options->name);
+        }
+
+        if ($options?->attributes !== null) {
+            $request->setAttributes($options->attributes);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateParticipant',
+            $request,
+            ParticipantInfo::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof ParticipantInfo);
 
         return $response;
     }
