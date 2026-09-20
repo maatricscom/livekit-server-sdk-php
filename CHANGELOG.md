@@ -111,7 +111,7 @@ starting out now has no reason to carry a version that only receives security fi
   and claiming a prefix beneath it rather than the bare root is what keeps two packages from colliding
   there: Composer settles a doubly-claimed prefix by merging the directories and using whichever it
   lists first, silently. `google-cloud-php` registers 238 prefixes under `GPBMetadata` and not one is
-  the bare root. Two PSR-4 prefixes, 361 message classes and 16 descriptors.
+  the bare root. Two PSR-4 prefixes, 360 message classes and 16 descriptors.
 - Both protobuf runtimes are supported and both are tested: CI runs the unit suite against the pure-PHP
   runtime and against `ext-protobuf`, on 8.4 and 8.5. They do not agree on every edge case, so testing
   only the one Composer installs would leave half the installed base unexercised.
@@ -139,7 +139,9 @@ starting out now has no reason to carry a version that only receives security fi
   list RPCs of the services that must not be mutated, and what a real server returns when the request is
   wrong. Everything it creates is deleted even when an assertion fails; nothing it calls places a call,
   starts a recording or incurs a charge; and a feature the deployment does not have is a skip rather
-  than a failure.
+  than a failure. It has been run green against a live LiveKit Cloud deployment, in both wire formats,
+  which is what closes the open question of whether the binary content type this SDK sends by default is
+  one LiveKit Cloud accepts.
 
 ### Notes
 
@@ -198,7 +200,7 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   It can only check for leaked environment variables from last place, and it holds that place by its
   name alone — a test file added under a path sorting after it would take the slot silently.
 - `ReadmeCodeBlocksTest` checks every PHP example in `README.md`: that it parses at all, and that every
-  class, named argument, constant and resolvable method call in it exists. Twenty-one examples, of which
+  class, named argument, constant and resolvable method call in it exists. Thirty examples, of which
   one was executed by anything before. It found a block that opened with `} catch` and could not be
   pasted anywhere, and a block that imported two of the three classes it used.
 - Assertions on protobuf maps sort before comparing. A map has no order: the pure-PHP runtime iterates
@@ -207,8 +209,9 @@ tarball. It is recorded because it is why the package can be trusted to behave a
 - `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
   whole run has succeeded, so a protoc that fails — or a Ctrl-C — cannot leave the generated tree
   half-written or empty.
-- `bin/check-protocol-version.sh` fails if any of the seven hand-written copies of the pinned protocol
-  tag disagrees with the generator, including the `go get` line in each fixture generator. Those decide
+- `bin/check-protocol-version.sh` fails if any of the six hand-written copies of the pinned protocol
+  tag disagrees with the generator, including the `go get` line in each fixture generator, and if the
+  generated `src/ProtocolVersion.php` does not match it exactly — seven files in all. Those decide
   which protocol the reference JWTs and webhook body are produced from: a bump that missed them would
   regenerate fixtures from the old protocol, and the suite would stay green asserting new code against
   stale references.
