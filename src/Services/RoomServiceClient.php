@@ -8,6 +8,8 @@ use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
 use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\DeleteRoomRequest;
+use LiveKit\Proto\DeleteRoomResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\Room;
@@ -114,5 +116,27 @@ final class RoomServiceClient extends ServiceBase
         }
 
         return $rooms;
+    }
+
+    /**
+     * Requires the roomCreate grant — not roomAdmin. This mirrors LiveKit's Node SDK and the
+     * server-side check; it looks wrong and is correct.
+     */
+    public function deleteRoom(string $room): DeleteRoomResponse
+    {
+        $request = new DeleteRoomRequest();
+        $request->setRoom($room);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'DeleteRoom',
+            $request,
+            DeleteRoomResponse::class,
+            $this->authHeader(new VideoGrant(roomCreate: true)),
+        );
+
+        assert($response instanceof DeleteRoomResponse);
+
+        return $response;
     }
 }

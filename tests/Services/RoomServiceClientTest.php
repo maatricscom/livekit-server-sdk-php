@@ -8,6 +8,8 @@ use Google\Protobuf\Internal\Message;
 use LiveKit\Options\CreateRoomOptions;
 use LiveKit\Options\ListRoomsOptions;
 use LiveKit\Proto\CreateRoomRequest;
+use LiveKit\Proto\DeleteRoomRequest;
+use LiveKit\Proto\DeleteRoomResponse;
 use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\Room;
@@ -117,6 +119,47 @@ final class RoomServiceClientTest extends TwirpTestCase
         $this->assertVideoGrant(['roomList' => true], $request);
 
         self::assertSame([], $rooms);
+    }
+
+    public function testDeleteRoomPostsDeleteRoomRequest(): void
+    {
+        $client = $this->client(new DeleteRoomResponse());
+
+        $client->deleteRoom('my-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'DeleteRoom');
+
+        $sent = $this->decodeRequest(DeleteRoomRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+
+        $this->assertVideoGrant(['roomCreate' => true], $request);
+    }
+
+    /**
+     * deleteRoom is COUNTER-INTUITIVE: it requires roomCreate, not roomAdmin, and it carries no
+     * `room` claim. Verified against LiveKit's official Node SDK (livekit-server-sdk v2.19.0,
+     * RoomServiceClient.deleteRoom -> { roomCreate: true }). Sending roomAdmin here produces a 401
+     * against a strict deployment, so this assertion must not be "fixed" to match the other methods.
+     */
+    public function testDeleteRoomUsesRoomCreateGrantNotRoomAdmin(): void
+    {
+        $client = $this->client(new DeleteRoomResponse());
+
+        $client->deleteRoom('my-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'DeleteRoom');
+
+        $sent = $this->decodeRequest(DeleteRoomRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+
+        $video = $this->claims($request)['video'];
+        self::assertIsArray($video);
+        self::assertTrue($video['roomCreate']);
+        self::assertArrayNotHasKey('roomAdmin', $video);
+        self::assertArrayNotHasKey('room', $video);
+        self::assertCount(1, $video);
     }
 
     private function client(Message $response): RoomServiceClient
