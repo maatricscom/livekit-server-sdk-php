@@ -117,7 +117,8 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *           RoomConfiguration to use if the participant initiates the room
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -150,9 +151,8 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPDispatchRuleInfo $var
      * @return $this
      */
-    public function setDispatchRule($var)
+    public function setDispatchRule(\LiveKit\Proto\SIPDispatchRuleInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPDispatchRuleInfo::class);
         $this->dispatch_rule = $var;
 
         return $this;
@@ -191,10 +191,9 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setRule($var)
+    public function setRule(\LiveKit\Proto\SIPDispatchRule|null $var)
     {
         @trigger_error('rule is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPDispatchRule::class);
         $this->rule = $var;
 
         return $this;
@@ -225,7 +224,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setTrunkIds($var)
+    public function setTrunkIds(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -261,10 +260,9 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setHidePhoneNumber($var)
+    public function setHidePhoneNumber(bool $var)
     {
         @trigger_error('hide_phone_number is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkBool($var);
         $this->hide_phone_number = $var;
 
         return $this;
@@ -293,7 +291,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setInboundNumbers($var)
+    public function setInboundNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -327,10 +325,10 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setName($var)
+    public function setName(string $var)
     {
         @trigger_error('name is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -361,10 +359,10 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
         @trigger_error('metadata is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -395,7 +393,7 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -429,10 +427,10 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setRoomPreset($var)
+    public function setRoomPreset(string $var)
     {
         @trigger_error('room_preset is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_preset = $var;
 
         return $this;
@@ -475,10 +473,9 @@ class CreateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setRoomConfig($var)
+    public function setRoomConfig(\LiveKit\Proto\RoomConfiguration|null $var)
     {
         @trigger_error('room_config is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomConfiguration::class);
         $this->room_config = $var;
 
         return $this;

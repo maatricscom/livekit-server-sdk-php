@@ -55,7 +55,8 @@ class ListEgressRequest extends \Google\Protobuf\Internal\Message
      *           next field id: 5
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -78,9 +79,9 @@ class ListEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -104,9 +105,9 @@ class ListEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEgressId($var)
+    public function setEgressId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->egress_id = $var;
 
         return $this;
@@ -130,9 +131,8 @@ class ListEgressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setActive($var)
+    public function setActive(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->active = $var;
 
         return $this;
@@ -166,9 +166,8 @@ class ListEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TokenPagination $var
      * @return $this
      */
-    public function setPageToken($var)
+    public function setPageToken(\LiveKit\Proto\TokenPagination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TokenPagination::class);
         $this->page_token = $var;
 
         return $this;

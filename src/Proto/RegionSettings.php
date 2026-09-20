@@ -28,7 +28,8 @@ class RegionSettings extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\RegionInfo[] $regions
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class RegionSettings extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RegionInfo[] $var
      * @return $this
      */
-    public function setRegions($var)
+    public function setRegions(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\RegionInfo::class);
         $this->regions = $arr;

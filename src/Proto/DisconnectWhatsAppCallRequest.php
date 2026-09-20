@@ -51,7 +51,8 @@ class DisconnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      *           The reason for disconnecting the call
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorWhatsapp::initOnce();
         parent::__construct($data);
     }
@@ -74,9 +75,9 @@ class DisconnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappCallId($var)
+    public function setWhatsappCallId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_call_id = $var;
 
         return $this;
@@ -104,9 +105,9 @@ class DisconnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappApiKey($var)
+    public function setWhatsappApiKey(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_api_key = $var;
 
         return $this;
@@ -116,7 +117,7 @@ class DisconnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * The reason for disconnecting the call
      *
      * Generated from protobuf field <code>.livekit.DisconnectWhatsAppCallRequest.DisconnectReason disconnect_reason = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\DisconnectWhatsAppCallRequest\DisconnectReason}
      */
     public function getDisconnectReason()
     {
@@ -127,10 +128,10 @@ class DisconnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * The reason for disconnecting the call
      *
      * Generated from protobuf field <code>.livekit.DisconnectWhatsAppCallRequest.DisconnectReason disconnect_reason = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\DisconnectWhatsAppCallRequest\DisconnectReason}
      * @return $this
      */
-    public function setDisconnectReason($var)
+    public function setDisconnectReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\DisconnectWhatsAppCallRequest\DisconnectReason::class);
         $this->disconnect_reason = $var;

@@ -31,7 +31,8 @@ class ListParticipantsRequest extends \Google\Protobuf\Internal\Message
      *           name of the room
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -54,9 +55,9 @@ class ListParticipantsRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;

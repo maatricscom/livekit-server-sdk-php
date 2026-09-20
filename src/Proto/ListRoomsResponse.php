@@ -28,7 +28,8 @@ class ListRoomsResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\Room[] $rooms
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class ListRoomsResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room[] $var
      * @return $this
      */
-    public function setRooms($var)
+    public function setRooms(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\Room::class);
         $this->rooms = $arr;

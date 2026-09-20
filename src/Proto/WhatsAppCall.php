@@ -39,7 +39,8 @@ class WhatsAppCall extends \Google\Protobuf\Internal\Message
      *           Direction of the call
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorWhatsapp::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class WhatsAppCall extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappCallId($var)
+    public function setWhatsappCallId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_call_id = $var;
 
         return $this;
@@ -74,7 +75,7 @@ class WhatsAppCall extends \Google\Protobuf\Internal\Message
      * Direction of the call
      *
      * Generated from protobuf field <code>.livekit.WhatsAppCallDirection direction = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\WhatsAppCallDirection}
      */
     public function getDirection()
     {
@@ -85,10 +86,10 @@ class WhatsAppCall extends \Google\Protobuf\Internal\Message
      * Direction of the call
      *
      * Generated from protobuf field <code>.livekit.WhatsAppCallDirection direction = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\WhatsAppCallDirection}
      * @return $this
      */
-    public function setDirection($var)
+    public function setDirection(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\WhatsAppCallDirection::class);
         $this->direction = $var;

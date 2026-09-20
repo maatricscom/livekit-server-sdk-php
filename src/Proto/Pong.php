@@ -36,7 +36,8 @@ class Pong extends \Google\Protobuf\Internal\Message
      *     @type int|string $timestamp
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -59,7 +60,7 @@ class Pong extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setLastPingTimestamp($var)
+    public function setLastPingTimestamp(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->last_ping_timestamp = $var;
@@ -81,7 +82,7 @@ class Pong extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setTimestamp($var)
+    public function setTimestamp(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->timestamp = $var;

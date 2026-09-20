@@ -41,7 +41,8 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -60,9 +61,9 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -82,9 +83,9 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackId($var)
+    public function setTrackId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_id = $var;
 
         return $this;
@@ -109,9 +110,8 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DirectFileOutput $var
      * @return $this
      */
-    public function setFile($var)
+    public function setFile(\LiveKit\Proto\DirectFileOutput|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DirectFileOutput::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -136,9 +136,9 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWebsocketUrl($var)
+    public function setWebsocketUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -158,7 +158,7 @@ class TrackEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
-    public function setWebhooks($var)
+    public function setWebhooks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\WebhookConfig::class);
         $this->webhooks = $arr;

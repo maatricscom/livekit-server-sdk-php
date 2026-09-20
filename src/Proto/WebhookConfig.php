@@ -38,7 +38,8 @@ class WebhookConfig extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\FilterParams $filter_params
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class WebhookConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
+    public function setUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -79,9 +80,9 @@ class WebhookConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSigningKey($var)
+    public function setSigningKey(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->signing_key = $var;
 
         return $this;
@@ -111,9 +112,8 @@ class WebhookConfig extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\FilterParams $var
      * @return $this
      */
-    public function setFilterParams($var)
+    public function setFilterParams(\LiveKit\Proto\FilterParams|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\FilterParams::class);
         $this->filter_params = $var;
 
         return $this;

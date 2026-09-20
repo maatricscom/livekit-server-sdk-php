@@ -33,7 +33,8 @@ class TrackPublishedResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\TrackInfo $track
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class TrackPublishedResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCid($var)
+    public function setCid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->cid = $var;
 
         return $this;
@@ -84,9 +85,8 @@ class TrackPublishedResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackInfo $var
      * @return $this
      */
-    public function setTrack($var)
+    public function setTrack(\LiveKit\Proto\TrackInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackInfo::class);
         $this->track = $var;
 
         return $this;

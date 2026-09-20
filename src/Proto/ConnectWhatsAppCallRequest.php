@@ -49,7 +49,8 @@ class ConnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      *           Wait for the answer for the call before returning.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorWhatsapp::initOnce();
         parent::__construct($data);
     }
@@ -72,9 +73,9 @@ class ConnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappCallId($var)
+    public function setWhatsappCallId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_call_id = $var;
 
         return $this;
@@ -110,9 +111,8 @@ class ConnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SessionDescription $var
      * @return $this
      */
-    public function setSdp($var)
+    public function setSdp(\LiveKit\Proto\SessionDescription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SessionDescription::class);
         $this->sdp = $var;
 
         return $this;
@@ -136,9 +136,8 @@ class ConnectWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWaitUntilAnswered($var)
+    public function setWaitUntilAnswered(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->wait_until_answered = $var;
 
         return $this;

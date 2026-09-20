@@ -46,7 +46,8 @@ class SessionDescription extends \Google\Protobuf\Internal\Message
      *     @type array|\Google\Protobuf\Internal\MapField $mid_to_track_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -69,9 +70,9 @@ class SessionDescription extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setType($var)
+    public function setType(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->type = $var;
 
         return $this;
@@ -91,9 +92,9 @@ class SessionDescription extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSdp($var)
+    public function setSdp(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sdp = $var;
 
         return $this;
@@ -113,7 +114,7 @@ class SessionDescription extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->id = $var;
@@ -135,7 +136,7 @@ class SessionDescription extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setMidToTrackId($var)
+    public function setMidToTrackId(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->mid_to_track_id = $arr;

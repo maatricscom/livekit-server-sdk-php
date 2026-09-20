@@ -28,7 +28,8 @@ class TrackSubscribed extends \Google\Protobuf\Internal\Message
      *     @type string $track_sid
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -47,9 +48,9 @@ class TrackSubscribed extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;

@@ -435,10 +435,16 @@ foreach ($room->getEnabledCodecs() as $codec) {
 }
 ```
 
-That depends on the protoc version the classes were generated with, which is why `bin/generate-protos.sh`
-requires 33.1 or newer. Older protoc emits `\Google\Protobuf\Internal\RepeatedField`, a name the
-protobuf runtime has not declared since v4 — it is a `class_alias` now, invisible to static analysis — and
-non-generic types with it.
+Setters are natively typed too, so passing the wrong thing is an error your analyser reports rather than
+one protobuf raises at runtime:
+
+```php
+$room->setName(123);        // Parameter #1 $var of method Room::setName() expects string
+$room->setEmptyTimeout('x'); // ...expects int
+```
+
+Both come from the protoc version the classes were generated with, which is why
+`bin/generate-protos.sh` requires 36.2 or newer.
 
 ## Dependency injection and testing
 

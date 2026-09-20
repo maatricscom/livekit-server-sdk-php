@@ -86,7 +86,8 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AliOSSUpload $aliOSS
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -109,7 +110,7 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setCaptureInterval($var)
+    public function setCaptureInterval(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->capture_interval = $var;
@@ -135,7 +136,7 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setWidth($var)
+    public function setWidth(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->width = $var;
@@ -161,7 +162,7 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setHeight($var)
+    public function setHeight(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->height = $var;
@@ -187,9 +188,9 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilenamePrefix($var)
+    public function setFilenamePrefix(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filename_prefix = $var;
 
         return $this;
@@ -199,7 +200,7 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * (optional, default INDEX)
      *
      * Generated from protobuf field <code>.livekit.ImageFileSuffix filename_suffix = 5;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ImageFileSuffix}
      */
     public function getFilenameSuffix()
     {
@@ -210,10 +211,10 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * (optional, default INDEX)
      *
      * Generated from protobuf field <code>.livekit.ImageFileSuffix filename_suffix = 5;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ImageFileSuffix}
      * @return $this
      */
-    public function setFilenameSuffix($var)
+    public function setFilenameSuffix(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ImageFileSuffix::class);
         $this->filename_suffix = $var;
@@ -225,7 +226,7 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * (optional)
      *
      * Generated from protobuf field <code>.livekit.ImageCodec image_codec = 6;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ImageCodec}
      */
     public function getImageCodec()
     {
@@ -236,10 +237,10 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * (optional)
      *
      * Generated from protobuf field <code>.livekit.ImageCodec image_codec = 6;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ImageCodec}
      * @return $this
      */
-    public function setImageCodec($var)
+    public function setImageCodec(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ImageCodec::class);
         $this->image_codec = $var;
@@ -265,9 +266,8 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableManifest($var)
+    public function setDisableManifest(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_manifest = $var;
 
         return $this;
@@ -292,9 +292,8 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\S3Upload $var
      * @return $this
      */
-    public function setS3($var)
+    public function setS3(\LiveKit\Proto\S3Upload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\S3Upload::class);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -319,9 +318,8 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\GCPUpload $var
      * @return $this
      */
-    public function setGcp($var)
+    public function setGcp(\LiveKit\Proto\GCPUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\GCPUpload::class);
         $this->writeOneof(9, $var);
 
         return $this;
@@ -346,9 +344,8 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AzureBlobUpload $var
      * @return $this
      */
-    public function setAzure($var)
+    public function setAzure(\LiveKit\Proto\AzureBlobUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AzureBlobUpload::class);
         $this->writeOneof(10, $var);
 
         return $this;
@@ -373,9 +370,8 @@ class ImageOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AliOSSUpload $var
      * @return $this
      */
-    public function setAliOSS($var)
+    public function setAliOSS(\LiveKit\Proto\AliOSSUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AliOSSUpload::class);
         $this->writeOneof(11, $var);
 
         return $this;

@@ -28,7 +28,8 @@ class StreamInfoList extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\StreamInfo[] $info
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class StreamInfoList extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamInfo[] $var
      * @return $this
      */
-    public function setInfo($var)
+    public function setInfo(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\StreamInfo::class);
         $this->info = $arr;

@@ -43,7 +43,8 @@ class InputAudioState extends \Google\Protobuf\Internal\Message
      *     @type int $sample_rate
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class InputAudioState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMimeType($var)
+    public function setMimeType(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->mime_type = $var;
 
         return $this;
@@ -84,7 +85,7 @@ class InputAudioState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setAverageBitrate($var)
+    public function setAverageBitrate(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->average_bitrate = $var;
@@ -106,7 +107,7 @@ class InputAudioState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setChannels($var)
+    public function setChannels(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->channels = $var;
@@ -128,7 +129,7 @@ class InputAudioState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setSampleRate($var)
+    public function setSampleRate(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->sample_rate = $var;

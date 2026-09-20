@@ -138,7 +138,8 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      *     @type int[] $packet_trailer_features
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -161,9 +162,9 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCid($var)
+    public function setCid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->cid = $var;
 
         return $this;
@@ -183,9 +184,9 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -193,7 +194,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackType type = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\TrackType}
      */
     public function getType()
     {
@@ -202,10 +203,10 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackType type = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\TrackType}
      * @return $this
      */
-    public function setType($var)
+    public function setType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\TrackType::class);
         $this->type = $var;
@@ -227,7 +228,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setWidth($var)
+    public function setWidth(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->width = $var;
@@ -249,7 +250,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setHeight($var)
+    public function setHeight(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->height = $var;
@@ -275,9 +276,8 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setMuted($var)
+    public function setMuted(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->muted = $var;
 
         return $this;
@@ -306,10 +306,9 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setDisableDtx($var)
+    public function setDisableDtx(bool $var)
     {
         @trigger_error('disable_dtx is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkBool($var);
         $this->disable_dtx = $var;
 
         return $this;
@@ -317,7 +316,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackSource source = 8;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\TrackSource}
      */
     public function getSource()
     {
@@ -326,10 +325,10 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackSource source = 8;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\TrackSource}
      * @return $this
      */
-    public function setSource($var)
+    public function setSource(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\TrackSource::class);
         $this->source = $var;
@@ -351,7 +350,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\VideoLayer[] $var
      * @return $this
      */
-    public function setLayers($var)
+    public function setLayers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\VideoLayer::class);
         $this->layers = $arr;
@@ -373,7 +372,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SimulcastCodec[] $var
      * @return $this
      */
-    public function setSimulcastCodecs($var)
+    public function setSimulcastCodecs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SimulcastCodec::class);
         $this->simulcast_codecs = $arr;
@@ -399,9 +398,9 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSid($var)
+    public function setSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sid = $var;
 
         return $this;
@@ -430,10 +429,9 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setStereo($var)
+    public function setStereo(bool $var)
     {
         @trigger_error('stereo is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkBool($var);
         $this->stereo = $var;
 
         return $this;
@@ -457,9 +455,8 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableRed($var)
+    public function setDisableRed(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_red = $var;
 
         return $this;
@@ -467,7 +464,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.Encryption.Type encryption = 14;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\Encryption\Type}
      */
     public function getEncryption()
     {
@@ -476,10 +473,10 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.Encryption.Type encryption = 14;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\Encryption\Type}
      * @return $this
      */
-    public function setEncryption($var)
+    public function setEncryption(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\Encryption\Type::class);
         $this->encryption = $var;
@@ -507,9 +504,9 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setStream($var)
+    public function setStream(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->stream = $var;
 
         return $this;
@@ -517,7 +514,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.BackupCodecPolicy backup_codec_policy = 16;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\BackupCodecPolicy}
      */
     public function getBackupCodecPolicy()
     {
@@ -526,10 +523,10 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.BackupCodecPolicy backup_codec_policy = 16;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\BackupCodecPolicy}
      * @return $this
      */
-    public function setBackupCodecPolicy($var)
+    public function setBackupCodecPolicy(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\BackupCodecPolicy::class);
         $this->backup_codec_policy = $var;
@@ -539,7 +536,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature audio_features = 17;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\AudioTrackFeature}
      */
     public function getAudioFeatures()
     {
@@ -548,10 +545,10 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature audio_features = 17;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\AudioTrackFeature}
      * @return $this
      */
-    public function setAudioFeatures($var)
+    public function setAudioFeatures(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\AudioTrackFeature::class);
         $this->audio_features = $arr;
@@ -561,7 +558,7 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PacketTrailerFeature packet_trailer_features = 18;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\PacketTrailerFeature}
      */
     public function getPacketTrailerFeatures()
     {
@@ -570,10 +567,10 @@ class AddTrackRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.PacketTrailerFeature packet_trailer_features = 18;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\PacketTrailerFeature}
      * @return $this
      */
-    public function setPacketTrailerFeatures($var)
+    public function setPacketTrailerFeatures(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\PacketTrailerFeature::class);
         $this->packet_trailer_features = $arr;

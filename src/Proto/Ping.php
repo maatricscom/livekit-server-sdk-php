@@ -36,7 +36,8 @@ class Ping extends \Google\Protobuf\Internal\Message
      *           rtt in milliseconds calculated by client
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -55,7 +56,7 @@ class Ping extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setTimestamp($var)
+    public function setTimestamp(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->timestamp = $var;
@@ -81,7 +82,7 @@ class Ping extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setRtt($var)
+    public function setRtt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->rtt = $var;

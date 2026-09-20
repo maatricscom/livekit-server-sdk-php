@@ -33,7 +33,8 @@ class SubscriptionResponse extends \Google\Protobuf\Internal\Message
      *     @type int $err
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class SubscriptionResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -62,7 +63,7 @@ class SubscriptionResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SubscriptionError err = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SubscriptionError}
      */
     public function getErr()
     {
@@ -71,10 +72,10 @@ class SubscriptionResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SubscriptionError err = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SubscriptionError}
      * @return $this
      */
-    public function setErr($var)
+    public function setErr(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SubscriptionError::class);
         $this->err = $var;

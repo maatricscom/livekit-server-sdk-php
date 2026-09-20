@@ -44,7 +44,8 @@ class UpdateJobStatus extends \Google\Protobuf\Internal\Message
      *           metadata shown on the dashboard, useful for debugging
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -63,9 +64,9 @@ class UpdateJobStatus extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setJobId($var)
+    public function setJobId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->job_id = $var;
 
         return $this;
@@ -75,7 +76,7 @@ class UpdateJobStatus extends \Google\Protobuf\Internal\Message
      * The worker can indicate the job end by either specifying SUCCESS or FAILED
      *
      * Generated from protobuf field <code>.livekit.JobStatus status = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\JobStatus}
      */
     public function getStatus()
     {
@@ -86,10 +87,10 @@ class UpdateJobStatus extends \Google\Protobuf\Internal\Message
      * The worker can indicate the job end by either specifying SUCCESS or FAILED
      *
      * Generated from protobuf field <code>.livekit.JobStatus status = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\JobStatus}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\JobStatus::class);
         $this->status = $var;
@@ -115,9 +116,9 @@ class UpdateJobStatus extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;

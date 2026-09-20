@@ -36,7 +36,8 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\IngressAudioEncodingOptions $options
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -55,9 +56,9 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -65,7 +66,7 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackSource source = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\TrackSource}
      */
     public function getSource()
     {
@@ -74,10 +75,10 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackSource source = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\TrackSource}
      * @return $this
      */
-    public function setSource($var)
+    public function setSource(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\TrackSource::class);
         $this->source = $var;
@@ -87,7 +88,7 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.IngressAudioEncodingPreset preset = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\IngressAudioEncodingPreset}
      */
     public function getPreset()
     {
@@ -101,10 +102,10 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.IngressAudioEncodingPreset preset = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\IngressAudioEncodingPreset}
      * @return $this
      */
-    public function setPreset($var)
+    public function setPreset(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\IngressAudioEncodingPreset::class);
         $this->writeOneof(3, $var);
@@ -131,9 +132,8 @@ class IngressAudioOptions extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\IngressAudioEncodingOptions $var
      * @return $this
      */
-    public function setOptions($var)
+    public function setOptions(\LiveKit\Proto\IngressAudioEncodingOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\IngressAudioEncodingOptions::class);
         $this->writeOneof(4, $var);
 
         return $this;

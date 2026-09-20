@@ -82,10 +82,10 @@ Initial release.
   by `failover: false`, since a pinned project has no other region that would answer. No official LiveKit
   SDK implements this yet; it follows the specification in LiveKit's own SDK test server.
 - Generated protobuf classes under `LiveKit\Proto\`, pinned to `livekit/protocol` **v1.52.0**. Generated with
-  protoc 33.1 or newer, which the generator requires: it names the canonical
-  `\Google\Protobuf\RepeatedField` and gives repeated fields a generic `RepeatedField<T>` type. Older
-  protoc names a class the runtime has not declared since v4, and carries no element type with it, so
-  code iterating a repeated field — here or in your project — gets `mixed`.
+  protoc 36.2, which the generator requires: repeated fields carry a generic `RepeatedField<T>` type and
+  every setter is natively typed, so both iterating a repeated field and passing the wrong type to a
+  setter are things your own static analysis can see. This is why `google/protobuf` is constrained to
+  `^5.36`: protoc 36's output calls `GPBUtil::compatibleInt64`, which the 4.x runtime does not have.
 - One naming rule across every client: the per-call option object is always `$options`, a room is `$room`
   or `$roomName` following the proto field, and `$output` / `$fields` keep their own meanings. Named
   arguments make a parameter name part of the API, so a name that changes between clients is a trap.

@@ -48,7 +48,8 @@ class ConnectionSettings extends \Google\Protobuf\Internal\Message
      *     @type bool $auto_subscribe_data_track
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,8 @@ class ConnectionSettings extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAutoSubscribe($var)
+    public function setAutoSubscribe(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->auto_subscribe = $var;
 
         return $this;
@@ -89,9 +89,8 @@ class ConnectionSettings extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAdaptiveStream($var)
+    public function setAdaptiveStream(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->adaptive_stream = $var;
 
         return $this;
@@ -121,9 +120,8 @@ class ConnectionSettings extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSubscriberAllowPause($var)
+    public function setSubscriberAllowPause(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->subscriber_allow_pause = $var;
 
         return $this;
@@ -143,9 +141,8 @@ class ConnectionSettings extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableIceLite($var)
+    public function setDisableIceLite(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_ice_lite = $var;
 
         return $this;
@@ -175,9 +172,8 @@ class ConnectionSettings extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAutoSubscribeDataTrack($var)
+    public function setAutoSubscribeDataTrack(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->auto_subscribe_data_track = $var;
 
         return $this;

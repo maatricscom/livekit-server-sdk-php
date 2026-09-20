@@ -38,7 +38,8 @@ class ICEServer extends \Google\Protobuf\Internal\Message
      *     @type string $credential
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,7 +58,7 @@ class ICEServer extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setUrls($var)
+    public function setUrls(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->urls = $arr;
@@ -79,9 +80,9 @@ class ICEServer extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUsername($var)
+    public function setUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->username = $var;
 
         return $this;
@@ -101,9 +102,9 @@ class ICEServer extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCredential($var)
+    public function setCredential(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->credential = $var;
 
         return $this;

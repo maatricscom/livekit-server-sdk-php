@@ -33,7 +33,8 @@ class MuteTrackRequest extends \Google\Protobuf\Internal\Message
      *     @type bool $muted
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class MuteTrackRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSid($var)
+    public function setSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sid = $var;
 
         return $this;
@@ -74,9 +75,8 @@ class MuteTrackRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setMuted($var)
+    public function setMuted(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->muted = $var;
 
         return $this;

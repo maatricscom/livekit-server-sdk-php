@@ -141,9 +141,9 @@ To regenerate:
 bin/generate-protos.sh
 ```
 
-Requirements: `protoc >= 33.1` (the script checks the version and refuses to run on anything older:
-33.1 is the first release whose PHP output names the canonical `RepeatedField` and gives it a generic
-element type), and bash
+Requirements: `protoc >= 36.2` (the script checks the version and refuses to run on anything older:
+its output names the canonical `RepeatedField`, gives repeated fields a generic element type, and types
+every setter natively — 1153 of them, where 33.1 typed none), and bash
 `>= 4` (macOS ships bash 3.2 at `/bin/bash`; `brew install bash` gets you a current one). The script clones
 `livekit/protocol` at the pinned tag, computes the transitive import closure of the public Twirp-facing
 protos, injects PHP namespace options so the output lands under `LiveKit\Proto\` instead of the global
@@ -185,7 +185,8 @@ CI's `forbidden-symbols` job rejects any use of `\Google\Protobuf\Internal\Repea
 In hand-written code, referencing it fatals on a cold autoloader; in generated code it does not fatal,
 but it costs every downstream project the types on any repeated field it touches.
 
-protoc has emitted the canonical name since 33.1, which is why the generator requires that version.
+protoc has emitted the canonical name since 33.1, and the generator requires 36.2 for the native
+setter types on top of it.
 This job is what catches a regeneration done with something older.
 
 ```bash

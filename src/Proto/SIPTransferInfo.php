@@ -68,7 +68,8 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      *     @type int $reason
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -87,9 +88,9 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTransferId($var)
+    public function setTransferId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->transfer_id = $var;
 
         return $this;
@@ -109,9 +110,9 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCallId($var)
+    public function setCallId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->call_id = $var;
 
         return $this;
@@ -131,9 +132,9 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTransferTo($var)
+    public function setTransferTo(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->transfer_to = $var;
 
         return $this;
@@ -153,7 +154,7 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setTransferInitiatedAtNs($var)
+    public function setTransferInitiatedAtNs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->transfer_initiated_at_ns = $var;
@@ -175,7 +176,7 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setTransferCompletedAtNs($var)
+    public function setTransferCompletedAtNs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->transfer_completed_at_ns = $var;
@@ -185,7 +186,7 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferStatus transfer_status = 6;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransferStatus}
      */
     public function getTransferStatus()
     {
@@ -194,10 +195,10 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferStatus transfer_status = 6;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransferStatus}
      * @return $this
      */
-    public function setTransferStatus($var)
+    public function setTransferStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransferStatus::class);
         $this->transfer_status = $var;
@@ -219,9 +220,9 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;
@@ -251,9 +252,8 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPStatus $var
      * @return $this
      */
-    public function setTransferStatusCode($var)
+    public function setTransferStatusCode(\LiveKit\Proto\SIPStatus|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPStatus::class);
         $this->transfer_status_code = $var;
 
         return $this;
@@ -261,7 +261,7 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferReason reason = 9;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransferReason}
      */
     public function getReason()
     {
@@ -270,10 +270,10 @@ class SIPTransferInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferReason reason = 9;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransferReason}
      * @return $this
      */
-    public function setReason($var)
+    public function setReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransferReason::class);
         $this->reason = $var;

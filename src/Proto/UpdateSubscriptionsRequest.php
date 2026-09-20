@@ -57,7 +57,8 @@ class UpdateSubscriptionsRequest extends \Google\Protobuf\Internal\Message
      *           list of participants and their tracks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -76,9 +77,9 @@ class UpdateSubscriptionsRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -98,9 +99,9 @@ class UpdateSubscriptionsRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIdentity($var)
+    public function setIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->identity = $var;
 
         return $this;
@@ -124,7 +125,7 @@ class UpdateSubscriptionsRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setTrackSids($var)
+    public function setTrackSids(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->track_sids = $arr;
@@ -150,9 +151,8 @@ class UpdateSubscriptionsRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSubscribe($var)
+    public function setSubscribe(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->subscribe = $var;
 
         return $this;
@@ -176,7 +176,7 @@ class UpdateSubscriptionsRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantTracks[] $var
      * @return $this
      */
-    public function setParticipantTracks($var)
+    public function setParticipantTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ParticipantTracks::class);
         $this->participant_tracks = $arr;

@@ -50,7 +50,8 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\RegionSettings $regions
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -77,9 +78,8 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setCanReconnect($var)
+    public function setCanReconnect(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->can_reconnect = $var;
 
         return $this;
@@ -87,7 +87,7 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DisconnectReason reason = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\DisconnectReason}
      */
     public function getReason()
     {
@@ -96,10 +96,10 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DisconnectReason reason = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\DisconnectReason}
      * @return $this
      */
-    public function setReason($var)
+    public function setReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\DisconnectReason::class);
         $this->reason = $var;
@@ -109,7 +109,7 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.LeaveRequest.Action action = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\LeaveRequest\Action}
      */
     public function getAction()
     {
@@ -118,10 +118,10 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.LeaveRequest.Action action = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\LeaveRequest\Action}
      * @return $this
      */
-    public function setAction($var)
+    public function setAction(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\LeaveRequest\Action::class);
         $this->action = $var;
@@ -153,9 +153,8 @@ class LeaveRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RegionSettings $var
      * @return $this
      */
-    public function setRegions($var)
+    public function setRegions(\LiveKit\Proto\RegionSettings|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RegionSettings::class);
         $this->regions = $var;
 
         return $this;

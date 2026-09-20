@@ -47,7 +47,8 @@ class SIPDispatchRuleIndividual extends \Google\Protobuf\Internal\Message
      *           Optionally append random suffix
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -70,9 +71,9 @@ class SIPDispatchRuleIndividual extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomPrefix($var)
+    public function setRoomPrefix(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_prefix = $var;
 
         return $this;
@@ -96,9 +97,9 @@ class SIPDispatchRuleIndividual extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPin($var)
+    public function setPin(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->pin = $var;
 
         return $this;
@@ -122,9 +123,8 @@ class SIPDispatchRuleIndividual extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setNoRandomness($var)
+    public function setNoRandomness(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->no_randomness = $var;
 
         return $this;

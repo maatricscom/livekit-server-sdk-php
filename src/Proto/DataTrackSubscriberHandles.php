@@ -31,7 +31,8 @@ class DataTrackSubscriberHandles extends \Google\Protobuf\Internal\Message
      *           Maps handles from incoming packets to the track SIDs that the packets belong to.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -54,7 +55,7 @@ class DataTrackSubscriberHandles extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setSubHandles($var)
+    public function setSubHandles(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::UINT32, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\DataTrackSubscriberHandles\PublishedDataTrack::class);
         $this->sub_handles = $arr;

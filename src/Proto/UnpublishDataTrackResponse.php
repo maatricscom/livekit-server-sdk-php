@@ -31,7 +31,8 @@ class UnpublishDataTrackResponse extends \Google\Protobuf\Internal\Message
      *           Information about the unpublished track.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -64,9 +65,8 @@ class UnpublishDataTrackResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackInfo $var
      * @return $this
      */
-    public function setInfo($var)
+    public function setInfo(\LiveKit\Proto\DataTrackInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataTrackInfo::class);
         $this->info = $var;
 
         return $this;

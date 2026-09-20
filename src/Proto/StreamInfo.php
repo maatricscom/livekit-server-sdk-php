@@ -63,7 +63,8 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      *     @type int $retries
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -82,9 +83,9 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
+    public function setUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -104,7 +105,7 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -126,7 +127,7 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;
@@ -148,7 +149,7 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setDuration($var)
+    public function setDuration(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->duration = $var;
@@ -158,7 +159,7 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.StreamInfo.Status status = 5;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\StreamInfo\Status}
      */
     public function getStatus()
     {
@@ -167,10 +168,10 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.StreamInfo.Status status = 5;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\StreamInfo\Status}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\StreamInfo\Status::class);
         $this->status = $var;
@@ -192,9 +193,9 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;
@@ -214,7 +215,7 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setLastRetryAt($var)
+    public function setLastRetryAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->last_retry_at = $var;
@@ -236,7 +237,7 @@ class StreamInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRetries($var)
+    public function setRetries(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->retries = $var;

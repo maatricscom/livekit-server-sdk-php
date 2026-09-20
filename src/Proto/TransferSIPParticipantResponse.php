@@ -50,7 +50,8 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
      *           Set when the outcome was reported by a SIP response.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -69,9 +70,9 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTransferId($var)
+    public function setTransferId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->transfer_id = $var;
 
         return $this;
@@ -79,7 +80,7 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferStatus status = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransferStatus}
      */
     public function getStatus()
     {
@@ -88,10 +89,10 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferStatus status = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransferStatus}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransferStatus::class);
         $this->status = $var;
@@ -101,7 +102,7 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferReason reason = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransferReason}
      */
     public function getReason()
     {
@@ -110,10 +111,10 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransferReason reason = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransferReason}
      * @return $this
      */
-    public function setReason($var)
+    public function setReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransferReason::class);
         $this->reason = $var;
@@ -149,9 +150,8 @@ class TransferSIPParticipantResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPStatus $var
      * @return $this
      */
-    public function setSipStatus($var)
+    public function setSipStatus(\LiveKit\Proto\SIPStatus|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPStatus::class);
         $this->sip_status = $var;
 
         return $this;

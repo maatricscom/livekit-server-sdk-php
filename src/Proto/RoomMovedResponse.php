@@ -49,7 +49,8 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ParticipantInfo[] $other_participants
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -82,9 +83,8 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\Room|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Room::class);
         $this->room = $var;
 
         return $this;
@@ -108,9 +108,9 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setToken($var)
+    public function setToken(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->token = $var;
 
         return $this;
@@ -140,9 +140,8 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\ParticipantInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantInfo::class);
         $this->participant = $var;
 
         return $this;
@@ -162,7 +161,7 @@ class RoomMovedResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo[] $var
      * @return $this
      */
-    public function setOtherParticipants($var)
+    public function setOtherParticipants(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ParticipantInfo::class);
         $this->other_participants = $arr;

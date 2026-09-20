@@ -44,7 +44,8 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      *           simulcast layers to publish, when empty, should usually be set to layers at 1/2 and 1/4 of the dimensions
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -53,7 +54,7 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      * desired codec to publish to room
      *
      * Generated from protobuf field <code>.livekit.VideoCodec video_codec = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\VideoCodec}
      */
     public function getVideoCodec()
     {
@@ -64,10 +65,10 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      * desired codec to publish to room
      *
      * Generated from protobuf field <code>.livekit.VideoCodec video_codec = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\VideoCodec}
      * @return $this
      */
-    public function setVideoCodec($var)
+    public function setVideoCodec(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\VideoCodec::class);
         $this->video_codec = $var;
@@ -89,9 +90,8 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setFrameRate($var)
+    public function setFrameRate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->frame_rate = $var;
 
         return $this;
@@ -115,7 +115,7 @@ class IngressVideoEncodingOptions extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\VideoLayer[] $var
      * @return $this
      */
-    public function setLayers($var)
+    public function setLayers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\VideoLayer::class);
         $this->layers = $arr;

@@ -43,7 +43,8 @@ class ImagesInfo extends \Google\Protobuf\Internal\Message
      *     @type int|string $ended_at
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class ImagesInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilenamePrefix($var)
+    public function setFilenamePrefix(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filename_prefix = $var;
 
         return $this;
@@ -84,7 +85,7 @@ class ImagesInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setImageCount($var)
+    public function setImageCount(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->image_count = $var;
@@ -106,7 +107,7 @@ class ImagesInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -128,7 +129,7 @@ class ImagesInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;

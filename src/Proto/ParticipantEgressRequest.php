@@ -66,7 +66,8 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -85,9 +86,9 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -107,9 +108,9 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIdentity($var)
+    public function setIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->identity = $var;
 
         return $this;
@@ -129,9 +130,8 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setScreenShare($var)
+    public function setScreenShare(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->screen_share = $var;
 
         return $this;
@@ -139,7 +139,7 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 4;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      */
     public function getPreset()
     {
@@ -153,10 +153,10 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 4;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      * @return $this
      */
-    public function setPreset($var)
+    public function setPreset(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EncodingOptionsPreset::class);
         $this->writeOneof(4, $var);
@@ -183,9 +183,8 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodingOptions $var
      * @return $this
      */
-    public function setAdvanced($var)
+    public function setAdvanced(\LiveKit\Proto\EncodingOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\EncodingOptions::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -205,7 +204,7 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodedFileOutput[] $var
      * @return $this
      */
-    public function setFileOutputs($var)
+    public function setFileOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\EncodedFileOutput::class);
         $this->file_outputs = $arr;
@@ -227,7 +226,7 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamOutput[] $var
      * @return $this
      */
-    public function setStreamOutputs($var)
+    public function setStreamOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\StreamOutput::class);
         $this->stream_outputs = $arr;
@@ -249,7 +248,7 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SegmentedFileOutput[] $var
      * @return $this
      */
-    public function setSegmentOutputs($var)
+    public function setSegmentOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SegmentedFileOutput::class);
         $this->segment_outputs = $arr;
@@ -271,7 +270,7 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ImageOutput[] $var
      * @return $this
      */
-    public function setImageOutputs($var)
+    public function setImageOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ImageOutput::class);
         $this->image_outputs = $arr;
@@ -293,7 +292,7 @@ class ParticipantEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
-    public function setWebhooks($var)
+    public function setWebhooks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\WebhookConfig::class);
         $this->webhooks = $arr;

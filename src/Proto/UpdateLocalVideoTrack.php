@@ -38,7 +38,8 @@ class UpdateLocalVideoTrack extends \Google\Protobuf\Internal\Message
      *     @type int $height
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class UpdateLocalVideoTrack extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -79,7 +80,7 @@ class UpdateLocalVideoTrack extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setWidth($var)
+    public function setWidth(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->width = $var;
@@ -101,7 +102,7 @@ class UpdateLocalVideoTrack extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setHeight($var)
+    public function setHeight(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->height = $var;

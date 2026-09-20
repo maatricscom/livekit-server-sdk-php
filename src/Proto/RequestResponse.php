@@ -47,7 +47,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\UnpublishDataTrackRequest $unpublish_data_track
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -66,7 +67,7 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRequestId($var)
+    public function setRequestId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->request_id = $var;
@@ -76,7 +77,7 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.RequestResponse.Reason reason = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\RequestResponse\Reason}
      */
     public function getReason()
     {
@@ -85,10 +86,10 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.RequestResponse.Reason reason = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\RequestResponse\Reason}
      * @return $this
      */
-    public function setReason($var)
+    public function setReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\RequestResponse\Reason::class);
         $this->reason = $var;
@@ -110,9 +111,9 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMessage($var)
+    public function setMessage(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->message = $var;
 
         return $this;
@@ -137,9 +138,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrickleRequest $var
      * @return $this
      */
-    public function setTrickle($var)
+    public function setTrickle(\LiveKit\Proto\TrickleRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrickleRequest::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -164,9 +164,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AddTrackRequest $var
      * @return $this
      */
-    public function setAddTrack($var)
+    public function setAddTrack(\LiveKit\Proto\AddTrackRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AddTrackRequest::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -191,9 +190,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\MuteTrackRequest $var
      * @return $this
      */
-    public function setMute($var)
+    public function setMute(\LiveKit\Proto\MuteTrackRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\MuteTrackRequest::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -218,9 +216,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateParticipantMetadata $var
      * @return $this
      */
-    public function setUpdateMetadata($var)
+    public function setUpdateMetadata(\LiveKit\Proto\UpdateParticipantMetadata|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateParticipantMetadata::class);
         $this->writeOneof(7, $var);
 
         return $this;
@@ -245,9 +242,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateLocalAudioTrack $var
      * @return $this
      */
-    public function setUpdateAudioTrack($var)
+    public function setUpdateAudioTrack(\LiveKit\Proto\UpdateLocalAudioTrack|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateLocalAudioTrack::class);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -272,9 +268,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateLocalVideoTrack $var
      * @return $this
      */
-    public function setUpdateVideoTrack($var)
+    public function setUpdateVideoTrack(\LiveKit\Proto\UpdateLocalVideoTrack|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateLocalVideoTrack::class);
         $this->writeOneof(9, $var);
 
         return $this;
@@ -299,9 +294,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\PublishDataTrackRequest $var
      * @return $this
      */
-    public function setPublishDataTrack($var)
+    public function setPublishDataTrack(\LiveKit\Proto\PublishDataTrackRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\PublishDataTrackRequest::class);
         $this->writeOneof(10, $var);
 
         return $this;
@@ -326,9 +320,8 @@ class RequestResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UnpublishDataTrackRequest $var
      * @return $this
      */
-    public function setUnpublishDataTrack($var)
+    public function setUnpublishDataTrack(\LiveKit\Proto\UnpublishDataTrackRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UnpublishDataTrackRequest::class);
         $this->writeOneof(11, $var);
 
         return $this;

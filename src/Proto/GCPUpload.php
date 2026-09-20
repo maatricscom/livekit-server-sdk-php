@@ -41,7 +41,8 @@ class GCPUpload extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ProxyConfig $proxy
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -64,9 +65,9 @@ class GCPUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCredentials($var)
+    public function setCredentials(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->credentials = $var;
 
         return $this;
@@ -86,9 +87,9 @@ class GCPUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setBucket($var)
+    public function setBucket(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->bucket = $var;
 
         return $this;
@@ -118,9 +119,8 @@ class GCPUpload extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ProxyConfig $var
      * @return $this
      */
-    public function setProxy($var)
+    public function setProxy(\LiveKit\Proto\ProxyConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ProxyConfig::class);
         $this->proxy = $var;
 
         return $this;

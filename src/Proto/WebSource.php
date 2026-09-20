@@ -45,7 +45,8 @@ class WebSource extends \Google\Protobuf\Internal\Message
      *     @type bool $await_start_signal
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -64,9 +65,9 @@ class WebSource extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
+    public function setUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -86,9 +87,8 @@ class WebSource extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAudioOnly($var)
+    public function setAudioOnly(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->audio_only = $var;
 
         return $this;
@@ -108,9 +108,8 @@ class WebSource extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setVideoOnly($var)
+    public function setVideoOnly(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->video_only = $var;
 
         return $this;
@@ -130,9 +129,8 @@ class WebSource extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAwaitStartSignal($var)
+    public function setAwaitStartSignal(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->await_start_signal = $var;
 
         return $this;

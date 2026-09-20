@@ -26,7 +26,8 @@ class DataSelector extends \Google\Protobuf\Internal\Message
      *     @type string $participant_identity
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -50,9 +51,9 @@ class DataSelector extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackId($var)
+    public function setTrackId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -77,9 +78,9 @@ class DataSelector extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(2, $var);
 
         return $this;

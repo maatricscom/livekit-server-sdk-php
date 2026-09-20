@@ -77,7 +77,8 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      *           force PII redaction on for this session (only ever enables, never disables)
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitMetrics::initOnce();
         parent::__construct($data);
     }
@@ -96,9 +97,9 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomId($var)
+    public function setRoomId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_id = $var;
 
         return $this;
@@ -122,7 +123,7 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setDuration($var)
+    public function setDuration(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->duration = $var;
@@ -154,9 +155,8 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setStartTime($var)
+    public function setStartTime(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->start_time = $var;
 
         return $this;
@@ -176,7 +176,7 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setRoomTags($var)
+    public function setRoomTags(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->room_tags = $arr;
@@ -198,9 +198,9 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -230,9 +230,8 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setRoomStartTime($var)
+    public function setRoomStartTime(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->room_start_time = $var;
 
         return $this;
@@ -252,9 +251,9 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setJobId($var)
+    public function setJobId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->job_id = $var;
 
         return $this;
@@ -278,9 +277,8 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSimulated($var)
+    public function setSimulated(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->simulated = $var;
 
         return $this;
@@ -304,9 +302,8 @@ class MetricsRecordingHeader extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setRedactionEnabled($var)
+    public function setRedactionEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->redaction_enabled = $var;
 
         return $this;

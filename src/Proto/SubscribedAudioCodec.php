@@ -33,7 +33,8 @@ class SubscribedAudioCodec extends \Google\Protobuf\Internal\Message
      *     @type bool $enabled
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class SubscribedAudioCodec extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCodec($var)
+    public function setCodec(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->codec = $var;
 
         return $this;
@@ -74,9 +75,8 @@ class SubscribedAudioCodec extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnabled($var)
+    public function setEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enabled = $var;
 
         return $this;

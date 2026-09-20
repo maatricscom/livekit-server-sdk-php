@@ -48,7 +48,8 @@ class AliOSSUpload extends \Google\Protobuf\Internal\Message
      *     @type string $bucket
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,9 @@ class AliOSSUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAccessKey($var)
+    public function setAccessKey(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->access_key = $var;
 
         return $this;
@@ -89,9 +90,9 @@ class AliOSSUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSecret($var)
+    public function setSecret(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->secret = $var;
 
         return $this;
@@ -111,9 +112,9 @@ class AliOSSUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRegion($var)
+    public function setRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->region = $var;
 
         return $this;
@@ -133,9 +134,9 @@ class AliOSSUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEndpoint($var)
+    public function setEndpoint(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->endpoint = $var;
 
         return $this;
@@ -155,9 +156,9 @@ class AliOSSUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setBucket($var)
+    public function setBucket(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->bucket = $var;
 
         return $this;

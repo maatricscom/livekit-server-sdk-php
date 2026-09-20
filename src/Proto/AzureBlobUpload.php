@@ -38,7 +38,8 @@ class AzureBlobUpload extends \Google\Protobuf\Internal\Message
      *     @type string $container_name
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class AzureBlobUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAccountName($var)
+    public function setAccountName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->account_name = $var;
 
         return $this;
@@ -79,9 +80,9 @@ class AzureBlobUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAccountKey($var)
+    public function setAccountKey(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->account_key = $var;
 
         return $this;
@@ -101,9 +102,9 @@ class AzureBlobUpload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setContainerName($var)
+    public function setContainerName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->container_name = $var;
 
         return $this;

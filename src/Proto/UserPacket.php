@@ -101,7 +101,8 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      *           added by SDK to enable de-duping of messages, for INTERNAL USE ONLY
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -129,10 +130,10 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setParticipantSid($var)
+    public function setParticipantSid(string $var)
     {
         @trigger_error('participant_sid is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_sid = $var;
 
         return $this;
@@ -157,10 +158,10 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
         @trigger_error('participant_identity is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -184,9 +185,9 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPayload($var)
+    public function setPayload(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->payload = $var;
 
         return $this;
@@ -215,7 +216,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setDestinationSids($var)
+    public function setDestinationSids(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -249,7 +250,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setDestinationIdentities($var)
+    public function setDestinationIdentities(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -288,9 +289,9 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTopic($var)
+    public function setTopic(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->topic = $var;
 
         return $this;
@@ -324,9 +325,9 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->id = $var;
 
         return $this;
@@ -340,7 +341,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      */
     public function getStartTime()
     {
-        return isset($this->start_time) ? $this->start_time : 0;
+        return isset($this->start_time) ? $this->start_time : GPBUtil::compatibleInt64(0, '0');
     }
 
     public function hasStartTime()
@@ -360,7 +361,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartTime($var)
+    public function setStartTime(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->start_time = $var;
@@ -374,7 +375,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      */
     public function getEndTime()
     {
-        return isset($this->end_time) ? $this->end_time : 0;
+        return isset($this->end_time) ? $this->end_time : GPBUtil::compatibleInt64(0, '0');
     }
 
     public function hasEndTime()
@@ -392,7 +393,7 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndTime($var)
+    public function setEndTime(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->end_time = $var;
@@ -418,9 +419,9 @@ class UserPacket extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNonce($var)
+    public function setNonce(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->nonce = $var;
 
         return $this;

@@ -28,7 +28,8 @@ class RoomUpdate extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\Room $room
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,8 @@ class RoomUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\Room|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Room::class);
         $this->room = $var;
 
         return $this;

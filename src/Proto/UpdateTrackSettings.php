@@ -85,7 +85,8 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      *              higher priority tracks first. lowest priority tracks can be paused
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -104,7 +105,7 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setTrackSids($var)
+    public function setTrackSids(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->track_sids = $arr;
@@ -130,9 +131,8 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisabled($var)
+    public function setDisabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disabled = $var;
 
         return $this;
@@ -142,7 +142,7 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * deprecated in favor of width & height
      *
      * Generated from protobuf field <code>.livekit.VideoQuality quality = 4;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\VideoQuality}
      */
     public function getQuality()
     {
@@ -153,10 +153,10 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * deprecated in favor of width & height
      *
      * Generated from protobuf field <code>.livekit.VideoQuality quality = 4;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\VideoQuality}
      * @return $this
      */
-    public function setQuality($var)
+    public function setQuality(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\VideoQuality::class);
         $this->quality = $var;
@@ -182,7 +182,7 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setWidth($var)
+    public function setWidth(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->width = $var;
@@ -208,7 +208,7 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setHeight($var)
+    public function setHeight(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->height = $var;
@@ -230,7 +230,7 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setFps($var)
+    public function setFps(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->fps = $var;
@@ -268,7 +268,7 @@ class UpdateTrackSettings extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPriority($var)
+    public function setPriority(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->priority = $var;

@@ -32,7 +32,8 @@ class SIPNamedDest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPUri $values
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -51,9 +52,9 @@ class SIPNamedDest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDisplayName($var)
+    public function setDisplayName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->display_name = $var;
 
         return $this;
@@ -82,9 +83,9 @@ class SIPNamedDest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRaw($var)
+    public function setRaw(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -109,9 +110,8 @@ class SIPNamedDest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPUri $var
      * @return $this
      */
-    public function setValues($var)
+    public function setValues(\LiveKit\Proto\SIPUri|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPUri::class);
         $this->writeOneof(2, $var);
 
         return $this;

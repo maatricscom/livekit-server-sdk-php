@@ -35,14 +35,15 @@ class SIPStatus extends \Google\Protobuf\Internal\Message
      *     @type string $status
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.SIPStatusCode code = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPStatusCode}
      */
     public function getCode()
     {
@@ -51,10 +52,10 @@ class SIPStatus extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPStatusCode code = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPStatusCode}
      * @return $this
      */
-    public function setCode($var)
+    public function setCode(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPStatusCode::class);
         $this->code = $var;
@@ -76,9 +77,9 @@ class SIPStatus extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->status = $var;
 
         return $this;

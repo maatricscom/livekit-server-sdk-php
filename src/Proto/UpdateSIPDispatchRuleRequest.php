@@ -31,7 +31,8 @@ class UpdateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPDispatchRuleUpdate $update
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -50,9 +51,9 @@ class UpdateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipDispatchRuleId($var)
+    public function setSipDispatchRuleId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_dispatch_rule_id = $var;
 
         return $this;
@@ -77,9 +78,8 @@ class UpdateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPDispatchRuleInfo $var
      * @return $this
      */
-    public function setReplace($var)
+    public function setReplace(\LiveKit\Proto\SIPDispatchRuleInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPDispatchRuleInfo::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -104,9 +104,8 @@ class UpdateSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPDispatchRuleUpdate $var
      * @return $this
      */
-    public function setUpdate($var)
+    public function setUpdate(\LiveKit\Proto\SIPDispatchRuleUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPDispatchRuleUpdate::class);
         $this->writeOneof(3, $var);
 
         return $this;

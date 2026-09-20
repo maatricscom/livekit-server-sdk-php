@@ -28,7 +28,7 @@ if ((BASH_VERSINFO[0] < 4)); then
 fi
 
 PROTOCOL_VERSION="v1.52.0"
-MIN_PROTOC_VERSION="33.1"
+MIN_PROTOC_VERSION="36.2"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="${REPO_ROOT}/build/protos"

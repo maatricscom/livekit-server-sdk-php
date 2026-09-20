@@ -251,7 +251,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      *           NEXT_ID: 48
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -280,9 +281,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setStartTime($var)
+    public function setStartTime(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->start_time = $var;
 
         return $this;
@@ -312,9 +312,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setEndTime($var)
+    public function setEndTime(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->end_time = $var;
 
         return $this;
@@ -334,9 +333,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setDuration($var)
+    public function setDuration(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->duration = $var;
 
         return $this;
@@ -356,7 +354,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPackets($var)
+    public function setPackets(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->packets = $var;
@@ -378,9 +376,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setPacketRate($var)
+    public function setPacketRate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->packet_rate = $var;
 
         return $this;
@@ -400,7 +397,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setBytes($var)
+    public function setBytes(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->bytes = $var;
@@ -422,7 +419,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setHeaderBytes($var)
+    public function setHeaderBytes(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->header_bytes = $var;
@@ -444,9 +441,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setBitrate($var)
+    public function setBitrate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->bitrate = $var;
 
         return $this;
@@ -466,7 +462,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPacketsLost($var)
+    public function setPacketsLost(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->packets_lost = $var;
@@ -488,9 +484,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setPacketLossRate($var)
+    public function setPacketLossRate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->packet_loss_rate = $var;
 
         return $this;
@@ -510,9 +505,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setPacketLossPercentage($var)
+    public function setPacketLossPercentage(float $var)
     {
-        GPBUtil::checkFloat($var);
         $this->packet_loss_percentage = $var;
 
         return $this;
@@ -532,7 +526,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPacketsDuplicate($var)
+    public function setPacketsDuplicate(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->packets_duplicate = $var;
@@ -554,9 +548,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setPacketDuplicateRate($var)
+    public function setPacketDuplicateRate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->packet_duplicate_rate = $var;
 
         return $this;
@@ -576,7 +569,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setBytesDuplicate($var)
+    public function setBytesDuplicate(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->bytes_duplicate = $var;
@@ -598,7 +591,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setHeaderBytesDuplicate($var)
+    public function setHeaderBytesDuplicate(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->header_bytes_duplicate = $var;
@@ -620,9 +613,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setBitrateDuplicate($var)
+    public function setBitrateDuplicate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->bitrate_duplicate = $var;
 
         return $this;
@@ -642,7 +634,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPacketsPadding($var)
+    public function setPacketsPadding(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->packets_padding = $var;
@@ -664,9 +656,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setPacketPaddingRate($var)
+    public function setPacketPaddingRate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->packet_padding_rate = $var;
 
         return $this;
@@ -686,7 +677,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setBytesPadding($var)
+    public function setBytesPadding(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->bytes_padding = $var;
@@ -708,7 +699,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setHeaderBytesPadding($var)
+    public function setHeaderBytesPadding(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->header_bytes_padding = $var;
@@ -730,9 +721,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setBitratePadding($var)
+    public function setBitratePadding(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->bitrate_padding = $var;
 
         return $this;
@@ -752,7 +742,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPacketsOutOfOrder($var)
+    public function setPacketsOutOfOrder(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->packets_out_of_order = $var;
@@ -774,7 +764,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setFrames($var)
+    public function setFrames(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->frames = $var;
@@ -796,9 +786,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setFrameRate($var)
+    public function setFrameRate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->frame_rate = $var;
 
         return $this;
@@ -818,9 +807,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setJitterCurrent($var)
+    public function setJitterCurrent(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->jitter_current = $var;
 
         return $this;
@@ -840,9 +828,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setJitterMax($var)
+    public function setJitterMax(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->jitter_max = $var;
 
         return $this;
@@ -862,7 +849,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setGapHistogram($var)
+    public function setGapHistogram(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::INT32, \Google\Protobuf\Internal\GPBType::UINT32);
         $this->gap_histogram = $arr;
@@ -884,7 +871,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setNacks($var)
+    public function setNacks(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->nacks = $var;
@@ -906,7 +893,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setNackAcks($var)
+    public function setNackAcks(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->nack_acks = $var;
@@ -928,7 +915,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setNackMisses($var)
+    public function setNackMisses(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->nack_misses = $var;
@@ -950,7 +937,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setNackRepeated($var)
+    public function setNackRepeated(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->nack_repeated = $var;
@@ -972,7 +959,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPlis($var)
+    public function setPlis(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->plis = $var;
@@ -1004,9 +991,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setLastPli($var)
+    public function setLastPli(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->last_pli = $var;
 
         return $this;
@@ -1026,7 +1012,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setFirs($var)
+    public function setFirs(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->firs = $var;
@@ -1058,9 +1044,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setLastFir($var)
+    public function setLastFir(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->last_fir = $var;
 
         return $this;
@@ -1080,7 +1065,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRttCurrent($var)
+    public function setRttCurrent(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->rtt_current = $var;
@@ -1102,7 +1087,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRttMax($var)
+    public function setRttMax(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->rtt_max = $var;
@@ -1124,7 +1109,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setKeyFrames($var)
+    public function setKeyFrames(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->key_frames = $var;
@@ -1156,9 +1141,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setLastKeyFrame($var)
+    public function setLastKeyFrame(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->last_key_frame = $var;
 
         return $this;
@@ -1178,7 +1162,7 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setLayerLockPlis($var)
+    public function setLayerLockPlis(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->layer_lock_plis = $var;
@@ -1210,9 +1194,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setLastLayerLockPli($var)
+    public function setLastLayerLockPli(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->last_layer_lock_pli = $var;
 
         return $this;
@@ -1242,9 +1225,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RTPDrift $var
      * @return $this
      */
-    public function setPacketDrift($var)
+    public function setPacketDrift(\LiveKit\Proto\RTPDrift|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RTPDrift::class);
         $this->packet_drift = $var;
 
         return $this;
@@ -1274,9 +1256,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RTPDrift $var
      * @return $this
      */
-    public function setNtpReportDrift($var)
+    public function setNtpReportDrift(\LiveKit\Proto\RTPDrift|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RTPDrift::class);
         $this->ntp_report_drift = $var;
 
         return $this;
@@ -1306,9 +1287,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RTPDrift $var
      * @return $this
      */
-    public function setRebasedReportDrift($var)
+    public function setRebasedReportDrift(\LiveKit\Proto\RTPDrift|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RTPDrift::class);
         $this->rebased_report_drift = $var;
 
         return $this;
@@ -1342,9 +1322,8 @@ class RTPStats extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RTPDrift $var
      * @return $this
      */
-    public function setReceivedReportDrift($var)
+    public function setReceivedReportDrift(\LiveKit\Proto\RTPDrift|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RTPDrift::class);
         $this->received_report_drift = $var;
 
         return $this;

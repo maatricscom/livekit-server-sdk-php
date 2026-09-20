@@ -36,7 +36,8 @@ class UpdateVideoLayers extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\VideoLayer[] $layers
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -55,9 +56,9 @@ class UpdateVideoLayers extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -77,7 +78,7 @@ class UpdateVideoLayers extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\VideoLayer[] $var
      * @return $this
      */
-    public function setLayers($var)
+    public function setLayers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\VideoLayer::class);
         $this->layers = $arr;

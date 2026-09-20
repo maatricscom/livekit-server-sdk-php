@@ -38,7 +38,8 @@ class TrickleRequest extends \Google\Protobuf\Internal\Message
      *     @type bool $final
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class TrickleRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCandidateInit($var)
+    public function setCandidateInit(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->candidateInit = $var;
 
         return $this;
@@ -67,7 +68,7 @@ class TrickleRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SignalTarget target = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SignalTarget}
      */
     public function getTarget()
     {
@@ -76,10 +77,10 @@ class TrickleRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SignalTarget target = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SignalTarget}
      * @return $this
      */
-    public function setTarget($var)
+    public function setTarget(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SignalTarget::class);
         $this->target = $var;
@@ -101,9 +102,8 @@ class TrickleRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setFinal($var)
+    public function setFinal(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->final = $var;
 
         return $this;

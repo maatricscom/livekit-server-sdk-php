@@ -31,7 +31,8 @@ class CreateSIPOutboundTrunkRequest extends \Google\Protobuf\Internal\Message
      *           Trunk ID is ignored
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -64,9 +65,8 @@ class CreateSIPOutboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPOutboundTrunkInfo $var
      * @return $this
      */
-    public function setTrunk($var)
+    public function setTrunk(\LiveKit\Proto\SIPOutboundTrunkInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPOutboundTrunkInfo::class);
         $this->trunk = $var;
 
         return $this;

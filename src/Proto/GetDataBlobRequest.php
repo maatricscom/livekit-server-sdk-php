@@ -44,7 +44,8 @@ class GetDataBlobRequest extends \Google\Protobuf\Internal\Message
      *           Unique key of the data blob to retrieve.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -63,7 +64,7 @@ class GetDataBlobRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRequestId($var)
+    public function setRequestId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->request_id = $var;
@@ -89,9 +90,9 @@ class GetDataBlobRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -125,9 +126,8 @@ class GetDataBlobRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataBlobKey $var
      * @return $this
      */
-    public function setKey($var)
+    public function setKey(\LiveKit\Proto\DataBlobKey|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataBlobKey::class);
         $this->key = $var;
 
         return $this;

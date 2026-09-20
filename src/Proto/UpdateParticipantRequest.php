@@ -67,7 +67,8 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      *           to delete attributes, set the value to an empty string
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -86,9 +87,9 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -108,9 +109,9 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIdentity($var)
+    public function setIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->identity = $var;
 
         return $this;
@@ -134,9 +135,9 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -170,9 +171,8 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantPermission $var
      * @return $this
      */
-    public function setPermission($var)
+    public function setPermission(\LiveKit\Proto\ParticipantPermission|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantPermission::class);
         $this->permission = $var;
 
         return $this;
@@ -196,9 +196,9 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -224,7 +224,7 @@ class UpdateParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes = $arr;

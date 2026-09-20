@@ -48,7 +48,8 @@ class UpdateParticipantMetadata extends \Google\Protobuf\Internal\Message
      *     @type int $request_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,9 @@ class UpdateParticipantMetadata extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -89,9 +90,9 @@ class UpdateParticipantMetadata extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -117,7 +118,7 @@ class UpdateParticipantMetadata extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes = $arr;
@@ -139,7 +140,7 @@ class UpdateParticipantMetadata extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRequestId($var)
+    public function setRequestId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->request_id = $var;

@@ -61,7 +61,8 @@ class Chunk extends \Google\Protobuf\Internal\Message
      *           this is set on the DataPacket
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -84,9 +85,9 @@ class Chunk extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setStreamId($var)
+    public function setStreamId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->stream_id = $var;
 
         return $this;
@@ -106,7 +107,7 @@ class Chunk extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setChunkIndex($var)
+    public function setChunkIndex(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->chunk_index = $var;
@@ -132,9 +133,9 @@ class Chunk extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setContent($var)
+    public function setContent(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->content = $var;
 
         return $this;
@@ -158,7 +159,7 @@ class Chunk extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setVersion($var)
+    public function setVersion(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->version = $var;
@@ -203,10 +204,10 @@ class Chunk extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setIv($var)
+    public function setIv(string $var)
     {
         @trigger_error('iv is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->iv = $var;
 
         return $this;

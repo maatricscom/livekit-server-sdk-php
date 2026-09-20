@@ -39,7 +39,8 @@ class DataTrackSchemaId extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\DataTrackSchemaEncoding $encoding
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class DataTrackSchemaId extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -94,9 +95,8 @@ class DataTrackSchemaId extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackSchemaEncoding $var
      * @return $this
      */
-    public function setEncoding($var)
+    public function setEncoding(\LiveKit\Proto\DataTrackSchemaEncoding|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataTrackSchemaEncoding::class);
         $this->encoding = $var;
 
         return $this;

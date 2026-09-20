@@ -38,7 +38,8 @@ class ProxyConfig extends \Google\Protobuf\Internal\Message
      *     @type string $password
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class ProxyConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
+    public function setUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -79,9 +80,9 @@ class ProxyConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUsername($var)
+    public function setUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->username = $var;
 
         return $this;
@@ -101,9 +102,9 @@ class ProxyConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPassword($var)
+    public function setPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->password = $var;
 
         return $this;

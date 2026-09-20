@@ -110,7 +110,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      *           set when event is room_finished
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitWebhook::initOnce();
         parent::__construct($data);
     }
@@ -137,9 +138,9 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEvent($var)
+    public function setEvent(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->event = $var;
 
         return $this;
@@ -169,9 +170,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\Room|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Room::class);
         $this->room = $var;
 
         return $this;
@@ -205,9 +205,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\ParticipantInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantInfo::class);
         $this->participant = $var;
 
         return $this;
@@ -241,9 +240,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EgressInfo $var
      * @return $this
      */
-    public function setEgressInfo($var)
+    public function setEgressInfo(\LiveKit\Proto\EgressInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\EgressInfo::class);
         $this->egress_info = $var;
 
         return $this;
@@ -277,9 +275,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\IngressInfo $var
      * @return $this
      */
-    public function setIngressInfo($var)
+    public function setIngressInfo(\LiveKit\Proto\IngressInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\IngressInfo::class);
         $this->ingress_info = $var;
 
         return $this;
@@ -313,9 +310,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackInfo $var
      * @return $this
      */
-    public function setTrack($var)
+    public function setTrack(\LiveKit\Proto\TrackInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackInfo::class);
         $this->track = $var;
 
         return $this;
@@ -349,9 +345,8 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Job $var
      * @return $this
      */
-    public function setJob($var)
+    public function setJob(\LiveKit\Proto\Job|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Job::class);
         $this->job = $var;
 
         return $this;
@@ -375,9 +370,9 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->id = $var;
 
         return $this;
@@ -401,7 +396,7 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setCreatedAt($var)
+    public function setCreatedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->created_at = $var;
@@ -428,7 +423,7 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setNumDropped($var)
+    public function setNumDropped(int $var)
     {
         @trigger_error('num_dropped is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkInt32($var);
@@ -441,7 +436,7 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * set when event is room_finished
      *
      * Generated from protobuf field <code>.livekit.RoomEndReason room_end_reason = 13;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\RoomEndReason}
      */
     public function getRoomEndReason()
     {
@@ -452,10 +447,10 @@ class WebhookEvent extends \Google\Protobuf\Internal\Message
      * set when event is room_finished
      *
      * Generated from protobuf field <code>.livekit.RoomEndReason room_end_reason = 13;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\RoomEndReason}
      * @return $this
      */
-    public function setRoomEndReason($var)
+    public function setRoomEndReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\RoomEndReason::class);
         $this->room_end_reason = $var;

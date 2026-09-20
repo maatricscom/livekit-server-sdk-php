@@ -43,7 +43,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      *           full reconnect leave request
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -71,7 +72,7 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setSpeakerUpdate($var)
+    public function setSpeakerUpdate(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->writeOneof(1, $var);
@@ -102,9 +103,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setNodeFailure($var)
+    public function setNodeFailure(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -133,9 +133,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setMigration($var)
+    public function setMigration(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -164,9 +163,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setServerLeave($var)
+    public function setServerLeave(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -176,7 +174,7 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * switch candidate protocol to tcp
      *
      * Generated from protobuf field <code>.livekit.CandidateProtocol switch_candidate_protocol = 5;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\CandidateProtocol}
      */
     public function getSwitchCandidateProtocol()
     {
@@ -192,10 +190,10 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * switch candidate protocol to tcp
      *
      * Generated from protobuf field <code>.livekit.CandidateProtocol switch_candidate_protocol = 5;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\CandidateProtocol}
      * @return $this
      */
-    public function setSwitchCandidateProtocol($var)
+    public function setSwitchCandidateProtocol(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\CandidateProtocol::class);
         $this->writeOneof(5, $var);
@@ -228,7 +226,7 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setSubscriberBandwidth($var)
+    public function setSubscriberBandwidth(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->writeOneof(6, $var);
@@ -259,9 +257,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisconnectSignalOnResume($var)
+    public function setDisconnectSignalOnResume(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->writeOneof(7, $var);
 
         return $this;
@@ -290,9 +287,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisconnectSignalOnResumeNoMessages($var)
+    public function setDisconnectSignalOnResumeNoMessages(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -321,9 +317,8 @@ class SimulateScenario extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setLeaveRequestFullReconnect($var)
+    public function setLeaveRequestFullReconnect(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->writeOneof(9, $var);
 
         return $this;

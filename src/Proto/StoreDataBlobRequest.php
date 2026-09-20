@@ -33,7 +33,8 @@ class StoreDataBlobRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\DataBlob $blob
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,7 +53,7 @@ class StoreDataBlobRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRequestId($var)
+    public function setRequestId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->request_id = $var;
@@ -84,9 +85,8 @@ class StoreDataBlobRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataBlob $var
      * @return $this
      */
-    public function setBlob($var)
+    public function setBlob(\LiveKit\Proto\DataBlob|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataBlob::class);
         $this->blob = $var;
 
         return $this;

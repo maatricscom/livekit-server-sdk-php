@@ -37,7 +37,8 @@ class MediaSource extends \Google\Protobuf\Internal\Message
      *           TODO: DataConfig data = 4;
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -61,9 +62,9 @@ class MediaSource extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setVideoTrackId($var)
+    public function setVideoTrackId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -88,9 +89,8 @@ class MediaSource extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantVideo $var
      * @return $this
      */
-    public function setParticipantVideo($var)
+    public function setParticipantVideo(\LiveKit\Proto\ParticipantVideo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantVideo::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -124,9 +124,8 @@ class MediaSource extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AudioConfig $var
      * @return $this
      */
-    public function setAudio($var)
+    public function setAudio(\LiveKit\Proto\AudioConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AudioConfig::class);
         $this->audio = $var;
 
         return $this;

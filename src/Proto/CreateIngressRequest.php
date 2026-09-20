@@ -111,14 +111,15 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      *           The default value is true and when set to false, the new connection attempts will be rejected
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.IngressInput input_type = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\IngressInput}
      */
     public function getInputType()
     {
@@ -127,10 +128,10 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.IngressInput input_type = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\IngressInput}
      * @return $this
      */
-    public function setInputType($var)
+    public function setInputType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\IngressInput::class);
         $this->input_type = $var;
@@ -156,9 +157,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
+    public function setUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -182,9 +183,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -208,9 +209,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -234,9 +235,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -260,9 +261,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantName($var)
+    public function setParticipantName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_name = $var;
 
         return $this;
@@ -286,9 +287,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantMetadata($var)
+    public function setParticipantMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_metadata = $var;
 
         return $this;
@@ -317,10 +318,9 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setBypassTranscoding($var)
+    public function setBypassTranscoding(bool $var)
     {
         @trigger_error('bypass_transcoding is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkBool($var);
         $this->bypass_transcoding = $var;
 
         return $this;
@@ -354,9 +354,8 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnableTranscoding($var)
+    public function setEnableTranscoding(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enable_transcoding = $var;
 
         return $this;
@@ -386,9 +385,8 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\IngressAudioOptions $var
      * @return $this
      */
-    public function setAudio($var)
+    public function setAudio(\LiveKit\Proto\IngressAudioOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\IngressAudioOptions::class);
         $this->audio = $var;
 
         return $this;
@@ -418,9 +416,8 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\IngressVideoOptions $var
      * @return $this
      */
-    public function setVideo($var)
+    public function setVideo(\LiveKit\Proto\IngressVideoOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\IngressVideoOptions::class);
         $this->video = $var;
 
         return $this;
@@ -454,9 +451,8 @@ class CreateIngressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnabled($var)
+    public function setEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enabled = $var;
 
         return $this;

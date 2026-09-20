@@ -33,7 +33,8 @@ class SubscriptionPermission extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\TrackPermission[] $track_permissions
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,8 @@ class SubscriptionPermission extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAllParticipants($var)
+    public function setAllParticipants(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->all_participants = $var;
 
         return $this;
@@ -74,7 +74,7 @@ class SubscriptionPermission extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackPermission[] $var
      * @return $this
      */
-    public function setTrackPermissions($var)
+    public function setTrackPermissions(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\TrackPermission::class);
         $this->track_permissions = $arr;

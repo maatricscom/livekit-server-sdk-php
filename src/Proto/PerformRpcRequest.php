@@ -48,7 +48,8 @@ class PerformRpcRequest extends \Google\Protobuf\Internal\Message
      *     @type int $response_timeout_ms
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,9 @@ class PerformRpcRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -89,9 +90,9 @@ class PerformRpcRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDestinationIdentity($var)
+    public function setDestinationIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->destination_identity = $var;
 
         return $this;
@@ -111,9 +112,9 @@ class PerformRpcRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMethod($var)
+    public function setMethod(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->method = $var;
 
         return $this;
@@ -133,9 +134,9 @@ class PerformRpcRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPayload($var)
+    public function setPayload(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->payload = $var;
 
         return $this;
@@ -155,7 +156,7 @@ class PerformRpcRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setResponseTimeoutMs($var)
+    public function setResponseTimeoutMs(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->response_timeout_ms = $var;

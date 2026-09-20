@@ -38,7 +38,8 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AliOSSUpload $aliOSS
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilepath($var)
+    public function setFilepath(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filepath = $var;
 
         return $this;
@@ -79,9 +80,8 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableManifest($var)
+    public function setDisableManifest(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_manifest = $var;
 
         return $this;
@@ -106,9 +106,8 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\S3Upload $var
      * @return $this
      */
-    public function setS3($var)
+    public function setS3(\LiveKit\Proto\S3Upload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\S3Upload::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -133,9 +132,8 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\GCPUpload $var
      * @return $this
      */
-    public function setGcp($var)
+    public function setGcp(\LiveKit\Proto\GCPUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\GCPUpload::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -160,9 +158,8 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AzureBlobUpload $var
      * @return $this
      */
-    public function setAzure($var)
+    public function setAzure(\LiveKit\Proto\AzureBlobUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AzureBlobUpload::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -187,9 +184,8 @@ class DirectFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AliOSSUpload $var
      * @return $this
      */
-    public function setAliOSS($var)
+    public function setAliOSS(\LiveKit\Proto\AliOSSUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AliOSSUpload::class);
         $this->writeOneof(6, $var);
 
         return $this;

@@ -31,7 +31,8 @@ class MigrateJobRequest extends \Google\Protobuf\Internal\Message
      *           string job_id = 1 [deprecated = true];
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -54,7 +55,7 @@ class MigrateJobRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setJobIds($var)
+    public function setJobIds(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->job_ids = $arr;

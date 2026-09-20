@@ -29,7 +29,8 @@ class ListSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\Pagination $page
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -58,9 +59,8 @@ class ListSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Pagination $var
      * @return $this
      */
-    public function setPage($var)
+    public function setPage(\LiveKit\Proto\Pagination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Pagination::class);
         $this->page = $var;
 
         return $this;

@@ -38,7 +38,8 @@ class AvailabilityRequest extends \Google\Protobuf\Internal\Message
      *           migrated due to different reasons (e.g. worker failure, job migration)
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,8 @@ class AvailabilityRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Job $var
      * @return $this
      */
-    public function setJob($var)
+    public function setJob(\LiveKit\Proto\Job|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Job::class);
         $this->job = $var;
 
         return $this;
@@ -95,9 +95,8 @@ class AvailabilityRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setResuming($var)
+    public function setResuming(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->resuming = $var;
 
         return $this;

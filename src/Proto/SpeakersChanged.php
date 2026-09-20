@@ -28,7 +28,8 @@ class SpeakersChanged extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SpeakerInfo[] $speakers
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class SpeakersChanged extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SpeakerInfo[] $var
      * @return $this
      */
-    public function setSpeakers($var)
+    public function setSpeakers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SpeakerInfo::class);
         $this->speakers = $arr;

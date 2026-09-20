@@ -46,7 +46,8 @@ class IngressAudioEncodingOptions extends \Google\Protobuf\Internal\Message
      *     @type int $channels
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -55,7 +56,7 @@ class IngressAudioEncodingOptions extends \Google\Protobuf\Internal\Message
      * desired audio codec to publish to room
      *
      * Generated from protobuf field <code>.livekit.AudioCodec audio_codec = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\AudioCodec}
      */
     public function getAudioCodec()
     {
@@ -66,10 +67,10 @@ class IngressAudioEncodingOptions extends \Google\Protobuf\Internal\Message
      * desired audio codec to publish to room
      *
      * Generated from protobuf field <code>.livekit.AudioCodec audio_codec = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\AudioCodec}
      * @return $this
      */
-    public function setAudioCodec($var)
+    public function setAudioCodec(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\AudioCodec::class);
         $this->audio_codec = $var;
@@ -91,7 +92,7 @@ class IngressAudioEncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setBitrate($var)
+    public function setBitrate(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->bitrate = $var;
@@ -113,9 +114,8 @@ class IngressAudioEncodingOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableDtx($var)
+    public function setDisableDtx(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_dtx = $var;
 
         return $this;
@@ -135,7 +135,7 @@ class IngressAudioEncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setChannels($var)
+    public function setChannels(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->channels = $var;

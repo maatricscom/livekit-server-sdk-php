@@ -68,7 +68,8 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      *     @type int|string $ended_at
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -87,9 +88,9 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPlaylistName($var)
+    public function setPlaylistName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->playlist_name = $var;
 
         return $this;
@@ -109,9 +110,9 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLivePlaylistName($var)
+    public function setLivePlaylistName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->live_playlist_name = $var;
 
         return $this;
@@ -131,7 +132,7 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setDuration($var)
+    public function setDuration(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->duration = $var;
@@ -153,7 +154,7 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setSize($var)
+    public function setSize(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->size = $var;
@@ -175,9 +176,9 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPlaylistLocation($var)
+    public function setPlaylistLocation(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->playlist_location = $var;
 
         return $this;
@@ -197,9 +198,9 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLivePlaylistLocation($var)
+    public function setLivePlaylistLocation(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->live_playlist_location = $var;
 
         return $this;
@@ -219,7 +220,7 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setSegmentCount($var)
+    public function setSegmentCount(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->segment_count = $var;
@@ -241,7 +242,7 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -263,7 +264,7 @@ class SegmentsInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;

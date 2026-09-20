@@ -28,14 +28,15 @@ class VideoConfiguration extends \Google\Protobuf\Internal\Message
      *     @type int $hardware_encoder
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.ClientConfigSetting hardware_encoder = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ClientConfigSetting}
      */
     public function getHardwareEncoder()
     {
@@ -44,10 +45,10 @@ class VideoConfiguration extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ClientConfigSetting hardware_encoder = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ClientConfigSetting}
      * @return $this
      */
-    public function setHardwareEncoder($var)
+    public function setHardwareEncoder(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ClientConfigSetting::class);
         $this->hardware_encoder = $var;

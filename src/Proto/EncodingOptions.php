@@ -121,7 +121,8 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      *           quality setting on video encoder
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -144,7 +145,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setWidth($var)
+    public function setWidth(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->width = $var;
@@ -170,7 +171,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setHeight($var)
+    public function setHeight(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->height = $var;
@@ -196,7 +197,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setDepth($var)
+    public function setDepth(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->depth = $var;
@@ -222,7 +223,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setFramerate($var)
+    public function setFramerate(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->framerate = $var;
@@ -234,7 +235,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * (default OPUS)
      *
      * Generated from protobuf field <code>.livekit.AudioCodec audio_codec = 5;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\AudioCodec}
      */
     public function getAudioCodec()
     {
@@ -245,10 +246,10 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * (default OPUS)
      *
      * Generated from protobuf field <code>.livekit.AudioCodec audio_codec = 5;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\AudioCodec}
      * @return $this
      */
-    public function setAudioCodec($var)
+    public function setAudioCodec(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\AudioCodec::class);
         $this->audio_codec = $var;
@@ -274,7 +275,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setAudioBitrate($var)
+    public function setAudioBitrate(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->audio_bitrate = $var;
@@ -300,7 +301,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setAudioFrequency($var)
+    public function setAudioFrequency(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->audio_frequency = $var;
@@ -312,7 +313,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * (default H264_MAIN)
      *
      * Generated from protobuf field <code>.livekit.VideoCodec video_codec = 8;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\VideoCodec}
      */
     public function getVideoCodec()
     {
@@ -323,10 +324,10 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * (default H264_MAIN)
      *
      * Generated from protobuf field <code>.livekit.VideoCodec video_codec = 8;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\VideoCodec}
      * @return $this
      */
-    public function setVideoCodec($var)
+    public function setVideoCodec(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\VideoCodec::class);
         $this->video_codec = $var;
@@ -352,7 +353,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setVideoBitrate($var)
+    public function setVideoBitrate(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->video_bitrate = $var;
@@ -378,9 +379,8 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setKeyFrameInterval($var)
+    public function setKeyFrameInterval(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->key_frame_interval = $var;
 
         return $this;
@@ -409,7 +409,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setAudioQuality($var)
+    public function setAudioQuality(int $var)
     {
         @trigger_error('audio_quality is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkInt32($var);
@@ -441,7 +441,7 @@ class EncodingOptions extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setVideoQuality($var)
+    public function setVideoQuality(int $var)
     {
         @trigger_error('video_quality is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkInt32($var);

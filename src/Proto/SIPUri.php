@@ -48,7 +48,8 @@ class SIPUri extends \Google\Protobuf\Internal\Message
      *     @type int $transport
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,9 @@ class SIPUri extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUser($var)
+    public function setUser(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->user = $var;
 
         return $this;
@@ -89,9 +90,9 @@ class SIPUri extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setHost($var)
+    public function setHost(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->host = $var;
 
         return $this;
@@ -111,9 +112,9 @@ class SIPUri extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIp($var)
+    public function setIp(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->ip = $var;
 
         return $this;
@@ -133,7 +134,7 @@ class SIPUri extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPort($var)
+    public function setPort(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->port = $var;
@@ -143,7 +144,7 @@ class SIPUri extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransport transport = 5;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransport}
      */
     public function getTransport()
     {
@@ -152,10 +153,10 @@ class SIPUri extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTransport transport = 5;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransport}
      * @return $this
      */
-    public function setTransport($var)
+    public function setTransport(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransport::class);
         $this->transport = $var;

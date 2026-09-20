@@ -33,7 +33,8 @@ class DataConfig extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\DataSelector[] $selectors
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,8 @@ class DataConfig extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setCaptureAll($var)
+    public function setCaptureAll(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->capture_all = $var;
 
         return $this;
@@ -74,7 +74,7 @@ class DataConfig extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataSelector[] $var
      * @return $this
      */
-    public function setSelectors($var)
+    public function setSelectors(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\DataSelector::class);
         $this->selectors = $arr;

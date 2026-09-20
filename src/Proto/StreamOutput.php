@@ -39,7 +39,8 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      *           required
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -48,7 +49,7 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      * required
      *
      * Generated from protobuf field <code>.livekit.StreamProtocol protocol = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\StreamProtocol}
      */
     public function getProtocol()
     {
@@ -59,10 +60,10 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      * required
      *
      * Generated from protobuf field <code>.livekit.StreamProtocol protocol = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\StreamProtocol}
      * @return $this
      */
-    public function setProtocol($var)
+    public function setProtocol(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\StreamProtocol::class);
         $this->protocol = $var;
@@ -88,7 +89,7 @@ class StreamOutput extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setUrls($var)
+    public function setUrls(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->urls = $arr;

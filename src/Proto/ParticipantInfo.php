@@ -137,7 +137,8 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      *           Lets other participants perform client-side feature detection.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -156,9 +157,9 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSid($var)
+    public function setSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sid = $var;
 
         return $this;
@@ -178,9 +179,9 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIdentity($var)
+    public function setIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->identity = $var;
 
         return $this;
@@ -188,7 +189,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ParticipantInfo.State state = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ParticipantInfo\State}
      */
     public function getState()
     {
@@ -197,10 +198,10 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ParticipantInfo.State state = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ParticipantInfo\State}
      * @return $this
      */
-    public function setState($var)
+    public function setState(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ParticipantInfo\State::class);
         $this->state = $var;
@@ -222,7 +223,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackInfo[] $var
      * @return $this
      */
-    public function setTracks($var)
+    public function setTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\TrackInfo::class);
         $this->tracks = $arr;
@@ -244,9 +245,9 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -270,7 +271,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setJoinedAt($var)
+    public function setJoinedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->joined_at = $var;
@@ -296,7 +297,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setJoinedAtMs($var)
+    public function setJoinedAtMs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->joined_at_ms = $var;
@@ -318,9 +319,9 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -340,7 +341,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setVersion($var)
+    public function setVersion(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->version = $var;
@@ -372,9 +373,8 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantPermission $var
      * @return $this
      */
-    public function setPermission($var)
+    public function setPermission(\LiveKit\Proto\ParticipantPermission|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantPermission::class);
         $this->permission = $var;
 
         return $this;
@@ -394,9 +394,9 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRegion($var)
+    public function setRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->region = $var;
 
         return $this;
@@ -422,9 +422,8 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setIsPublisher($var)
+    public function setIsPublisher(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->is_publisher = $var;
 
         return $this;
@@ -432,7 +431,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ParticipantInfo.Kind kind = 14;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ParticipantInfo\Kind}
      */
     public function getKind()
     {
@@ -441,10 +440,10 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ParticipantInfo.Kind kind = 14;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ParticipantInfo\Kind}
      * @return $this
      */
-    public function setKind($var)
+    public function setKind(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ParticipantInfo\Kind::class);
         $this->kind = $var;
@@ -466,7 +465,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes = $arr;
@@ -476,7 +475,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DisconnectReason disconnect_reason = 16;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\DisconnectReason}
      */
     public function getDisconnectReason()
     {
@@ -485,10 +484,10 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DisconnectReason disconnect_reason = 16;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\DisconnectReason}
      * @return $this
      */
-    public function setDisconnectReason($var)
+    public function setDisconnectReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\DisconnectReason::class);
         $this->disconnect_reason = $var;
@@ -498,7 +497,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo.KindDetail kind_details = 18;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\ParticipantInfo\KindDetail}
      */
     public function getKindDetails()
     {
@@ -507,10 +506,10 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.ParticipantInfo.KindDetail kind_details = 18;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\ParticipantInfo\KindDetail}
      * @return $this
      */
-    public function setKindDetails($var)
+    public function setKindDetails(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\ParticipantInfo\KindDetail::class);
         $this->kind_details = $arr;
@@ -532,7 +531,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackInfo[] $var
      * @return $this
      */
-    public function setDataTracks($var)
+    public function setDataTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\DataTrackInfo::class);
         $this->data_tracks = $arr;
@@ -558,7 +557,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setClientProtocol($var)
+    public function setClientProtocol(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->client_protocol = $var;
@@ -571,7 +570,7 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * Lets other participants perform client-side feature detection.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 21;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\ClientInfo\Capability}
      */
     public function getCapabilities()
     {
@@ -583,10 +582,10 @@ class ParticipantInfo extends \Google\Protobuf\Internal\Message
      * Lets other participants perform client-side feature detection.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 21;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\ClientInfo\Capability}
      * @return $this
      */
-    public function setCapabilities($var)
+    public function setCapabilities(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\ClientInfo\Capability::class);
         $this->capabilities = $arr;

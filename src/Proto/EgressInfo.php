@@ -126,7 +126,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SegmentsInfo $segments
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -145,9 +146,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEgressId($var)
+    public function setEgressId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->egress_id = $var;
 
         return $this;
@@ -167,9 +168,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomId($var)
+    public function setRoomId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_id = $var;
 
         return $this;
@@ -189,9 +190,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -199,7 +200,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EgressSourceType source_type = 26;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EgressSourceType}
      */
     public function getSourceType()
     {
@@ -208,10 +209,10 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EgressSourceType source_type = 26;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EgressSourceType}
      * @return $this
      */
-    public function setSourceType($var)
+    public function setSourceType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EgressSourceType::class);
         $this->source_type = $var;
@@ -221,7 +222,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EgressStatus status = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EgressStatus}
      */
     public function getStatus()
     {
@@ -230,10 +231,10 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EgressStatus status = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EgressStatus}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EgressStatus::class);
         $this->status = $var;
@@ -255,7 +256,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -277,7 +278,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;
@@ -299,7 +300,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setUpdatedAt($var)
+    public function setUpdatedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->updated_at = $var;
@@ -326,9 +327,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StartEgressRequest $var
      * @return $this
      */
-    public function setEgress($var)
+    public function setEgress(\LiveKit\Proto\StartEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StartEgressRequest::class);
         $this->writeOneof(29, $var);
 
         return $this;
@@ -353,9 +353,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ExportReplayRequest $var
      * @return $this
      */
-    public function setReplay($var)
+    public function setReplay(\LiveKit\Proto\ExportReplayRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ExportReplayRequest::class);
         $this->writeOneof(30, $var);
 
         return $this;
@@ -384,9 +383,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomCompositeEgressRequest $var
      * @return $this
      */
-    public function setRoomComposite($var)
+    public function setRoomComposite(\LiveKit\Proto\RoomCompositeEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomCompositeEgressRequest::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -411,9 +409,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WebEgressRequest $var
      * @return $this
      */
-    public function setWeb($var)
+    public function setWeb(\LiveKit\Proto\WebEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\WebEgressRequest::class);
         $this->writeOneof(14, $var);
 
         return $this;
@@ -438,9 +435,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantEgressRequest $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\ParticipantEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantEgressRequest::class);
         $this->writeOneof(19, $var);
 
         return $this;
@@ -465,9 +461,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackCompositeEgressRequest $var
      * @return $this
      */
-    public function setTrackComposite($var)
+    public function setTrackComposite(\LiveKit\Proto\TrackCompositeEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackCompositeEgressRequest::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -492,9 +487,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackEgressRequest $var
      * @return $this
      */
-    public function setTrack($var)
+    public function setTrack(\LiveKit\Proto\TrackEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackEgressRequest::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -514,7 +508,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamInfo[] $var
      * @return $this
      */
-    public function setStreamResults($var)
+    public function setStreamResults(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\StreamInfo::class);
         $this->stream_results = $arr;
@@ -536,7 +530,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\FileInfo[] $var
      * @return $this
      */
-    public function setFileResults($var)
+    public function setFileResults(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\FileInfo::class);
         $this->file_results = $arr;
@@ -558,7 +552,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SegmentsInfo[] $var
      * @return $this
      */
-    public function setSegmentResults($var)
+    public function setSegmentResults(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SegmentsInfo::class);
         $this->segment_results = $arr;
@@ -580,7 +574,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ImagesInfo[] $var
      * @return $this
      */
-    public function setImageResults($var)
+    public function setImageResults(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ImagesInfo::class);
         $this->image_results = $arr;
@@ -602,9 +596,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;
@@ -624,7 +618,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setErrorCode($var)
+    public function setErrorCode(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->error_code = $var;
@@ -646,9 +640,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDetails($var)
+    public function setDetails(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->details = $var;
 
         return $this;
@@ -668,9 +662,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setManifestLocation($var)
+    public function setManifestLocation(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->manifest_location = $var;
 
         return $this;
@@ -690,9 +684,8 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setBackupStorageUsed($var)
+    public function setBackupStorageUsed(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->backup_storage_used = $var;
 
         return $this;
@@ -712,7 +705,7 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRetryCount($var)
+    public function setRetryCount(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->retry_count = $var;
@@ -747,10 +740,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setStream($var)
+    public function setStream(\LiveKit\Proto\StreamInfoList|null $var)
     {
         @trigger_error('stream is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StreamInfoList::class);
         $this->writeOneof(7, $var);
 
         return $this;
@@ -783,10 +775,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setFile($var)
+    public function setFile(\LiveKit\Proto\FileInfo|null $var)
     {
         @trigger_error('file is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\FileInfo::class);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -819,10 +810,9 @@ class EgressInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setSegments($var)
+    public function setSegments(\LiveKit\Proto\SegmentsInfo|null $var)
     {
         @trigger_error('segments is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SegmentsInfo::class);
         $this->writeOneof(12, $var);
 
         return $this;

@@ -38,7 +38,8 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SegmentedFileOutput[] $segment_outputs
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      * (default H264_720P_30)
      *
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      */
     public function getPreset()
     {
@@ -63,10 +64,10 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      * (default H264_720P_30)
      *
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      * @return $this
      */
-    public function setPreset($var)
+    public function setPreset(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EncodingOptionsPreset::class);
         $this->writeOneof(1, $var);
@@ -97,9 +98,8 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodingOptions $var
      * @return $this
      */
-    public function setAdvanced($var)
+    public function setAdvanced(\LiveKit\Proto\EncodingOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\EncodingOptions::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -119,7 +119,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodedFileOutput[] $var
      * @return $this
      */
-    public function setFileOutputs($var)
+    public function setFileOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\EncodedFileOutput::class);
         $this->file_outputs = $arr;
@@ -141,7 +141,7 @@ class AutoParticipantEgress extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SegmentedFileOutput[] $var
      * @return $this
      */
-    public function setSegmentOutputs($var)
+    public function setSegmentOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SegmentedFileOutput::class);
         $this->segment_outputs = $arr;

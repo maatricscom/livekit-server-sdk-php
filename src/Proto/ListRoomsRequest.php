@@ -31,7 +31,8 @@ class ListRoomsRequest extends \Google\Protobuf\Internal\Message
      *           when set, will only return rooms with name match
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -54,7 +55,7 @@ class ListRoomsRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setNames($var)
+    public function setNames(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->names = $arr;

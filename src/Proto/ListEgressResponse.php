@@ -36,7 +36,8 @@ class ListEgressResponse extends \Google\Protobuf\Internal\Message
      *           next field id: 3
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -55,7 +56,7 @@ class ListEgressResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EgressInfo[] $var
      * @return $this
      */
-    public function setItems($var)
+    public function setItems(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\EgressInfo::class);
         $this->items = $arr;
@@ -91,9 +92,8 @@ class ListEgressResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TokenPagination $var
      * @return $this
      */
-    public function setNextPageToken($var)
+    public function setNextPageToken(\LiveKit\Proto\TokenPagination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TokenPagination::class);
         $this->next_page_token = $var;
 
         return $this;

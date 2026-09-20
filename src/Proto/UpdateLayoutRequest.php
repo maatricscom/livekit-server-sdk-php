@@ -33,7 +33,8 @@ class UpdateLayoutRequest extends \Google\Protobuf\Internal\Message
      *     @type string $layout
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class UpdateLayoutRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEgressId($var)
+    public function setEgressId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->egress_id = $var;
 
         return $this;
@@ -74,9 +75,9 @@ class UpdateLayoutRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLayout($var)
+    public function setLayout(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->layout = $var;
 
         return $this;

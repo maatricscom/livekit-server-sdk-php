@@ -75,7 +75,8 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -94,9 +95,9 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
+    public function setUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -116,9 +117,8 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAudioOnly($var)
+    public function setAudioOnly(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->audio_only = $var;
 
         return $this;
@@ -138,9 +138,8 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setVideoOnly($var)
+    public function setVideoOnly(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->video_only = $var;
 
         return $this;
@@ -160,9 +159,8 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAwaitStartSignal($var)
+    public function setAwaitStartSignal(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->await_start_signal = $var;
 
         return $this;
@@ -195,10 +193,9 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setFile($var)
+    public function setFile(\LiveKit\Proto\EncodedFileOutput|null $var)
     {
         @trigger_error('file is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\EncodedFileOutput::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -231,10 +228,9 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setStream($var)
+    public function setStream(\LiveKit\Proto\StreamOutput|null $var)
     {
         @trigger_error('stream is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StreamOutput::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -267,10 +263,9 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setSegments($var)
+    public function setSegments(\LiveKit\Proto\SegmentedFileOutput|null $var)
     {
         @trigger_error('segments is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SegmentedFileOutput::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -278,7 +273,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 7;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      */
     public function getPreset()
     {
@@ -292,10 +287,10 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 7;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      * @return $this
      */
-    public function setPreset($var)
+    public function setPreset(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EncodingOptionsPreset::class);
         $this->writeOneof(7, $var);
@@ -322,9 +317,8 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodingOptions $var
      * @return $this
      */
-    public function setAdvanced($var)
+    public function setAdvanced(\LiveKit\Proto\EncodingOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\EncodingOptions::class);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -344,7 +338,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodedFileOutput[] $var
      * @return $this
      */
-    public function setFileOutputs($var)
+    public function setFileOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\EncodedFileOutput::class);
         $this->file_outputs = $arr;
@@ -366,7 +360,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamOutput[] $var
      * @return $this
      */
-    public function setStreamOutputs($var)
+    public function setStreamOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\StreamOutput::class);
         $this->stream_outputs = $arr;
@@ -388,7 +382,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SegmentedFileOutput[] $var
      * @return $this
      */
-    public function setSegmentOutputs($var)
+    public function setSegmentOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SegmentedFileOutput::class);
         $this->segment_outputs = $arr;
@@ -410,7 +404,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ImageOutput[] $var
      * @return $this
      */
-    public function setImageOutputs($var)
+    public function setImageOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ImageOutput::class);
         $this->image_outputs = $arr;
@@ -432,7 +426,7 @@ class WebEgressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
-    public function setWebhooks($var)
+    public function setWebhooks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\WebhookConfig::class);
         $this->webhooks = $arr;

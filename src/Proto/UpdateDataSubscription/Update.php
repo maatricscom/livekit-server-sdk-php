@@ -43,7 +43,8 @@ class Update extends \Google\Protobuf\Internal\Message
      *           When unsubscribing, this field is ignored.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class Update extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -84,9 +85,8 @@ class Update extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSubscribe($var)
+    public function setSubscribe(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->subscribe = $var;
 
         return $this;
@@ -122,9 +122,8 @@ class Update extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackSubscriptionOptions $var
      * @return $this
      */
-    public function setOptions($var)
+    public function setOptions(\LiveKit\Proto\DataTrackSubscriptionOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataTrackSubscriptionOptions::class);
         $this->options = $var;
 
         return $this;

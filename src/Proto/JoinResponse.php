@@ -118,7 +118,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      *           when set, client should attempt to establish publish peer connection when joining room to speed up publishing
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -147,9 +148,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\Room|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Room::class);
         $this->room = $var;
 
         return $this;
@@ -179,9 +179,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\ParticipantInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantInfo::class);
         $this->participant = $var;
 
         return $this;
@@ -201,7 +200,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo[] $var
      * @return $this
      */
-    public function setOtherParticipants($var)
+    public function setOtherParticipants(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ParticipantInfo::class);
         $this->other_participants = $arr;
@@ -227,9 +226,9 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setServerVersion($var)
+    public function setServerVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->server_version = $var;
 
         return $this;
@@ -249,7 +248,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ICEServer[] $var
      * @return $this
      */
-    public function setIceServers($var)
+    public function setIceServers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ICEServer::class);
         $this->ice_servers = $arr;
@@ -275,9 +274,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSubscriberPrimary($var)
+    public function setSubscriberPrimary(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->subscriber_primary = $var;
 
         return $this;
@@ -303,9 +301,9 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAlternativeUrl($var)
+    public function setAlternativeUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->alternative_url = $var;
 
         return $this;
@@ -335,9 +333,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ClientConfiguration $var
      * @return $this
      */
-    public function setClientConfiguration($var)
+    public function setClientConfiguration(\LiveKit\Proto\ClientConfiguration|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ClientConfiguration::class);
         $this->client_configuration = $var;
 
         return $this;
@@ -361,9 +358,9 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setServerRegion($var)
+    public function setServerRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->server_region = $var;
 
         return $this;
@@ -383,7 +380,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPingTimeout($var)
+    public function setPingTimeout(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->ping_timeout = $var;
@@ -405,7 +402,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPingInterval($var)
+    public function setPingInterval(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->ping_interval = $var;
@@ -437,9 +434,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ServerInfo $var
      * @return $this
      */
-    public function setServerInfo($var)
+    public function setServerInfo(\LiveKit\Proto\ServerInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ServerInfo::class);
         $this->server_info = $var;
 
         return $this;
@@ -463,9 +459,9 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSifTrailer($var)
+    public function setSifTrailer(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->sif_trailer = $var;
 
         return $this;
@@ -485,7 +481,7 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Codec[] $var
      * @return $this
      */
-    public function setEnabledPublishCodecs($var)
+    public function setEnabledPublishCodecs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\Codec::class);
         $this->enabled_publish_codecs = $arr;
@@ -511,9 +507,8 @@ class JoinResponse extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setFastPublish($var)
+    public function setFastPublish(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->fast_publish = $var;
 
         return $this;

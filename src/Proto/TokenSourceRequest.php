@@ -75,7 +75,8 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      *           More info: https://docs.livekit.io/home/get-started/authentication/#room-configuration
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitTokenSource::initOnce();
         parent::__construct($data);
     }
@@ -108,9 +109,9 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -144,9 +145,9 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantName($var)
+    public function setParticipantName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_name = $var;
 
         return $this;
@@ -180,9 +181,9 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -216,9 +217,9 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantMetadata($var)
+    public function setParticipantMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_metadata = $var;
 
         return $this;
@@ -242,7 +243,7 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;
@@ -282,9 +283,8 @@ class TokenSourceRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomConfiguration $var
      * @return $this
      */
-    public function setRoomConfig($var)
+    public function setRoomConfig(\LiveKit\Proto\RoomConfiguration|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomConfiguration::class);
         $this->room_config = $var;
 
         return $this;

@@ -38,7 +38,8 @@ class SubscriptionPermissionUpdate extends \Google\Protobuf\Internal\Message
      *     @type bool $allowed
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class SubscriptionPermissionUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantSid($var)
+    public function setParticipantSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_sid = $var;
 
         return $this;
@@ -79,9 +80,9 @@ class SubscriptionPermissionUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -101,9 +102,8 @@ class SubscriptionPermissionUpdate extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAllowed($var)
+    public function setAllowed(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->allowed = $var;
 
         return $this;

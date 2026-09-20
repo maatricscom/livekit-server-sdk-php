@@ -28,7 +28,8 @@ class StreamStateUpdate extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\StreamStateInfo[] $stream_states
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class StreamStateUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamStateInfo[] $var
      * @return $this
      */
-    public function setStreamStates($var)
+    public function setStreamStates(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\StreamStateInfo::class);
         $this->stream_states = $arr;

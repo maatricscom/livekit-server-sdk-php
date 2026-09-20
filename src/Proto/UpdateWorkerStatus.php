@@ -41,14 +41,15 @@ class UpdateWorkerStatus extends \Google\Protobuf\Internal\Message
      *     @type int $job_count
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>optional .livekit.WorkerStatus status = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\WorkerStatus}
      */
     public function getStatus()
     {
@@ -67,10 +68,10 @@ class UpdateWorkerStatus extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>optional .livekit.WorkerStatus status = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\WorkerStatus}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\WorkerStatus::class);
         $this->status = $var;
@@ -96,9 +97,8 @@ class UpdateWorkerStatus extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setLoad($var)
+    public function setLoad(float $var)
     {
-        GPBUtil::checkFloat($var);
         $this->load = $var;
 
         return $this;
@@ -118,7 +118,7 @@ class UpdateWorkerStatus extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setJobCount($var)
+    public function setJobCount(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->job_count = $var;

@@ -33,7 +33,8 @@ class SubscribedCodec extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SubscribedQuality[] $qualities
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class SubscribedCodec extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCodec($var)
+    public function setCodec(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->codec = $var;
 
         return $this;
@@ -74,7 +75,7 @@ class SubscribedCodec extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscribedQuality[] $var
      * @return $this
      */
-    public function setQualities($var)
+    public function setQualities(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SubscribedQuality::class);
         $this->qualities = $arr;

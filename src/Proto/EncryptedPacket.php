@@ -46,14 +46,15 @@ class EncryptedPacket extends \Google\Protobuf\Internal\Message
      *           This is an encrypted EncryptedPacketPayload message representation
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.Encryption.Type encryption_type = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\Encryption\Type}
      */
     public function getEncryptionType()
     {
@@ -62,10 +63,10 @@ class EncryptedPacket extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.Encryption.Type encryption_type = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\Encryption\Type}
      * @return $this
      */
-    public function setEncryptionType($var)
+    public function setEncryptionType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\Encryption\Type::class);
         $this->encryption_type = $var;
@@ -87,9 +88,9 @@ class EncryptedPacket extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIv($var)
+    public function setIv(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->iv = $var;
 
         return $this;
@@ -109,7 +110,7 @@ class EncryptedPacket extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setKeyIndex($var)
+    public function setKeyIndex(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->key_index = $var;
@@ -135,9 +136,9 @@ class EncryptedPacket extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEncryptedValue($var)
+    public function setEncryptedValue(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->encrypted_value = $var;
 
         return $this;

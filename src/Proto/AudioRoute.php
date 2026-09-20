@@ -32,7 +32,8 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
      *     @type int $channel
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -56,9 +57,9 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackId($var)
+    public function setTrackId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -83,9 +84,9 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -93,7 +94,7 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ParticipantInfo.Kind participant_kind = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ParticipantInfo\Kind}
      */
     public function getParticipantKind()
     {
@@ -107,10 +108,10 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ParticipantInfo.Kind participant_kind = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ParticipantInfo\Kind}
      * @return $this
      */
-    public function setParticipantKind($var)
+    public function setParticipantKind(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ParticipantInfo\Kind::class);
         $this->writeOneof(3, $var);
@@ -120,7 +121,7 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.AudioChannel channel = 4;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\AudioChannel}
      */
     public function getChannel()
     {
@@ -129,10 +130,10 @@ class AudioRoute extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.AudioChannel channel = 4;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\AudioChannel}
      * @return $this
      */
-    public function setChannel($var)
+    public function setChannel(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\AudioChannel::class);
         $this->channel = $var;

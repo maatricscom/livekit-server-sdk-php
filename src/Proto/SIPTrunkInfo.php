@@ -127,7 +127,8 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      *           User-defined metadata for the Trunk.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -146,9 +147,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipTrunkId($var)
+    public function setSipTrunkId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_trunk_id = $var;
 
         return $this;
@@ -156,7 +157,7 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTrunkInfo.TrunkKind kind = 14;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTrunkInfo\TrunkKind}
      */
     public function getKind()
     {
@@ -165,10 +166,10 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPTrunkInfo.TrunkKind kind = 14;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTrunkInfo\TrunkKind}
      * @return $this
      */
-    public function setKind($var)
+    public function setKind(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTrunkInfo\TrunkKind::class);
         $this->kind = $var;
@@ -196,7 +197,7 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setInboundAddresses($var)
+    public function setInboundAddresses(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->inbound_addresses = $arr;
@@ -222,9 +223,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundAddress($var)
+    public function setOutboundAddress(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_address = $var;
 
         return $this;
@@ -248,9 +249,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundNumber($var)
+    public function setOutboundNumber(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_number = $var;
 
         return $this;
@@ -260,7 +261,7 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * Transport used for inbound and outbound calls.
      *
      * Generated from protobuf field <code>.livekit.SIPTransport transport = 13;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransport}
      */
     public function getTransport()
     {
@@ -271,10 +272,10 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * Transport used for inbound and outbound calls.
      *
      * Generated from protobuf field <code>.livekit.SIPTransport transport = 13;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransport}
      * @return $this
      */
-    public function setTransport($var)
+    public function setTransport(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransport::class);
         $this->transport = $var;
@@ -301,7 +302,7 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setInboundNumbersRegex($var)
+    public function setInboundNumbersRegex(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -334,7 +335,7 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setInboundNumbers($var)
+    public function setInboundNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->inbound_numbers = $arr;
@@ -362,9 +363,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setInboundUsername($var)
+    public function setInboundUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->inbound_username = $var;
 
         return $this;
@@ -384,9 +385,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setInboundPassword($var)
+    public function setInboundPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->inbound_password = $var;
 
         return $this;
@@ -406,9 +407,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundUsername($var)
+    public function setOutboundUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_username = $var;
 
         return $this;
@@ -428,9 +429,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundPassword($var)
+    public function setOutboundPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_password = $var;
 
         return $this;
@@ -454,9 +455,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -480,9 +481,9 @@ class SIPTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;

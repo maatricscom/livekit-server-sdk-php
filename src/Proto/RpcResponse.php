@@ -33,7 +33,8 @@ class RpcResponse extends \Google\Protobuf\Internal\Message
      *           Compressed payload data. When set, this field is used instead of `payload`.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class RpcResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRequestId($var)
+    public function setRequestId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->request_id = $var;
 
         return $this;
@@ -79,9 +80,9 @@ class RpcResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPayload($var)
+    public function setPayload(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -106,9 +107,8 @@ class RpcResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RpcError $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(\LiveKit\Proto\RpcError|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RpcError::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -137,9 +137,9 @@ class RpcResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCompressedPayload($var)
+    public function setCompressedPayload(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->writeOneof(4, $var);
 
         return $this;

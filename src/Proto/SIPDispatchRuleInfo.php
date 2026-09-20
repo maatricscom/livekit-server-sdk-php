@@ -129,7 +129,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      *     @type \Google\Protobuf\Timestamp $updated_at
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -148,9 +149,9 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipDispatchRuleId($var)
+    public function setSipDispatchRuleId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_dispatch_rule_id = $var;
 
         return $this;
@@ -180,9 +181,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPDispatchRule $var
      * @return $this
      */
-    public function setRule($var)
+    public function setRule(\LiveKit\Proto\SIPDispatchRule|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPDispatchRule::class);
         $this->rule = $var;
 
         return $this;
@@ -202,7 +202,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setTrunkIds($var)
+    public function setTrunkIds(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->trunk_ids = $arr;
@@ -224,9 +224,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setHidePhoneNumber($var)
+    public function setHidePhoneNumber(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->hide_phone_number = $var;
 
         return $this;
@@ -250,7 +249,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setInboundNumbers($var)
+    public function setInboundNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->inbound_numbers = $arr;
@@ -276,7 +275,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setNumbers($var)
+    public function setNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->numbers = $arr;
@@ -302,9 +301,9 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -330,9 +329,9 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -358,7 +357,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes = $arr;
@@ -384,9 +383,9 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomPreset($var)
+    public function setRoomPreset(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_preset = $var;
 
         return $this;
@@ -420,9 +419,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomConfiguration $var
      * @return $this
      */
-    public function setRoomConfig($var)
+    public function setRoomConfig(\LiveKit\Proto\RoomConfiguration|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomConfiguration::class);
         $this->room_config = $var;
 
         return $this;
@@ -452,9 +450,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPMediaConfig $var
      * @return $this
      */
-    public function setMedia($var)
+    public function setMedia(\LiveKit\Proto\SIPMediaConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPMediaConfig::class);
         $this->media = $var;
 
         return $this;
@@ -474,9 +471,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setKrispEnabled($var)
+    public function setKrispEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->krisp_enabled = $var;
 
         return $this;
@@ -484,7 +480,7 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPMediaEncryption media_encryption = 12 [deprecated = true];</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @deprecated
      */
     public function getMediaEncryption()
@@ -497,11 +493,11 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPMediaEncryption media_encryption = 12 [deprecated = true];</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @return $this
      * @deprecated
      */
-    public function setMediaEncryption($var)
+    public function setMediaEncryption(int $var)
     {
         @trigger_error('media_encryption is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPMediaEncryption::class);
@@ -534,9 +530,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setCreatedAt($var)
+    public function setCreatedAt(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->created_at = $var;
 
         return $this;
@@ -566,9 +561,8 @@ class SIPDispatchRuleInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setUpdatedAt($var)
+    public function setUpdatedAt(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->updated_at = $var;
 
         return $this;

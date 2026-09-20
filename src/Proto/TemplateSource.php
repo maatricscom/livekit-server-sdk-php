@@ -46,7 +46,8 @@ class TemplateSource extends \Google\Protobuf\Internal\Message
      *     @type string $custom_base_url
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -65,9 +66,9 @@ class TemplateSource extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLayout($var)
+    public function setLayout(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->layout = $var;
 
         return $this;
@@ -87,9 +88,8 @@ class TemplateSource extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAudioOnly($var)
+    public function setAudioOnly(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->audio_only = $var;
 
         return $this;
@@ -109,9 +109,8 @@ class TemplateSource extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setVideoOnly($var)
+    public function setVideoOnly(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->video_only = $var;
 
         return $this;
@@ -131,9 +130,9 @@ class TemplateSource extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCustomBaseUrl($var)
+    public function setCustomBaseUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->custom_base_url = $var;
 
         return $this;

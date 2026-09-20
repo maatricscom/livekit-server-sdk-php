@@ -53,7 +53,8 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      *     @type int $protocol_version
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgentWorker::initOnce();
         parent::__construct($data);
     }
@@ -72,9 +73,9 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWorkerType($var)
+    public function setWorkerType(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->worker_type = $var;
 
         return $this;
@@ -94,9 +95,9 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAgentName($var)
+    public function setAgentName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->agent_name = $var;
 
         return $this;
@@ -116,9 +117,8 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setActiveJobs($var)
+    public function setActiveJobs(float $var)
     {
-        GPBUtil::checkFloat($var);
         $this->active_jobs = $var;
 
         return $this;
@@ -138,9 +138,9 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSdkVersion($var)
+    public function setSdkVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sdk_version = $var;
 
         return $this;
@@ -160,9 +160,8 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setWorkerLoad($var)
+    public function setWorkerLoad(float $var)
     {
-        GPBUtil::checkFloat($var);
         $this->worker_load = $var;
 
         return $this;
@@ -182,7 +181,7 @@ class WorkerInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setProtocolVersion($var)
+    public function setProtocolVersion(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->protocol_version = $var;

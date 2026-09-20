@@ -28,7 +28,8 @@ class WorkerPing extends \Google\Protobuf\Internal\Message
      *     @type int|string $timestamp
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class WorkerPing extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setTimestamp($var)
+    public function setTimestamp(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->timestamp = $var;

@@ -28,7 +28,8 @@ class DeleteIngressRequest extends \Google\Protobuf\Internal\Message
      *     @type string $ingress_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -47,9 +48,9 @@ class DeleteIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIngressId($var)
+    public function setIngressId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->ingress_id = $var;
 
         return $this;

@@ -79,14 +79,15 @@ class IngressState extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\TrackInfo[] $tracks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.IngressState.Status status = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\IngressState\Status}
      */
     public function getStatus()
     {
@@ -95,10 +96,10 @@ class IngressState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.IngressState.Status status = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\IngressState\Status}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\IngressState\Status::class);
         $this->status = $var;
@@ -124,9 +125,9 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;
@@ -156,9 +157,8 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\InputVideoState $var
      * @return $this
      */
-    public function setVideo($var)
+    public function setVideo(\LiveKit\Proto\InputVideoState|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\InputVideoState::class);
         $this->video = $var;
 
         return $this;
@@ -188,9 +188,8 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\InputAudioState $var
      * @return $this
      */
-    public function setAudio($var)
+    public function setAudio(\LiveKit\Proto\InputAudioState|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\InputAudioState::class);
         $this->audio = $var;
 
         return $this;
@@ -214,9 +213,9 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomId($var)
+    public function setRoomId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_id = $var;
 
         return $this;
@@ -236,7 +235,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -258,7 +257,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;
@@ -280,7 +279,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setUpdatedAt($var)
+    public function setUpdatedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->updated_at = $var;
@@ -302,9 +301,9 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setResourceId($var)
+    public function setResourceId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->resource_id = $var;
 
         return $this;
@@ -324,7 +323,7 @@ class IngressState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackInfo[] $var
      * @return $this
      */
-    public function setTracks($var)
+    public function setTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\TrackInfo::class);
         $this->tracks = $arr;

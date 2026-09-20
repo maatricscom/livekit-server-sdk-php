@@ -48,7 +48,8 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *           Only list rules that contain one of the Trunk IDs, including wildcard rules.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -77,9 +78,8 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Pagination $var
      * @return $this
      */
-    public function setPage($var)
+    public function setPage(\LiveKit\Proto\Pagination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Pagination::class);
         $this->page = $var;
 
         return $this;
@@ -105,7 +105,7 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setDispatchRuleIds($var)
+    public function setDispatchRuleIds(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->dispatch_rule_ids = $arr;
@@ -131,7 +131,7 @@ class ListSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setTrunkIds($var)
+    public function setTrunkIds(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->trunk_ids = $arr;

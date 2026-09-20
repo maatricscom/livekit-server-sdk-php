@@ -63,14 +63,15 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      *     @type int $agent_protocol
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.ServerInfo.Edition edition = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ServerInfo\Edition}
      */
     public function getEdition()
     {
@@ -79,10 +80,10 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ServerInfo.Edition edition = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ServerInfo\Edition}
      * @return $this
      */
-    public function setEdition($var)
+    public function setEdition(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ServerInfo\Edition::class);
         $this->edition = $var;
@@ -104,9 +105,9 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setVersion($var)
+    public function setVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->version = $var;
 
         return $this;
@@ -126,7 +127,7 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setProtocol($var)
+    public function setProtocol(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->protocol = $var;
@@ -148,9 +149,9 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRegion($var)
+    public function setRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->region = $var;
 
         return $this;
@@ -170,9 +171,9 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNodeId($var)
+    public function setNodeId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->node_id = $var;
 
         return $this;
@@ -196,9 +197,9 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDebugInfo($var)
+    public function setDebugInfo(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->debug_info = $var;
 
         return $this;
@@ -218,7 +219,7 @@ class ServerInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setAgentProtocol($var)
+    public function setAgentProtocol(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->agent_protocol = $var;

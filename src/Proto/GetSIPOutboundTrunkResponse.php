@@ -28,7 +28,8 @@ class GetSIPOutboundTrunkResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPOutboundTrunkInfo $trunk
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,8 @@ class GetSIPOutboundTrunkResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPOutboundTrunkInfo $var
      * @return $this
      */
-    public function setTrunk($var)
+    public function setTrunk(\LiveKit\Proto\SIPOutboundTrunkInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPOutboundTrunkInfo::class);
         $this->trunk = $var;
 
         return $this;

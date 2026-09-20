@@ -39,7 +39,8 @@ class AudioConfig extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AudioRoute[] $routes
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,8 @@ class AudioConfig extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setCaptureAll($var)
+    public function setCaptureAll(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->capture_all = $var;
 
         return $this;
@@ -84,7 +84,7 @@ class AudioConfig extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AudioRoute[] $var
      * @return $this
      */
-    public function setRoutes($var)
+    public function setRoutes(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\AudioRoute::class);
         $this->routes = $arr;

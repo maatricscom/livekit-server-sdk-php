@@ -43,7 +43,8 @@ class ProviderInfo extends \Google\Protobuf\Internal\Message
      *     @type bool $prevent_transfer
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class ProviderInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->id = $var;
 
         return $this;
@@ -84,9 +85,9 @@ class ProviderInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -94,7 +95,7 @@ class ProviderInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ProviderType type = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ProviderType}
      */
     public function getType()
     {
@@ -103,10 +104,10 @@ class ProviderInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ProviderType type = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ProviderType}
      * @return $this
      */
-    public function setType($var)
+    public function setType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ProviderType::class);
         $this->type = $var;
@@ -128,9 +129,8 @@ class ProviderInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setPreventTransfer($var)
+    public function setPreventTransfer(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->prevent_transfer = $var;
 
         return $this;

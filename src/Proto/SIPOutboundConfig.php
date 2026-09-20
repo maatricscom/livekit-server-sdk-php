@@ -90,7 +90,8 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      *           Optional custom hostname for the 'From' SIP header. When set, outbound calls use this host instead of the default project SIP domain.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -113,9 +114,9 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setHostname($var)
+    public function setHostname(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->hostname = $var;
 
         return $this;
@@ -139,9 +140,9 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDestinationCountry($var)
+    public function setDestinationCountry(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->destination_country = $var;
 
         return $this;
@@ -151,7 +152,7 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * SIP Transport used for outbound call.
      *
      * Generated from protobuf field <code>.livekit.SIPTransport transport = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPTransport}
      */
     public function getTransport()
     {
@@ -162,10 +163,10 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * SIP Transport used for outbound call.
      *
      * Generated from protobuf field <code>.livekit.SIPTransport transport = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPTransport}
      * @return $this
      */
-    public function setTransport($var)
+    public function setTransport(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPTransport::class);
         $this->transport = $var;
@@ -193,9 +194,9 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthUsername($var)
+    public function setAuthUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_username = $var;
 
         return $this;
@@ -215,9 +216,9 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthPassword($var)
+    public function setAuthPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_password = $var;
 
         return $this;
@@ -243,7 +244,7 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setHeadersToAttributes($var)
+    public function setHeadersToAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->headers_to_attributes = $arr;
@@ -271,7 +272,7 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributesToHeaders($var)
+    public function setAttributesToHeaders(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes_to_headers = $arr;
@@ -297,9 +298,9 @@ class SIPOutboundConfig extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFromHost($var)
+    public function setFromHost(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->from_host = $var;
 
         return $this;

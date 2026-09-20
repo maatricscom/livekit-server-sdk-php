@@ -41,7 +41,8 @@ class Transcription extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\TranscriptionSegment[] $segments
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -64,9 +65,9 @@ class Transcription extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTranscribedParticipantIdentity($var)
+    public function setTranscribedParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->transcribed_participant_identity = $var;
 
         return $this;
@@ -86,9 +87,9 @@ class Transcription extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackId($var)
+    public function setTrackId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_id = $var;
 
         return $this;
@@ -108,7 +109,7 @@ class Transcription extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TranscriptionSegment[] $var
      * @return $this
      */
-    public function setSegments($var)
+    public function setSegments(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\TranscriptionSegment::class);
         $this->segments = $arr;

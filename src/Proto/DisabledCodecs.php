@@ -39,7 +39,8 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      *           only disable for publish
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -62,7 +63,7 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Codec[] $var
      * @return $this
      */
-    public function setCodecs($var)
+    public function setCodecs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\Codec::class);
         $this->codecs = $arr;
@@ -88,7 +89,7 @@ class DisabledCodecs extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Codec[] $var
      * @return $this
      */
-    public function setPublish($var)
+    public function setPublish(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\Codec::class);
         $this->publish = $arr;

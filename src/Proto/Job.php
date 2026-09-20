@@ -89,7 +89,8 @@ class Job extends \Google\Protobuf\Internal\Message
      *     @type bool $enable_redaction
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -108,9 +109,9 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->id = $var;
 
         return $this;
@@ -130,9 +131,9 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDispatchId($var)
+    public function setDispatchId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->dispatch_id = $var;
 
         return $this;
@@ -140,7 +141,7 @@ class Job extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.JobType type = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\JobType}
      */
     public function getType()
     {
@@ -149,10 +150,10 @@ class Job extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.JobType type = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\JobType}
      * @return $this
      */
-    public function setType($var)
+    public function setType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\JobType::class);
         $this->type = $var;
@@ -184,9 +185,8 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\Room|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Room::class);
         $this->room = $var;
 
         return $this;
@@ -216,9 +216,8 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\ParticipantInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantInfo::class);
         $this->participant = $var;
 
         return $this;
@@ -243,10 +242,10 @@ class Job extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setNamespace($var)
+    public function setNamespace(string $var)
     {
         @trigger_error('namespace is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->namespace = $var;
 
         return $this;
@@ -266,9 +265,9 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -288,9 +287,9 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAgentName($var)
+    public function setAgentName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->agent_name = $var;
 
         return $this;
@@ -320,9 +319,8 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\JobState $var
      * @return $this
      */
-    public function setState($var)
+    public function setState(\LiveKit\Proto\JobState|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\JobState::class);
         $this->state = $var;
 
         return $this;
@@ -342,9 +340,8 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnableRecording($var)
+    public function setEnableRecording(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enable_recording = $var;
 
         return $this;
@@ -364,9 +361,9 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDeployment($var)
+    public function setDeployment(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->deployment = $var;
 
         return $this;
@@ -386,7 +383,7 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes = $arr;
@@ -408,9 +405,8 @@ class Job extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnableRedaction($var)
+    public function setEnableRedaction(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enable_redaction = $var;
 
         return $this;

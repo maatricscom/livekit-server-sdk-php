@@ -38,7 +38,8 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ParticipantTracks[] $participant_tracks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,7 +58,7 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setTrackSids($var)
+    public function setTrackSids(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->track_sids = $arr;
@@ -79,9 +80,8 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSubscribe($var)
+    public function setSubscribe(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->subscribe = $var;
 
         return $this;
@@ -101,7 +101,7 @@ class UpdateSubscription extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantTracks[] $var
      * @return $this
      */
-    public function setParticipantTracks($var)
+    public function setParticipantTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ParticipantTracks::class);
         $this->participant_tracks = $arr;

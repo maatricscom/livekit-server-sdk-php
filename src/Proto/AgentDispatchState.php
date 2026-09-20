@@ -43,7 +43,8 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      *     @type int|string $deleted_at
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgentDispatch::initOnce();
         parent::__construct($data);
     }
@@ -68,7 +69,7 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Job[] $var
      * @return $this
      */
-    public function setJobs($var)
+    public function setJobs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\Job::class);
         $this->jobs = $arr;
@@ -90,7 +91,7 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setCreatedAt($var)
+    public function setCreatedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->created_at = $var;
@@ -112,7 +113,7 @@ class AgentDispatchState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setDeletedAt($var)
+    public function setDeletedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->deleted_at = $var;

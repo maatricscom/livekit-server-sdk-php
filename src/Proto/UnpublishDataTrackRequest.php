@@ -31,7 +31,8 @@ class UnpublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      *           Publisher handle of the track to unpublish.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -54,7 +55,7 @@ class UnpublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPubHandle($var)
+    public function setPubHandle(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->pub_handle = $var;

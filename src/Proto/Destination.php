@@ -38,7 +38,8 @@ class Destination extends \Google\Protobuf\Internal\Message
      *     @type string $region
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class Destination extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCity($var)
+    public function setCity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->city = $var;
 
         return $this;
@@ -79,9 +80,9 @@ class Destination extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCountry($var)
+    public function setCountry(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->country = $var;
 
         return $this;
@@ -101,9 +102,9 @@ class Destination extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRegion($var)
+    public function setRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->region = $var;
 
         return $this;

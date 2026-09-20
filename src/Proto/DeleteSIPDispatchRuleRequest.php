@@ -28,7 +28,8 @@ class DeleteSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      *     @type string $sip_dispatch_rule_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -47,9 +48,9 @@ class DeleteSIPDispatchRuleRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipDispatchRuleId($var)
+    public function setSipDispatchRuleId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_dispatch_rule_id = $var;
 
         return $this;

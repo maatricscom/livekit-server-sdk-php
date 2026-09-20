@@ -64,14 +64,15 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      *     @type string $deployment
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.JobType type = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\JobType}
      */
     public function getType()
     {
@@ -80,10 +81,10 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.JobType type = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\JobType}
      * @return $this
      */
-    public function setType($var)
+    public function setType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\JobType::class);
         $this->type = $var;
@@ -105,9 +106,9 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAgentName($var)
+    public function setAgentName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->agent_name = $var;
 
         return $this;
@@ -131,9 +132,9 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setVersion($var)
+    public function setVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->version = $var;
 
         return $this;
@@ -157,7 +158,7 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPingInterval($var)
+    public function setPingInterval(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->ping_interval = $var;
@@ -189,9 +190,9 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNamespace($var)
+    public function setNamespace(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->namespace = $var;
 
         return $this;
@@ -221,9 +222,8 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantPermission $var
      * @return $this
      */
-    public function setAllowedPermissions($var)
+    public function setAllowedPermissions(\LiveKit\Proto\ParticipantPermission|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantPermission::class);
         $this->allowed_permissions = $var;
 
         return $this;
@@ -243,9 +243,9 @@ class RegisterWorkerRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDeployment($var)
+    public function setDeployment(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->deployment = $var;
 
         return $this;

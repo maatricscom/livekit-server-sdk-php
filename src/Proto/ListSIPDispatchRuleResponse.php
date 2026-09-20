@@ -28,7 +28,8 @@ class ListSIPDispatchRuleResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPDispatchRuleInfo[] $items
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class ListSIPDispatchRuleResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPDispatchRuleInfo[] $var
      * @return $this
      */
-    public function setItems($var)
+    public function setItems(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SIPDispatchRuleInfo::class);
         $this->items = $arr;

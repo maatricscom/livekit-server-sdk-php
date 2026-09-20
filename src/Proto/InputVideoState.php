@@ -48,7 +48,8 @@ class InputVideoState extends \Google\Protobuf\Internal\Message
      *     @type float $framerate
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,9 @@ class InputVideoState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMimeType($var)
+    public function setMimeType(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->mime_type = $var;
 
         return $this;
@@ -89,7 +90,7 @@ class InputVideoState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setAverageBitrate($var)
+    public function setAverageBitrate(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->average_bitrate = $var;
@@ -111,7 +112,7 @@ class InputVideoState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setWidth($var)
+    public function setWidth(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->width = $var;
@@ -133,7 +134,7 @@ class InputVideoState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setHeight($var)
+    public function setHeight(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->height = $var;
@@ -155,9 +156,8 @@ class InputVideoState extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setFramerate($var)
+    public function setFramerate(float $var)
     {
-        GPBUtil::checkDouble($var);
         $this->framerate = $var;
 
         return $this;

@@ -38,7 +38,8 @@ class PlayoutDelay extends \Google\Protobuf\Internal\Message
      *     @type int $max
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,8 @@ class PlayoutDelay extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnabled($var)
+    public function setEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enabled = $var;
 
         return $this;
@@ -79,7 +79,7 @@ class PlayoutDelay extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMin($var)
+    public function setMin(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->min = $var;
@@ -101,7 +101,7 @@ class PlayoutDelay extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMax($var)
+    public function setMax(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->max = $var;

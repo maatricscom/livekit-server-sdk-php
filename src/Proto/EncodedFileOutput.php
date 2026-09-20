@@ -43,14 +43,15 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AliOSSUpload $aliOSS
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.EncodedFileType file_type = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EncodedFileType}
      */
     public function getFileType()
     {
@@ -59,10 +60,10 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodedFileType file_type = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EncodedFileType}
      * @return $this
      */
-    public function setFileType($var)
+    public function setFileType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EncodedFileType::class);
         $this->file_type = $var;
@@ -84,9 +85,9 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilepath($var)
+    public function setFilepath(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filepath = $var;
 
         return $this;
@@ -106,9 +107,8 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableManifest($var)
+    public function setDisableManifest(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_manifest = $var;
 
         return $this;
@@ -133,9 +133,8 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\S3Upload $var
      * @return $this
      */
-    public function setS3($var)
+    public function setS3(\LiveKit\Proto\S3Upload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\S3Upload::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -160,9 +159,8 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\GCPUpload $var
      * @return $this
      */
-    public function setGcp($var)
+    public function setGcp(\LiveKit\Proto\GCPUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\GCPUpload::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -187,9 +185,8 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AzureBlobUpload $var
      * @return $this
      */
-    public function setAzure($var)
+    public function setAzure(\LiveKit\Proto\AzureBlobUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AzureBlobUpload::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -214,9 +211,8 @@ class EncodedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AliOSSUpload $var
      * @return $this
      */
-    public function setAliOSS($var)
+    public function setAliOSS(\LiveKit\Proto\AliOSSUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AliOSSUpload::class);
         $this->writeOneof(7, $var);
 
         return $this;

@@ -33,7 +33,8 @@ class TokenSourceResponse extends \Google\Protobuf\Internal\Message
      *     @type string $participant_token
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitTokenSource::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class TokenSourceResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setServerUrl($var)
+    public function setServerUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->server_url = $var;
 
         return $this;
@@ -74,9 +75,9 @@ class TokenSourceResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantToken($var)
+    public function setParticipantToken(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_token = $var;
 
         return $this;

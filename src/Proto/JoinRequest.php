@@ -83,7 +83,8 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SyncState $sync_state
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -112,9 +113,8 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ClientInfo $var
      * @return $this
      */
-    public function setClientInfo($var)
+    public function setClientInfo(\LiveKit\Proto\ClientInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ClientInfo::class);
         $this->client_info = $var;
 
         return $this;
@@ -144,9 +144,8 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ConnectionSettings $var
      * @return $this
      */
-    public function setConnectionSettings($var)
+    public function setConnectionSettings(\LiveKit\Proto\ConnectionSettings|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ConnectionSettings::class);
         $this->connection_settings = $var;
 
         return $this;
@@ -170,9 +169,9 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -200,7 +199,7 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;
@@ -222,7 +221,7 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AddTrackRequest[] $var
      * @return $this
      */
-    public function setAddTrackRequests($var)
+    public function setAddTrackRequests(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\AddTrackRequest::class);
         $this->add_track_requests = $arr;
@@ -254,9 +253,8 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SessionDescription $var
      * @return $this
      */
-    public function setPublisherOffer($var)
+    public function setPublisherOffer(\LiveKit\Proto\SessionDescription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SessionDescription::class);
         $this->publisher_offer = $var;
 
         return $this;
@@ -276,9 +274,8 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setReconnect($var)
+    public function setReconnect(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->reconnect = $var;
 
         return $this;
@@ -286,7 +283,7 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ReconnectReason reconnect_reason = 8;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ReconnectReason}
      */
     public function getReconnectReason()
     {
@@ -295,10 +292,10 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ReconnectReason reconnect_reason = 8;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ReconnectReason}
      * @return $this
      */
-    public function setReconnectReason($var)
+    public function setReconnectReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ReconnectReason::class);
         $this->reconnect_reason = $var;
@@ -320,9 +317,9 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantSid($var)
+    public function setParticipantSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_sid = $var;
 
         return $this;
@@ -352,9 +349,8 @@ class JoinRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SyncState $var
      * @return $this
      */
-    public function setSyncState($var)
+    public function setSyncState(\LiveKit\Proto\SyncState|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SyncState::class);
         $this->sync_state = $var;
 
         return $this;

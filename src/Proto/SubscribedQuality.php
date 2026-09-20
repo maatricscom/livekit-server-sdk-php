@@ -33,14 +33,15 @@ class SubscribedQuality extends \Google\Protobuf\Internal\Message
      *     @type bool $enabled
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.VideoQuality quality = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\VideoQuality}
      */
     public function getQuality()
     {
@@ -49,10 +50,10 @@ class SubscribedQuality extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.VideoQuality quality = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\VideoQuality}
      * @return $this
      */
-    public function setQuality($var)
+    public function setQuality(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\VideoQuality::class);
         $this->quality = $var;
@@ -74,9 +75,8 @@ class SubscribedQuality extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnabled($var)
+    public function setEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->enabled = $var;
 
         return $this;

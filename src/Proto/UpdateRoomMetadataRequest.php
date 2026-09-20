@@ -36,7 +36,8 @@ class UpdateRoomMetadataRequest extends \Google\Protobuf\Internal\Message
      *           metadata to update. skipping updates if left empty
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -55,9 +56,9 @@ class UpdateRoomMetadataRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -81,9 +82,9 @@ class UpdateRoomMetadataRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;

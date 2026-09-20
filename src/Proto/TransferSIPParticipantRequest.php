@@ -62,7 +62,8 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      *           Max time for the transfer destination to answer the call.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -81,9 +82,9 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -103,9 +104,9 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -125,9 +126,9 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTransferTo($var)
+    public function setTransferTo(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->transfer_to = $var;
 
         return $this;
@@ -151,9 +152,8 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setPlayDialtone($var)
+    public function setPlayDialtone(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->play_dialtone = $var;
 
         return $this;
@@ -177,7 +177,7 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setHeaders($var)
+    public function setHeaders(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->headers = $arr;
@@ -213,9 +213,8 @@ class TransferSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setRingingTimeout($var)
+    public function setRingingTimeout(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->ringing_timeout = $var;
 
         return $this;

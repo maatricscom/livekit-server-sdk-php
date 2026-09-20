@@ -31,7 +31,8 @@ class AcceptWhatsAppCallResponse extends \Google\Protobuf\Internal\Message
      *           The name of the LiveKit room that the call is connected to
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorWhatsapp::initOnce();
         parent::__construct($data);
     }
@@ -54,9 +55,9 @@ class AcceptWhatsAppCallResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;

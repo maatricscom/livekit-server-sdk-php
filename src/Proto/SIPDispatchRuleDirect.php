@@ -39,7 +39,8 @@ class SIPDispatchRuleDirect extends \Google\Protobuf\Internal\Message
      *           Optional pin required to enter room
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class SIPDispatchRuleDirect extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -88,9 +89,9 @@ class SIPDispatchRuleDirect extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPin($var)
+    public function setPin(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->pin = $var;
 
         return $this;

@@ -169,7 +169,8 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      *     @type string $sip_call_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -188,9 +189,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setCallId($var)
+    public function setCallId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->call_id = $var;
 
         return $this;
@@ -210,9 +211,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrunkId($var)
+    public function setTrunkId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->trunk_id = $var;
 
         return $this;
@@ -232,9 +233,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDispatchRuleId($var)
+    public function setDispatchRuleId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->dispatch_rule_id = $var;
 
         return $this;
@@ -254,9 +255,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRegion($var)
+    public function setRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->region = $var;
 
         return $this;
@@ -276,9 +277,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -302,9 +303,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomId($var)
+    public function setRoomId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_id = $var;
 
         return $this;
@@ -324,9 +325,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -346,7 +347,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;
@@ -378,9 +379,8 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPUri $var
      * @return $this
      */
-    public function setFromUri($var)
+    public function setFromUri(\LiveKit\Proto\SIPUri|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPUri::class);
         $this->from_uri = $var;
 
         return $this;
@@ -410,9 +410,8 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPUri $var
      * @return $this
      */
-    public function setToUri($var)
+    public function setToUri(\LiveKit\Proto\SIPUri|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPUri::class);
         $this->to_uri = $var;
 
         return $this;
@@ -437,7 +436,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setCreatedAt($var)
+    public function setCreatedAt(int|string $var)
     {
         @trigger_error('created_at is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkInt64($var);
@@ -465,7 +464,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         @trigger_error('started_at is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkInt64($var);
@@ -493,7 +492,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         @trigger_error('ended_at is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkInt64($var);
@@ -504,7 +503,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPFeature enabled_features = 14;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\SIPFeature}
      */
     public function getEnabledFeatures()
     {
@@ -513,10 +512,10 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.SIPFeature enabled_features = 14;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\SIPFeature}
      * @return $this
      */
-    public function setEnabledFeatures($var)
+    public function setEnabledFeatures(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\SIPFeature::class);
         $this->enabled_features = $arr;
@@ -526,7 +525,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPCallDirection call_direction = 15;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPCallDirection}
      */
     public function getCallDirection()
     {
@@ -535,10 +534,10 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPCallDirection call_direction = 15;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPCallDirection}
      * @return $this
      */
-    public function setCallDirection($var)
+    public function setCallDirection(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPCallDirection::class);
         $this->call_direction = $var;
@@ -548,7 +547,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPCallStatus call_status = 8;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPCallStatus}
      */
     public function getCallStatus()
     {
@@ -557,10 +556,10 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPCallStatus call_status = 8;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPCallStatus}
      * @return $this
      */
-    public function setCallStatus($var)
+    public function setCallStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPCallStatus::class);
         $this->call_status = $var;
@@ -582,7 +581,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setCreatedAtNs($var)
+    public function setCreatedAtNs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->created_at_ns = $var;
@@ -604,7 +603,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAtNs($var)
+    public function setStartedAtNs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at_ns = $var;
@@ -626,7 +625,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAtNs($var)
+    public function setEndedAtNs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at_ns = $var;
@@ -636,7 +635,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DisconnectReason disconnect_reason = 12;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\DisconnectReason}
      */
     public function getDisconnectReason()
     {
@@ -645,10 +644,10 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DisconnectReason disconnect_reason = 12;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\DisconnectReason}
      * @return $this
      */
-    public function setDisconnectReason($var)
+    public function setDisconnectReason(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\DisconnectReason::class);
         $this->disconnect_reason = $var;
@@ -670,9 +669,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;
@@ -702,9 +701,8 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPStatus $var
      * @return $this
      */
-    public function setCallStatusCode($var)
+    public function setCallStatusCode(\LiveKit\Proto\SIPStatus|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPStatus::class);
         $this->call_status_code = $var;
 
         return $this;
@@ -724,9 +722,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAudioCodec($var)
+    public function setAudioCodec(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->audio_codec = $var;
 
         return $this;
@@ -746,9 +744,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMediaEncryption($var)
+    public function setMediaEncryption(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->media_encryption = $var;
 
         return $this;
@@ -768,9 +766,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPcapFileLink($var)
+    public function setPcapFileLink(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->pcap_file_link = $var;
 
         return $this;
@@ -790,7 +788,7 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Any[] $var
      * @return $this
      */
-    public function setCallContext($var)
+    public function setCallContext(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Google\Protobuf\Any::class);
         $this->call_context = $arr;
@@ -822,9 +820,8 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ProviderInfo $var
      * @return $this
      */
-    public function setProviderInfo($var)
+    public function setProviderInfo(\LiveKit\Proto\ProviderInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ProviderInfo::class);
         $this->provider_info = $var;
 
         return $this;
@@ -844,9 +841,9 @@ class SIPCallInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipCallId($var)
+    public function setSipCallId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_call_id = $var;
 
         return $this;

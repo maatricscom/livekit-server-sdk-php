@@ -106,14 +106,15 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      *           not a user-configurable setting.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.ClientInfo.SDK sdk = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ClientInfo\SDK}
      */
     public function getSdk()
     {
@@ -122,10 +123,10 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ClientInfo.SDK sdk = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ClientInfo\SDK}
      * @return $this
      */
-    public function setSdk($var)
+    public function setSdk(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ClientInfo\SDK::class);
         $this->sdk = $var;
@@ -147,9 +148,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setVersion($var)
+    public function setVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->version = $var;
 
         return $this;
@@ -169,7 +170,7 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setProtocol($var)
+    public function setProtocol(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->protocol = $var;
@@ -191,9 +192,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOs($var)
+    public function setOs(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->os = $var;
 
         return $this;
@@ -213,9 +214,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOsVersion($var)
+    public function setOsVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->os_version = $var;
 
         return $this;
@@ -235,9 +236,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDeviceModel($var)
+    public function setDeviceModel(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->device_model = $var;
 
         return $this;
@@ -257,9 +258,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setBrowser($var)
+    public function setBrowser(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->browser = $var;
 
         return $this;
@@ -279,9 +280,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setBrowserVersion($var)
+    public function setBrowserVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->browser_version = $var;
 
         return $this;
@@ -301,9 +302,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAddress($var)
+    public function setAddress(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->address = $var;
 
         return $this;
@@ -327,9 +328,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNetwork($var)
+    public function setNetwork(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->network = $var;
 
         return $this;
@@ -355,9 +356,9 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOtherSdks($var)
+    public function setOtherSdks(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->other_sdks = $var;
 
         return $this;
@@ -381,7 +382,7 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setClientProtocol($var)
+    public function setClientProtocol(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->client_protocol = $var;
@@ -394,7 +395,7 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * not a user-configurable setting.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 13;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\ClientInfo\Capability}
      */
     public function getCapabilities()
     {
@@ -406,10 +407,10 @@ class ClientInfo extends \Google\Protobuf\Internal\Message
      * not a user-configurable setting.
      *
      * Generated from protobuf field <code>repeated .livekit.ClientInfo.Capability capabilities = 13;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\ClientInfo\Capability}
      * @return $this
      */
-    public function setCapabilities($var)
+    public function setCapabilities(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\ClientInfo\Capability::class);
         $this->capabilities = $arr;

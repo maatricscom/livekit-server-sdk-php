@@ -28,7 +28,8 @@ class MuteRoomTrackResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\TrackInfo $track
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,8 @@ class MuteRoomTrackResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackInfo $var
      * @return $this
      */
-    public function setTrack($var)
+    public function setTrack(\LiveKit\Proto\TrackInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackInfo::class);
         $this->track = $var;
 
         return $this;

@@ -23,7 +23,8 @@ class DataStream extends \Google\Protobuf\Internal\Message
      *
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }

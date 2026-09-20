@@ -39,7 +39,8 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SubscribedCodec[] $subscribed_codecs
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -58,9 +59,9 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -85,7 +86,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setSubscribedQualities($var)
+    public function setSubscribedQualities(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SubscribedQuality::class);
         if (count($arr) !== 0) {
@@ -110,7 +111,7 @@ class SubscribedQualityUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscribedCodec[] $var
      * @return $this
      */
-    public function setSubscribedCodecs($var)
+    public function setSubscribedCodecs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SubscribedCodec::class);
         $this->subscribed_codecs = $arr;

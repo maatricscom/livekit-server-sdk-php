@@ -36,7 +36,8 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\IngressVideoEncodingOptions $options
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -55,9 +56,9 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -65,7 +66,7 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackSource source = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\TrackSource}
      */
     public function getSource()
     {
@@ -74,10 +75,10 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.TrackSource source = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\TrackSource}
      * @return $this
      */
-    public function setSource($var)
+    public function setSource(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\TrackSource::class);
         $this->source = $var;
@@ -87,7 +88,7 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.IngressVideoEncodingPreset preset = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\IngressVideoEncodingPreset}
      */
     public function getPreset()
     {
@@ -101,10 +102,10 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.IngressVideoEncodingPreset preset = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\IngressVideoEncodingPreset}
      * @return $this
      */
-    public function setPreset($var)
+    public function setPreset(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\IngressVideoEncodingPreset::class);
         $this->writeOneof(3, $var);
@@ -131,9 +132,8 @@ class IngressVideoOptions extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\IngressVideoEncodingOptions $var
      * @return $this
      */
-    public function setOptions($var)
+    public function setOptions(\LiveKit\Proto\IngressVideoEncodingOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\IngressVideoEncodingOptions::class);
         $this->writeOneof(4, $var);
 
         return $this;

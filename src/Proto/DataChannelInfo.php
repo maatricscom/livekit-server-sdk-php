@@ -38,7 +38,8 @@ class DataChannelInfo extends \Google\Protobuf\Internal\Message
      *     @type int $target
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class DataChannelInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLabel($var)
+    public function setLabel(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->label = $var;
 
         return $this;
@@ -79,7 +80,7 @@ class DataChannelInfo extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->id = $var;
@@ -89,7 +90,7 @@ class DataChannelInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SignalTarget target = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SignalTarget}
      */
     public function getTarget()
     {
@@ -98,10 +99,10 @@ class DataChannelInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SignalTarget target = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SignalTarget}
      * @return $this
      */
-    public function setTarget($var)
+    public function setTarget(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SignalTarget::class);
         $this->target = $var;

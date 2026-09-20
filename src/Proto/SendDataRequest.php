@@ -68,7 +68,8 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      *           added by SDK to enable de-duping of messages, for INTERNAL USE ONLY
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -87,9 +88,9 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -109,9 +110,9 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setData($var)
+    public function setData(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->data = $var;
 
         return $this;
@@ -119,7 +120,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DataPacket.Kind kind = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\DataPacket\Kind}
      */
     public function getKind()
     {
@@ -128,10 +129,10 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.DataPacket.Kind kind = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\DataPacket\Kind}
      * @return $this
      */
-    public function setKind($var)
+    public function setKind(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\DataPacket\Kind::class);
         $this->kind = $var;
@@ -162,7 +163,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setDestinationSids($var)
+    public function setDestinationSids(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -191,7 +192,7 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setDestinationIdentities($var)
+    public function setDestinationIdentities(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->destination_identities = $arr;
@@ -223,9 +224,9 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTopic($var)
+    public function setTopic(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->topic = $var;
 
         return $this;
@@ -249,9 +250,9 @@ class SendDataRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNonce($var)
+    public function setNonce(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->nonce = $var;
 
         return $this;

@@ -69,7 +69,8 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      *           If set, the associated schema must be stored with `StoreDataBlobRequest`.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -94,7 +95,7 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setPubHandle($var)
+    public function setPubHandle(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->pub_handle = $var;
@@ -122,9 +123,9 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -134,7 +135,7 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * Method used for end-to-end encryption (E2EE) on frame payloads.
      *
      * Generated from protobuf field <code>.livekit.Encryption.Type encryption = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\Encryption\Type}
      */
     public function getEncryption()
     {
@@ -145,10 +146,10 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * Method used for end-to-end encryption (E2EE) on frame payloads.
      *
      * Generated from protobuf field <code>.livekit.Encryption.Type encryption = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\Encryption\Type}
      * @return $this
      */
-    public function setEncryption($var)
+    public function setEncryption(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\Encryption\Type::class);
         $this->encryption = $var;
@@ -184,9 +185,8 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackFrameEncoding $var
      * @return $this
      */
-    public function setFrameEncoding($var)
+    public function setFrameEncoding(\LiveKit\Proto\DataTrackFrameEncoding|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataTrackFrameEncoding::class);
         $this->frame_encoding = $var;
 
         return $this;
@@ -222,9 +222,8 @@ class PublishDataTrackRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackSchemaId $var
      * @return $this
      */
-    public function setSchema($var)
+    public function setSchema(\LiveKit\Proto\DataTrackSchemaId|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataTrackSchemaId::class);
         $this->schema = $var;
 
         return $this;

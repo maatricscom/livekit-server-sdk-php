@@ -28,7 +28,8 @@ class JobTermination extends \Google\Protobuf\Internal\Message
      *     @type string $job_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -47,9 +48,9 @@ class JobTermination extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setJobId($var)
+    public function setJobId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->job_id = $var;
 
         return $this;

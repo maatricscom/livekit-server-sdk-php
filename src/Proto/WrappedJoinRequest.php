@@ -36,14 +36,15 @@ class WrappedJoinRequest extends \Google\Protobuf\Internal\Message
      *           marshalled JoinRequest + potentially compressed
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.WrappedJoinRequest.Compression compression = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\WrappedJoinRequest\Compression}
      */
     public function getCompression()
     {
@@ -52,10 +53,10 @@ class WrappedJoinRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.WrappedJoinRequest.Compression compression = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\WrappedJoinRequest\Compression}
      * @return $this
      */
-    public function setCompression($var)
+    public function setCompression(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\WrappedJoinRequest\Compression::class);
         $this->compression = $var;
@@ -81,9 +82,9 @@ class WrappedJoinRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setJoinRequest($var)
+    public function setJoinRequest(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->join_request = $var;
 
         return $this;

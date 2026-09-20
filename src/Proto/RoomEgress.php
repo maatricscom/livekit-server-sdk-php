@@ -38,7 +38,8 @@ class RoomEgress extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AutoTrackEgress $tracks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -67,9 +68,8 @@ class RoomEgress extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomCompositeEgressRequest $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\RoomCompositeEgressRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomCompositeEgressRequest::class);
         $this->room = $var;
 
         return $this;
@@ -99,9 +99,8 @@ class RoomEgress extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AutoParticipantEgress $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\AutoParticipantEgress|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AutoParticipantEgress::class);
         $this->participant = $var;
 
         return $this;
@@ -131,9 +130,8 @@ class RoomEgress extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AutoTrackEgress $var
      * @return $this
      */
-    public function setTracks($var)
+    public function setTracks(\LiveKit\Proto\AutoTrackEgress|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AutoTrackEgress::class);
         $this->tracks = $var;
 
         return $this;

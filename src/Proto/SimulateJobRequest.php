@@ -38,14 +38,15 @@ class SimulateJobRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ParticipantInfo $participant
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.JobType type = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\JobType}
      */
     public function getType()
     {
@@ -54,10 +55,10 @@ class SimulateJobRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.JobType type = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\JobType}
      * @return $this
      */
-    public function setType($var)
+    public function setType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\JobType::class);
         $this->type = $var;
@@ -89,9 +90,8 @@ class SimulateJobRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Room $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(\LiveKit\Proto\Room|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Room::class);
         $this->room = $var;
 
         return $this;
@@ -121,9 +121,8 @@ class SimulateJobRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo $var
      * @return $this
      */
-    public function setParticipant($var)
+    public function setParticipant(\LiveKit\Proto\ParticipantInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantInfo::class);
         $this->participant = $var;
 
         return $this;

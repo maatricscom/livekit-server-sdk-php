@@ -66,7 +66,8 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      *           NEXT_ID: 9
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -85,9 +86,9 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setJobId($var)
+    public function setJobId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->job_id = $var;
 
         return $this;
@@ -107,9 +108,8 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAvailable($var)
+    public function setAvailable(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->available = $var;
 
         return $this;
@@ -129,9 +129,8 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSupportsResume($var)
+    public function setSupportsResume(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->supports_resume = $var;
 
         return $this;
@@ -151,9 +150,8 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setTerminate($var)
+    public function setTerminate(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->terminate = $var;
 
         return $this;
@@ -173,9 +171,9 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantName($var)
+    public function setParticipantName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_name = $var;
 
         return $this;
@@ -195,9 +193,9 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -217,9 +215,9 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantMetadata($var)
+    public function setParticipantMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_metadata = $var;
 
         return $this;
@@ -243,7 +241,7 @@ class AvailabilityResponse extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;

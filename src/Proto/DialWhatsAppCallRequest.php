@@ -129,7 +129,8 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      *           Max time for the callee to answer the call.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorWhatsapp::initOnce();
         parent::__construct($data);
     }
@@ -152,9 +153,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappPhoneNumberId($var)
+    public function setWhatsappPhoneNumberId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_phone_number_id = $var;
 
         return $this;
@@ -178,9 +179,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappToPhoneNumber($var)
+    public function setWhatsappToPhoneNumber(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_to_phone_number = $var;
 
         return $this;
@@ -204,9 +205,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappApiKey($var)
+    public function setWhatsappApiKey(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_api_key = $var;
 
         return $this;
@@ -230,9 +231,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappCloudApiVersion($var)
+    public function setWhatsappCloudApiVersion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_cloud_api_version = $var;
 
         return $this;
@@ -256,9 +257,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhatsappBizOpaqueCallbackData($var)
+    public function setWhatsappBizOpaqueCallbackData(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->whatsapp_biz_opaque_callback_data = $var;
 
         return $this;
@@ -282,9 +283,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -308,7 +309,7 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
-    public function setAgents($var)
+    public function setAgents(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\RoomAgentDispatch::class);
         $this->agents = $arr;
@@ -336,9 +337,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -362,9 +363,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantName($var)
+    public function setParticipantName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_name = $var;
 
         return $this;
@@ -388,9 +389,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantMetadata($var)
+    public function setParticipantMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_metadata = $var;
 
         return $this;
@@ -414,7 +415,7 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;
@@ -440,9 +441,9 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDestinationCountry($var)
+    public function setDestinationCountry(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->destination_country = $var;
 
         return $this;
@@ -476,9 +477,8 @@ class DialWhatsAppCallRequest extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setRingingTimeout($var)
+    public function setRingingTimeout(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->ringing_timeout = $var;
 
         return $this;

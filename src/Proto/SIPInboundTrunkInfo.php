@@ -176,7 +176,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      *     @type \Google\Protobuf\Timestamp $updated_at
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -195,9 +196,9 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipTrunkId($var)
+    public function setSipTrunkId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_trunk_id = $var;
 
         return $this;
@@ -221,9 +222,9 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -247,9 +248,9 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -275,7 +276,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setNumbers($var)
+    public function setNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->numbers = $arr;
@@ -303,7 +304,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setAllowedAddresses($var)
+    public function setAllowedAddresses(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->allowed_addresses = $arr;
@@ -331,7 +332,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setAllowedNumbers($var)
+    public function setAllowedNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->allowed_numbers = $arr;
@@ -359,9 +360,9 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthUsername($var)
+    public function setAuthUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_username = $var;
 
         return $this;
@@ -381,9 +382,9 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthPassword($var)
+    public function setAuthPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_password = $var;
 
         return $this;
@@ -403,9 +404,9 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthRealm($var)
+    public function setAuthRealm(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_realm = $var;
 
         return $this;
@@ -429,7 +430,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setHeaders($var)
+    public function setHeaders(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->headers = $arr;
@@ -455,7 +456,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setHeadersToAttributes($var)
+    public function setHeadersToAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->headers_to_attributes = $arr;
@@ -483,7 +484,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributesToHeaders($var)
+    public function setAttributesToHeaders(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes_to_headers = $arr;
@@ -498,7 +499,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * lowercase header names should be used, for example: sip.h.x-custom-header.
      *
      * Generated from protobuf field <code>.livekit.SIPHeaderOptions include_headers = 15;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPHeaderOptions}
      */
     public function getIncludeHeaders()
     {
@@ -512,10 +513,10 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * lowercase header names should be used, for example: sip.h.x-custom-header.
      *
      * Generated from protobuf field <code>.livekit.SIPHeaderOptions include_headers = 15;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPHeaderOptions}
      * @return $this
      */
-    public function setIncludeHeaders($var)
+    public function setIncludeHeaders(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPHeaderOptions::class);
         $this->include_headers = $var;
@@ -551,9 +552,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setRingingTimeout($var)
+    public function setRingingTimeout(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->ringing_timeout = $var;
 
         return $this;
@@ -587,9 +587,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setMaxCallDuration($var)
+    public function setMaxCallDuration(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->max_call_duration = $var;
 
         return $this;
@@ -609,9 +608,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setKrispEnabled($var)
+    public function setKrispEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->krisp_enabled = $var;
 
         return $this;
@@ -619,7 +617,7 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPMediaEncryption media_encryption = 16 [deprecated = true];</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @deprecated
      */
     public function getMediaEncryption()
@@ -632,11 +630,11 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPMediaEncryption media_encryption = 16 [deprecated = true];</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @return $this
      * @deprecated
      */
-    public function setMediaEncryption($var)
+    public function setMediaEncryption(int $var)
     {
         @trigger_error('media_encryption is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPMediaEncryption::class);
@@ -669,9 +667,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPMediaConfig $var
      * @return $this
      */
-    public function setMedia($var)
+    public function setMedia(\LiveKit\Proto\SIPMediaConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPMediaConfig::class);
         $this->media = $var;
 
         return $this;
@@ -701,9 +698,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setCreatedAt($var)
+    public function setCreatedAt(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->created_at = $var;
 
         return $this;
@@ -733,9 +729,8 @@ class SIPInboundTrunkInfo extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Timestamp $var
      * @return $this
      */
-    public function setUpdatedAt($var)
+    public function setUpdatedAt(\Google\Protobuf\Timestamp|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
         $this->updated_at = $var;
 
         return $this;

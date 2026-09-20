@@ -33,7 +33,8 @@ class Codec extends \Google\Protobuf\Internal\Message
      *     @type string $fmtp_line
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class Codec extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMime($var)
+    public function setMime(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->mime = $var;
 
         return $this;
@@ -74,9 +75,9 @@ class Codec extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFmtpLine($var)
+    public function setFmtpLine(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->fmtp_line = $var;
 
         return $this;

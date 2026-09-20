@@ -33,7 +33,8 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
      *     @type int[] $features
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -62,7 +63,7 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature features = 2;</code>
-     * @return RepeatedField<int>
+     * @return RepeatedField<int> one of the values in {@see \LiveKit\Proto\AudioTrackFeature}
      */
     public function getFeatures()
     {
@@ -71,10 +72,10 @@ class UpdateLocalAudioTrack extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated .livekit.AudioTrackFeature features = 2;</code>
-     * @param int[] $var
+     * @param int[] $var one of the values in {@see \LiveKit\Proto\AudioTrackFeature}
      * @return $this
      */
-    public function setFeatures($var)
+    public function setFeatures(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::ENUM, \LiveKit\Proto\AudioTrackFeature::class);
         $this->features = $arr;

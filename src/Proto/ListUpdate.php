@@ -57,7 +57,8 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      *           sets the list to an empty list
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -80,7 +81,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setSet($var)
+    public function setSet(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->set = $arr;
@@ -106,7 +107,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setAdd($var)
+    public function setAdd(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->add = $arr;
@@ -132,7 +133,7 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setRemove($var)
+    public function setRemove(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->remove = $arr;
@@ -158,9 +159,8 @@ class ListUpdate extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setClear($var)
+    public function setClear(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->clear = $var;
 
         return $this;

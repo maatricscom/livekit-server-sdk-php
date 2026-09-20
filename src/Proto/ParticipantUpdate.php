@@ -28,7 +28,8 @@ class ParticipantUpdate extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ParticipantInfo[] $participants
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class ParticipantUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantInfo[] $var
      * @return $this
      */
-    public function setParticipants($var)
+    public function setParticipants(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\ParticipantInfo::class);
         $this->participants = $arr;

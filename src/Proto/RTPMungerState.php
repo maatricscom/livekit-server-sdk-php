@@ -53,7 +53,8 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      *     @type bool $second_last_marker
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -72,7 +73,7 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setExtLastSequenceNumber($var)
+    public function setExtLastSequenceNumber(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->ext_last_sequence_number = $var;
@@ -94,7 +95,7 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setExtSecondLastSequenceNumber($var)
+    public function setExtSecondLastSequenceNumber(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->ext_second_last_sequence_number = $var;
@@ -116,7 +117,7 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setExtLastTimestamp($var)
+    public function setExtLastTimestamp(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->ext_last_timestamp = $var;
@@ -138,7 +139,7 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setExtSecondLastTimestamp($var)
+    public function setExtSecondLastTimestamp(int|string $var)
     {
         GPBUtil::checkUint64($var);
         $this->ext_second_last_timestamp = $var;
@@ -160,9 +161,8 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setLastMarker($var)
+    public function setLastMarker(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->last_marker = $var;
 
         return $this;
@@ -182,9 +182,8 @@ class RTPMungerState extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSecondLastMarker($var)
+    public function setSecondLastMarker(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->second_last_marker = $var;
 
         return $this;

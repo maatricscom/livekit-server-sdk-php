@@ -31,7 +31,8 @@ class ConnectTwilioCallResponse extends \Google\Protobuf\Internal\Message
      *           The websocket URL which twilio media stream will connect to
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorTwilio::initOnce();
         parent::__construct($data);
     }
@@ -54,9 +55,9 @@ class ConnectTwilioCallResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setConnectUrl($var)
+    public function setConnectUrl(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->connect_url = $var;
 
         return $this;

@@ -36,7 +36,8 @@ class Pagination extends \Google\Protobuf\Internal\Message
      *     @type int $limit
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -59,9 +60,9 @@ class Pagination extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAfterId($var)
+    public function setAfterId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->after_id = $var;
 
         return $this;
@@ -81,7 +82,7 @@ class Pagination extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setLimit($var)
+    public function setLimit(int $var)
     {
         GPBUtil::checkInt32($var);
         $this->limit = $var;

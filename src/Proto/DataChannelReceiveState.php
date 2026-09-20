@@ -33,7 +33,8 @@ class DataChannelReceiveState extends \Google\Protobuf\Internal\Message
      *     @type int $last_seq
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class DataChannelReceiveState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPublisherSid($var)
+    public function setPublisherSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->publisher_sid = $var;
 
         return $this;
@@ -74,7 +75,7 @@ class DataChannelReceiveState extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setLastSeq($var)
+    public function setLastSeq(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->last_seq = $var;

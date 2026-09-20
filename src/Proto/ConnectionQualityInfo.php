@@ -38,7 +38,8 @@ class ConnectionQualityInfo extends \Google\Protobuf\Internal\Message
      *     @type float $score
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class ConnectionQualityInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantSid($var)
+    public function setParticipantSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_sid = $var;
 
         return $this;
@@ -67,7 +68,7 @@ class ConnectionQualityInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ConnectionQuality quality = 2;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ConnectionQuality}
      */
     public function getQuality()
     {
@@ -76,10 +77,10 @@ class ConnectionQualityInfo extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.ConnectionQuality quality = 2;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ConnectionQuality}
      * @return $this
      */
-    public function setQuality($var)
+    public function setQuality(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ConnectionQuality::class);
         $this->quality = $var;
@@ -101,9 +102,8 @@ class ConnectionQualityInfo extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setScore($var)
+    public function setScore(float $var)
     {
-        GPBUtil::checkFloat($var);
         $this->score = $var;
 
         return $this;

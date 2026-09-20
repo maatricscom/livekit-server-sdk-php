@@ -44,7 +44,8 @@ class SpeakerInfo extends \Google\Protobuf\Internal\Message
      *           true if speaker is currently active
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -63,9 +64,9 @@ class SpeakerInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSid($var)
+    public function setSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sid = $var;
 
         return $this;
@@ -89,9 +90,8 @@ class SpeakerInfo extends \Google\Protobuf\Internal\Message
      * @param float $var
      * @return $this
      */
-    public function setLevel($var)
+    public function setLevel(float $var)
     {
-        GPBUtil::checkFloat($var);
         $this->level = $var;
 
         return $this;
@@ -115,9 +115,8 @@ class SpeakerInfo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setActive($var)
+    public function setActive(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->active = $var;
 
         return $this;

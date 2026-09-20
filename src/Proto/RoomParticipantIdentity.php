@@ -49,7 +49,8 @@ class RoomParticipantIdentity extends \Google\Protobuf\Internal\Message
      *           Used only by RemoveParticipant; defaults to now(server)+leeway(1min) if left empty.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -72,9 +73,9 @@ class RoomParticipantIdentity extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -98,9 +99,9 @@ class RoomParticipantIdentity extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIdentity($var)
+    public function setIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->identity = $var;
 
         return $this;
@@ -126,7 +127,7 @@ class RoomParticipantIdentity extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setRevokeTokenTs($var)
+    public function setRevokeTokenTs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->revoke_token_ts = $var;

@@ -52,7 +52,8 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      *           Use specific media timeout. If zero or not specified, will use default timeout.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -75,9 +76,8 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setOnlyListedCodecs($var)
+    public function setOnlyListedCodecs(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->only_listed_codecs = $var;
 
         return $this;
@@ -101,7 +101,7 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPCodec[] $var
      * @return $this
      */
-    public function setCodecs($var)
+    public function setCodecs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SIPCodec::class);
         $this->codecs = $arr;
@@ -111,7 +111,7 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>optional .livekit.SIPMediaEncryption encryption = 3;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      */
     public function getEncryption()
     {
@@ -130,10 +130,10 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>optional .livekit.SIPMediaEncryption encryption = 3;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @return $this
      */
-    public function setEncryption($var)
+    public function setEncryption(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPMediaEncryption::class);
         $this->encryption = $var;
@@ -169,9 +169,8 @@ class SIPMediaConfig extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setMediaTimeout($var)
+    public function setMediaTimeout(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->media_timeout = $var;
 
         return $this;

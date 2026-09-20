@@ -37,7 +37,8 @@ class Output extends \Google\Protobuf\Internal\Message
      *           Per-output storage override (falls back to request, then server)
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -61,9 +62,8 @@ class Output extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\FileOutput $var
      * @return $this
      */
-    public function setFile($var)
+    public function setFile(\LiveKit\Proto\FileOutput|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\FileOutput::class);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -88,9 +88,8 @@ class Output extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamOutput $var
      * @return $this
      */
-    public function setStream($var)
+    public function setStream(\LiveKit\Proto\StreamOutput|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StreamOutput::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -115,9 +114,8 @@ class Output extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SegmentedFileOutput $var
      * @return $this
      */
-    public function setSegments($var)
+    public function setSegments(\LiveKit\Proto\SegmentedFileOutput|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SegmentedFileOutput::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -146,9 +144,8 @@ class Output extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ImageOutput $var
      * @return $this
      */
-    public function setImages($var)
+    public function setImages(\LiveKit\Proto\ImageOutput|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ImageOutput::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -182,9 +179,8 @@ class Output extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StorageConfig $var
      * @return $this
      */
-    public function setStorage($var)
+    public function setStorage(\LiveKit\Proto\StorageConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StorageConfig::class);
         $this->storage = $var;
 
         return $this;

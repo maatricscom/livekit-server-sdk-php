@@ -39,7 +39,8 @@ class ListAgentDispatchRequest extends \Google\Protobuf\Internal\Message
      *           name of the room to list agents for. Must be set.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgentDispatch::initOnce();
         parent::__construct($data);
     }
@@ -62,9 +63,9 @@ class ListAgentDispatchRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDispatchId($var)
+    public function setDispatchId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->dispatch_id = $var;
 
         return $this;
@@ -88,9 +89,9 @@ class ListAgentDispatchRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;

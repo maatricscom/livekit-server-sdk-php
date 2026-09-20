@@ -33,7 +33,8 @@ class MediaSectionsRequirement extends \Google\Protobuf\Internal\Message
      *     @type int $num_videos
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,7 +53,7 @@ class MediaSectionsRequirement extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setNumAudios($var)
+    public function setNumAudios(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->num_audios = $var;
@@ -74,7 +75,7 @@ class MediaSectionsRequirement extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setNumVideos($var)
+    public function setNumVideos(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->num_videos = $var;

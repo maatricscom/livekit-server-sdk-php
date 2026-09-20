@@ -28,7 +28,8 @@ class RoomAgent extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\RoomAgentDispatch[] $dispatches
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class RoomAgent extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
-    public function setDispatches($var)
+    public function setDispatches(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\RoomAgentDispatch::class);
         $this->dispatches = $arr;

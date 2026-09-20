@@ -53,7 +53,8 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      *     @type string $location
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -72,9 +73,9 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilename($var)
+    public function setFilename(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filename = $var;
 
         return $this;
@@ -94,7 +95,7 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -116,7 +117,7 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;
@@ -138,7 +139,7 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setDuration($var)
+    public function setDuration(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->duration = $var;
@@ -160,7 +161,7 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setSize($var)
+    public function setSize(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->size = $var;
@@ -182,9 +183,9 @@ class FileInfo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLocation($var)
+    public function setLocation(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->location = $var;
 
         return $this;

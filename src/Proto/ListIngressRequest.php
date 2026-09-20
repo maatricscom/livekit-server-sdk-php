@@ -44,7 +44,8 @@ class ListIngressRequest extends \Google\Protobuf\Internal\Message
      *           (optional, filter by ingress ID)
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitIngress::initOnce();
         parent::__construct($data);
     }
@@ -73,9 +74,8 @@ class ListIngressRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TokenPagination $var
      * @return $this
      */
-    public function setPageToken($var)
+    public function setPageToken(\LiveKit\Proto\TokenPagination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TokenPagination::class);
         $this->page_token = $var;
 
         return $this;
@@ -99,9 +99,9 @@ class ListIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -125,9 +125,9 @@ class ListIngressRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIngressId($var)
+    public function setIngressId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->ingress_id = $var;
 
         return $this;

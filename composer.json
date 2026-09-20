@@ -24,7 +24,7 @@
     "require": {
         "php": "^8.3",
         "ext-json": "*",
-        "google/protobuf": "^4.33.6 || ^5.36",
+        "google/protobuf": "^5.36",
         "firebase/php-jwt": "^7.1",
         "psr/http-client": "^1.0.3",
         "psr/http-factory": "^1.1",

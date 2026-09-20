@@ -66,7 +66,8 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      *     @type array|\Google\Protobuf\Internal\MapField $attributes
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgentDispatch::initOnce();
         parent::__construct($data);
     }
@@ -85,9 +86,9 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setId($var)
+    public function setId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->id = $var;
 
         return $this;
@@ -107,9 +108,9 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAgentName($var)
+    public function setAgentName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->agent_name = $var;
 
         return $this;
@@ -129,9 +130,9 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoom($var)
+    public function setRoom(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room = $var;
 
         return $this;
@@ -151,9 +152,9 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -183,9 +184,8 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AgentDispatchState $var
      * @return $this
      */
-    public function setState($var)
+    public function setState(\LiveKit\Proto\AgentDispatchState|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AgentDispatchState::class);
         $this->state = $var;
 
         return $this;
@@ -195,7 +195,7 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * cloud only
      *
      * Generated from protobuf field <code>.livekit.JobRestartPolicy restart_policy = 6;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\JobRestartPolicy}
      */
     public function getRestartPolicy()
     {
@@ -206,10 +206,10 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * cloud only
      *
      * Generated from protobuf field <code>.livekit.JobRestartPolicy restart_policy = 6;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\JobRestartPolicy}
      * @return $this
      */
-    public function setRestartPolicy($var)
+    public function setRestartPolicy(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\JobRestartPolicy::class);
         $this->restart_policy = $var;
@@ -231,9 +231,9 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDeployment($var)
+    public function setDeployment(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->deployment = $var;
 
         return $this;
@@ -253,7 +253,7 @@ class AgentDispatch extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setAttributes($var)
+    public function setAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->attributes = $arr;

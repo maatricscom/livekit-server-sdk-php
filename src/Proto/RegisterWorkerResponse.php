@@ -33,7 +33,8 @@ class RegisterWorkerResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ServerInfo $server_info
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class RegisterWorkerResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWorkerId($var)
+    public function setWorkerId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->worker_id = $var;
 
         return $this;
@@ -84,9 +85,8 @@ class RegisterWorkerResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ServerInfo $var
      * @return $this
      */
-    public function setServerInfo($var)
+    public function setServerInfo(\LiveKit\Proto\ServerInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ServerInfo::class);
         $this->server_info = $var;
 
         return $this;

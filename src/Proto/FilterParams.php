@@ -33,7 +33,8 @@ class FilterParams extends \Google\Protobuf\Internal\Message
      *     @type string[] $exclude_events
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -52,7 +53,7 @@ class FilterParams extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setIncludeEvents($var)
+    public function setIncludeEvents(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->include_events = $arr;
@@ -74,7 +75,7 @@ class FilterParams extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setExcludeEvents($var)
+    public function setExcludeEvents(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->exclude_events = $arr;

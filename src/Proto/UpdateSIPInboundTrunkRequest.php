@@ -31,7 +31,8 @@ class UpdateSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPInboundTrunkUpdate $update
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -50,9 +51,9 @@ class UpdateSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipTrunkId($var)
+    public function setSipTrunkId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_trunk_id = $var;
 
         return $this;
@@ -77,9 +78,8 @@ class UpdateSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPInboundTrunkInfo $var
      * @return $this
      */
-    public function setReplace($var)
+    public function setReplace(\LiveKit\Proto\SIPInboundTrunkInfo|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPInboundTrunkInfo::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -104,9 +104,8 @@ class UpdateSIPInboundTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPInboundTrunkUpdate $var
      * @return $this
      */
-    public function setUpdate($var)
+    public function setUpdate(\LiveKit\Proto\SIPInboundTrunkUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPInboundTrunkUpdate::class);
         $this->writeOneof(3, $var);
 
         return $this;

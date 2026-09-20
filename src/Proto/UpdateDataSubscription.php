@@ -28,7 +28,8 @@ class UpdateDataSubscription extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\UpdateDataSubscription\Update[] $updates
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class UpdateDataSubscription extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateDataSubscription\Update[] $var
      * @return $this
      */
-    public function setUpdates($var)
+    public function setUpdates(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\UpdateDataSubscription\Update::class);
         $this->updates = $arr;

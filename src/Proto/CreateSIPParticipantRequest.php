@@ -264,7 +264,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      *           NEXT ID: 28
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -287,9 +288,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipTrunkId($var)
+    public function setSipTrunkId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_trunk_id = $var;
 
         return $this;
@@ -319,9 +320,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPOutboundConfig $var
      * @return $this
      */
-    public function setTrunk($var)
+    public function setTrunk(\LiveKit\Proto\SIPOutboundConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPOutboundConfig::class);
         $this->trunk = $var;
 
         return $this;
@@ -355,9 +355,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPRequestDest $var
      * @return $this
      */
-    public function setSipRequestUri($var)
+    public function setSipRequestUri(\LiveKit\Proto\SIPRequestDest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPRequestDest::class);
         $this->sip_request_uri = $var;
 
         return $this;
@@ -393,9 +392,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPNamedDest $var
      * @return $this
      */
-    public function setSipToHeader($var)
+    public function setSipToHeader(\LiveKit\Proto\SIPNamedDest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPNamedDest::class);
         $this->sip_to_header = $var;
 
         return $this;
@@ -429,9 +427,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPNamedDest $var
      * @return $this
      */
-    public function setSipFromHeader($var)
+    public function setSipFromHeader(\LiveKit\Proto\SIPNamedDest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPNamedDest::class);
         $this->sip_from_header = $var;
 
         return $this;
@@ -455,9 +452,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipCallTo($var)
+    public function setSipCallTo(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_call_to = $var;
 
         return $this;
@@ -493,9 +490,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setToUserOverride($var)
+    public function setToUserOverride(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->to_user_override = $var;
 
         return $this;
@@ -519,9 +516,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSipNumber($var)
+    public function setSipNumber(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->sip_number = $var;
 
         return $this;
@@ -545,9 +542,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -571,9 +568,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -597,9 +594,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantName($var)
+    public function setParticipantName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_name = $var;
 
         return $this;
@@ -623,9 +620,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantMetadata($var)
+    public function setParticipantMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_metadata = $var;
 
         return $this;
@@ -649,7 +646,7 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;
@@ -677,9 +674,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDtmf($var)
+    public function setDtmf(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->dtmf = $var;
 
         return $this;
@@ -708,10 +705,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setPlayRingtone($var)
+    public function setPlayRingtone(bool $var)
     {
         @trigger_error('play_ringtone is deprecated.', E_USER_DEPRECATED);
-        GPBUtil::checkBool($var);
         $this->play_ringtone = $var;
 
         return $this;
@@ -731,9 +727,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setPlayDialtone($var)
+    public function setPlayDialtone(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->play_dialtone = $var;
 
         return $this;
@@ -759,9 +754,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setHidePhoneNumber($var)
+    public function setHidePhoneNumber(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->hide_phone_number = $var;
 
         return $this;
@@ -785,7 +779,7 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setHeaders($var)
+    public function setHeaders(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->headers = $arr;
@@ -800,7 +794,7 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * lowercase header names should be used, for example: sip.h.x-custom-header.
      *
      * Generated from protobuf field <code>.livekit.SIPHeaderOptions include_headers = 17;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPHeaderOptions}
      */
     public function getIncludeHeaders()
     {
@@ -814,10 +808,10 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * lowercase header names should be used, for example: sip.h.x-custom-header.
      *
      * Generated from protobuf field <code>.livekit.SIPHeaderOptions include_headers = 17;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPHeaderOptions}
      * @return $this
      */
-    public function setIncludeHeaders($var)
+    public function setIncludeHeaders(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPHeaderOptions::class);
         $this->include_headers = $var;
@@ -853,9 +847,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setRingingTimeout($var)
+    public function setRingingTimeout(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->ringing_timeout = $var;
 
         return $this;
@@ -889,9 +882,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \Google\Protobuf\Duration $var
      * @return $this
      */
-    public function setMaxCallDuration($var)
+    public function setMaxCallDuration(\Google\Protobuf\Duration|null $var)
     {
-        GPBUtil::checkMessage($var, \Google\Protobuf\Duration::class);
         $this->max_call_duration = $var;
 
         return $this;
@@ -915,9 +907,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setKrispEnabled($var)
+    public function setKrispEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->krisp_enabled = $var;
 
         return $this;
@@ -925,7 +916,7 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPMediaEncryption media_encryption = 18 [deprecated = true];</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @deprecated
      */
     public function getMediaEncryption()
@@ -938,11 +929,11 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.SIPMediaEncryption media_encryption = 18 [deprecated = true];</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @return $this
      * @deprecated
      */
-    public function setMediaEncryption($var)
+    public function setMediaEncryption(int $var)
     {
         @trigger_error('media_encryption is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPMediaEncryption::class);
@@ -975,9 +966,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPMediaConfig $var
      * @return $this
      */
-    public function setMedia($var)
+    public function setMedia(\LiveKit\Proto\SIPMediaConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPMediaConfig::class);
         $this->media = $var;
 
         return $this;
@@ -1001,9 +991,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWaitUntilAnswered($var)
+    public function setWaitUntilAnswered(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->wait_until_answered = $var;
 
         return $this;
@@ -1045,9 +1034,9 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDisplayName($var)
+    public function setDisplayName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->display_name = $var;
 
         return $this;
@@ -1081,9 +1070,8 @@ class CreateSIPParticipantRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Destination $var
      * @return $this
      */
-    public function setDestination($var)
+    public function setDestination(\LiveKit\Proto\Destination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Destination::class);
         $this->destination = $var;
 
         return $this;

@@ -109,7 +109,8 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      *           Optional user-defined metadata for the Trunk.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -134,7 +135,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setInboundAddresses($var)
+    public function setInboundAddresses(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->inbound_addresses = $arr;
@@ -160,9 +161,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundAddress($var)
+    public function setOutboundAddress(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_address = $var;
 
         return $this;
@@ -186,9 +187,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundNumber($var)
+    public function setOutboundNumber(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_number = $var;
 
         return $this;
@@ -213,7 +214,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @return $this
      * @deprecated
      */
-    public function setInboundNumbersRegex($var)
+    public function setInboundNumbersRegex(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         if (count($arr) !== 0) {
@@ -246,7 +247,7 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setInboundNumbers($var)
+    public function setInboundNumbers(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->inbound_numbers = $arr;
@@ -274,9 +275,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setInboundUsername($var)
+    public function setInboundUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->inbound_username = $var;
 
         return $this;
@@ -296,9 +297,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setInboundPassword($var)
+    public function setInboundPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->inbound_password = $var;
 
         return $this;
@@ -318,9 +319,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundUsername($var)
+    public function setOutboundUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_username = $var;
 
         return $this;
@@ -340,9 +341,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setOutboundPassword($var)
+    public function setOutboundPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->outbound_password = $var;
 
         return $this;
@@ -366,9 +367,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -392,9 +393,9 @@ class CreateSIPTrunkRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;

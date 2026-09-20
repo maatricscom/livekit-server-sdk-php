@@ -86,7 +86,8 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AliOSSUpload $aliOSS
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -95,7 +96,7 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * (optional)
      *
      * Generated from protobuf field <code>.livekit.SegmentedFileProtocol protocol = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SegmentedFileProtocol}
      */
     public function getProtocol()
     {
@@ -106,10 +107,10 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * (optional)
      *
      * Generated from protobuf field <code>.livekit.SegmentedFileProtocol protocol = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SegmentedFileProtocol}
      * @return $this
      */
-    public function setProtocol($var)
+    public function setProtocol(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SegmentedFileProtocol::class);
         $this->protocol = $var;
@@ -135,9 +136,9 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilenamePrefix($var)
+    public function setFilenamePrefix(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filename_prefix = $var;
 
         return $this;
@@ -161,9 +162,9 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPlaylistName($var)
+    public function setPlaylistName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->playlist_name = $var;
 
         return $this;
@@ -187,9 +188,9 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLivePlaylistName($var)
+    public function setLivePlaylistName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->live_playlist_name = $var;
 
         return $this;
@@ -213,7 +214,7 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setSegmentDuration($var)
+    public function setSegmentDuration(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->segment_duration = $var;
@@ -225,7 +226,7 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * (optional, default INDEX)
      *
      * Generated from protobuf field <code>.livekit.SegmentedFileSuffix filename_suffix = 10;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SegmentedFileSuffix}
      */
     public function getFilenameSuffix()
     {
@@ -236,10 +237,10 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * (optional, default INDEX)
      *
      * Generated from protobuf field <code>.livekit.SegmentedFileSuffix filename_suffix = 10;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SegmentedFileSuffix}
      * @return $this
      */
-    public function setFilenameSuffix($var)
+    public function setFilenameSuffix(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\SegmentedFileSuffix::class);
         $this->filename_suffix = $var;
@@ -265,9 +266,8 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableManifest($var)
+    public function setDisableManifest(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_manifest = $var;
 
         return $this;
@@ -292,9 +292,8 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\S3Upload $var
      * @return $this
      */
-    public function setS3($var)
+    public function setS3(\LiveKit\Proto\S3Upload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\S3Upload::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -319,9 +318,8 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\GCPUpload $var
      * @return $this
      */
-    public function setGcp($var)
+    public function setGcp(\LiveKit\Proto\GCPUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\GCPUpload::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -346,9 +344,8 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AzureBlobUpload $var
      * @return $this
      */
-    public function setAzure($var)
+    public function setAzure(\LiveKit\Proto\AzureBlobUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AzureBlobUpload::class);
         $this->writeOneof(7, $var);
 
         return $this;
@@ -373,9 +370,8 @@ class SegmentedFileOutput extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AliOSSUpload $var
      * @return $this
      */
-    public function setAliOSS($var)
+    public function setAliOSS(\LiveKit\Proto\AliOSSUpload|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AliOSSUpload::class);
         $this->writeOneof(9, $var);
 
         return $this;

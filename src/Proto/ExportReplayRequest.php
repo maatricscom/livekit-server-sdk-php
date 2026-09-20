@@ -60,7 +60,8 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\WebhookConfig[] $webhooks
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -79,9 +80,9 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setReplayId($var)
+    public function setReplayId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->replay_id = $var;
 
         return $this;
@@ -101,7 +102,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartOffsetMs($var)
+    public function setStartOffsetMs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->start_offset_ms = $var;
@@ -123,7 +124,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndOffsetMs($var)
+    public function setEndOffsetMs(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->end_offset_ms = $var;
@@ -150,9 +151,8 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TemplateSource $var
      * @return $this
      */
-    public function setTemplate($var)
+    public function setTemplate(\LiveKit\Proto\TemplateSource|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TemplateSource::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -177,9 +177,8 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WebSource $var
      * @return $this
      */
-    public function setWeb($var)
+    public function setWeb(\LiveKit\Proto\WebSource|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\WebSource::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -204,9 +203,8 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\MediaSource $var
      * @return $this
      */
-    public function setMedia($var)
+    public function setMedia(\LiveKit\Proto\MediaSource|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\MediaSource::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -214,7 +212,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 7;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      */
     public function getPreset()
     {
@@ -228,10 +226,10 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodingOptionsPreset preset = 7;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EncodingOptionsPreset}
      * @return $this
      */
-    public function setPreset($var)
+    public function setPreset(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EncodingOptionsPreset::class);
         $this->writeOneof(7, $var);
@@ -258,9 +256,8 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\EncodingOptions $var
      * @return $this
      */
-    public function setAdvanced($var)
+    public function setAdvanced(\LiveKit\Proto\EncodingOptions|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\EncodingOptions::class);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -280,7 +277,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Output[] $var
      * @return $this
      */
-    public function setOutputs($var)
+    public function setOutputs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\Output::class);
         $this->outputs = $arr;
@@ -312,9 +309,8 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StorageConfig $var
      * @return $this
      */
-    public function setStorage($var)
+    public function setStorage(\LiveKit\Proto\StorageConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StorageConfig::class);
         $this->storage = $var;
 
         return $this;
@@ -334,7 +330,7 @@ class ExportReplayRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WebhookConfig[] $var
      * @return $this
      */
-    public function setWebhooks($var)
+    public function setWebhooks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\WebhookConfig::class);
         $this->webhooks = $arr;

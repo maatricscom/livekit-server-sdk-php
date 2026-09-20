@@ -63,14 +63,15 @@ class JobState extends \Google\Protobuf\Internal\Message
      *     @type string $agent_id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.JobStatus status = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\JobStatus}
      */
     public function getStatus()
     {
@@ -79,10 +80,10 @@ class JobState extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.JobStatus status = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\JobStatus}
      * @return $this
      */
-    public function setStatus($var)
+    public function setStatus(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\JobStatus::class);
         $this->status = $var;
@@ -104,9 +105,9 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setError($var)
+    public function setError(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->error = $var;
 
         return $this;
@@ -126,7 +127,7 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setStartedAt($var)
+    public function setStartedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->started_at = $var;
@@ -148,7 +149,7 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setEndedAt($var)
+    public function setEndedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->ended_at = $var;
@@ -170,7 +171,7 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setUpdatedAt($var)
+    public function setUpdatedAt(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->updated_at = $var;
@@ -192,9 +193,9 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -214,9 +215,9 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWorkerId($var)
+    public function setWorkerId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->worker_id = $var;
 
         return $this;
@@ -236,9 +237,9 @@ class JobState extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAgentId($var)
+    public function setAgentId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->agent_id = $var;
 
         return $this;

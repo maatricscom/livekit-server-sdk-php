@@ -33,7 +33,8 @@ class SIPCodec extends \Google\Protobuf\Internal\Message
      *     @type int $rate
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class SIPCodec extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -74,7 +75,7 @@ class SIPCodec extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRate($var)
+    public function setRate(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->rate = $var;

@@ -33,7 +33,8 @@ class ServerMessage extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\WorkerPong $pong
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -61,9 +62,8 @@ class ServerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RegisterWorkerResponse $var
      * @return $this
      */
-    public function setRegister($var)
+    public function setRegister(\LiveKit\Proto\RegisterWorkerResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RegisterWorkerResponse::class);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -92,9 +92,8 @@ class ServerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AvailabilityRequest $var
      * @return $this
      */
-    public function setAvailability($var)
+    public function setAvailability(\LiveKit\Proto\AvailabilityRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AvailabilityRequest::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -119,9 +118,8 @@ class ServerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\JobAssignment $var
      * @return $this
      */
-    public function setAssignment($var)
+    public function setAssignment(\LiveKit\Proto\JobAssignment|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\JobAssignment::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -146,9 +144,8 @@ class ServerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\JobTermination $var
      * @return $this
      */
-    public function setTermination($var)
+    public function setTermination(\LiveKit\Proto\JobTermination|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\JobTermination::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -173,9 +170,8 @@ class ServerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WorkerPong $var
      * @return $this
      */
-    public function setPong($var)
+    public function setPong(\LiveKit\Proto\WorkerPong|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\WorkerPong::class);
         $this->writeOneof(4, $var);
 
         return $this;

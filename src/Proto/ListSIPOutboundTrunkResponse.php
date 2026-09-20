@@ -28,7 +28,8 @@ class ListSIPOutboundTrunkResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPOutboundTrunkInfo[] $items
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class ListSIPOutboundTrunkResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPOutboundTrunkInfo[] $var
      * @return $this
      */
-    public function setItems($var)
+    public function setItems(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SIPOutboundTrunkInfo::class);
         $this->items = $arr;

@@ -74,7 +74,8 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SIPMediaConfig $media
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitSip::initOnce();
         parent::__construct($data);
     }
@@ -103,9 +104,8 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ListUpdate $var
      * @return $this
      */
-    public function setNumbers($var)
+    public function setNumbers(\LiveKit\Proto\ListUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ListUpdate::class);
         $this->numbers = $var;
 
         return $this;
@@ -135,9 +135,8 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ListUpdate $var
      * @return $this
      */
-    public function setAllowedAddresses($var)
+    public function setAllowedAddresses(\LiveKit\Proto\ListUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ListUpdate::class);
         $this->allowed_addresses = $var;
 
         return $this;
@@ -167,9 +166,8 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ListUpdate $var
      * @return $this
      */
-    public function setAllowedNumbers($var)
+    public function setAllowedNumbers(\LiveKit\Proto\ListUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ListUpdate::class);
         $this->allowed_numbers = $var;
 
         return $this;
@@ -199,9 +197,9 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthUsername($var)
+    public function setAuthUsername(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_username = $var;
 
         return $this;
@@ -231,9 +229,9 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthPassword($var)
+    public function setAuthPassword(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_password = $var;
 
         return $this;
@@ -263,9 +261,9 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAuthRealm($var)
+    public function setAuthRealm(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->auth_realm = $var;
 
         return $this;
@@ -295,9 +293,9 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -327,9 +325,9 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -337,7 +335,7 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>optional .livekit.SIPMediaEncryption media_encryption = 8 [deprecated = true];</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @deprecated
      */
     public function getMediaEncryption()
@@ -364,11 +362,11 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>optional .livekit.SIPMediaEncryption media_encryption = 8 [deprecated = true];</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\SIPMediaEncryption}
      * @return $this
      * @deprecated
      */
-    public function setMediaEncryption($var)
+    public function setMediaEncryption(int $var)
     {
         @trigger_error('media_encryption is deprecated.', E_USER_DEPRECATED);
         GPBUtil::checkEnum($var, \LiveKit\Proto\SIPMediaEncryption::class);
@@ -401,9 +399,8 @@ class SIPInboundTrunkUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SIPMediaConfig $var
      * @return $this
      */
-    public function setMedia($var)
+    public function setMedia(\LiveKit\Proto\SIPMediaConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SIPMediaConfig::class);
         $this->media = $var;
 
         return $this;

@@ -33,7 +33,8 @@ class ParticipantVideo extends \Google\Protobuf\Internal\Message
      *     @type bool $prefer_screen_share
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class ParticipantVideo extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIdentity($var)
+    public function setIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->identity = $var;
 
         return $this;
@@ -74,9 +75,8 @@ class ParticipantVideo extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setPreferScreenShare($var)
+    public function setPreferScreenShare(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->prefer_screen_share = $var;
 
         return $this;

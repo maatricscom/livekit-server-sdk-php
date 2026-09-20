@@ -41,14 +41,15 @@ class FileOutput extends \Google\Protobuf\Internal\Message
      *     @type bool $disable_manifest
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.livekit.EncodedFileType file_type = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\EncodedFileType}
      */
     public function getFileType()
     {
@@ -57,10 +58,10 @@ class FileOutput extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>.livekit.EncodedFileType file_type = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\EncodedFileType}
      * @return $this
      */
-    public function setFileType($var)
+    public function setFileType(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\EncodedFileType::class);
         $this->file_type = $var;
@@ -82,9 +83,9 @@ class FileOutput extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilepath($var)
+    public function setFilepath(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->filepath = $var;
 
         return $this;
@@ -104,9 +105,8 @@ class FileOutput extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableManifest($var)
+    public function setDisableManifest(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->disable_manifest = $var;
 
         return $this;

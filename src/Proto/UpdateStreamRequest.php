@@ -38,7 +38,8 @@ class UpdateStreamRequest extends \Google\Protobuf\Internal\Message
      *     @type string[] $remove_output_urls
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -57,9 +58,9 @@ class UpdateStreamRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEgressId($var)
+    public function setEgressId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->egress_id = $var;
 
         return $this;
@@ -79,7 +80,7 @@ class UpdateStreamRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setAddOutputUrls($var)
+    public function setAddOutputUrls(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->add_output_urls = $arr;
@@ -101,7 +102,7 @@ class UpdateStreamRequest extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setRemoveOutputUrls($var)
+    public function setRemoveOutputUrls(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->remove_output_urls = $arr;

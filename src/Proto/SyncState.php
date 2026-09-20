@@ -82,7 +82,8 @@ class SyncState extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\UpdateDataSubscription $data_subscription
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -119,9 +120,8 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SessionDescription $var
      * @return $this
      */
-    public function setAnswer($var)
+    public function setAnswer(\LiveKit\Proto\SessionDescription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SessionDescription::class);
         $this->answer = $var;
 
         return $this;
@@ -151,9 +151,8 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateSubscription $var
      * @return $this
      */
-    public function setSubscription($var)
+    public function setSubscription(\LiveKit\Proto\UpdateSubscription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateSubscription::class);
         $this->subscription = $var;
 
         return $this;
@@ -173,7 +172,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackPublishedResponse[] $var
      * @return $this
      */
-    public function setPublishTracks($var)
+    public function setPublishTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\TrackPublishedResponse::class);
         $this->publish_tracks = $arr;
@@ -195,7 +194,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataChannelInfo[] $var
      * @return $this
      */
-    public function setDataChannels($var)
+    public function setDataChannels(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\DataChannelInfo::class);
         $this->data_channels = $arr;
@@ -235,9 +234,8 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SessionDescription $var
      * @return $this
      */
-    public function setOffer($var)
+    public function setOffer(\LiveKit\Proto\SessionDescription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SessionDescription::class);
         $this->offer = $var;
 
         return $this;
@@ -257,7 +255,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param string[] $var
      * @return $this
      */
-    public function setTrackSidsDisabled($var)
+    public function setTrackSidsDisabled(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->track_sids_disabled = $arr;
@@ -279,7 +277,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataChannelReceiveState[] $var
      * @return $this
      */
-    public function setDatachannelReceiveStates($var)
+    public function setDatachannelReceiveStates(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\DataChannelReceiveState::class);
         $this->datachannel_receive_states = $arr;
@@ -301,7 +299,7 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\PublishDataTrackResponse[] $var
      * @return $this
      */
-    public function setPublishDataTracks($var)
+    public function setPublishDataTracks(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\PublishDataTrackResponse::class);
         $this->publish_data_tracks = $arr;
@@ -333,9 +331,8 @@ class SyncState extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateDataSubscription $var
      * @return $this
      */
-    public function setDataSubscription($var)
+    public function setDataSubscription(\LiveKit\Proto\UpdateDataSubscription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateDataSubscription::class);
         $this->data_subscription = $var;
 
         return $this;

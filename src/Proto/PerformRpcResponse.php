@@ -28,7 +28,8 @@ class PerformRpcResponse extends \Google\Protobuf\Internal\Message
      *     @type string $payload
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -47,9 +48,9 @@ class PerformRpcResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPayload($var)
+    public function setPayload(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->payload = $var;
 
         return $this;

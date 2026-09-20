@@ -134,7 +134,8 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      *           Define agents that should be dispatched to this room
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRoom::initOnce();
         parent::__construct($data);
     }
@@ -157,9 +158,9 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
+    public function setName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -183,9 +184,9 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomPreset($var)
+    public function setRoomPreset(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_preset = $var;
 
         return $this;
@@ -209,7 +210,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setEmptyTimeout($var)
+    public function setEmptyTimeout(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->empty_timeout = $var;
@@ -235,7 +236,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setDepartureTimeout($var)
+    public function setDepartureTimeout(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->departure_timeout = $var;
@@ -261,7 +262,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMaxParticipants($var)
+    public function setMaxParticipants(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->max_participants = $var;
@@ -287,9 +288,9 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNodeId($var)
+    public function setNodeId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->node_id = $var;
 
         return $this;
@@ -313,9 +314,9 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->metadata = $var;
 
         return $this;
@@ -339,7 +340,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setTags($var)
+    public function setTags(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->tags = $arr;
@@ -375,9 +376,8 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomEgress $var
      * @return $this
      */
-    public function setEgress($var)
+    public function setEgress(\LiveKit\Proto\RoomEgress|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomEgress::class);
         $this->egress = $var;
 
         return $this;
@@ -401,7 +401,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMinPlayoutDelay($var)
+    public function setMinPlayoutDelay(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->min_playout_delay = $var;
@@ -423,7 +423,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMaxPlayoutDelay($var)
+    public function setMaxPlayoutDelay(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->max_playout_delay = $var;
@@ -451,9 +451,8 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSyncStreams($var)
+    public function setSyncStreams(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->sync_streams = $var;
 
         return $this;
@@ -477,9 +476,8 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setReplayEnabled($var)
+    public function setReplayEnabled(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->replay_enabled = $var;
 
         return $this;
@@ -503,7 +501,7 @@ class CreateRoomRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
-    public function setAgents($var)
+    public function setAgents(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\RoomAgentDispatch::class);
         $this->agents = $arr;

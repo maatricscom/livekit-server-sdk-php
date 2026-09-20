@@ -89,7 +89,8 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      *           Country where the call terminates as ISO 3166-1 alpha-2 (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). This will be used by the livekit infrastructure to route calls.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitConnectorTwilio::initOnce();
         parent::__construct($data);
     }
@@ -98,7 +99,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * The Direction of the call
      *
      * Generated from protobuf field <code>.livekit.ConnectTwilioCallRequest.TwilioCallDirection twilio_call_direction = 1;</code>
-     * @return int
+     * @return int one of the values in {@see \LiveKit\Proto\ConnectTwilioCallRequest\TwilioCallDirection}
      */
     public function getTwilioCallDirection()
     {
@@ -109,10 +110,10 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * The Direction of the call
      *
      * Generated from protobuf field <code>.livekit.ConnectTwilioCallRequest.TwilioCallDirection twilio_call_direction = 1;</code>
-     * @param int $var
+     * @param int $var one of the values in {@see \LiveKit\Proto\ConnectTwilioCallRequest\TwilioCallDirection}
      * @return $this
      */
-    public function setTwilioCallDirection($var)
+    public function setTwilioCallDirection(int $var)
     {
         GPBUtil::checkEnum($var, \LiveKit\Proto\ConnectTwilioCallRequest\TwilioCallDirection::class);
         $this->twilio_call_direction = $var;
@@ -138,9 +139,9 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRoomName($var)
+    public function setRoomName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->room_name = $var;
 
         return $this;
@@ -164,7 +165,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomAgentDispatch[] $var
      * @return $this
      */
-    public function setAgents($var)
+    public function setAgents(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\RoomAgentDispatch::class);
         $this->agents = $arr;
@@ -192,9 +193,9 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantIdentity($var)
+    public function setParticipantIdentity(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_identity = $var;
 
         return $this;
@@ -218,9 +219,9 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantName($var)
+    public function setParticipantName(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_name = $var;
 
         return $this;
@@ -244,9 +245,9 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setParticipantMetadata($var)
+    public function setParticipantMetadata(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->participant_metadata = $var;
 
         return $this;
@@ -270,7 +271,7 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setParticipantAttributes($var)
+    public function setParticipantAttributes(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->participant_attributes = $arr;
@@ -296,9 +297,9 @@ class ConnectTwilioCallRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDestinationCountry($var)
+    public function setDestinationCountry(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->destination_country = $var;
 
         return $this;

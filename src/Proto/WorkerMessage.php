@@ -37,7 +37,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\MigrateJobRequest $migrate_job
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgent::initOnce();
         parent::__construct($data);
     }
@@ -65,9 +66,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RegisterWorkerRequest $var
      * @return $this
      */
-    public function setRegister($var)
+    public function setRegister(\LiveKit\Proto\RegisterWorkerRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RegisterWorkerRequest::class);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -96,9 +96,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AvailabilityResponse $var
      * @return $this
      */
-    public function setAvailability($var)
+    public function setAvailability(\LiveKit\Proto\AvailabilityResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\AvailabilityResponse::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -127,9 +126,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateWorkerStatus $var
      * @return $this
      */
-    public function setUpdateWorker($var)
+    public function setUpdateWorker(\LiveKit\Proto\UpdateWorkerStatus|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateWorkerStatus::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -158,9 +156,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UpdateJobStatus $var
      * @return $this
      */
-    public function setUpdateJob($var)
+    public function setUpdateJob(\LiveKit\Proto\UpdateJobStatus|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UpdateJobStatus::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -185,9 +182,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\WorkerPing $var
      * @return $this
      */
-    public function setPing($var)
+    public function setPing(\LiveKit\Proto\WorkerPing|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\WorkerPing::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -212,9 +208,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SimulateJobRequest $var
      * @return $this
      */
-    public function setSimulateJob($var)
+    public function setSimulateJob(\LiveKit\Proto\SimulateJobRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SimulateJobRequest::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -239,9 +234,8 @@ class WorkerMessage extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\MigrateJobRequest $var
      * @return $this
      */
-    public function setMigrateJob($var)
+    public function setMigrateJob(\LiveKit\Proto\MigrateJobRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\MigrateJobRequest::class);
         $this->writeOneof(7, $var);
 
         return $this;

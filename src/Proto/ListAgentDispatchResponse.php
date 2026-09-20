@@ -28,7 +28,8 @@ class ListAgentDispatchResponse extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\AgentDispatch[] $agent_dispatches
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitAgentDispatch::initOnce();
         parent::__construct($data);
     }
@@ -47,7 +48,7 @@ class ListAgentDispatchResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\AgentDispatch[] $var
      * @return $this
      */
-    public function setAgentDispatches($var)
+    public function setAgentDispatches(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\AgentDispatch::class);
         $this->agent_dispatches = $arr;

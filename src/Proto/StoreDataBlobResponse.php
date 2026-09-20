@@ -36,7 +36,8 @@ class StoreDataBlobResponse extends \Google\Protobuf\Internal\Message
      *           Unique key the data blob was stored under.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -55,7 +56,7 @@ class StoreDataBlobResponse extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRequestId($var)
+    public function setRequestId(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->request_id = $var;
@@ -91,9 +92,8 @@ class StoreDataBlobResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataBlobKey $var
      * @return $this
      */
-    public function setKey($var)
+    public function setKey(\LiveKit\Proto\DataBlobKey|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataBlobKey::class);
         $this->key = $var;
 
         return $this;

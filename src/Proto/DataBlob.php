@@ -41,7 +41,8 @@ class DataBlob extends \Google\Protobuf\Internal\Message
      *           Contents of the data blob. This must not exceed 50 KB.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -74,9 +75,8 @@ class DataBlob extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataBlobKey $var
      * @return $this
      */
-    public function setKey($var)
+    public function setKey(\LiveKit\Proto\DataBlobKey|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataBlobKey::class);
         $this->key = $var;
 
         return $this;
@@ -100,9 +100,9 @@ class DataBlob extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setContents($var)
+    public function setContents(string $var)
     {
-        GPBUtil::checkString($var, False);
+        GPBUtil::checkString($var, false);
         $this->contents = $var;
 
         return $this;

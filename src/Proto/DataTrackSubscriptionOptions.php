@@ -33,7 +33,8 @@ class DataTrackSubscriptionOptions extends \Google\Protobuf\Internal\Message
      *           If omitted, the subscriber defaults to the publisher's fps
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -68,7 +69,7 @@ class DataTrackSubscriptionOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setTargetFps($var)
+    public function setTargetFps(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->target_fps = $var;

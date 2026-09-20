@@ -97,7 +97,8 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\ProxyConfig $proxy
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitEgress::initOnce();
         parent::__construct($data);
     }
@@ -116,9 +117,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAccessKey($var)
+    public function setAccessKey(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->access_key = $var;
 
         return $this;
@@ -138,9 +139,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSecret($var)
+    public function setSecret(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->secret = $var;
 
         return $this;
@@ -160,9 +161,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSessionToken($var)
+    public function setSessionToken(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->session_token = $var;
 
         return $this;
@@ -186,9 +187,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAssumeRoleArn($var)
+    public function setAssumeRoleArn(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->assume_role_arn = $var;
 
         return $this;
@@ -212,9 +213,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setAssumeRoleExternalId($var)
+    public function setAssumeRoleExternalId(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->assume_role_external_id = $var;
 
         return $this;
@@ -234,9 +235,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRegion($var)
+    public function setRegion(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->region = $var;
 
         return $this;
@@ -256,9 +257,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setEndpoint($var)
+    public function setEndpoint(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->endpoint = $var;
 
         return $this;
@@ -278,9 +279,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setBucket($var)
+    public function setBucket(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->bucket = $var;
 
         return $this;
@@ -300,9 +301,8 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setForcePathStyle($var)
+    public function setForcePathStyle(bool $var)
     {
-        GPBUtil::checkBool($var);
         $this->force_path_style = $var;
 
         return $this;
@@ -322,7 +322,7 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param array|\Google\Protobuf\Internal\MapField $var
      * @return $this
      */
-    public function setMetadata($var)
+    public function setMetadata(array|\Google\Protobuf\Internal\MapField $var)
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::STRING);
         $this->metadata = $arr;
@@ -344,9 +344,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTagging($var)
+    public function setTagging(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->tagging = $var;
 
         return $this;
@@ -370,9 +370,9 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setContentDisposition($var)
+    public function setContentDisposition(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->content_disposition = $var;
 
         return $this;
@@ -402,9 +402,8 @@ class S3Upload extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ProxyConfig $var
      * @return $this
      */
-    public function setProxy($var)
+    public function setProxy(\LiveKit\Proto\ProxyConfig|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ProxyConfig::class);
         $this->proxy = $var;
 
         return $this;

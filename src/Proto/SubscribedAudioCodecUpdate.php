@@ -33,7 +33,8 @@ class SubscribedAudioCodecUpdate extends \Google\Protobuf\Internal\Message
      *     @type \LiveKit\Proto\SubscribedAudioCodec[] $subscribed_audio_codecs
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -52,9 +53,9 @@ class SubscribedAudioCodecUpdate extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setTrackSid($var)
+    public function setTrackSid(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->track_sid = $var;
 
         return $this;
@@ -74,7 +75,7 @@ class SubscribedAudioCodecUpdate extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscribedAudioCodec[] $var
      * @return $this
      */
-    public function setSubscribedAudioCodecs($var)
+    public function setSubscribedAudioCodecs(array|RepeatedField $var)
     {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \LiveKit\Proto\SubscribedAudioCodec::class);
         $this->subscribed_audio_codecs = $arr;

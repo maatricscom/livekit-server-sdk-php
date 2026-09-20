@@ -85,7 +85,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      *           Sent in response to `GetDataBlobRequest`.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitRtc::initOnce();
         parent::__construct($data);
     }
@@ -113,9 +114,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\JoinResponse $var
      * @return $this
      */
-    public function setJoin($var)
+    public function setJoin(\LiveKit\Proto\JoinResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\JoinResponse::class);
         $this->writeOneof(1, $var);
 
         return $this;
@@ -144,9 +144,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SessionDescription $var
      * @return $this
      */
-    public function setAnswer($var)
+    public function setAnswer(\LiveKit\Proto\SessionDescription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SessionDescription::class);
         $this->writeOneof(2, $var);
 
         return $this;
@@ -175,9 +174,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SessionDescription $var
      * @return $this
      */
-    public function setOffer($var)
+    public function setOffer(\LiveKit\Proto\SessionDescription|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SessionDescription::class);
         $this->writeOneof(3, $var);
 
         return $this;
@@ -206,9 +204,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrickleRequest $var
      * @return $this
      */
-    public function setTrickle($var)
+    public function setTrickle(\LiveKit\Proto\TrickleRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrickleRequest::class);
         $this->writeOneof(4, $var);
 
         return $this;
@@ -237,9 +234,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ParticipantUpdate $var
      * @return $this
      */
-    public function setUpdate($var)
+    public function setUpdate(\LiveKit\Proto\ParticipantUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ParticipantUpdate::class);
         $this->writeOneof(5, $var);
 
         return $this;
@@ -268,9 +264,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackPublishedResponse $var
      * @return $this
      */
-    public function setTrackPublished($var)
+    public function setTrackPublished(\LiveKit\Proto\TrackPublishedResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackPublishedResponse::class);
         $this->writeOneof(6, $var);
 
         return $this;
@@ -299,9 +294,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\LeaveRequest $var
      * @return $this
      */
-    public function setLeave($var)
+    public function setLeave(\LiveKit\Proto\LeaveRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\LeaveRequest::class);
         $this->writeOneof(8, $var);
 
         return $this;
@@ -330,9 +324,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\MuteTrackRequest $var
      * @return $this
      */
-    public function setMute($var)
+    public function setMute(\LiveKit\Proto\MuteTrackRequest|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\MuteTrackRequest::class);
         $this->writeOneof(9, $var);
 
         return $this;
@@ -361,9 +354,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SpeakersChanged $var
      * @return $this
      */
-    public function setSpeakersChanged($var)
+    public function setSpeakersChanged(\LiveKit\Proto\SpeakersChanged|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SpeakersChanged::class);
         $this->writeOneof(10, $var);
 
         return $this;
@@ -392,9 +384,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomUpdate $var
      * @return $this
      */
-    public function setRoomUpdate($var)
+    public function setRoomUpdate(\LiveKit\Proto\RoomUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomUpdate::class);
         $this->writeOneof(11, $var);
 
         return $this;
@@ -423,9 +414,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ConnectionQualityUpdate $var
      * @return $this
      */
-    public function setConnectionQuality($var)
+    public function setConnectionQuality(\LiveKit\Proto\ConnectionQualityUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ConnectionQualityUpdate::class);
         $this->writeOneof(12, $var);
 
         return $this;
@@ -456,9 +446,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StreamStateUpdate $var
      * @return $this
      */
-    public function setStreamStateUpdate($var)
+    public function setStreamStateUpdate(\LiveKit\Proto\StreamStateUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StreamStateUpdate::class);
         $this->writeOneof(13, $var);
 
         return $this;
@@ -487,9 +476,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscribedQualityUpdate $var
      * @return $this
      */
-    public function setSubscribedQualityUpdate($var)
+    public function setSubscribedQualityUpdate(\LiveKit\Proto\SubscribedQualityUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SubscribedQualityUpdate::class);
         $this->writeOneof(14, $var);
 
         return $this;
@@ -518,9 +506,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscriptionPermissionUpdate $var
      * @return $this
      */
-    public function setSubscriptionPermissionUpdate($var)
+    public function setSubscriptionPermissionUpdate(\LiveKit\Proto\SubscriptionPermissionUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SubscriptionPermissionUpdate::class);
         $this->writeOneof(15, $var);
 
         return $this;
@@ -549,9 +536,9 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setRefreshToken($var)
+    public function setRefreshToken(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->writeOneof(16, $var);
 
         return $this;
@@ -580,9 +567,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackUnpublishedResponse $var
      * @return $this
      */
-    public function setTrackUnpublished($var)
+    public function setTrackUnpublished(\LiveKit\Proto\TrackUnpublishedResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackUnpublishedResponse::class);
         $this->writeOneof(17, $var);
 
         return $this;
@@ -611,7 +597,7 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setPong($var)
+    public function setPong(int|string $var)
     {
         GPBUtil::checkInt64($var);
         $this->writeOneof(18, $var);
@@ -642,9 +628,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\ReconnectResponse $var
      * @return $this
      */
-    public function setReconnect($var)
+    public function setReconnect(\LiveKit\Proto\ReconnectResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\ReconnectResponse::class);
         $this->writeOneof(19, $var);
 
         return $this;
@@ -673,9 +658,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\Pong $var
      * @return $this
      */
-    public function setPongResp($var)
+    public function setPongResp(\LiveKit\Proto\Pong|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\Pong::class);
         $this->writeOneof(20, $var);
 
         return $this;
@@ -704,9 +688,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscriptionResponse $var
      * @return $this
      */
-    public function setSubscriptionResponse($var)
+    public function setSubscriptionResponse(\LiveKit\Proto\SubscriptionResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SubscriptionResponse::class);
         $this->writeOneof(21, $var);
 
         return $this;
@@ -735,9 +718,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RequestResponse $var
      * @return $this
      */
-    public function setRequestResponse($var)
+    public function setRequestResponse(\LiveKit\Proto\RequestResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RequestResponse::class);
         $this->writeOneof(22, $var);
 
         return $this;
@@ -766,9 +748,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\TrackSubscribed $var
      * @return $this
      */
-    public function setTrackSubscribed($var)
+    public function setTrackSubscribed(\LiveKit\Proto\TrackSubscribed|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\TrackSubscribed::class);
         $this->writeOneof(23, $var);
 
         return $this;
@@ -797,9 +778,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\RoomMovedResponse $var
      * @return $this
      */
-    public function setRoomMoved($var)
+    public function setRoomMoved(\LiveKit\Proto\RoomMovedResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\RoomMovedResponse::class);
         $this->writeOneof(24, $var);
 
         return $this;
@@ -828,9 +808,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\MediaSectionsRequirement $var
      * @return $this
      */
-    public function setMediaSectionsRequirement($var)
+    public function setMediaSectionsRequirement(\LiveKit\Proto\MediaSectionsRequirement|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\MediaSectionsRequirement::class);
         $this->writeOneof(25, $var);
 
         return $this;
@@ -859,9 +838,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\SubscribedAudioCodecUpdate $var
      * @return $this
      */
-    public function setSubscribedAudioCodecUpdate($var)
+    public function setSubscribedAudioCodecUpdate(\LiveKit\Proto\SubscribedAudioCodecUpdate|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\SubscribedAudioCodecUpdate::class);
         $this->writeOneof(26, $var);
 
         return $this;
@@ -890,9 +868,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\PublishDataTrackResponse $var
      * @return $this
      */
-    public function setPublishDataTrackResponse($var)
+    public function setPublishDataTrackResponse(\LiveKit\Proto\PublishDataTrackResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\PublishDataTrackResponse::class);
         $this->writeOneof(27, $var);
 
         return $this;
@@ -921,9 +898,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\UnpublishDataTrackResponse $var
      * @return $this
      */
-    public function setUnpublishDataTrackResponse($var)
+    public function setUnpublishDataTrackResponse(\LiveKit\Proto\UnpublishDataTrackResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\UnpublishDataTrackResponse::class);
         $this->writeOneof(28, $var);
 
         return $this;
@@ -952,9 +928,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\DataTrackSubscriberHandles $var
      * @return $this
      */
-    public function setDataTrackSubscriberHandles($var)
+    public function setDataTrackSubscriberHandles(\LiveKit\Proto\DataTrackSubscriberHandles|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\DataTrackSubscriberHandles::class);
         $this->writeOneof(29, $var);
 
         return $this;
@@ -983,9 +958,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\StoreDataBlobResponse $var
      * @return $this
      */
-    public function setStoreDataBlobResponse($var)
+    public function setStoreDataBlobResponse(\LiveKit\Proto\StoreDataBlobResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\StoreDataBlobResponse::class);
         $this->writeOneof(30, $var);
 
         return $this;
@@ -1014,9 +988,8 @@ class SignalResponse extends \Google\Protobuf\Internal\Message
      * @param \LiveKit\Proto\GetDataBlobResponse $var
      * @return $this
      */
-    public function setGetDataBlobResponse($var)
+    public function setGetDataBlobResponse(\LiveKit\Proto\GetDataBlobResponse|null $var)
     {
-        GPBUtil::checkMessage($var, \LiveKit\Proto\GetDataBlobResponse::class);
         $this->writeOneof(31, $var);
 
         return $this;

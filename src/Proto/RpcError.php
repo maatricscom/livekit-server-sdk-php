@@ -38,7 +38,8 @@ class RpcError extends \Google\Protobuf\Internal\Message
      *     @type string $data
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null)
+    {
         \LiveKit\Proto\Meta\LivekitModels::initOnce();
         parent::__construct($data);
     }
@@ -57,7 +58,7 @@ class RpcError extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setCode($var)
+    public function setCode(int $var)
     {
         GPBUtil::checkUint32($var);
         $this->code = $var;
@@ -79,9 +80,9 @@ class RpcError extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setMessage($var)
+    public function setMessage(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->message = $var;
 
         return $this;
@@ -101,9 +102,9 @@ class RpcError extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setData($var)
+    public function setData(string $var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->data = $var;
 
         return $this;
