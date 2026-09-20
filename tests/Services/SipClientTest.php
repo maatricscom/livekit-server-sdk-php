@@ -6,8 +6,10 @@ namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
+use LiveKit\Proto\ListUpdate;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
@@ -202,5 +204,79 @@ final class SipClientTest extends TwirpTestCase
         self::assertTrue($sentTrunk->getKrispEnabled());
 
         self::assertSame('renamed', $trunk->getName());
+    }
+
+    public function testUpdateSipInboundTrunkFieldsSendsTheUpdateArm(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new SIPInboundTrunkInfo())->setSipTrunkId('ST_inbound'),
+        ));
+
+        $this->client->updateSipInboundTrunkFields(
+            'ST_inbound',
+            new SipInboundTrunkUpdateOptions(
+                numbers: (new ListUpdate())->setAdd(['+15105550111']),
+                allowedAddresses: (new ListUpdate())->setSet(['10.0.0.0/8']),
+                allowedNumbers: (new ListUpdate())->setClear(true),
+                authUsername: 'new-user',
+                authPassword: 'new-pass',
+                authRealm: 'realm.example.com',
+                name: 'renamed',
+                metadata: 'updated',
+            ),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPInboundTrunkRequest::class);
+        self::assertSame('ST_inbound', $sent->getSipTrunkId());
+        self::assertSame('update', $sent->getAction());
+        self::assertNull($sent->getReplace());
+
+        $update = $sent->getUpdate();
+        self::assertNotNull($update);
+        self::assertSame(['+15105550111'], iterator_to_array($update->getNumbers()->getAdd(), false));
+        self::assertSame(['10.0.0.0/8'], iterator_to_array($update->getAllowedAddresses()->getSet(), false));
+        self::assertTrue($update->getAllowedNumbers()->getClear());
+        self::assertSame('new-user', $update->getAuthUsername());
+        self::assertSame('new-pass', $update->getAuthPassword());
+        self::assertSame('realm.example.com', $update->getAuthRealm());
+        self::assertSame('renamed', $update->getName());
+        self::assertSame('updated', $update->getMetadata());
+    }
+
+    public function testUpdateSipInboundTrunkFieldsOmitsUnsetOptionalScalars(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new SIPInboundTrunkInfo()));
+
+        $this->client->updateSipInboundTrunkFields(
+            'ST_inbound',
+            new SipInboundTrunkUpdateOptions(name: 'only-the-name'),
+        );
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'UpdateSIPInboundTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        $sent = $this->decodeRequest(UpdateSIPInboundTrunkRequest::class);
+        self::assertSame('ST_inbound', $sent->getSipTrunkId());
+        self::assertSame('update', $sent->getAction());
+
+        $update = $sent->getUpdate();
+        self::assertNotNull($update);
+        self::assertSame('only-the-name', $update->getName());
+
+        // proto3 optional: an untouched field must stay absent, not be sent as ''.
+        self::assertFalse($update->hasMetadata());
+        self::assertFalse($update->hasAuthUsername());
+        self::assertFalse($update->hasAuthPassword());
+        self::assertFalse($update->hasAuthRealm());
+        self::assertNull($update->getNumbers());
+        self::assertNull($update->getAllowedAddresses());
+        self::assertNull($update->getAllowedNumbers());
     }
 }

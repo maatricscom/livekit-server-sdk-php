@@ -9,9 +9,11 @@ use LiveKit\Grants\SIPGrant;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\CreateSipInboundTrunkOptions;
 use LiveKit\Options\CreateSipOutboundTrunkOptions;
+use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Proto\CreateSIPInboundTrunkRequest;
 use LiveKit\Proto\CreateSIPOutboundTrunkRequest;
 use LiveKit\Proto\SIPInboundTrunkInfo;
+use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 
@@ -194,6 +196,62 @@ final class SipClient extends ServiceBase
         $request = new UpdateSIPInboundTrunkRequest();
         $request->setSipTrunkId($sipTrunkId);
         $request->setReplace($trunk);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'UpdateSIPInboundTrunk',
+            $request,
+            SIPInboundTrunkInfo::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        return $response;
+    }
+
+    /**
+     * Updates only the given fields of a SIP inbound trunk, leaving the rest alone.
+     * Sends the 'update' arm of the oneof in livekit.UpdateSIPInboundTrunkRequest.
+     */
+    public function updateSipInboundTrunkFields(
+        string $sipTrunkId,
+        SipInboundTrunkUpdateOptions $fields,
+    ): SIPInboundTrunkInfo {
+        $update = new SIPInboundTrunkUpdate();
+
+        if ($fields->numbers !== null) {
+            $update->setNumbers($fields->numbers);
+        }
+        if ($fields->allowedAddresses !== null) {
+            $update->setAllowedAddresses($fields->allowedAddresses);
+        }
+        if ($fields->allowedNumbers !== null) {
+            $update->setAllowedNumbers($fields->allowedNumbers);
+        }
+        if ($fields->authUsername !== null) {
+            $update->setAuthUsername($fields->authUsername);
+        }
+        if ($fields->authPassword !== null) {
+            $update->setAuthPassword($fields->authPassword);
+        }
+        if ($fields->authRealm !== null) {
+            $update->setAuthRealm($fields->authRealm);
+        }
+        if ($fields->name !== null) {
+            $update->setName($fields->name);
+        }
+        if ($fields->metadata !== null) {
+            $update->setMetadata($fields->metadata);
+        }
+        if ($fields->mediaEncryption !== null) {
+            $update->setMediaEncryption($fields->mediaEncryption);
+        }
+        if ($fields->media !== null) {
+            $update->setMedia($fields->media);
+        }
+
+        $request = new UpdateSIPInboundTrunkRequest();
+        $request->setSipTrunkId($sipTrunkId);
+        $request->setUpdate($update);
 
         $response = $this->rpc(
             self::SERVICE,
