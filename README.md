@@ -56,10 +56,10 @@ lot of traffic. Nothing about this package's API changes.
 **It must be 5.34 or newer**, and `composer.json` declares a conflict below that so you find out at install
 time rather than at a call site. The reason is that the extension *shadows* `google/protobuf`: once it is
 loaded, its own `Google\Protobuf\Internal\*` classes are used and the Composer package's are never
-autoloaded, so the `^5.36` requirement on the package constrains nothing. Generated code here is produced
-by protoc 36, whose getters for `optional` int64 fields call `GPBUtil::compatibleInt64()` — a method the
-extension gained in 5.34.0. Against an older one (4.32.1 is what Alpine ships today) those getters raise
-`Call to undefined method`.
+autoloaded, so the `^5.34` requirement on the package constrains nothing. Generated code here is produced
+by protoc 36, whose getters for `optional` int64 fields call `GPBUtil::compatibleInt64()` — a method that
+arrived in 5.34.0. Against an older one (4.32.1 is what Alpine ships today) those getters raise `Call to
+undefined method`. The same floor applies to both, which is why it is the same number twice.
 
 The two runtimes are not identical below the API, and where they differ this package decides rather than
 letting the installed runtime decide. The clearest case is a malformed webhook body: the pure-PHP parser

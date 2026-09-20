@@ -77,6 +77,76 @@ final class ProtoGenerationTest extends TestCase
         self::assertSame('forward-compat', $decoded->getName());
     }
 
+    /**
+     * The generated tree calls helpers on the protobuf runtime, and which helpers
+     * exist depends on the runtime's version. This is what the `google/protobuf`
+     * floor and the `ext-protobuf` conflict in composer.json are for -- protoc 36
+     * emits `GPBUtil::compatibleInt64()`, which arrived in 5.34.0, so on anything
+     * older the generated getter for an `optional` int64 field raises "Call to
+     * undefined method" the first time it is read.
+     *
+     * Scanned rather than listed: a protoc bump that introduces a dependency on
+     * some other helper is then caught here instead of at a caller's call site.
+     */
+    public function test_every_runtime_helper_the_generated_code_calls_exists(): void
+    {
+        $called = [];
+
+        foreach (self::generatedFiles() as $file) {
+            preg_match_all('/GPBUtil::([a-zA-Z0-9_]+)\(/', (string) file_get_contents($file), $matches);
+            foreach ($matches[1] as $method) {
+                $called[$method] = true;
+            }
+        }
+
+        self::assertNotEmpty($called, 'Found no GPBUtil calls at all — the scan is broken, not the tree.');
+
+        $missing = array_values(array_filter(
+            array_keys($called),
+            static fn (string $m): bool => ! method_exists(\Google\Protobuf\Internal\GPBUtil::class, $m)
+        ));
+
+        self::assertSame([], $missing, sprintf(
+            'The generated code calls %s on a protobuf runtime that does not have it. '
+            . 'Raise the floor in composer.json, or regenerate with an older protoc.',
+            implode(', ', array_map(static fn (string $m): string => "GPBUtil::{$m}()", $missing))
+        ));
+    }
+
+    /**
+     * The check above is static. This one reads the fields that actually depend on
+     * the newest helper, because a method that exists but misbehaves would pass it.
+     */
+    public function test_the_getters_that_need_the_newest_runtime_helper_work(): void
+    {
+        // Every generated `optional` int64 getter returns its default through
+        // GPBUtil::compatibleInt64(). These are the messages that have one.
+        //
+        // assertEquals, not assertSame: compatibleInt64() is exactly the helper that
+        // returns an int where the platform's integers are wide enough and a numeric
+        // string where they are not, so the type is not ours to pin. Reading the
+        // value at all is the assertion -- on a runtime without the helper, every
+        // one of these raises before returning anything.
+        self::assertEquals(0, (new \LiveKit\Proto\EventMetric())->getEndTimestampMs());
+        self::assertEquals(0, (new \LiveKit\Proto\ChatMessage())->getEditTimestamp());
+        self::assertEquals(0, (new \LiveKit\Proto\DataStream\Header())->getTotalLength());
+    }
+
+    /**
+     * @return iterable<string>
+     */
+    private static function generatedFiles(): iterable
+    {
+        $root = dirname(__DIR__) . '/src/Proto';
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root));
+
+        foreach ($files as $file) {
+            if ($file instanceof \SplFileInfo && $file->getExtension() === 'php') {
+                yield $file->getPathname();
+            }
+        }
+    }
+
     public function test_generated_code_uses_the_livekit_proto_namespace(): void
     {
         $reflection = new \ReflectionClass(Room::class);

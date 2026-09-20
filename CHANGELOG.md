@@ -93,7 +93,10 @@ starting out now has no reason to carry a version that only receives security fi
   protoc 36.2, which the generator requires: repeated fields carry a generic `RepeatedField<T>` type and
   every setter is natively typed, so both iterating a repeated field and passing the wrong type to a
   setter are things your own static analysis can see. This is why `google/protobuf` is constrained to
-  `^5.36`: protoc 36's output calls `GPBUtil::compatibleInt64`, which the 4.x runtime does not have.
+  `^5.34`: protoc 36's output calls `GPBUtil::compatibleInt64`, which arrived in 5.34.0 and which no
+  4.x runtime has. `ProtoGenerationTest` checks that every runtime helper the generated tree calls
+  exists, so the floor is verified by the suite rather than asserted in a comment, and CI's
+  `prefer-lowest` job runs it against exactly that floor.
 - `WebhookReceiver` rejects a body that is not a JSON object before the protobuf parser sees it, so
   what the SDK does with a malformed webhook no longer depends on which protobuf runtime is installed.
   The two disagree in opposite directions: the pure-PHP parser accepts `[1,2,3]` and returns a default
@@ -105,7 +108,7 @@ starting out now has no reason to carry a version that only receives security fi
 - CI runs the unit suite against `ext-protobuf` as well as the pure-PHP runtime, on 8.4 and 8.5. It
   previously tested only the runtime Composer installs, which is how the two items above went unnoticed.
 - `ext-protobuf` is constrained to **5.34 or newer** via a `conflict` entry, not just named in `suggest`.
-  The extension shadows `google/protobuf`'s classes, so the `^5.36` requirement on the Composer package
+  The extension shadows `google/protobuf`'s classes, so the `^5.34` requirement on the Composer package
   buys nothing once the extension is loaded — and before 5.34 its `GPBUtil` has no `compatibleInt64()`,
   which protoc 36's generated getters for `optional` int64 fields call. Measured: with ext-protobuf
   4.32.1 (what Alpine ships today), `EventMetric::getEndTimestampMs()`, `ChatMessage::getEditTimestamp()`
