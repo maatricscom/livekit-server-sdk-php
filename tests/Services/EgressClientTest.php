@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LiveKit\Tests\Services;
 
 use LiveKit\Options\EncodedOutputs;
+use LiveKit\Options\ListEgressOptions;
 use LiveKit\Options\ParticipantEgressOptions;
 use LiveKit\Options\RoomCompositeOptions;
 use LiveKit\Options\TrackCompositeOptions;
@@ -18,6 +19,8 @@ use LiveKit\Proto\EncodingOptions;
 use LiveKit\Proto\EncodingOptionsPreset;
 use LiveKit\Proto\FileOutput;
 use LiveKit\Proto\ImageOutput;
+use LiveKit\Proto\ListEgressRequest;
+use LiveKit\Proto\ListEgressResponse;
 use LiveKit\Proto\Output;
 use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
@@ -577,6 +580,58 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame('EG_stream_empty', $request->getEgressId());
         self::assertSame([], $this->stringsIn($request->getAddOutputUrls()));
         self::assertSame([], $this->stringsIn($request->getRemoveOutputUrls()));
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testListEgressUnwrapsItemsAndAppliesFilters(): void
+    {
+        $response = new ListEgressResponse();
+        $response->setItems([$this->egressInfo('EG_one'), $this->egressInfo('EG_two')]);
+        $this->http->pushResponse($this->protoResponse($response));
+
+        $client = $this->egressClient();
+
+        $items = $client->listEgress(new ListEgressOptions(roomName: 'my-room', active: true));
+
+        self::assertCount(2, $items);
+        self::assertContainsOnlyInstancesOf(EgressInfo::class, $items);
+        self::assertSame(['EG_one', 'EG_two'], array_map(
+            static fn (EgressInfo $info): string => $info->getEgressId(),
+            $items,
+        ));
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'ListEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/ListEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(ListEgressRequest::class);
+
+        self::assertSame('my-room', $request->getRoomName());
+        self::assertSame('', $request->getEgressId());
+        self::assertTrue($request->getActive());
+
+        $this->assertVideoGrant(['roomRecord' => true], $sent);
+    }
+
+    public function testListEgressWithoutOptionsSendsAnEmptyRequestAndReturnsAnEmptyArray(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new ListEgressResponse()));
+
+        $client = $this->egressClient();
+
+        self::assertSame([], $client->listEgress());
+
+        $sent = $this->http->lastRequest();
+        $this->assertTwirpRequest($sent, 'Egress', 'ListEgress');
+        self::assertSame(self::HOST . '/twirp/livekit.Egress/ListEgress', (string) $sent->getUri());
+
+        $request = $this->decodeRequest(ListEgressRequest::class);
+
+        self::assertSame('', $request->getRoomName());
+        self::assertSame('', $request->getEgressId());
+        self::assertFalse($request->getActive());
+        self::assertSame('', $this->http->lastBody());
 
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }

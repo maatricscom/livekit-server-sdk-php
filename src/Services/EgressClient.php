@@ -8,6 +8,7 @@ use Google\Protobuf\Internal\Message;
 use LiveKit\Contracts\EgressClientInterface;
 use LiveKit\Grants\VideoGrant;
 use LiveKit\Options\EncodedOutputs;
+use LiveKit\Options\ListEgressOptions;
 use LiveKit\Options\ParticipantEgressOptions;
 use LiveKit\Options\RoomCompositeOptions;
 use LiveKit\Options\TrackCompositeOptions;
@@ -18,6 +19,8 @@ use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EncodedFileOutput;
 use LiveKit\Proto\EncodingOptions;
 use LiveKit\Proto\ImageOutput;
+use LiveKit\Proto\ListEgressRequest;
+use LiveKit\Proto\ListEgressResponse;
 use LiveKit\Proto\ParticipantEgressRequest;
 use LiveKit\Proto\RoomCompositeEgressRequest;
 use LiveKit\Proto\SegmentedFileOutput;
@@ -176,6 +179,43 @@ final class EgressClient extends ServiceBase
         $request->setRemoveOutputUrls($removeOutputUrls ?? []);
 
         return $this->egressInfoRpc('UpdateStream', $request);
+    }
+
+    /**
+     * @return list<EgressInfo>
+     */
+    public function listEgress(?ListEgressOptions $options = null): array
+    {
+        $request = new ListEgressRequest();
+
+        if ($options?->roomName !== null) {
+            $request->setRoomName($options->roomName);
+        }
+
+        if ($options?->egressId !== null) {
+            $request->setEgressId($options->egressId);
+        }
+
+        if ($options?->active !== null) {
+            $request->setActive($options->active);
+        }
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListEgress',
+            $request,
+            ListEgressResponse::class,
+            $this->authHeader(new VideoGrant(roomRecord: true)),
+        );
+
+        $items = [];
+
+        foreach ($response->getItems() as $item) {
+            assert($item instanceof EgressInfo);
+            $items[] = $item;
+        }
+
+        return $items;
     }
 
     /**
