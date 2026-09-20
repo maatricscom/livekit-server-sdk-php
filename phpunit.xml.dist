@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         beStrictAboutOutputDuringTests="true"
+         cacheDirectory=".phpunit.cache"
+         defaultTestSuite="unit">
+    <!--
+        defaultTestSuite keeps a bare `vendor/bin/phpunit` on the unit suite. The
+        integration suite's directory does not exist until Task 17 of the plan, and
+        without this a bare run fails on the missing path. Run it explicitly with
+        the testsuite flag: `vendor/bin/phpunit` with `testsuite=integration`.
+    -->
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests</directory>
+            <exclude>tests/Integration</exclude>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+        <exclude>
+            <directory>src/Proto</directory>
+        </exclude>
+    </source>
+</phpunit>
