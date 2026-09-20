@@ -40,18 +40,47 @@ final class RoomServiceIntegrationTest extends TestCase
 
         $room = $this->livekit->room->createRoom(new CreateRoomOptions(name: $name, emptyTimeout: 30));
 
-        self::assertInstanceOf(Room::class, $room);
-        self::assertSame($name, $room->getName());
+        // Everything from here on -- including the assertions -- runs inside the
+        // try, so a failed assertion still reaches the finally and the room does
+        // not leak on a real project. $bodySucceeded distinguishes "the try block
+        // threw and deleteRoom() also threw" (don't let the cleanup failure mask
+        // the original, more informative failure) from "the try block was fine
+        // but cleanup itself failed" (that failure IS the thing to report).
+        $bodySucceeded = false;
 
         try {
+            self::assertInstanceOf(Room::class, $room);
+            self::assertSame($name, $room->getName());
+
             $names = array_map(
                 static fn (Room $r): string => $r->getName(),
                 $this->livekit->room->listRooms()
             );
 
             self::assertContains($name, $names);
+
+            $bodySucceeded = true;
         } finally {
-            $this->livekit->room->deleteRoom($name);
+            try {
+                $this->livekit->room->deleteRoom($name);
+            } catch (\Throwable $cleanupError) {
+                if ($bodySucceeded) {
+                    // No earlier failure in flight: this IS the failure.
+                    throw $cleanupError;
+                }
+
+                // An assertion or RPC failure from the try block is already
+                // propagating out of this finally. Don't replace it with the
+                // cleanup failure -- PHP would otherwise discard the original,
+                // more informative one. Still surface the leaked room rather
+                // than swallowing the cleanup failure silently.
+                fwrite(STDERR, sprintf(
+                    "Warning: failed to clean up room \"%s\" after an earlier test failure: %s%s",
+                    $name,
+                    $cleanupError->getMessage(),
+                    PHP_EOL
+                ));
+            }
         }
 
         $remaining = array_map(

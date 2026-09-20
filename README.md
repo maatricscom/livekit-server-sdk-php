@@ -59,8 +59,8 @@ $livekit = new LiveKitClient('https://my-project.livekit.cloud', 'API_KEY', 'API
 
 $room = $livekit->room->createRoom(new CreateRoomOptions(name: 'my-room', emptyTimeout: 300));
 
-foreach ($livekit->room->listRooms() as $room) {
-    echo $room->getName(), PHP_EOL;
+foreach ($livekit->room->listRooms() as $existing) {
+    echo $existing->getName(), PHP_EOL;
 }
 ```
 
