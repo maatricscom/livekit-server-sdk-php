@@ -17,6 +17,7 @@
 /docs             export-ignore
 /CONTRIBUTING.md  export-ignore
 /CLAUDE.md        export-ignore
+/.claude          export-ignore
 /phpunit.xml.dist export-ignore
 /phpstan.neon.dist export-ignore
 /pint.json        export-ignore

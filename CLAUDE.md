@@ -107,6 +107,20 @@ elsewhere:
 - **`ZzEnvLeakProbeTest`** — must sort last; it can only detect leaked environment variables from last
   place, and only PHPUnit's default alphabetical order puts it there.
 
+## Skills
+
+Three procedures in this repository are multi-step and fail expensively, so they are
+packaged under `.claude/skills/` rather than left to be rediscovered:
+
+- **`livekit-live-testing`** — before anything talks to a real deployment. Which RPCs
+  may be run for real, how to reach the rest without placing a call or incurring a
+  charge, and what to check afterwards.
+- **`livekit-protocol-bump`** — raising the pinned tag. The order the steps go in, and
+  the ones that leave the suite green while it asserts new code against stale
+  references.
+- **`livekit-add-rpc`** — adding a client method. Mostly about the grant, which is the
+  part that is wrong silently until a user hits it.
+
 ## Regenerating the protobuf classes
 
 `bin/generate-protos.sh` pins `PROTOCOL_VERSION` (currently `v1.52.0`) and requires protoc ≥ 36.2. It
