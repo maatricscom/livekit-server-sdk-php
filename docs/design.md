@@ -1,11 +1,10 @@
 # LiveKit PHP Server SDK — Design
 
 > **This document records the reasoning behind the SDK's design, and is kept current with it.**
-> It was written before the code existed and has since been corrected where the code moved: the
-> component table in §1, the architecture in §3, the namespace mapping and protoc floor in §4, the
-> transport signature in §5, the API notes in §8, the dependency table in §9, the testing section in §10,
-> the tooling and CI in §11, §12, and the risk table in §13. `README.md` and `CHANGELOG.md` remain the reference for *how to use*
-> the package; this file is for *why it is shaped this way*.
+> It was written before the code existed and is corrected wherever the code has since moved — no list of
+> which sections that has touched is kept, because such a list needs maintaining every time and tells a
+> reader nothing they can use. `README.md` and `CHANGELOG.md` remain the reference for *how to use* the
+> package; this file is for *why it is shaped this way*.
 >
 > §2 is the exception and is deliberately not updated. It records which facts were verified and on what
 > machine, and rewriting that would falsify the record rather than refresh it.
@@ -53,7 +52,8 @@ failover existed.
 - LiveKit Cloud-only services: `CloudAgent`, `PhoneNumberService`, `AgentDBService`, `AgentSimulation`, `Replay`
 - Everything under `protobufs/rpc/`, `infra/`, `roomrpc/` — these are psrpc/gRPC internals, not Twirp,
   and do not even compile without psrpc's `options.proto`, which is not vendored
-- A Twirp *server* implementation. LiveKit server SDKs are clients; the only inbound surface is the webhook receiver.
+- A Twirp *server* implementation. LiveKit server SDKs are clients; the only inbound surface is the
+  webhook receiver.
 
 ## 2. Research basis
 
@@ -480,14 +480,16 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   repository secrets, on pushes to `main` and on manual dispatch but never on a pull request: a job holding
   a live API key that runs the code in an arbitrary pull request is a way to publish that key. The job
   checks the secrets are present rather than passing `--fail-on-skipped`, because a skip is also how a
-  deployment without SIP or egress reports a feature it does not have, and the two must not be conflated. Sixty of them now exist, covering room lifecycle, ingress on both push
-  input types, SIP trunk and dispatch-rule configuration, agent dispatch, all five connector RPCs, the
-  read-only RPCs, the shape of a server error, the grants a minted token actually buys against a live
-  deployment, and a sweep that drives every remaining room, egress and agent-dispatch method; they have been run green against a live LiveKit Cloud project
-  in both wire formats. The sweep asserts the Twirp code a real deployment answers with, because for a
-  method a server SDK cannot reach a live object for -- muting a track, starting an egress -- that code
-  is the proof the route, the encoding and the minted grant are all right: a wrong one would fail as
-  `bad_route`, `malformed` or `permission_denied` instead. Anything they create is deleted even when an assertion
+  deployment without SIP or egress reports a feature it does not have, and the two must not be conflated.
+  They cover room lifecycle, ingress on both push input types, SIP trunk and dispatch-rule configuration,
+  agent dispatch, all five connector RPCs, the read-only RPCs, the shape of a server error, the grants a
+  minted token actually buys, and a sweep over every remaining room, egress and agent-dispatch method.
+  They have been run green against a live LiveKit Cloud project in both wire formats. (No count is given:
+  it has moved every time the suite grew, and the coverage above is what the number was standing in for.)
+  The sweep asserts the Twirp code a real deployment answers with, because for a method a server SDK
+  cannot reach a live object for -- muting a track, starting an egress -- that code is the proof the
+  route, the encoding and the minted grant are all right: a wrong one would fail as `bad_route`,
+  `malformed` or `permission_denied` instead. Anything they create is deleted even when an assertion
   fails, and a deployment without SIP or egress provisioned skips rather than fails — a suite that goes
   red on a valid deployment teaches people to ignore it.
 
@@ -513,9 +515,10 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   only the one Composer installs leaves half the installed base unexercised.
 - **PSR-18 matrix:** the suite runs against both `guzzlehttp/guzzle` and `symfony/http-client` as a
   dev-dependency axis, since discovery behaviour differs per implementation.
-- `.gitattributes` with `export-ignore` for `/tests`, `/.github`, `/bin`, `/docs`, config files, keeping
-  the dist tarball to `src/`, `metadata/`, `examples/` and the five documents a consumer might read: README, CHANGELOG, SECURITY, LICENSE and NOTICE. `metadata/` is not
-  export-ignored: the package does not load without it.
+- `.gitattributes` with `export-ignore` for `/tests`, `/.github`, `/bin`, `/docs`, `/.claude`, the
+  contributor-facing documents and the analyser configuration, keeping the dist tarball to `src/`,
+  `metadata/`, `examples/` and the five documents a consumer might read: README, CHANGELOG, SECURITY,
+  LICENSE and NOTICE. `metadata/` is not export-ignored: the package does not load without it.
 - `declare(strict_types=1)` everywhere; PSR-12.
 
 ## 12. Documentation
@@ -524,11 +527,12 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
   Laravel and Symfony, and an explicit note on obtaining the raw request body.
 - A migration note for users coming from `agence104/livekit-server-sdk`, since class names differ
   (`LiveKit\Proto\Room` vs `Livekit\Room`).
-- `CONTRIBUTING.md` covering proto regeneration.
-- The pinned `livekit/protocol` version is stated by hand in the README, NOTICE, CHANGELOG and
-  CONTRIBUTING, in the `go get` line of each fixture generator, and generated into
-  `src/ProtocolVersion.php`. `bin/check-protocol-version.sh` treats the generation script as the
-  source of truth and fails if any of them has been left behind.
+- `CONTRIBUTING.md` covering proto regeneration, the test suites and the release checklist.
+- `SECURITY.md`: how to report a vulnerability privately, and what is in and out of scope.
+- The pinned `livekit/protocol` version is stated by hand in several documents, including this one, and
+  generated into `src/ProtocolVersion.php`. `bin/check-protocol-version.sh` treats the generation script
+  as the source of truth and names every file that has been left behind — which is why no list of those
+  files is kept here. One written down went stale the first time the set changed.
 
 ## 13. Risks
 
@@ -538,6 +542,6 @@ RTMP tunnel, so nothing runs in ordinary CI. This SDK is fully unit-testable.
 | Missing transitive proto import → misleading runtime `internal` error | Import closure computed programmatically; CI instantiates a message rather than only checking protoc's exit code |
 | LiveKit adds a proto field | Binary transport preserves unknown fields; JSON mode always passes `ignore_unknown = true` |
 | `google/protobuf` v4/v5 behavioural break (`RepeatedField`) | Never reference `Internal\RepeatedField`; CI tests both ends of the constraint |
-| Upstream proto drift | CI regenerates and fails on `git diff` |
+| Upstream proto drift | CI regenerates and fails on `git status --porcelain --untracked-files=all` — not `git diff`, which never reports the added file a new upstream message type arrives as (§4) |
 | Binary content type less exercised than JSON on LiveKit Cloud | Closed: the opt-in suite passes against a live LiveKit Cloud project and exercises both wire formats; JSON mode is one flag away |
 | Namespace choice diverges from the community SDK | Documented migration note; the tradeoff was accepted deliberately to avoid global namespace squatting |
