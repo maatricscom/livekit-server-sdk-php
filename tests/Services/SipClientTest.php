@@ -19,12 +19,15 @@ use LiveKit\Proto\ListSIPInboundTrunkRequest;
 use LiveKit\Proto\ListSIPInboundTrunkResponse;
 use LiveKit\Proto\ListSIPOutboundTrunkRequest;
 use LiveKit\Proto\ListSIPOutboundTrunkResponse;
+use LiveKit\Proto\ListSIPTrunkRequest;
+use LiveKit\Proto\ListSIPTrunkResponse;
 use LiveKit\Proto\ListUpdate;
 use LiveKit\Proto\Pagination;
 use LiveKit\Proto\SIPHeaderOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPTransport;
+use LiveKit\Proto\SIPTrunkInfo;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 use LiveKit\Services\SipClient;
@@ -250,6 +253,9 @@ final class SipClientTest extends TwirpTestCase
 
         $update = $sent->getUpdate();
         self::assertNotNull($update);
+        self::assertNotNull($update->getNumbers());
+        self::assertNotNull($update->getAllowedAddresses());
+        self::assertNotNull($update->getAllowedNumbers());
         self::assertSame(['+15105550111'], iterator_to_array($update->getNumbers()->getAdd(), false));
         self::assertSame(['10.0.0.0/8'], iterator_to_array($update->getAllowedAddresses()->getSet(), false));
         self::assertTrue($update->getAllowedNumbers()->getClear());
@@ -359,6 +365,7 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame('sip2.carrier.example', $update->getAddress());
         self::assertSame(SIPTransport::SIP_TRANSPORT_UDP, $update->getTransport());
         self::assertSame('DE', $update->getDestinationCountry());
+        self::assertNotNull($update->getNumbers());
         self::assertSame(['+15105550101'], iterator_to_array($update->getNumbers()->getRemove(), false));
         self::assertSame('out-user-2', $update->getAuthUsername());
         self::assertSame('out-pass-2', $update->getAuthPassword());
@@ -502,7 +509,6 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(50, $sent->getPage()?->getLimit());
 
         // The list RPC unwraps: an array of messages, never the response wrapper.
-        self::assertIsArray($trunks);
         self::assertCount(2, $trunks);
         self::assertSame('ST_a', $trunks[0]->getSipTrunkId());
         self::assertSame('ST_b', $trunks[1]->getSipTrunkId());
@@ -550,8 +556,33 @@ final class SipClientTest extends TwirpTestCase
         self::assertSame(['+15105550101'], iterator_to_array($sent->getNumbers(), false));
         self::assertNull($sent->getPage());
 
-        self::assertIsArray($trunks);
         self::assertCount(1, $trunks);
         self::assertSame('ST_c', $trunks[0]->getSipTrunkId());
+    }
+
+    public function testListSipTrunkUnwrapsToAnArray(): void
+    {
+        $this->http->pushResponse($this->protoResponse(
+            (new ListSIPTrunkResponse())->setItems([
+                (new SIPTrunkInfo())->setSipTrunkId('ST_legacy'),
+            ]),
+        ));
+
+        $trunks = $this->client->listSipTrunk();
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'SIP', 'ListSIPTrunk');
+        $this->assertSipGrant(['admin' => true], $request);
+        $this->assertVideoGrant([], $request);
+
+        // Node sends an empty ListSIPTrunkRequest; an empty proto message is zero bytes.
+        self::assertSame('', $this->http->lastBody());
+        self::assertInstanceOf(
+            ListSIPTrunkRequest::class,
+            $this->decodeRequest(ListSIPTrunkRequest::class),
+        );
+
+        self::assertCount(1, $trunks);
+        self::assertSame('ST_legacy', $trunks[0]->getSipTrunkId());
     }
 }

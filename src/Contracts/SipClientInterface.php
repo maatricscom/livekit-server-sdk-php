@@ -11,6 +11,7 @@ use LiveKit\Options\SipInboundTrunkUpdateOptions;
 use LiveKit\Options\SipOutboundTrunkUpdateOptions;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
+use LiveKit\Proto\SIPTrunkInfo;
 
 /**
  * The LiveKit SIP service: trunks, dispatch rules and SIP participants.
@@ -94,4 +95,14 @@ interface SipClientInterface
      * @return list<SIPOutboundTrunkInfo>
      */
     public function listSipOutboundTrunk(?ListSipTrunkOptions $opts = null): array;
+
+    /**
+     * Lists legacy SIP trunks.
+     *
+     * @deprecated The livekit.SIP.ListSIPTrunk rpc carries `option deprecated = true`.
+     *             Use listSipInboundTrunk() or listSipOutboundTrunk().
+     *
+     * @return list<SIPTrunkInfo>
+     */
+    public function listSipTrunk(): array;
 }

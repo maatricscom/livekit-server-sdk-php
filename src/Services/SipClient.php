@@ -22,10 +22,13 @@ use LiveKit\Proto\ListSIPInboundTrunkRequest;
 use LiveKit\Proto\ListSIPInboundTrunkResponse;
 use LiveKit\Proto\ListSIPOutboundTrunkRequest;
 use LiveKit\Proto\ListSIPOutboundTrunkResponse;
+use LiveKit\Proto\ListSIPTrunkRequest;
+use LiveKit\Proto\ListSIPTrunkResponse;
 use LiveKit\Proto\SIPInboundTrunkInfo;
 use LiveKit\Proto\SIPInboundTrunkUpdate;
 use LiveKit\Proto\SIPOutboundTrunkInfo;
 use LiveKit\Proto\SIPOutboundTrunkUpdate;
+use LiveKit\Proto\SIPTrunkInfo;
 use LiveKit\Proto\UpdateSIPInboundTrunkRequest;
 use LiveKit\Proto\UpdateSIPOutboundTrunkRequest;
 
@@ -464,6 +467,35 @@ final class SipClient extends ServiceBase
             // RepeatedField's iterator carries no generic value type, so this
             // yields mixed — unlike the rpc() return, which the analyser infers.
             assert($item instanceof SIPOutboundTrunkInfo);
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Lists legacy SIP trunks.
+     *
+     * @deprecated The livekit.SIP.ListSIPTrunk rpc carries `option deprecated = true`.
+     *             Use listSipInboundTrunk() or listSipOutboundTrunk().
+     *
+     * @return list<SIPTrunkInfo>
+     */
+    public function listSipTrunk(): array
+    {
+        $response = $this->rpc(
+            self::SERVICE,
+            'ListSIPTrunk',
+            new ListSIPTrunkRequest(),
+            ListSIPTrunkResponse::class,
+            $this->authHeader(new VideoGrant(), new SIPGrant(admin: true)),
+        );
+
+        $items = [];
+        foreach ($response->getItems() as $item) {
+            // RepeatedField's iterator carries no generic value type, so this
+            // yields mixed — unlike the rpc() return, which the analyser infers.
+            assert($item instanceof SIPTrunkInfo);
             $items[] = $item;
         }
 
