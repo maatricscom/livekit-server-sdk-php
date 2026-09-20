@@ -94,6 +94,10 @@ starting out now has no reason to carry a version that only receives security fi
   every setter is natively typed, so both iterating a repeated field and passing the wrong type to a
   setter are things your own static analysis can see. This is why `google/protobuf` is constrained to
   `^5.36`: protoc 36's output calls `GPBUtil::compatibleInt64`, which the 4.x runtime does not have.
+- `sendData()` puts a fresh 16-byte nonce on every packet, which is what `livekit_room.proto` asks the
+  SDK to do ("added by SDK to enable de-duping of messages") and what the Node SDK does. A packet
+  without one cannot be de-duplicated. `SendDataOptions::$nonce` overrides it, for the one case that
+  wants it: retrying a send whose outcome is unknown, under the nonce of the send being retried.
 - One naming rule across every client: the per-call option object is always `$options`, a room is `$room`
   or `$roomName` following the proto field, and `$output` / `$fields` keep their own meanings. Named
   arguments make a parameter name part of the API, so a name that changes between clients is a trap.

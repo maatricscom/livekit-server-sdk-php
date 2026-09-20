@@ -15,7 +15,11 @@ final readonly class SendDataOptions
     /**
      * @param list<string>|null $destinationIdentities livekit.SendDataRequest.destination_identities
      * @param string|null       $topic                 livekit.SendDataRequest.topic (optional in the proto)
-     * @param string|null       $nonce                 livekit.SendDataRequest.nonce (raw bytes, for de-duping)
+     * @param string|null       $nonce                 livekit.SendDataRequest.nonce (raw bytes). Leave this null:
+     *                                                 the client generates a fresh 16-byte nonce per call, as the
+     *                                                 proto asks it to. Supply one only to retry a send whose
+     *                                                 outcome is unknown, so the server can recognise the retry
+     *                                                 as a duplicate instead of delivering the message twice.
      */
     public function __construct(
         public ?array $destinationIdentities = null,

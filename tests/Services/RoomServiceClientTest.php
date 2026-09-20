@@ -470,9 +470,27 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertFalse($sent->hasTopic());
         self::assertCount(0, $sent->getDestinationIdentities());
         self::assertCount(0, $sent->getDestinationSids());
-        self::assertSame('', $sent->getNonce());
+
+        // The proto asks the SDK to supply this; the caller never has to.
+        self::assertSame(16, strlen($sent->getNonce()));
 
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+    }
+
+    public function testSendDataGivesEveryPacketItsOwnNonce(): void
+    {
+        $client = $this->client(new SendDataResponse());
+        $this->http->pushResponse($this->protoResponse(new SendDataResponse()));
+
+        $client->sendData('my-room', 'ping');
+        $first = $this->decodeRequest(SendDataRequest::class)->getNonce();
+
+        $client->sendData('my-room', 'ping');
+        $second = $this->decodeRequest(SendDataRequest::class)->getNonce();
+
+        // Identical payloads. A nonce reused across them would make the second
+        // send look to the server like a retry of the first, and be dropped.
+        self::assertNotSame($first, $second);
     }
 
     public function testUpdateRoomMetadataSendsTheNewMetadata(): void

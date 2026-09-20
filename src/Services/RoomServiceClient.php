@@ -42,6 +42,9 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
 {
     private const string SERVICE = 'RoomService';
 
+    /** Matches the 16 bytes every other LiveKit SDK puts on a data packet. */
+    private const int NONCE_BYTES = 16;
+
     public function createRoom(CreateRoomOptions $options): Room
     {
         $request = new CreateRoomRequest();
@@ -328,9 +331,14 @@ final class RoomServiceClient extends ServiceBase implements RoomServiceClientIn
             $request->setTopic($options->topic);
         }
 
-        if ($options?->nonce !== null) {
-            $request->setNonce($options->nonce);
-        }
+        // livekit_room.proto: "added by SDK to enable de-duping of messages". The
+        // server never asks for this -- every SDK is expected to put one on every
+        // packet, and a packet without one cannot be de-duplicated at all. A
+        // caller-supplied value is honoured so that a retry of a send that timed
+        // out can carry the nonce of the send it is retrying, which is the case
+        // de-duping exists for; the alternative is a duplicate message.
+        // (?? tolerates a null $options here; ?-> would be redundant in front of it.)
+        $request->setNonce($options->nonce ?? random_bytes(self::NONCE_BYTES));
 
         return $this->rpc(
             self::SERVICE,
