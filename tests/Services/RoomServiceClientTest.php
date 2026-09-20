@@ -16,6 +16,7 @@ use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\Room;
+use LiveKit\Proto\RoomParticipantIdentity;
 use LiveKit\Services\RoomServiceClient;
 use LiveKit\Tests\Support\TwirpTestCase;
 
@@ -188,6 +189,26 @@ final class RoomServiceClientTest extends TwirpTestCase
         self::assertContainsOnlyInstancesOf(ParticipantInfo::class, $participants);
         self::assertSame('alice', $participants[0]->getIdentity());
         self::assertSame('bob', $participants[1]->getIdentity());
+    }
+
+    public function testGetParticipantPostsRoomParticipantIdentity(): void
+    {
+        $client = $this->client(
+            (new ParticipantInfo())->setSid('PA_1')->setIdentity('alice')->setName('Alice'),
+        );
+
+        $participant = $client->getParticipant('my-room', 'alice');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'GetParticipant');
+
+        $sent = $this->decodeRequest(RoomParticipantIdentity::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+
+        $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
+
+        self::assertSame('Alice', $participant->getName());
     }
 
     private function client(Message $response): RoomServiceClient

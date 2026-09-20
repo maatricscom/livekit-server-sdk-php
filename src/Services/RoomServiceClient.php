@@ -16,6 +16,7 @@ use LiveKit\Proto\ListRoomsRequest;
 use LiveKit\Proto\ListRoomsResponse;
 use LiveKit\Proto\ParticipantInfo;
 use LiveKit\Proto\Room;
+use LiveKit\Proto\RoomParticipantIdentity;
 
 final class RoomServiceClient extends ServiceBase
 {
@@ -168,5 +169,24 @@ final class RoomServiceClient extends ServiceBase
         }
 
         return $participants;
+    }
+
+    public function getParticipant(string $room, string $identity): ParticipantInfo
+    {
+        $request = new RoomParticipantIdentity();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'GetParticipant',
+            $request,
+            ParticipantInfo::class,
+            $this->authHeader(new VideoGrant(roomAdmin: true, room: $room)),
+        );
+
+        assert($response instanceof ParticipantInfo);
+
+        return $response;
     }
 }
