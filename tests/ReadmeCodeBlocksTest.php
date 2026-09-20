@@ -95,6 +95,23 @@ final class ReadmeCodeBlocksTest extends TestCase
         ));
     }
 
+    /**
+     * A sentinel that does not live under the prefix it stands for can never be
+     * found, so the prefix would be exempt forever and the `use` check silently off
+     * for it. That is the failure this cannot be allowed to have: it looks exactly
+     * like a suite that passes.
+     */
+    public function test_every_optional_package_is_vouched_for_from_inside_itself(): void
+    {
+        foreach (self::OPTIONAL_PACKAGES as $prefix => $sentinel) {
+            self::assertStringStartsWith($prefix, $sentinel, sprintf(
+                '%s is meant to prove %s is installed, but does not belong to it.',
+                $sentinel,
+                $prefix
+            ));
+        }
+    }
+
     /** @return array<Node\Stmt>|null */
     private static function parse(string $code): ?array
     {
@@ -108,11 +125,40 @@ final class ReadmeCodeBlocksTest extends TestCase
     }
 
     /**
+     * Packages the README documents but Composer may not have installed, each keyed
+     * to a class that exists if and only if the package does.
+     *
+     * The PSR-18 clients are alternatives: the CI matrix removes Guzzle to run this
+     * suite against Symfony's, so `use GuzzleHttp\Client` is correct documentation
+     * that cell cannot confirm. Absent is not the same as wrong.
+     *
+     * Typed as plain strings, not class-string: a class-string is one that resolves,
+     * and these are exactly the names that may not.
+     *
+     * @var array<string, string>
+     */
+    private const OPTIONAL_PACKAGES = [
+        'GuzzleHttp\\' => 'GuzzleHttp\\Client',
+        'Symfony\\Component\\HttpClient\\' => 'Symfony\\Component\\HttpClient\\Psr18Client',
+        'Nyholm\\Psr7\\' => 'Nyholm\\Psr7\\Factory\\Psr17Factory',
+    ];
+
+    /**
      * @param  array<Node\Stmt> $ast
      * @return list<string>
      */
     private static function inspect(array $ast, bool $isFragment): array
     {
+        // Only while the package is missing. Where it is installed the names under it
+        // are checked like any other, so a typo still fails in the cell that has it.
+        $absent = [];
+
+        foreach (self::OPTIONAL_PACKAGES as $prefix => $sentinel) {
+            if (! class_exists($sentinel) && ! interface_exists($sentinel)) {
+                $absent[] = $prefix;
+            }
+        }
+
         $facade = [];
 
         foreach (new \ReflectionClass(LiveKitAPI::class)->getProperties() as $property) {
@@ -123,7 +169,7 @@ final class ReadmeCodeBlocksTest extends TestCase
             }
         }
 
-        $visitor = new class ($facade, $isFragment) extends NodeVisitorAbstract {
+        $visitor = new class ($facade, $isFragment, $absent) extends NodeVisitorAbstract {
             /** @var list<string> */
             public array $problems = [];
 
@@ -139,9 +185,26 @@ final class ReadmeCodeBlocksTest extends TestCase
              */
             private array $vars = ['livekit' => LiveKitAPI::class];
 
-            /** @param array<string, string> $facade */
-            public function __construct(private readonly array $facade, private readonly bool $isFragment)
+            /**
+             * @param array<string, string> $facade
+             * @param list<string>          $absent  namespace prefixes not installed here
+             */
+            public function __construct(
+                private readonly array $facade,
+                private readonly bool $isFragment,
+                private readonly array $absent,
+            ) {
+            }
+
+            private function isUninstallable(string $fqcn): bool
             {
+                foreach ($this->absent as $prefix) {
+                    if (str_starts_with($fqcn, $prefix)) {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             private function resolve(string $name): string
@@ -183,7 +246,8 @@ final class ReadmeCodeBlocksTest extends TestCase
                         $fqcn = $use->name->toString();
                         $this->aliases[$use->getAlias()->toString()] = $fqcn;
 
-                        if (! class_exists($fqcn) && ! interface_exists($fqcn) && ! enum_exists($fqcn)) {
+                        if (! class_exists($fqcn) && ! interface_exists($fqcn) && ! enum_exists($fqcn)
+                            && ! $this->isUninstallable($fqcn)) {
                             $this->problems[] = sprintf('use %s — no such class', $fqcn);
                         }
                     }
