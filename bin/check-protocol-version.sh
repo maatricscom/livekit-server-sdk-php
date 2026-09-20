@@ -12,6 +12,11 @@
 # is generated from it, so a mismatch there means the tree was not regenerated after
 # the version was changed.
 #
+# bin/*.go pin the same tag in the `go get` line that produces the test fixtures.
+# Those are reference values the PHP implementation is asserted against, so a bump
+# that misses them regenerates fixtures from the OLD protocol -- and the suite stays
+# green while checking the new code against stale references.
+#
 # Deliberately NOT checked: src/Services/SipClient.php and friends mention v1.52.0 as
 # a historical fact ("the RPC was removed in that release"), which stays true after a
 # bump. Rewriting those would be wrong.
@@ -38,6 +43,17 @@ for file in README.md NOTICE CHANGELOG.md CONTRIBUTING.md; do
         echo "  ok   ${file}"
     else
         echo "  FAIL ${file} does not mention ${EXPECTED}" >&2
+        failed=1
+    fi
+done
+
+# The `go get` line in each fixture generator, which decides which protocol the
+# reference fixtures are produced from.
+for file in bin/generate-jwt-fixtures.go bin/generate-webhook-fixture.go; do
+    if grep -qF "livekit/protocol@${EXPECTED}" "$file"; then
+        echo "  ok   ${file}"
+    else
+        echo "  FAIL ${file} pins a different livekit/protocol than ${EXPECTED}" >&2
         failed=1
     fi
 done

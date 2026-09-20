@@ -107,6 +107,13 @@ starting out now has no reason to carry a version that only receives security fi
 - A test that compared a protobuf map with an order-sensitive assertion no longer does. Maps are
   unordered, and `ext-protobuf` iterates them in hash order, so the assertion failed in 22 of 40 runs
   under the extension and never once on the pure-PHP runtime, which iterates in insertion order.
+- `bin/generate-protos.sh` generates into a staging directory and moves it into place only once the
+  whole run has succeeded. It used to delete `src/Proto` before invoking protoc, so a protoc failure or
+  a Ctrl-C left 377 committed files gone and the package unloadable.
+- `bin/check-protocol-version.sh` also checks the `go get` line in the two fixture generators. They pin
+  the protocol tag that the reference JWTs and webhook body are produced from, so a bump that missed
+  them would regenerate fixtures from the old protocol and the suite would stay green while asserting
+  new code against stale references.
 - CI derives protoc's version from `bin/generate-protos.sh` instead of repeating it. The two only had
   to agree because protoc's output differs between versions and the drift job compares generated files
   against committed ones — a CI protoc that merely satisfied the script's minimum would have failed with

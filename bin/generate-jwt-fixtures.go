@@ -3,8 +3,8 @@
 // Emits reference JWTs from livekit/protocol's own auth package, so the PHP
 // implementation can be asserted against the code the server actually runs.
 //
-//   go mod init fixtures && go get github.com/livekit/protocol@v1.52.0
-//   go run bin/generate-jwt-fixtures.go > tests/Fixtures/go-tokens.json
+//	go mod init fixtures && go get github.com/livekit/protocol@v1.52.0
+//	go run bin/generate-jwt-fixtures.go > tests/Fixtures/go-tokens.json
 package main
 
 import (

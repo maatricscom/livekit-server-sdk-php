@@ -15,8 +15,8 @@
 // compact decode/re-encode -- which is what makes that round-trip an
 // observably unsafe substitute for hashing the raw bytes.
 //
-//   go mod init fixtures && go get github.com/livekit/protocol@v1.52.0
-//   go run bin/generate-webhook-fixture.go > tests/Fixtures/webhook-event.json
+//	go mod init fixtures && go get github.com/livekit/protocol@v1.52.0
+//	go run bin/generate-webhook-fixture.go > tests/Fixtures/webhook-event.json
 package main
 
 import (
