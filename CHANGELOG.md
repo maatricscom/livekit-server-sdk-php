@@ -168,6 +168,9 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   hand-written class placed in either is deleted by the next generation run and is excluded from Pint and
   PHPStan until then, with nothing announcing either — which had already happened once, to
   `ProtocolVersion`.
+- `README.md` documents `sendData()` and the nonce it attaches to every packet, and says what
+  `WebhookReceiver::receive()` rejects — including that a body which is not a JSON object is refused by
+  this package rather than by whichever protobuf runtime is installed.
 - `README.md` documents every service client. Egress, ingress, SIP and agent dispatch had no section at
   all and now have one each, next to the existing one for the WhatsApp and Twilio connectors; the SIP
   section covers the distinction the method names hide, between an update that replaces a trunk

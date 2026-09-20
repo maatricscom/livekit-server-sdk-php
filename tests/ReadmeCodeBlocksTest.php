@@ -33,12 +33,22 @@ final class ReadmeCodeBlocksTest extends TestCase
      * continued from the block above, or a test method that relies on the enclosing
      * file's imports. `ReadmeExamplesTest` runs that example for real.
      *
-     * Keyed by the first line, so a block moving in the file does not silently
-     * widen the exemption.
+     * Keyed by the first two non-empty lines, so a block moving in the file does
+     * not silently widen the exemption and a bare `try {` does not exempt everything.
+     *
+     * @var list<array{string, string}>
      */
     private const array FRAGMENTS = [
-        'use LiveKit\Contracts\RoomServiceClientInterface;',
-        '$rooms = $this->createStub(RoomServiceClientInterface::class);',
+        // Two further catch bodies for the try shown earlier in the same section, under
+        // that block's imports. Repeating three use statements to vary one branch would
+        // be noise in prose.
+        ['try {', '    $livekit->room->deleteRoom(\'my-room\');'],
+        ['try {', '    $livekit->sip->createSipParticipant(/* ... */);'],
+        // The dependency-injection example: a class body, and the test method that
+        // exercises it. Both rely on the enclosing file's imports, and ReadmeExamplesTest
+        // runs that example for real.
+        ['use LiveKit\\Contracts\\RoomServiceClientInterface;', 'final readonly class RoomProvisioner'],
+        ['$rooms = $this->createStub(RoomServiceClientInterface::class);', '$rooms->method(\'createRoom\')->willReturn((new Room())->setSid(\'RM_test\'));'],
     ];
 
     /** @return iterable<string, array{string, int}> */
@@ -69,8 +79,14 @@ final class ReadmeCodeBlocksTest extends TestCase
         $ast = self::parse($code);
         self::assertNotNull($ast);
 
-        $firstLine = trim(explode("\n", trim($code))[0]);
-        $problems = self::inspect($ast, in_array($firstLine, self::FRAGMENTS, true));
+        // Keyed on the first two non-empty lines. One is not distinctive enough:
+        // `try {` alone would quietly exempt any block that happens to start with it.
+        $significant = array_slice(array_values(array_filter(
+            array_map('rtrim', explode("\n", trim($code))),
+            static fn (string $line): bool => trim($line) !== '',
+        )), 0, 2);
+
+        $problems = self::inspect($ast, in_array($significant, self::FRAGMENTS, true));
 
         self::assertSame([], $problems, sprintf(
             "README.md:%d refers to things that do not exist:\n  - %s",
@@ -206,12 +222,24 @@ final class ReadmeCodeBlocksTest extends TestCase
                 if ($node instanceof Node\Expr\ClassConstFetch
                     && $node->class instanceof Node\Name && $node->name instanceof Node\Identifier
                     && $node->name->toString() !== 'class') {
-                    $fqcn = $this->resolve($node->class->toString());
+                    $written = $node->class->toString();
+                    $fqcn = $this->resolve($written);
 
-                    if (class_exists($fqcn) && ! defined($fqcn . '::' . $node->name->toString())) {
+                    if (class_exists($fqcn)) {
+                        if (! defined($fqcn . '::' . $node->name->toString())) {
+                            $this->problems[] = sprintf(
+                                '%s::%s — no such constant',
+                                $written,
+                                $node->name->toString()
+                            );
+                        }
+                    } elseif (! $this->isFragment && ! isset($this->aliases[$written])) {
+                        // A block reading Foo::BAR without importing Foo cannot be pasted.
+                        // Missed once, on Kind::RELIABLE, because this branch only looked at
+                        // classes it could already resolve.
                         $this->problems[] = sprintf(
-                            '%s::%s — no such constant',
-                            $node->class->toString(),
+                            '%s::%s — no such class, and the block does not import it',
+                            $written,
                             $node->name->toString()
                         );
                     }

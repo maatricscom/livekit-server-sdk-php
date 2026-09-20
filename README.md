@@ -205,6 +205,16 @@ may send an event name this package does not know about yet).
 > Symfony, `getContent()` is safe precisely because it returns the raw stream contents rather than the
 > framework's parsed representation.
 
+`receive()` throws a `WebhookVerificationException` for a missing or unverifiable token, a body whose
+hash does not match the token's `sha256` claim, and a body that is not a JSON object. That last one is
+checked by this package rather than left to the protobuf runtime, because the two runtimes are lenient
+about different malformed bodies — the pure-PHP parser accepts a JSON array and `ext-protobuf` accepts an
+empty body, each handing back a default message. Neither gets to decide what a webhook is here.
+
+Note that constructing `WebhookReceiver` throws `ConfigurationException` when no key and secret are
+available, which is a different failure from a rejected request: one is this server misconfigured, the
+other is the request. `examples/webhook.php` answers them with 500 and 401 respectively.
+
 Pass `skipAuth: true` to `receive()` only in local development, when you have no signing secret to hand.
 
 ## Timeouts
@@ -240,6 +250,39 @@ A `requestTimeout` of zero or less sends no header at all, leaving the server to
 > its floor is the ringing timeout plus a margin (32 seconds for the defaults) — a client-side timeout
 > shorter than that aborts the request while the phone is still ringing, before LiveKit's own deadline
 > ever has a chance to fire.
+
+## Sending data to a room
+
+`sendData()` delivers a payload to everyone in a room, or to named participants:
+
+```php
+use LiveKit\Options\SendDataOptions;
+use LiveKit\Proto\DataPacket\Kind;
+
+$livekit->room->sendData(
+    'my-room',
+    json_encode(['type' => 'announcement', 'body' => 'starting now'], JSON_THROW_ON_ERROR),
+    Kind::RELIABLE,
+    new SendDataOptions(destinationIdentities: ['alice'], topic: 'chat'),
+);
+```
+
+Every packet carries a fresh 16-byte nonce, which is what `livekit_room.proto` asks an SDK to attach and
+what lets the server recognise a duplicate. You do not need to supply one. The exception is a send whose
+outcome you do not know — a request that timed out may or may not have arrived — where retrying under the
+nonce of the original is the difference between the server discarding a duplicate and the room receiving
+the message twice:
+
+```php
+use LiveKit\Options\SendDataOptions;
+use LiveKit\Proto\DataPacket\Kind;
+
+$payload = 'starting now';
+$options = new SendDataOptions(topic: 'chat', nonce: random_bytes(16));
+
+// If this times out, retry it with the same $options rather than new ones.
+$livekit->room->sendData('my-room', $payload, Kind::RELIABLE, $options);
+```
 
 ## Recording and streaming
 
