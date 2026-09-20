@@ -13,6 +13,8 @@ use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\DataPacket\Kind;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
+use LiveKit\Proto\ForwardParticipantRequest;
+use LiveKit\Proto\ForwardParticipantResponse;
 use LiveKit\Proto\ListParticipantsRequest;
 use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
@@ -458,6 +460,26 @@ final class RoomServiceClientTest extends TwirpTestCase
         $this->assertVideoGrant(['roomAdmin' => true, 'room' => 'my-room'], $request);
 
         self::assertSame('{"v":2}', $room->getMetadata());
+    }
+
+    public function testForwardParticipantCarriesTheDestinationRoomInBodyAndGrant(): void
+    {
+        $client = $this->client(new ForwardParticipantResponse());
+
+        $client->forwardParticipant('my-room', 'alice', 'overflow-room');
+
+        $request = $this->http->lastRequest();
+        $this->assertTwirpRequest($request, 'RoomService', 'ForwardParticipant');
+
+        $sent = $this->decodeRequest(ForwardParticipantRequest::class);
+        self::assertSame('my-room', $sent->getRoom());
+        self::assertSame('alice', $sent->getIdentity());
+        self::assertSame('overflow-room', $sent->getDestinationRoom());
+
+        $this->assertVideoGrant(
+            ['roomAdmin' => true, 'room' => 'my-room', 'destinationRoom' => 'overflow-room'],
+            $request,
+        );
     }
 
     private function client(Message $response): RoomServiceClient

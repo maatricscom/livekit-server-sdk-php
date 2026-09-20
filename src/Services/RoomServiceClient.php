@@ -13,6 +13,8 @@ use LiveKit\Proto\CreateRoomRequest;
 use LiveKit\Proto\DataPacket\Kind;
 use LiveKit\Proto\DeleteRoomRequest;
 use LiveKit\Proto\DeleteRoomResponse;
+use LiveKit\Proto\ForwardParticipantRequest;
+use LiveKit\Proto\ForwardParticipantResponse;
 use LiveKit\Proto\ListParticipantsRequest;
 use LiveKit\Proto\ListParticipantsResponse;
 use LiveKit\Proto\ListRoomsRequest;
@@ -367,6 +369,36 @@ final class RoomServiceClient extends ServiceBase
         );
 
         assert($response instanceof Room);
+
+        return $response;
+    }
+
+    /**
+     * Cloud-only. Forwards a participant's tracks into another room.
+     */
+    public function forwardParticipant(
+        string $room,
+        string $identity,
+        string $destinationRoom,
+    ): ForwardParticipantResponse {
+        $request = new ForwardParticipantRequest();
+        $request->setRoom($room);
+        $request->setIdentity($identity);
+        $request->setDestinationRoom($destinationRoom);
+
+        $response = $this->rpc(
+            self::SERVICE,
+            'ForwardParticipant',
+            $request,
+            ForwardParticipantResponse::class,
+            $this->authHeader(new VideoGrant(
+                roomAdmin: true,
+                room: $room,
+                destinationRoom: $destinationRoom,
+            )),
+        );
+
+        assert($response instanceof ForwardParticipantResponse);
 
         return $response;
     }
