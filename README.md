@@ -347,9 +347,90 @@ index. Note that it and `deleteDispatch()` take the dispatch id first while `lis
 room — the order mirrors the Node SDK and the proto's own field order, which is why named arguments are
 worth using here.
 
-SIP has no section of its own; its distinctive part is how failures arrive, which is in
-[Error handling](#failures-that-did-not-come-from-livekit), and `examples/sip.php` shows a trunk and a
-dispatch rule.
+## SIP
+
+`SipClient` is the largest of the six — 16 RPCs plus three convenience wrappers — but it is three ideas:
+**trunks** say how LiveKit reaches your telephony provider, **dispatch rules** say where an incoming call
+lands, and `createSipParticipant()` places an outgoing one.
+
+### Trunks
+
+An inbound trunk accepts calls to your numbers; an outbound trunk places them through your provider.
+
+```php
+use LiveKit\Options\CreateSipInboundTrunkOptions;
+use LiveKit\Options\CreateSipOutboundTrunkOptions;
+
+$inbound = $livekit->sip->createSipInboundTrunk(
+    'support line',
+    ['+15551234567'],
+    new CreateSipInboundTrunkOptions(allowedAddresses: ['203.0.113.0/24']),
+);
+
+$outbound = $livekit->sip->createSipOutboundTrunk(
+    'provider',
+    'sip.provider.example',
+    ['+15551234567'],
+    new CreateSipOutboundTrunkOptions(authUsername: 'user', authPassword: 'secret'),
+);
+```
+
+Each trunk has two ways to change it, and the difference matters:
+
+| | what it sends | effect |
+|---|---|---|
+| `updateSipInboundTrunk($id, $trunk)` | the `replace` arm | wholesale — **fields left unset are cleared** |
+| `updateSipInboundTrunkFields($id, $fields)` | the `update` arm | only what you pass; the rest is untouched |
+
+The same pair exists for outbound trunks and for dispatch rules. Reach for `*Fields()` unless you really
+mean to replace the record, because the wholesale form is how a trunk quietly loses its credentials.
+
+### Dispatch rules
+
+A rule decides which room an inbound call joins:
+
+```php
+use LiveKit\Options\CreateSipDispatchRuleOptions;
+use LiveKit\Proto\SIPDispatchRule;
+use LiveKit\Proto\SIPDispatchRuleIndividual;
+
+// Every caller gets their own room, named from the prefix. SIPDispatchRuleDirect
+// sends all callers to one named room instead; SIPDispatchRuleCallee keys the
+// room on the number that was dialled.
+$rule = (new SIPDispatchRule())->setDispatchRuleIndividual(
+    (new SIPDispatchRuleIndividual())->setRoomPrefix('call-')
+);
+
+$livekit->sip->createSipDispatchRule($rule, new CreateSipDispatchRuleOptions(
+    name: 'support',
+    trunkIds: [$inbound->getSipTrunkId()],
+));
+```
+
+### Placing and transferring calls
+
+```php
+use LiveKit\Options\CreateSipParticipantOptions;
+
+$participant = $livekit->sip->createSipParticipant(
+    $outbound->getSipTrunkId(),
+    '+15559876543',
+    'support-call',
+    new CreateSipParticipantOptions(participantIdentity: 'caller', waitUntilAnswered: true),
+);
+
+$livekit->sip->transferSipParticipant('support-call', 'caller', 'tel:+15551112222');
+```
+
+These two are the only RPCs in this package that make something happen in the physical world, and they
+fail differently from everything else: a refusal by the far end arrives as `SipCallError`, a
+`TwirpException` subclass carrying the SIP status. Catch it first — see
+[Error handling](#error-handling).
+
+> [!NOTE]
+> `waitUntilAnswered` holds the request open while the phone rings, so the SDK raises this call's request
+> timeout to the ring window plus a margin. Your HTTP client needs a socket timeout longer than that. See
+> [Timeouts](#timeouts).
 
 ## WhatsApp and Twilio calls
 

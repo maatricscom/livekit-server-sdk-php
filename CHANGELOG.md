@@ -168,9 +168,10 @@ tarball. It is recorded because it is why the package can be trusted to behave a
   hand-written class placed in either is deleted by the next generation run and is excluded from Pint and
   PHPStan until then, with nothing announcing either — which had already happened once, to
   `ProtocolVersion`.
-- `README.md` documents every service client. Egress, ingress and agent dispatch had no code in it at
-  all and now have sections of their own, next to the existing one for the WhatsApp and Twilio
-  connectors; that section gains the step it was missing, where an outbound WhatsApp call is completed
+- `README.md` documents every service client. Egress, ingress, SIP and agent dispatch had no section at
+  all and now have one each, next to the existing one for the WhatsApp and Twilio connectors; the SIP
+  section covers the distinction the method names hide, between an update that replaces a trunk
+  wholesale and clears what you omit, and the `*Fields()` form that changes only what you pass; that section gains the step it was missing, where an outbound WhatsApp call is completed
   from the SDP Meta posts to your webhook rather than in the request that dialled. The eight runnable
   examples are listed with what each demonstrates. Every snippet in the file is checked by
   `ReadmeCodeBlocksTest`, so none of them can name a class, parameter, constant or method that does not
