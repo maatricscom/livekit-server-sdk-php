@@ -52,7 +52,10 @@ abstract class TwirpTestCase extends TestCase
     {
         $psr17 = $this->psr17();
         $body = json_encode(
-            array_filter(['code' => $code, 'msg' => $message, 'meta' => $meta === [] ? null : $meta]),
+            array_filter(
+                ['code' => $code, 'msg' => $message, 'meta' => $meta === [] ? null : $meta],
+                static fn (mixed $value): bool => $value !== null,
+            ),
             JSON_THROW_ON_ERROR
         );
 
@@ -96,21 +99,21 @@ abstract class TwirpTestCase extends TestCase
     }
 
     /**
-     * Asserts the `video` claim contains exactly these keys and values — no more.
-     * The exact-count check is what catches an over-broad grant.
+     * Asserts the `video` claim is present and contains exactly these keys and
+     * values — no more. An empty $expected means present but carrying nothing,
+     * which is what the SIP dialing calls send; use assertNoVideoGrant() for a
+     * claim that should be absent entirely. The two are different wire shapes
+     * and the SDK distinguishes them deliberately.
      *
      * @param array<string, bool|string> $expected
      */
     protected function assertVideoGrant(array $expected, RequestInterface $request): void
     {
-        $video = $this->claims($request)['video'] ?? [];
+        $claims = $this->claims($request);
 
-        if ($expected === []) {
-            self::assertSame([], $video, 'expected no video grant');
+        self::assertArrayHasKey('video', $claims, 'expected a video grant claim');
 
-            return;
-        }
-
+        $video = $claims['video'];
         self::assertIsArray($video);
 
         foreach ($expected as $key => $value) {
@@ -121,21 +124,26 @@ abstract class TwirpTestCase extends TestCase
         self::assertCount(count($expected), $video, 'video grant carries unexpected extra claims');
     }
 
+    /** Asserts the `video` claim is absent entirely, as opposed to present-and-empty. */
+    protected function assertNoVideoGrant(RequestInterface $request): void
+    {
+        self::assertArrayNotHasKey('video', $this->claims($request), 'expected no video grant claim');
+    }
+
     /**
-     * Asserts the `sip` claim contains exactly these keys and values.
+     * Asserts the `sip` claim is present and contains exactly these keys and
+     * values — no more. An empty $expected means present but carrying nothing;
+     * use assertNoSipGrant() for a claim that should be absent entirely.
      *
      * @param array<string, bool> $expected
      */
     protected function assertSipGrant(array $expected, RequestInterface $request): void
     {
-        $sip = $this->claims($request)['sip'] ?? [];
+        $claims = $this->claims($request);
 
-        if ($expected === []) {
-            self::assertSame([], $sip, 'expected no sip grant');
+        self::assertArrayHasKey('sip', $claims, 'expected a sip grant claim');
 
-            return;
-        }
-
+        $sip = $claims['sip'];
         self::assertIsArray($sip);
 
         foreach ($expected as $key => $value) {
@@ -144,6 +152,12 @@ abstract class TwirpTestCase extends TestCase
         }
 
         self::assertCount(count($expected), $sip, 'sip grant carries unexpected extra claims');
+    }
+
+    /** Asserts the `sip` claim is absent entirely, as opposed to present-and-empty. */
+    protected function assertNoSipGrant(RequestInterface $request): void
+    {
+        self::assertArrayNotHasKey('sip', $this->claims($request), 'expected no sip grant claim');
     }
 
     /**
