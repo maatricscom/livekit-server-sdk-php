@@ -71,28 +71,28 @@ interface EgressClientInterface
     ): EgressInfo;
 
     /**
-     * One request, and the response as the server sent it -- including the cursor
-     * for the page after this one, which the two calls below spend on your behalf.
-     * This is the call to make when the cursor has to outlive the process, such as
-     * a page of results rendered with a link to the next.
+     * One request, and the response the server built -- `next_page_token` included.
+     * The same shape LiveKit's Go, Python and Ruby SDKs return from ListEgress, and
+     * the one list call here that is not unwrapped to an array: an array cannot
+     * carry a cursor, and dropping it is what leaves a caller holding a page they
+     * cannot tell from the whole.
      */
-    public function listEgressPage(?ListEgressOptions $options = null): ListEgressResponse;
+    public function listEgress(?ListEgressOptions $options = null): ListEgressResponse;
 
     /**
-     * Walks every page, fetching the next only once the current one is spent, so
-     * a caller that stops early stops the requests with it.
+     * Walks every page, asking for the next only once the caller has taken the
+     * current one, so stopping early stops the requests too.
      *
      * @return \Generator<int, EgressInfo, mixed, void>
      */
     public function iterateEgress(?ListEgressOptions $options = null): \Generator;
 
     /**
-     * Every page, collected. Use iterateEgress() to stop early, or
-     * listEgressPage() to hold the cursor yourself.
+     * Every page, collected into one array.
      *
      * @return list<EgressInfo>
      */
-    public function listEgress(?ListEgressOptions $options = null): array;
+    public function listAllEgress(?ListEgressOptions $options = null): array;
 
     public function stopEgress(string $egressId): EgressInfo;
 }

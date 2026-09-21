@@ -22,8 +22,9 @@ and webhooks.
 
 As of v0.1.0 (September 2026) LiveKit publishes server SDKs for Go, Ruby, Python and Kotlin but none for
 PHP, and its own ecosystem page points to a community package (`agence104/livekit-server-sdk`) instead.
-This package can be installed alongside that one — see
-[Migrating from `agence104/livekit-server-sdk`](#migrating-from-agence104livekit-server-sdk) below.
+Moving off it is one cutover rather than a gradual one, for a reason that is not about either package's
+code — see [Migrating from `agence104/livekit-server-sdk`](#migrating-from-agence104livekit-server-sdk)
+below.
 
 ## Requirements
 
@@ -75,10 +76,6 @@ accepts a JSON array and hands back a default message, `ext-protobuf` accepts an
 same. `WebhookReceiver` rejects both, on both runtimes. The test suite runs against the extension as well
 as the pure-PHP runtime on every push, so this stays true.
 
-One thing to know before enabling it: if you also have `agence104/livekit-server-sdk` installed, the two
-packages cannot coexist under the extension. See
-[Migrating from `agence104/livekit-server-sdk`](#migrating-from-agence104livekit-server-sdk).
-
 ## Quickstart
 
 `LiveKitAPI` is a facade over the six service clients, sharing one set of credentials and one HTTP
@@ -101,19 +98,26 @@ foreach ($livekit->room->listRooms() as $existing) {
 Every constructor argument is optional, so in most deployments you can simply write `new LiveKitAPI()`
 and configure it through the environment — see [Credentials](#credentials) below.
 
-List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on) return plain PHP arrays
-rather than a generated protobuf `RepeatedField`; every other method returns the generated
+Most list methods (`listRooms()`, `listParticipants()`, `listSipInboundTrunk()`, and so on) return plain
+PHP arrays rather than a generated protobuf `RepeatedField`; every other method returns the generated
 `LiveKit\Proto\*` message for that RPC's response.
+
+The exception is a response that carries something besides the items. `ListEgressResponse` and
+`ListIngressResponse` also carry `next_page_token`, and unwrapping them to an array would throw it away —
+so `listEgress()` and `listIngress()` hand back the message, exactly as LiveKit's Go, Python and Ruby SDKs
+do. Every other list response has one field and nothing is lost.
 
 ### Paginated lists
 
-`ListEgress` and `ListIngress` can answer in pages. An array that stopped at a page boundary would look
-exactly like a complete one, so `listEgress()` and `listIngress()` walk to the end for you. When that is
-the wrong shape, two others are there:
+`ListEgress` and `ListIngress` can answer in pages, so the three calls below are three answers to what you
+want done about that.
 
 ```php
-// Every page, collected. The default, and what you want almost always.
-$all = $livekit->egress->listEgress();
+// One request, and the response the server built. The same call the Go, Python
+// and Ruby SDKs give you, cursor and all.
+$page   = $livekit->egress->listEgress();
+$items  = $page->getItems();
+$cursor = $page->getNextPageToken()?->getToken();
 
 // One page at a time. The next is fetched only when you reach for it, so
 // leaving the loop early leaves the remaining requests unmade.
@@ -121,12 +125,17 @@ foreach ($livekit->egress->iterateEgress() as $egress) {
     break;
 }
 
-// Exactly one request, and the response as the server sent it. For a cursor
-// that has to outlive the process -- a page of results with a link to the next.
-$page = $livekit->egress->listEgressPage();
+// Every page, collected into one array.
+$all = $livekit->egress->listAllEgress();
 ```
 
-`ListEgressOptions` and `ListIngressOptions` take a `pageToken` to resume from a cursor you kept.
+`listEgress()` is the one to reach for when the cursor has to outlive the process — a page of results
+rendered with a link to the next one. Keep `$cursor`, and hand it back through
+`new ListEgressOptions(pageToken: $cursor)`.
+
+`listAllEgress()` is the convenient one, and it walks: an array that stopped at a page boundary would be
+indistinguishable from a complete one, which is the bug that shape invites. `iterateEgress()` is the same
+walk without building the array, for an early exit or a list too large to hold.
 
 ## Credentials
 
@@ -975,8 +984,15 @@ unless `PLACE_A_REAL_WHATSAPP_CALL=yes` is set.
 
 ## Migrating from `agence104/livekit-server-sdk`
 
-If you're moving from the existing community SDK, the biggest difference is namespacing — everything else
-maps over fairly directly.
+**The two cannot be installed together.** Released versions of `agence104/livekit-server-sdk` (1.3.5 and
+earlier) pin `google/protobuf` to `^3.23|^4.0`; this package needs `^5.36`, because protoc 36's generated
+getters for `optional int64` fields call `GPBUtil::compatibleInt64()`, which no 4.x runtime has. Composer
+refuses the pair, so this is a cutover and not a gradual move.
+
+That is a dependency range and not a law. `^5.0` sits on that package's master branch, unreleased; the day
+it ships, the paragraph below on namespaces is what decides whether the two can share a tree.
+
+Past that, the biggest difference is namespacing — everything else maps over fairly directly.
 
 | | `agence104/livekit-server-sdk` | `maatrics/livekit-server-sdk-php` (this package) |
 |---|---|---|
@@ -993,22 +1009,24 @@ rather than moved ones.
 `agence104/livekit-server-sdk` puts its generated protobuf classes in the **global** `Livekit\` namespace
 and its descriptor metadata at the **bare `GPBMetadata\` root**. This package uses `LiveKit\Proto\` for
 messages and `GPBMetadata\LiveKit\` for descriptors — the conventional root, but claimed under a prefix
-of its own rather than at the top of it, which is what `google-cloud-php` does across its 238 metadata
-prefixes and what stops two packages from claiming the same name. No PHP class name is claimed by both
-packages, so Composer can autoload them together and an incremental migration — call site by call site,
-rather than one atomic cutover — works.
+of its own rather than at the top of it, as `google-cloud-php` does across its 238 metadata prefixes. No
+PHP class name is claimed by both packages, so nothing in either one's autoloading would stand in the way
+of a shared tree.
 
-**On the pure-PHP protobuf runtime.** Both packages generate the same protobuf *messages*, and
-`livekit.SendDataRequest` is `livekit.SendDataRequest` in either one, whatever the PHP class is called.
-The pure-PHP `DescriptorPool` keys its registry by PHP class name, so the two sets coexist: measured on
-PHP 8.4 with both packages loaded, each still round-trips, and this package's `kind` field still resolves
-to `LiveKit\Proto\DataPacket\Kind` rather than the other package's enum.
+The runtimes would not agree about it, though, and that is worth knowing before the constraint lifts.
+Both packages generate the same protobuf *messages*: `livekit.SendDataRequest` is
+`livekit.SendDataRequest` in either one, whatever the PHP class is called.
 
-**`ext-protobuf` is different.** Its pool keys by the protobuf full name, so the second package to call
-`initOnce()` is dropped — silently, with no error from the registration itself. Every message class in
-the losing package then throws `Couldn't find descriptor` for the rest of the process. Which package
-loses depends only on which one happens to construct a message first, so it is not something you can
-arrange for. If you have the extension enabled, migrate in one cutover, or disable it until you have.
+**The pure-PHP runtime keys by PHP class name.** `DescriptorPool` registers each descriptor under
+`$class_to_desc`, which is what encoding and decoding look up, so two sets of distinct classes do not
+collide there. It also keeps a `proto_to_class` map under the protobuf full name where the last
+registration wins, but that one is only consulted when resolving a message *by its protobuf name*, such
+as unpacking an `Any`.
+
+**`ext-protobuf` keys by the protobuf full name and nothing else.** The second package to call
+`initOnce()` is dropped — silently, with no error from the registration itself — and every message class
+in the losing package then throws `Couldn't find descriptor` for the rest of the process. Which one loses
+depends only on which constructs a message first, so it is not something you can arrange for.
 
 ## Supported LiveKit protocol version
 

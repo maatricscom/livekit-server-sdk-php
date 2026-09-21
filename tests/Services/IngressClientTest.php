@@ -158,7 +158,7 @@ final class IngressClientTest extends TwirpTestCase
         $this->assertVideoGrant(['ingressAdmin' => true], $request);
     }
 
-    public function testListIngressUnwrapsItems(): void
+    public function testListAllIngressUnwrapsItems(): void
     {
         $first = new IngressInfo();
         $first->setIngressId('IN_1');
@@ -177,7 +177,7 @@ final class IngressClientTest extends TwirpTestCase
             httpClient: $this->http,
         );
 
-        $items = $client->listIngress(new ListIngressOptions(
+        $items = $client->listAllIngress(new ListIngressOptions(
             roomName: 'my-room',
             ingressId: 'IN_1',
             pageToken: 'page-2',
@@ -200,7 +200,7 @@ final class IngressClientTest extends TwirpTestCase
         $this->assertVideoGrant(['ingressAdmin' => true], $request);
     }
 
-    public function testListIngressWithoutOptionsSendsEmptyRequest(): void
+    public function testListAllIngressWithoutOptionsSendsEmptyRequest(): void
     {
         $this->http->pushResponse($this->protoResponse(new ListIngressResponse()));
 
@@ -211,7 +211,7 @@ final class IngressClientTest extends TwirpTestCase
             httpClient: $this->http,
         );
 
-        $items = $client->listIngress();
+        $items = $client->listAllIngress();
 
         self::assertSame([], $items);
 
@@ -254,7 +254,7 @@ final class IngressClientTest extends TwirpTestCase
         $this->assertVideoGrant(['ingressAdmin' => true], $request);
     }
 
-    public function testListIngressFollowsTheCursorUntilTheServerStopsSendingOne(): void
+    public function testListAllIngressFollowsTheCursorUntilTheServerStopsSendingOne(): void
     {
         $cursor = new TokenPagination();
         $cursor->setToken('page-2');
@@ -280,7 +280,7 @@ final class IngressClientTest extends TwirpTestCase
             httpClient: $this->http,
         );
 
-        $items = $client->listIngress();
+        $items = $client->listAllIngress();
 
         self::assertSame(['IN_one', 'IN_two'], array_map(
             static fn (IngressInfo $info): string => $info->getIngressId(),

@@ -97,18 +97,19 @@ final class RpcSweepTest extends MockServerTestCase
         )];
         yield 'egress.updateLayout' => [static fn (LiveKitAPI $a): mixed => $a->egress->updateLayout('EG_abc', 'speaker')];
         yield 'egress.updateStream' => [static fn (LiveKitAPI $a): mixed => $a->egress->updateStream('EG_abc', ['rtmp://example.com/live'])];
-        yield 'egress.listEgressPage' => [static fn (LiveKitAPI $a): mixed => $a->egress->listEgressPage()];
+        yield 'egress.listEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->listEgress()];
         // A generator sends nothing until something reads it, so the sweep reads it.
         yield 'egress.iterateEgress' => [static fn (LiveKitAPI $a): mixed => iterator_to_array($a->egress->iterateEgress(), false)];
-        yield 'egress.listEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->listEgress()];
+        yield 'egress.listAllEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->listAllEgress()];
         yield 'egress.stopEgress' => [static fn (LiveKitAPI $a): mixed => $a->egress->stopEgress('EG_abc')];
 
         // -- Ingress -------------------------------------------------------
         yield 'ingress.createIngress' => [static fn (LiveKitAPI $a): mixed => $a->ingress->createIngress(new CreateIngressOptions(name: 'sweep', roomName: 'sweep'))];
         yield 'ingress.updateIngress' => [static fn (LiveKitAPI $a): mixed => $a->ingress->updateIngress('IN_abc', new UpdateIngressOptions(name: 'renamed'))];
-        yield 'ingress.listIngressPage' => [static fn (LiveKitAPI $a): mixed => $a->ingress->listIngressPage()];
-        yield 'ingress.iterateIngress' => [static fn (LiveKitAPI $a): mixed => iterator_to_array($a->ingress->iterateIngress(), false)];
         yield 'ingress.listIngress' => [static fn (LiveKitAPI $a): mixed => $a->ingress->listIngress()];
+        // A generator sends nothing until something reads it, so the sweep reads it.
+        yield 'ingress.iterateIngress' => [static fn (LiveKitAPI $a): mixed => iterator_to_array($a->ingress->iterateIngress(), false)];
+        yield 'ingress.listAllIngress' => [static fn (LiveKitAPI $a): mixed => $a->ingress->listAllIngress()];
         yield 'ingress.deleteIngress' => [static fn (LiveKitAPI $a): mixed => $a->ingress->deleteIngress('IN_abc')];
 
         // -- SIP -----------------------------------------------------------

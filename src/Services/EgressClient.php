@@ -182,24 +182,41 @@ final class EgressClient extends ServiceBase implements EgressClientInterface
     }
 
     /**
-     * One request, and the response as the server sent it -- cursor included.
+     * One request, and the response as the server built it -- `next_page_token`
+     * included. This is what LiveKit's Go, Python and Ruby SDKs return from
+     * ListEgress, and the reason this one call is not unwrapped to an array like
+     * every other list in this package: unwrapping would throw the cursor away.
      */
-    public function listEgressPage(?ListEgressOptions $options = null): ListEgressResponse
+    /**
+     * One request, and the response as the server built it -- `next_page_token`
+     * included. This is what LiveKit's Go, Python and Ruby SDKs return from
+     * ListEgress, and the reason this one call is not unwrapped to an array like
+     * every other list in this package: unwrapping would throw the cursor away.
+     *
+     * iterateEgress() and listAllEgress() walk the cursor when that is what you want.
+     */
+    public function listEgress(?ListEgressOptions $options = null): ListEgressResponse
     {
         return $this->egressPage($options, $options->pageToken ?? '');
     }
 
     /**
+     * Walks every page, asking for the next only once the caller has taken the
+     * current one -- so leaving the loop early leaves the rest of the requests
+     * unmade, and memory stays at one page.
+     *
      * @return \Generator<int, EgressInfo, mixed, void>
      */
     public function iterateEgress(?ListEgressOptions $options = null): \Generator
     {
-        // One page is fetched, handed over, and only then is the next one asked
-        // for -- so a caller that stops early stops the requests with it.
         $token = $options->pageToken ?? '';
         $seen = [];
 
         do {
+            // The private builder rather than listEgress(): the token is a separate
+            // argument here, so nothing has to rebuild the readonly options per
+            // page -- a copy that would silently drop any field added to them
+            // later and not added to the copy.
             $response = $this->egressPage($options, $token);
 
             foreach ($response->getItems() as $item) {
@@ -220,20 +237,18 @@ final class EgressClient extends ServiceBase implements EgressClientInterface
     }
 
     /**
+     * Every page, collected. Its presence beside listEgress() is also the hint that
+     * listEgress() is one page: an array that stopped at a boundary would look
+     * exactly like a complete one, and nothing in the signature could say so.
+     *
      * @return list<EgressInfo>
      */
-    public function listEgress(?ListEgressOptions $options = null): array
+    public function listAllEgress(?ListEgressOptions $options = null): array
     {
-        // Returning one page as though it were the whole list is a wrong answer
-        // rather than a missing feature: the caller gets an array with no way to
-        // tell it was truncated. livekit/protocol added TokenPagination to this
-        // RPC in v1.46.0 and LiveKit's own documentation does not mention it, so
-        // this walks to the end. listEgressPage() is there for a caller who wants
-        // the cursor instead.
         return iterator_to_array($this->iterateEgress($options), false);
     }
 
-    /** One request. The token is passed rather than read off the options so the walk can advance it. */
+    /** One request. The token is an argument so the walk can advance it without copying the options. */
     private function egressPage(?ListEgressOptions $options, string $token): ListEgressResponse
     {
         $request = new ListEgressRequest();

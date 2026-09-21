@@ -586,7 +586,7 @@ final class EgressClientTest extends TwirpTestCase
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }
 
-    public function testListEgressUnwrapsItemsAndAppliesFilters(): void
+    public function testListAllEgressUnwrapsItemsAndAppliesFilters(): void
     {
         $response = new ListEgressResponse();
         $response->setItems([$this->egressInfo('EG_one'), $this->egressInfo('EG_two')]);
@@ -594,7 +594,7 @@ final class EgressClientTest extends TwirpTestCase
 
         $client = $this->egressClient();
 
-        $items = $client->listEgress(new ListEgressOptions(roomName: 'my-room', active: true));
+        $items = $client->listAllEgress(new ListEgressOptions(roomName: 'my-room', active: true));
 
         self::assertCount(2, $items);
         self::assertContainsOnlyInstancesOf(EgressInfo::class, $items);
@@ -616,13 +616,13 @@ final class EgressClientTest extends TwirpTestCase
         $this->assertVideoGrant(['roomRecord' => true], $sent);
     }
 
-    public function testListEgressWithoutOptionsSendsAnEmptyRequestAndReturnsAnEmptyArray(): void
+    public function testListAllEgressWithoutOptionsSendsAnEmptyRequestAndReturnsAnEmptyArray(): void
     {
         $this->http->pushResponse($this->protoResponse(new ListEgressResponse()));
 
         $client = $this->egressClient();
 
-        self::assertSame([], $client->listEgress());
+        self::assertSame([], $client->listAllEgress());
 
         $sent = $this->http->lastRequest();
         $this->assertTwirpRequest($sent, 'Egress', 'ListEgress');
@@ -668,7 +668,7 @@ final class EgressClientTest extends TwirpTestCase
         return new EgressClient(self::HOST, self::API_KEY, self::API_SECRET, httpClient: $this->http);
     }
 
-    public function testListEgressFollowsTheCursorUntilTheServerStopsSendingOne(): void
+    public function testListAllEgressFollowsTheCursorUntilTheServerStopsSendingOne(): void
     {
         $cursor = new TokenPagination();
         $cursor->setToken('page-2');
@@ -683,7 +683,7 @@ final class EgressClientTest extends TwirpTestCase
         $this->http->pushResponse($this->protoResponse($first));
         $this->http->pushResponse($this->protoResponse($second));
 
-        $items = $this->egressClient()->listEgress(new ListEgressOptions(roomName: 'my-room'));
+        $items = $this->egressClient()->listAllEgress(new ListEgressOptions(roomName: 'my-room'));
 
         self::assertSame(['EG_one', 'EG_two'], array_map(
             static fn (EgressInfo $info): string => $info->getEgressId(),
@@ -699,7 +699,7 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame('my-room', $sent[1]->getRoomName(), 'The filter has to survive the second call.');
     }
 
-    public function testListEgressStopsWhenTheServerRepeatsACursorItAlreadySent(): void
+    public function testListAllEgressStopsWhenTheServerRepeatsACursorItAlreadySent(): void
     {
         // A server answering every page with the same cursor would otherwise be
         // followed until the process died.
@@ -714,17 +714,17 @@ final class EgressClientTest extends TwirpTestCase
             $this->http->pushResponse($this->protoResponse($page));
         }
 
-        $items = $this->egressClient()->listEgress();
+        $items = $this->egressClient()->listAllEgress();
 
         self::assertSame(2, $this->http->requestCount(), 'The repeat has to end the walk.');
         self::assertCount(2, $items, 'What was fetched before the repeat is still returned.');
     }
 
-    public function testListEgressResumesFromAPageTokenGivenInOptions(): void
+    public function testListAllEgressResumesFromAPageTokenGivenInOptions(): void
     {
         $this->http->pushResponse($this->protoResponse(new ListEgressResponse()));
 
-        $this->egressClient()->listEgress(new ListEgressOptions(pageToken: 'resume-here'));
+        $this->egressClient()->listAllEgress(new ListEgressOptions(pageToken: 'resume-here'));
 
         self::assertSame(1, $this->http->requestCount());
         self::assertSame('resume-here', $this->decodeRequest(ListEgressRequest::class)->getPageToken()?->getToken());
@@ -756,7 +756,7 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame(1, $this->http->requestCount(), 'Stopping early has to stop the requests too.');
     }
 
-    public function testListEgressPageMakesOneRequestAndHandsTheCursorBack(): void
+    public function testListEgressMakesOneRequestAndHandsTheCursorBack(): void
     {
         $cursor = new TokenPagination();
         $cursor->setToken('page-2');
@@ -767,7 +767,7 @@ final class EgressClientTest extends TwirpTestCase
 
         $this->http->pushResponse($this->protoResponse($response));
 
-        $page = $this->egressClient()->listEgressPage(new ListEgressOptions(roomName: 'my-room'));
+        $page = $this->egressClient()->listEgress(new ListEgressOptions(roomName: 'my-room'));
 
         self::assertSame(1, $this->http->requestCount(), 'One page means one request.');
         self::assertCount(1, $page->getItems());

@@ -80,13 +80,16 @@ arguments — the one exception is `EgressBaseOptions`, an `abstract readonly` b
 shapes extend. Returns are the generated `LiveKit\Proto\*` messages, except list RPCs, which are unwrapped
 to plain PHP arrays.
 
-`ListEgress` and `ListIngress` paginate, and each gets three calls rather than one: `listEgressPage()`
-sends one request and returns the raw response with its cursor, `iterateEgress()` is a generator that
-fetches the next page only when the caller reaches for it, and `listEgress()` is `iterator_to_array()`
-over that. The array is the default because a truncated one is indistinguishable from a complete one; the
-other two exist because walking to the end is the wrong shape for an early exit or for a cursor that has
-to outlive the process. `EgressClientTest` asserts the laziness by queueing one page and breaking out —
-an eager generator asks the mock client for a response it does not have.
+**A list response is unwrapped only when it holds nothing else.** Seven of the nine carry one field, so
+`listRooms()` returns `Room[]` and nothing is lost. `ListEgressResponse` and `ListIngressResponse` also
+carry `next_page_token`, so `listEgress()` and `listIngress()` return the message — the shape Go, Python
+and Ruby return, and the reason those two are not arrays.
+
+Each of the two then gets two more calls: `iterateEgress()` is a generator that fetches the next page only
+when the caller reaches for it, and `listAllEgress()` is `iterator_to_array()` over that. The walk lives
+in the generator because you can go lazy-to-eager but not back. `EgressClientTest` asserts the laziness by
+queueing one page and breaking out — an eager generator asks the mock client for a response it does not
+have, which is a failure rather than a quiet pass.
 
 Generated code is **committed, not built at install time** — Composer has no build step and users must not
 need `protoc`.
@@ -153,6 +156,9 @@ Documented across `README.md` and `CHANGELOG.md`, and not bugs to fix:
   throws in the case its own docblock documents.
 - A `SipCallError` is never replayed by failover — SIP status metadata means the callee answered.
 - An HTTP 451 region-pin redirect is followed; no official SDK implements this yet.
+- `listEgress()` and `listIngress()` return the response message, not an array, which is what Go, Python
+  and Ruby do and what Node does not — Node unwraps and drops the cursor, leaving a caller holding a page
+  they cannot tell from the whole.
 
 `docs/design.md` is the design spec: it records *why* the package is shaped this way, and is kept current
 with the code rather than left as a snapshot. `docs/superpowers/` is a local working directory and is

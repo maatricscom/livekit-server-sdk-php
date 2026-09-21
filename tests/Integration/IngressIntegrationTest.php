@@ -59,7 +59,7 @@ final class IngressIntegrationTest extends IntegrationTestCase
             body: function () use ($id, $name, $room): void {
                 self::assertNotSame('', $id, 'the server assigns an ingress id');
 
-                $found = $this->livekit->ingress->listIngress(new ListIngressOptions(ingressId: $id));
+                $found = $this->livekit->ingress->listAllIngress(new ListIngressOptions(ingressId: $id));
 
                 self::assertCount(1, $found, 'the ingressId filter reaches the server');
                 self::assertSame($name, $found[0]->getName());
@@ -84,7 +84,7 @@ final class IngressIntegrationTest extends IntegrationTestCase
         );
 
         $this->assertGoneAfterDelete(
-            fn (): array => $this->livekit->ingress->listIngress(new ListIngressOptions(ingressId: $id)),
+            fn (): array => $this->livekit->ingress->listAllIngress(new ListIngressOptions(ingressId: $id)),
             sprintf('ingress %s', $id),
         );
     }
@@ -112,7 +112,7 @@ final class IngressIntegrationTest extends IntegrationTestCase
 
         $this->cleanUpAfter(
             body: function () use ($room, $first, $second): void {
-                $found = $this->livekit->ingress->listIngress(new ListIngressOptions(roomName: $room));
+                $found = $this->livekit->ingress->listAllIngress(new ListIngressOptions(roomName: $room));
 
                 self::assertCount(2, $found, 'the roomName filter returns every ingress bound to the room');
 
@@ -129,7 +129,7 @@ final class IngressIntegrationTest extends IntegrationTestCase
                 // rpc do not answer the same way.
                 self::assertSame(
                     [],
-                    $this->livekit->ingress->listIngress(new ListIngressOptions(roomName: $this->scratchName('empty'))),
+                    $this->livekit->ingress->listAllIngress(new ListIngressOptions(roomName: $this->scratchName('empty'))),
                     'a room with no ingress is empty, not not_found'
                 );
             },

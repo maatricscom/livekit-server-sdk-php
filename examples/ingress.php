@@ -67,7 +67,7 @@ try {
 
     echo 'Ingresses on this room:' . PHP_EOL;
 
-    foreach ($livekit->ingress->listIngress(new ListIngressOptions(roomName: $room)) as $info) {
+    foreach ($livekit->ingress->listAllIngress(new ListIngressOptions(roomName: $room)) as $info) {
         printf('  %s  %s  state=%s%s', $info->getIngressId(), $info->getName(), $info->getState()?->getStatus() ?? 0, PHP_EOL);
     }
 

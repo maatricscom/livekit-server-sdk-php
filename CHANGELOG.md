@@ -5,6 +5,26 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Breaking:** `listEgress()` and `listIngress()` return `ListEgressResponse` and `ListIngressResponse`
+  instead of an array. Every other list call in this package still returns an array, and the reason these
+  two do not is that their response carries `next_page_token` besides the items: unwrapping is what throws
+  a cursor away. The seven other list responses hold one field and lose nothing. It is also what LiveKit's
+  Go, Python and Ruby SDKs return from these RPCs, so the one place this package cannot unwrap is the one
+  place it now matches them exactly. Node unwraps and drops the cursor, which is the shape this used to
+  have.
+- **Breaking:** `listEgressPage()` and `listIngressPage()`, added in 0.2.0, are gone. They existed to hand
+  back a response `listEgress()` had unwrapped; now `listEgress()` is that call.
+
+### Added
+
+- `listAllEgress()` and `listAllIngress()` return every page collected into one array — the behaviour
+  0.1.1 gave `listEgress()`, under a name that says what it does. They walk the cursor, because an array
+  that stopped at a page boundary would be indistinguishable from a complete one.
+
 ## [0.2.0] - 2026-09-21
 
 **Breaking for implementors of the client interfaces**, which is what makes this a minor rather than a
@@ -188,6 +208,7 @@ Why the package is built and checked the way it is — the generated trees, the 
 is not repeated here. `CONTRIBUTING.md` covers how to work on it and `docs/design.md` records the
 reasoning behind the design.
 
+[Unreleased]: https://github.com/maatricscom/livekit-server-sdk-php/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.2.0
 [0.1.1]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.1
 [0.1.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.0

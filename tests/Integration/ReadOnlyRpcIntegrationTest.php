@@ -30,7 +30,7 @@ final class ReadOnlyRpcIntegrationTest extends IntegrationTestCase
     public function test_egress_can_be_listed(): void
     {
         $egresses = $this->skipIfUnavailable(
-            fn () => $this->livekit->egress->listEgress(new ListEgressOptions(active: true)),
+            fn () => $this->livekit->egress->listAllEgress(new ListEgressOptions(active: true)),
             'Egress',
         );
 
@@ -40,7 +40,7 @@ final class ReadOnlyRpcIntegrationTest extends IntegrationTestCase
     public function test_ingress_can_be_listed(): void
     {
         $ingresses = $this->skipIfUnavailable(
-            fn () => $this->livekit->ingress->listIngress(new ListIngressOptions()),
+            fn () => $this->livekit->ingress->listAllIngress(new ListIngressOptions()),
             'Ingress',
         );
 

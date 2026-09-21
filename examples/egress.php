@@ -74,7 +74,7 @@ try {
 
     echo 'Active egresses:' . PHP_EOL;
 
-    foreach ($livekit->egress->listEgress() as $info) {
+    foreach ($livekit->egress->listAllEgress() as $info) {
         printf('  %s  room=%s  status=%s%s', $info->getEgressId(), $info->getRoomName(), $info->getStatus(), PHP_EOL);
     }
 

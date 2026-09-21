@@ -409,12 +409,14 @@ $rooms->deleteRoom('my-room');
 
 - Options are `final readonly` classes with promoted, defaulted constructors, built with named arguments.
   This gives IDE completion and static analysis where an associative array gives neither.
-- List responses are unwrapped: `listRooms()` returns `Room[]`, not `ListRoomsResponse`. Where the RPC
-  paginates, that unwrapping is what would throw the cursor away, so the array is every page rather than
-  the first — an array that stopped at a page boundary would look exactly like a complete one. Unwrapping
-  is not forced on the caller, though: `listEgressPage()` returns the response as the server sent it,
-  cursor included, and `iterateEgress()` yields items while fetching pages lazily. `listEgress()` is the
-  third of the three and the convenient one.
+- List responses are unwrapped when the response holds nothing but the items: `listRooms()` returns
+  `Room[]`, not `ListRoomsResponse`, and nothing is lost by it. Two are not. `ListEgressResponse` and
+  `ListIngressResponse` carry `next_page_token` as well, and unwrapping would throw it away, so
+  `listEgress()` and `listIngress()` return the message — which is also what the Go, Python and Ruby SDKs
+  return, so the one place this package cannot unwrap is the one place it matches them exactly.
+- Those two gain `iterateEgress()`, a generator that fetches a page only when the caller reaches for it,
+  and `listAllEgress()`, which collects every page. The walk lives in the generator: lazy can be made
+  eager, eager cannot be made lazy.
 - Return types are the generated protobuf messages, mirroring the Node SDK returning `@livekit/protocol` types.
 - Method names are camelCase PHP conventions (`createRoom`), not the proto's PascalCase.
 - SIP option-name remapping from the Node SDK is preserved: `fromNumber` → `sipNumber`, the positional

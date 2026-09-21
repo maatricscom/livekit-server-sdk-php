@@ -127,13 +127,30 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
         );
     }
 
-    /** One request, and the response as the server sent it -- cursor included. */
-    public function listIngressPage(?ListIngressOptions $options = null): ListIngressResponse
+    /**
+     * One request, and the response as the server built it -- `next_page_token`
+     * included. This is what LiveKit's Go, Python and Ruby SDKs return from
+     * ListIngress, and the reason this one call is not unwrapped to an array like
+     * every other list in this package: unwrapping would throw the cursor away.
+     */
+    /**
+     * One request, and the response as the server built it -- `next_page_token`
+     * included. This is what LiveKit's Go, Python and Ruby SDKs return from
+     * ListIngress, and the reason this one call is not unwrapped to an array like
+     * every other list in this package: unwrapping would throw the cursor away.
+     *
+     * iterateIngress() and listAllIngress() walk the cursor when that is what you want.
+     */
+    public function listIngress(?ListIngressOptions $options = null): ListIngressResponse
     {
         return $this->ingressPage($options, $options->pageToken ?? '');
     }
 
     /**
+     * Walks every page, asking for the next only once the caller has taken the
+     * current one -- so leaving the loop early leaves the rest of the requests
+     * unmade, and memory stays at one page.
+     *
      * @return \Generator<int, IngressInfo, mixed, void>
      */
     public function iterateIngress(?ListIngressOptions $options = null): \Generator
@@ -142,6 +159,10 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
         $seen = [];
 
         do {
+            // The private builder rather than listIngress(): the token is a separate
+            // argument here, so nothing has to rebuild the readonly options per
+            // page -- a copy that would silently drop any field added to them
+            // later and not added to the copy.
             $response = $this->ingressPage($options, $token);
 
             foreach ($response->getItems() as $item) {
@@ -151,6 +172,8 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
             $next = $response->getNextPageToken();
             $token = $next === null ? '' : $next->getToken();
 
+            // A server handing back a cursor it has already given would
+            // otherwise be followed forever.
             if ($token !== '' && isset($seen[$token])) {
                 break;
             }
@@ -160,19 +183,18 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
     }
 
     /**
+     * Every page, collected. Its presence beside listIngress() is also the hint that
+     * listIngress() is one page: an array that stopped at a boundary would look
+     * exactly like a complete one, and nothing in the signature could say so.
+     *
      * @return list<IngressInfo>
      */
-    public function listIngress(?ListIngressOptions $options = null): array
+    public function listAllIngress(?ListIngressOptions $options = null): array
     {
-        // See EgressClient::listEgress() for why the cursor is walked rather than
-        // returned. A LiveKit Cloud project caps ingress objects well below any
-        // page size -- measured at 40 with no cursor, and refused at about 50 --
-        // so this is expected to make one request. It is here because the RPC can
-        // paginate, not because this one is known to.
         return iterator_to_array($this->iterateIngress($options), false);
     }
 
-    /** One request. The token is passed rather than read off the options so the walk can advance it. */
+    /** One request. The token is an argument so the walk can advance it without copying the options. */
     private function ingressPage(?ListIngressOptions $options, string $token): ListIngressResponse
     {
         $request = new ListIngressRequest();

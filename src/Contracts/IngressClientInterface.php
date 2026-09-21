@@ -16,18 +16,26 @@ interface IngressClientInterface
 
     public function updateIngress(string $ingressId, UpdateIngressOptions $options): IngressInfo;
 
-    /** One request, and the response as the server sent it, cursor included. */
-    public function listIngressPage(?ListIngressOptions $options = null): ListIngressResponse;
+    /**
+     * One request, and the response the server built -- `next_page_token` included.
+     * The same shape LiveKit's Go, Python and Ruby SDKs return from ListIngress.
+     */
+    public function listIngress(?ListIngressOptions $options = null): ListIngressResponse;
 
     /**
-     * Walks every page, fetching the next only once the current one is spent.
+     * Walks every page, asking for the next only once the caller has taken the
+     * current one, so stopping early stops the requests too.
      *
      * @return \Generator<int, IngressInfo, mixed, void>
      */
     public function iterateIngress(?ListIngressOptions $options = null): \Generator;
 
-    /** @return list<IngressInfo> */
-    public function listIngress(?ListIngressOptions $options = null): array;
+    /**
+     * Every page, collected into one array.
+     *
+     * @return list<IngressInfo>
+     */
+    public function listAllIngress(?ListIngressOptions $options = null): array;
 
     public function deleteIngress(string $ingressId): IngressInfo;
 }
