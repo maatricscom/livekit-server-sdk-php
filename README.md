@@ -20,8 +20,9 @@ and webhooks.
 - **`AccessToken`** / **`TokenVerifier`** — mint and verify the HS256 JWTs LiveKit uses for room access
 - **`WebhookReceiver`** — verify and parse LiveKit's server-to-server webhooks
 
-No official PHP SDK exists upstream; LiveKit's own ecosystem page points to a community package
-(`agence104/livekit-server-sdk`) instead. This package can be installed alongside that one — see
+As of v0.1.0 (September 2026) LiveKit publishes server SDKs for Go, Ruby, Python and Kotlin but none for
+PHP, and its own ecosystem page points to a community package (`agence104/livekit-server-sdk`) instead.
+This package can be installed alongside that one — see
 [Migrating from `agence104/livekit-server-sdk`](#migrating-from-agence104livekit-server-sdk) below.
 
 ## Requirements
@@ -959,10 +960,12 @@ maps over fairly directly.
 | Generated protobuf classes | Global `Livekit\` namespace | `LiveKit\Proto\` (`src/Proto/`) |
 | Protobuf descriptors | Bare `GPBMetadata\` root | `GPBMetadata\LiveKit\` (`metadata/`) |
 | Service clients | `Agence104\LiveKit\RoomServiceClient`, etc. | `LiveKit\Services\RoomServiceClient`, etc. |
-| SIP support | Not present | `LiveKit\Services\SipClient` (all 16 RPCs) |
-| Agent dispatch | Not present | `LiveKit\Services\AgentDispatchClient` (all 3 RPCs) |
 | Access tokens | `Agence104\LiveKit\AccessToken` | `LiveKit\AccessToken` |
 | Webhooks | `Agence104\LiveKit\WebhookReceiver` | `LiveKit\WebhookReceiver` |
+
+[`SipClient`](#sip) and [`AgentDispatchClient`](#agent-dispatch) are not in the table because nothing about
+them is a rename — whatever the other package covers by the time you read this, these are new call sites
+rather than moved ones.
 
 `agence104/livekit-server-sdk` puts its generated protobuf classes in the **global** `Livekit\` namespace
 and its descriptor metadata at the **bare `GPBMetadata\` root**. This package uses `LiveKit\Proto\` for
