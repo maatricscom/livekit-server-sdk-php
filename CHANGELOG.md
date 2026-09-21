@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2026-09-21
 
 ### Changed
 
@@ -208,7 +208,7 @@ Why the package is built and checked the way it is — the generated trees, the 
 is not repeated here. `CONTRIBUTING.md` covers how to work on it and `docs/design.md` records the
 reasoning behind the design.
 
-[Unreleased]: https://github.com/maatricscom/livekit-server-sdk-php/compare/v0.2.0...HEAD
+[0.3.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.3.0
 [0.2.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.2.0
 [0.1.1]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.1
 [0.1.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.0
