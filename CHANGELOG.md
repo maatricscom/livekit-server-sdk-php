@@ -5,6 +5,28 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-09-21
+
+**Breaking for implementors of the client interfaces**, which is what makes this a minor rather than a
+patch: `EgressClientInterface` and `IngressClientInterface` each gain two methods. Nothing changes for
+callers — every existing call keeps its signature, its return type and its behaviour.
+
+### Added
+
+- `listEgressPage()` and `listIngressPage()` send exactly one request and return the response as the
+  server built it, cursor and all. 0.1.1 made the list calls walk every page, which fixed a wrong answer
+  but took away the ability to fetch one page deliberately; this puts it back. It is the shape a paginated
+  interface needs, where the cursor has to outlive the process that read it.
+- `iterateEgress()` and `iterateIngress()`, generators that yield items and ask for the next page only
+  when the caller reaches for it. Leaving the loop early leaves the remaining requests unmade, and memory
+  stays at one page rather than the whole list. A unit test queues a single page and breaks out of the
+  loop: an eager implementation asks the mock client for a response that was never queued, and fails.
+
+### Changed
+
+- `listEgress()` and `listIngress()` are now `iterator_to_array()` over the generators above, so the walk
+  lives in one place. Their signatures, return types and behaviour are unchanged.
+
 ## [0.1.1] - 2026-09-21
 
 ### Fixed
@@ -166,5 +188,6 @@ Why the package is built and checked the way it is — the generated trees, the 
 is not repeated here. `CONTRIBUTING.md` covers how to work on it and `docs/design.md` records the
 reasoning behind the design.
 
+[0.2.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.2.0
 [0.1.1]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.1
 [0.1.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.0

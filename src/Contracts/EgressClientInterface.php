@@ -13,6 +13,7 @@ use LiveKit\Options\WebOptions;
 use LiveKit\Proto\DirectFileOutput;
 use LiveKit\Proto\EgressInfo;
 use LiveKit\Proto\EncodedFileOutput;
+use LiveKit\Proto\ListEgressResponse;
 use LiveKit\Proto\SegmentedFileOutput;
 use LiveKit\Proto\StartEgressRequest;
 use LiveKit\Proto\StreamOutput;
@@ -70,6 +71,25 @@ interface EgressClientInterface
     ): EgressInfo;
 
     /**
+     * One request, and the response as the server sent it -- including the cursor
+     * for the page after this one, which the two calls below spend on your behalf.
+     * This is the call to make when the cursor has to outlive the process, such as
+     * a page of results rendered with a link to the next.
+     */
+    public function listEgressPage(?ListEgressOptions $options = null): ListEgressResponse;
+
+    /**
+     * Walks every page, fetching the next only once the current one is spent, so
+     * a caller that stops early stops the requests with it.
+     *
+     * @return \Generator<int, EgressInfo, mixed, void>
+     */
+    public function iterateEgress(?ListEgressOptions $options = null): \Generator;
+
+    /**
+     * Every page, collected. Use iterateEgress() to stop early, or
+     * listEgressPage() to hold the cursor yourself.
+     *
      * @return list<EgressInfo>
      */
     public function listEgress(?ListEgressOptions $options = null): array;

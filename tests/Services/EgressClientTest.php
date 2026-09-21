@@ -730,6 +730,51 @@ final class EgressClientTest extends TwirpTestCase
         self::assertSame('resume-here', $this->decodeRequest(ListEgressRequest::class)->getPageToken()?->getToken());
     }
 
+    public function testIterateEgressAsksForTheNextPageOnlyWhenTheCallerReachesForIt(): void
+    {
+        $cursor = new TokenPagination();
+        $cursor->setToken('page-2');
+
+        $first = new ListEgressResponse();
+        $first->setItems([$this->egressInfo('EG_one'), $this->egressInfo('EG_two')]);
+        $first->setNextPageToken($cursor);
+
+        // Only one page is queued. MockHttpClient throws when it is asked for a
+        // response it does not have, so an eager second request fails this test
+        // rather than passing it quietly.
+        $this->http->pushResponse($this->protoResponse($first));
+
+        $seen = [];
+
+        foreach ($this->egressClient()->iterateEgress() as $info) {
+            $seen[] = $info->getEgressId();
+
+            break;
+        }
+
+        self::assertSame(['EG_one'], $seen);
+        self::assertSame(1, $this->http->requestCount(), 'Stopping early has to stop the requests too.');
+    }
+
+    public function testListEgressPageMakesOneRequestAndHandsTheCursorBack(): void
+    {
+        $cursor = new TokenPagination();
+        $cursor->setToken('page-2');
+
+        $response = new ListEgressResponse();
+        $response->setItems([$this->egressInfo('EG_one')]);
+        $response->setNextPageToken($cursor);
+
+        $this->http->pushResponse($this->protoResponse($response));
+
+        $page = $this->egressClient()->listEgressPage(new ListEgressOptions(roomName: 'my-room'));
+
+        self::assertSame(1, $this->http->requestCount(), 'One page means one request.');
+        self::assertCount(1, $page->getItems());
+        self::assertSame('page-2', $page->getNextPageToken()?->getToken(), 'The cursor is the point of this call.');
+        self::assertSame('my-room', $this->decodeRequest(ListEgressRequest::class)->getRoomName());
+    }
+
     /** @return list<ListEgressRequest> */
     private function sentListEgressRequests(): array
     {

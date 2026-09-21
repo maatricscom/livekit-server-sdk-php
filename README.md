@@ -105,6 +105,29 @@ List methods (`listRooms()`, `listEgress()`, `listSipInboundTrunk()`, and so on)
 rather than a generated protobuf `RepeatedField`; every other method returns the generated
 `LiveKit\Proto\*` message for that RPC's response.
 
+### Paginated lists
+
+`ListEgress` and `ListIngress` can answer in pages. An array that stopped at a page boundary would look
+exactly like a complete one, so `listEgress()` and `listIngress()` walk to the end for you. When that is
+the wrong shape, two others are there:
+
+```php
+// Every page, collected. The default, and what you want almost always.
+$all = $livekit->egress->listEgress();
+
+// One page at a time. The next is fetched only when you reach for it, so
+// leaving the loop early leaves the remaining requests unmade.
+foreach ($livekit->egress->iterateEgress() as $egress) {
+    break;
+}
+
+// Exactly one request, and the response as the server sent it. For a cursor
+// that has to outlive the process -- a page of results with a link to the next.
+$page = $livekit->egress->listEgressPage();
+```
+
+`ListEgressOptions` and `ListIngressOptions` take a `pageToken` to resume from a cursor you kept.
+
 ## Credentials
 
 The host comes from the `host` argument or `LIVEKIT_URL`. For authentication you need **either** an API

@@ -182,62 +182,34 @@ final class EgressClient extends ServiceBase implements EgressClientInterface
     }
 
     /**
-     * @return list<EgressInfo>
+     * One request, and the response as the server sent it -- cursor included.
      */
-    public function listEgress(?ListEgressOptions $options = null): array
+    public function listEgressPage(?ListEgressOptions $options = null): ListEgressResponse
     {
-        /** @var list<EgressInfo> $items */
-        $items = [];
+        return $this->egressPage($options, $options->pageToken ?? '');
+    }
 
-        // Returning one page as though it were the whole list is a wrong answer
-        // rather than a missing feature: the caller gets an array with no way to
-        // tell it was truncated. livekit/protocol added TokenPagination to this
-        // RPC in v1.46.0 and LiveKit's own documentation does not mention it, so
-        // the cursor is followed here instead of being handed to the caller. A
-        // deployment that does not paginate returns an empty one and this runs
-        // exactly once, which is what it did before.
+    /**
+     * @return \Generator<int, EgressInfo, mixed, void>
+     */
+    public function iterateEgress(?ListEgressOptions $options = null): \Generator
+    {
+        // One page is fetched, handed over, and only then is the next one asked
+        // for -- so a caller that stops early stops the requests with it.
         $token = $options->pageToken ?? '';
         $seen = [];
 
         do {
-            $request = new ListEgressRequest();
-
-            if ($options?->roomName !== null) {
-                $request->setRoomName($options->roomName);
-            }
-
-            if ($options?->egressId !== null) {
-                $request->setEgressId($options->egressId);
-            }
-
-            if ($options?->active !== null) {
-                $request->setActive($options->active);
-            }
-
-            if ($token !== '') {
-                $pagination = new TokenPagination();
-                $pagination->setToken($token);
-                $request->setPageToken($pagination);
-            }
-
-            $response = $this->rpc(
-                self::SERVICE,
-                'ListEgress',
-                $request,
-                ListEgressResponse::class,
-                // Minted per page rather than once: a long enough walk would
-                // outlive the token's TTL.
-                $this->authHeader(new VideoGrant(roomRecord: true)),
-            );
+            $response = $this->egressPage($options, $token);
 
             foreach ($response->getItems() as $item) {
-                $items[] = $item;
+                yield $item;
             }
 
             $next = $response->getNextPageToken();
             $token = $next === null ? '' : $next->getToken();
 
-            // A server that hands back a cursor it has already given would
+            // A server handing back a cursor it has already given would
             // otherwise be followed forever.
             if ($token !== '' && isset($seen[$token])) {
                 break;
@@ -245,8 +217,54 @@ final class EgressClient extends ServiceBase implements EgressClientInterface
 
             $seen[$token] = true;
         } while ($token !== '');
+    }
 
-        return $items;
+    /**
+     * @return list<EgressInfo>
+     */
+    public function listEgress(?ListEgressOptions $options = null): array
+    {
+        // Returning one page as though it were the whole list is a wrong answer
+        // rather than a missing feature: the caller gets an array with no way to
+        // tell it was truncated. livekit/protocol added TokenPagination to this
+        // RPC in v1.46.0 and LiveKit's own documentation does not mention it, so
+        // this walks to the end. listEgressPage() is there for a caller who wants
+        // the cursor instead.
+        return iterator_to_array($this->iterateEgress($options), false);
+    }
+
+    /** One request. The token is passed rather than read off the options so the walk can advance it. */
+    private function egressPage(?ListEgressOptions $options, string $token): ListEgressResponse
+    {
+        $request = new ListEgressRequest();
+
+        if ($options?->roomName !== null) {
+            $request->setRoomName($options->roomName);
+        }
+
+        if ($options?->egressId !== null) {
+            $request->setEgressId($options->egressId);
+        }
+
+        if ($options?->active !== null) {
+            $request->setActive($options->active);
+        }
+
+        if ($token !== '') {
+            $pagination = new TokenPagination();
+            $pagination->setToken($token);
+            $request->setPageToken($pagination);
+        }
+
+        return $this->rpc(
+            self::SERVICE,
+            'ListEgress',
+            $request,
+            ListEgressResponse::class,
+            // Minted per page rather than once: a long enough walk would outlive
+            // the token's TTL.
+            $this->authHeader(new VideoGrant(roomRecord: true)),
+        );
     }
 
     public function stopEgress(string $egressId): EgressInfo

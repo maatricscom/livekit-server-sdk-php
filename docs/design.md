@@ -410,8 +410,11 @@ $rooms->deleteRoom('my-room');
 - Options are `final readonly` classes with promoted, defaulted constructors, built with named arguments.
   This gives IDE completion and static analysis where an associative array gives neither.
 - List responses are unwrapped: `listRooms()` returns `Room[]`, not `ListRoomsResponse`. Where the RPC
-  paginates, the cursor is followed to the end rather than handed back, since an array that silently
-  stops at a page boundary is a wrong answer and unwrapping is what would throw the cursor away.
+  paginates, that unwrapping is what would throw the cursor away, so the array is every page rather than
+  the first — an array that stopped at a page boundary would look exactly like a complete one. Unwrapping
+  is not forced on the caller, though: `listEgressPage()` returns the response as the server sent it,
+  cursor included, and `iterateEgress()` yields items while fetching pages lazily. `listEgress()` is the
+  third of the three and the convenient one.
 - Return types are the generated protobuf messages, mirroring the Node SDK returning `@livekit/protocol` types.
 - Method names are camelCase PHP conventions (`createRoom`), not the proto's PascalCase.
 - SIP option-name remapping from the Node SDK is preserved: `fromNumber` → `sipNumber`, the positional

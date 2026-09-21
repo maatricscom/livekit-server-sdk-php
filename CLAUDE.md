@@ -80,6 +80,14 @@ arguments — the one exception is `EgressBaseOptions`, an `abstract readonly` b
 shapes extend. Returns are the generated `LiveKit\Proto\*` messages, except list RPCs, which are unwrapped
 to plain PHP arrays.
 
+`ListEgress` and `ListIngress` paginate, and each gets three calls rather than one: `listEgressPage()`
+sends one request and returns the raw response with its cursor, `iterateEgress()` is a generator that
+fetches the next page only when the caller reaches for it, and `listEgress()` is `iterator_to_array()`
+over that. The array is the default because a truncated one is indistinguishable from a complete one; the
+other two exist because walking to the end is the wrong shape for an early exit or for a cursor that has
+to outlive the process. `EgressClientTest` asserts the laziness by queueing one page and breaking out —
+an eager generator asks the mock client for a response it does not have.
+
 Generated code is **committed, not built at install time** — Composer has no build step and users must not
 need `protoc`.
 
