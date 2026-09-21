@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `listEgress()` and `listIngress()` follow the response cursor instead of returning the first page as
+  though it were the whole list. A truncated array was indistinguishable from a complete one, so the
+  caller had no way to notice. `livekit/protocol` added `TokenPagination` to `ListEgress` in v1.46.0 and
+  LiveKit's own documentation does not mention it, which is why no official SDK follows it either. A
+  deployment that does not paginate sends an empty cursor and the call behaves exactly as before. A server
+  that repeats a cursor it has already sent ends the walk rather than being followed forever.
+
+### Added
+
+- `ListEgressOptions::$pageToken`, to resume a listing from a known cursor. `ListIngressOptions` already
+  had one; the two RPCs take the same field in the protocol and there was no reason for only one of them
+  to expose it.
+
 ## [0.1.0] - 2026-09-21
 
 Initial release. Requires PHP 8.4 or later: 8.3 left active support at the end of 2025, and a package
@@ -149,4 +166,5 @@ Why the package is built and checked the way it is — the generated trees, the 
 is not repeated here. `CONTRIBUTING.md` covers how to work on it and `docs/design.md` records the
 reasoning behind the design.
 
+[Unreleased]: https://github.com/maatricscom/livekit-server-sdk-php/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/maatricscom/livekit-server-sdk-php/releases/tag/v0.1.0

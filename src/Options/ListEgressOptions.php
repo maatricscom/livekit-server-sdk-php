@@ -10,6 +10,7 @@ final readonly class ListEgressOptions
         public ?string $roomName = null,
         public ?string $egressId = null,
         public ?bool $active = null,
+        public ?string $pageToken = null,
     ) {
     }
 }

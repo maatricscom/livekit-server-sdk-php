@@ -15,6 +15,7 @@ use LiveKit\Proto\IngressInfo;
 use LiveKit\Proto\IngressInput;
 use LiveKit\Proto\ListIngressRequest;
 use LiveKit\Proto\ListIngressResponse;
+use LiveKit\Proto\TokenPagination;
 use LiveKit\Proto\UpdateIngressRequest;
 use LiveKit\Services\IngressClient;
 use LiveKit\Tests\Support\TwirpTestCase;
@@ -251,5 +252,42 @@ final class IngressClientTest extends TwirpTestCase
         self::assertSame('IN_abc123', $sent->getIngressId());
 
         $this->assertVideoGrant(['ingressAdmin' => true], $request);
+    }
+
+    public function testListIngressFollowsTheCursorUntilTheServerStopsSendingOne(): void
+    {
+        $cursor = new TokenPagination();
+        $cursor->setToken('page-2');
+
+        $one = new IngressInfo();
+        $one->setIngressId('IN_one');
+        $first = new ListIngressResponse();
+        $first->setItems([$one]);
+        $first->setNextPageToken($cursor);
+
+        $two = new IngressInfo();
+        $two->setIngressId('IN_two');
+        $second = new ListIngressResponse();
+        $second->setItems([$two]);
+
+        $this->http->pushResponse($this->protoResponse($first));
+        $this->http->pushResponse($this->protoResponse($second));
+
+        $client = new IngressClient(
+            self::HOST,
+            self::API_KEY,
+            self::API_SECRET,
+            httpClient: $this->http,
+        );
+
+        $items = $client->listIngress();
+
+        self::assertSame(['IN_one', 'IN_two'], array_map(
+            static fn (IngressInfo $info): string => $info->getIngressId(),
+            $items,
+        ));
+
+        self::assertSame(2, $this->http->requestCount());
+        self::assertSame('page-2', $this->decodeRequest(ListIngressRequest::class)->getPageToken()?->getToken());
     }
 }

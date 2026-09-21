@@ -32,6 +32,7 @@ use LiveKit\Proto\StorageConfig;
 use LiveKit\Proto\StreamOutput;
 use LiveKit\Proto\StreamProtocol;
 use LiveKit\Proto\TemplateSource;
+use LiveKit\Proto\TokenPagination;
 use LiveKit\Proto\TrackCompositeEgressRequest;
 use LiveKit\Proto\TrackEgressRequest;
 use LiveKit\Proto\UpdateLayoutRequest;
@@ -665,6 +666,82 @@ final class EgressClientTest extends TwirpTestCase
     private function egressClient(): EgressClient
     {
         return new EgressClient(self::HOST, self::API_KEY, self::API_SECRET, httpClient: $this->http);
+    }
+
+    public function testListEgressFollowsTheCursorUntilTheServerStopsSendingOne(): void
+    {
+        $cursor = new TokenPagination();
+        $cursor->setToken('page-2');
+
+        $first = new ListEgressResponse();
+        $first->setItems([$this->egressInfo('EG_one')]);
+        $first->setNextPageToken($cursor);
+
+        $second = new ListEgressResponse();
+        $second->setItems([$this->egressInfo('EG_two')]);
+
+        $this->http->pushResponse($this->protoResponse($first));
+        $this->http->pushResponse($this->protoResponse($second));
+
+        $items = $this->egressClient()->listEgress(new ListEgressOptions(roomName: 'my-room'));
+
+        self::assertSame(['EG_one', 'EG_two'], array_map(
+            static fn (EgressInfo $info): string => $info->getEgressId(),
+            $items,
+        ), 'Both pages should be returned as one list.');
+
+        self::assertSame(2, $this->http->requestCount());
+
+        $sent = $this->sentListEgressRequests();
+
+        self::assertNull($sent[0]->getPageToken(), 'The first page asks for no cursor.');
+        self::assertSame('page-2', $sent[1]->getPageToken()?->getToken());
+        self::assertSame('my-room', $sent[1]->getRoomName(), 'The filter has to survive the second call.');
+    }
+
+    public function testListEgressStopsWhenTheServerRepeatsACursorItAlreadySent(): void
+    {
+        // A server answering every page with the same cursor would otherwise be
+        // followed until the process died.
+        for ($i = 0; $i < 4; $i++) {
+            $cursor = new TokenPagination();
+            $cursor->setToken('always-the-same');
+
+            $page = new ListEgressResponse();
+            $page->setItems([$this->egressInfo('EG_' . $i)]);
+            $page->setNextPageToken($cursor);
+
+            $this->http->pushResponse($this->protoResponse($page));
+        }
+
+        $items = $this->egressClient()->listEgress();
+
+        self::assertSame(2, $this->http->requestCount(), 'The repeat has to end the walk.');
+        self::assertCount(2, $items, 'What was fetched before the repeat is still returned.');
+    }
+
+    public function testListEgressResumesFromAPageTokenGivenInOptions(): void
+    {
+        $this->http->pushResponse($this->protoResponse(new ListEgressResponse()));
+
+        $this->egressClient()->listEgress(new ListEgressOptions(pageToken: 'resume-here'));
+
+        self::assertSame(1, $this->http->requestCount());
+        self::assertSame('resume-here', $this->decodeRequest(ListEgressRequest::class)->getPageToken()?->getToken());
+    }
+
+    /** @return list<ListEgressRequest> */
+    private function sentListEgressRequests(): array
+    {
+        $sent = [];
+
+        foreach ($this->http->requests() as $request) {
+            $message = new ListEgressRequest();
+            $message->mergeFromString((string) $request->getBody());
+            $sent[] = $message;
+        }
+
+        return $sent;
     }
 
     private function egressInfo(string $egressId = 'EG_test'): EgressInfo

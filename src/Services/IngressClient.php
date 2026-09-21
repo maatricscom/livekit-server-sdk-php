@@ -130,38 +130,55 @@ final class IngressClient extends ServiceBase implements IngressClientInterface
     /** @return list<IngressInfo> */
     public function listIngress(?ListIngressOptions $options = null): array
     {
-        $request = new ListIngressRequest();
-
-        if ($options !== null) {
-            if ($options->roomName !== null) {
-                $request->setRoomName($options->roomName);
-            }
-
-            if ($options->ingressId !== null) {
-                $request->setIngressId($options->ingressId);
-            }
-
-            if ($options->pageToken !== null) {
-                $pagination = new TokenPagination();
-                $pagination->setToken($options->pageToken);
-                $request->setPageToken($pagination);
-            }
-        }
-
-        $response = $this->rpc(
-            self::SERVICE,
-            'ListIngress',
-            $request,
-            ListIngressResponse::class,
-            $this->authHeader(new VideoGrant(ingressAdmin: true)),
-        );
-
         /** @var list<IngressInfo> $items */
         $items = [];
 
-        foreach ($response->getItems() as $item) {
-            $items[] = $item;
-        }
+        // See EgressClient::listEgress() for why the cursor is followed here
+        // rather than returned. A LiveKit Cloud project caps ingress objects well
+        // below any page size -- measured at 40 with no cursor, and refused at
+        // about 50 -- so this loop is expected to run once. It is here because
+        // the RPC can paginate, not because this one is known to.
+        $token = $options->pageToken ?? '';
+        $seen = [];
+
+        do {
+            $request = new ListIngressRequest();
+
+            if ($options?->roomName !== null) {
+                $request->setRoomName($options->roomName);
+            }
+
+            if ($options?->ingressId !== null) {
+                $request->setIngressId($options->ingressId);
+            }
+
+            if ($token !== '') {
+                $pagination = new TokenPagination();
+                $pagination->setToken($token);
+                $request->setPageToken($pagination);
+            }
+
+            $response = $this->rpc(
+                self::SERVICE,
+                'ListIngress',
+                $request,
+                ListIngressResponse::class,
+                $this->authHeader(new VideoGrant(ingressAdmin: true)),
+            );
+
+            foreach ($response->getItems() as $item) {
+                $items[] = $item;
+            }
+
+            $next = $response->getNextPageToken();
+            $token = $next === null ? '' : $next->getToken();
+
+            if ($token !== '' && isset($seen[$token])) {
+                break;
+            }
+
+            $seen[$token] = true;
+        } while ($token !== '');
 
         return $items;
     }
